@@ -4,6 +4,7 @@ package apps;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
@@ -340,13 +341,13 @@ public interface AppsPackage extends EPackage {
 	int ENVIRONMENT_MANAGER___START_ALL_STOPPED_ENVIRONMENTS = 11;
 
 	/**
-	 * The operation id for the '<em>Stopp Running Environments</em>' operation.
+	 * The operation id for the '<em>Stop Running Environments</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER___STOPP_RUNNING_ENVIRONMENTS = 12;
+	int ENVIRONMENT_MANAGER___STOP_RUNNING_ENVIRONMENTS = 12;
 
 	/**
 	 * The operation id for the '<em>Delete Environment</em>' operation.
@@ -965,6 +966,16 @@ public interface AppsPackage extends EPackage {
 	int ENVIRONMENT_STATE = 14;
 
 	/**
+	 * The meta object id for the '<em>Environment List</em>' data type.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.emf.common.util.EList
+	 * @see apps.impl.AppsPackageImpl#getEnvironmentList()
+	 * @generated
+	 */
+	int ENVIRONMENT_LIST = 15;
+
+	/**
 	 * Returns the meta object for class '{@link apps.IEnvironment <em>IEnvironment</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1255,14 +1266,14 @@ public interface AppsPackage extends EPackage {
 	EOperation getEnvironmentManager__StartAllStoppedEnvironments();
 
 	/**
-	 * Returns the meta object for the '{@link apps.EnvironmentManager#stoppRunningEnvironments() <em>Stopp Running Environments</em>}' operation.
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#stopRunningEnvironments() <em>Stop Running Environments</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>Stopp Running Environments</em>' operation.
-	 * @see apps.EnvironmentManager#stoppRunningEnvironments()
+	 * @return the meta object for the '<em>Stop Running Environments</em>' operation.
+	 * @see apps.EnvironmentManager#stopRunningEnvironments()
 	 * @generated
 	 */
-	EOperation getEnvironmentManager__StoppRunningEnvironments();
+	EOperation getEnvironmentManager__StopRunningEnvironments();
 
 	/**
 	 * Returns the meta object for the '{@link apps.EnvironmentManager#deleteEnvironment(java.lang.String) <em>Delete Environment</em>}' operation.
@@ -1618,6 +1629,17 @@ public interface AppsPackage extends EPackage {
 	EEnum getEnvironmentState();
 
 	/**
+	 * Returns the meta object for data type '{@link org.eclipse.emf.common.util.EList <em>Environment List</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for data type '<em>Environment List</em>'.
+	 * @see org.eclipse.emf.common.util.EList
+	 * @model instanceClass="org.eclipse.emf.common.util.EList&lt;java.lang.Object&gt;"
+	 * @generated
+	 */
+	EDataType getEnvironmentList();
+
+	/**
 	 * Returns the factory that creates the instances of the model.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1869,12 +1891,12 @@ public interface AppsPackage extends EPackage {
 		EOperation ENVIRONMENT_MANAGER___START_ALL_STOPPED_ENVIRONMENTS = eINSTANCE.getEnvironmentManager__StartAllStoppedEnvironments();
 
 		/**
-		 * The meta object literal for the '<em><b>Stopp Running Environments</b></em>' operation.
+		 * The meta object literal for the '<em><b>Stop Running Environments</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EOperation ENVIRONMENT_MANAGER___STOPP_RUNNING_ENVIRONMENTS = eINSTANCE.getEnvironmentManager__StoppRunningEnvironments();
+		EOperation ENVIRONMENT_MANAGER___STOP_RUNNING_ENVIRONMENTS = eINSTANCE.getEnvironmentManager__StopRunningEnvironments();
 
 		/**
 		 * The meta object literal for the '<em><b>Delete Environment</b></em>' operation.
@@ -2173,6 +2195,16 @@ public interface AppsPackage extends EPackage {
 		 * @generated
 		 */
 		EEnum ENVIRONMENT_STATE = eINSTANCE.getEnvironmentState();
+
+		/**
+		 * The meta object literal for the '<em>Environment List</em>' data type.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.emf.common.util.EList
+		 * @see apps.impl.AppsPackageImpl#getEnvironmentList()
+		 * @generated
+		 */
+		EDataType ENVIRONMENT_LIST = eINSTANCE.getEnvironmentList();
 
 	}
 

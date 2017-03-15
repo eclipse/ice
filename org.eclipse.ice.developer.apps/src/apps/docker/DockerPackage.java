@@ -5,6 +5,7 @@ package apps.docker;
 import apps.AppsPackage;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
@@ -204,13 +205,40 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_ENVIRONMENT___STOP = AppsPackage.IENVIRONMENT___STOP;
 
 	/**
+	 * The operation id for the '<em>Execute</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_ENVIRONMENT___EXECUTE__STRING_STRING = AppsPackage.IENVIRONMENT_OPERATION_COUNT + 0;
+
+	/**
+	 * The operation id for the '<em>Has Docker</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_ENVIRONMENT___HAS_DOCKER = AppsPackage.IENVIRONMENT_OPERATION_COUNT + 1;
+
+	/**
+	 * The operation id for the '<em>Pull Image</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_ENVIRONMENT___PULL_IMAGE__STRING = AppsPackage.IENVIRONMENT_OPERATION_COUNT + 2;
+
+	/**
 	 * The number of operations of the '<em>Environment</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT_OPERATION_COUNT = AppsPackage.IENVIRONMENT_OPERATION_COUNT + 0;
+	int DOCKER_ENVIRONMENT_OPERATION_COUNT = AppsPackage.IENVIRONMENT_OPERATION_COUNT + 3;
 
 	/**
 	 * The meta object id for the '{@link apps.docker.impl.DockerAPIImpl <em>API</em>}' class.
@@ -295,13 +323,40 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_API___STOP_CONTAINER__STRING = 5;
 
 	/**
+	 * The operation id for the '<em>Create Container Exec Command</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_API___CREATE_CONTAINER_EXEC_COMMAND__STRING_STRING = 6;
+
+	/**
+	 * The operation id for the '<em>Pull</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_API___PULL__STRING = 7;
+
+	/**
+	 * The operation id for the '<em>List Available Images</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_API___LIST_AVAILABLE_IMAGES = 8;
+
+	/**
 	 * The number of operations of the '<em>API</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_API_OPERATION_COUNT = 6;
+	int DOCKER_API_OPERATION_COUNT = 9;
 
 	/**
 	 * The meta object id for the '{@link apps.docker.impl.ContainerConfigurationImpl <em>Container Configuration</em>}' class.
@@ -469,6 +524,15 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_PROJECT_LAUNCHER_OPERATION_COUNT = AppsPackage.PROJECT_LAUNCHER_OPERATION_COUNT + 2;
 
 	/**
+	 * The meta object id for the '<em>Command List</em>' data type.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.docker.impl.DockerPackageImpl#getCommandList()
+	 * @generated
+	 */
+	int COMMAND_LIST = 4;
+
+	/**
 	 * Returns the meta object for class '{@link apps.docker.DockerEnvironment <em>Environment</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -510,6 +574,36 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getDockerEnvironment_Dockerfile();
+
+	/**
+	 * Returns the meta object for the '{@link apps.docker.DockerEnvironment#execute(java.lang.String, java.lang.String[]) <em>Execute</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Execute</em>' operation.
+	 * @see apps.docker.DockerEnvironment#execute(java.lang.String, java.lang.String[])
+	 * @generated
+	 */
+	EOperation getDockerEnvironment__Execute__String_String();
+
+	/**
+	 * Returns the meta object for the '{@link apps.docker.DockerEnvironment#hasDocker() <em>Has Docker</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Has Docker</em>' operation.
+	 * @see apps.docker.DockerEnvironment#hasDocker()
+	 * @generated
+	 */
+	EOperation getDockerEnvironment__HasDocker();
+
+	/**
+	 * Returns the meta object for the '{@link apps.docker.DockerEnvironment#pullImage(java.lang.String) <em>Pull Image</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Pull Image</em>' operation.
+	 * @see apps.docker.DockerEnvironment#pullImage(java.lang.String)
+	 * @generated
+	 */
+	EOperation getDockerEnvironment__PullImage__String();
 
 	/**
 	 * Returns the meta object for class '{@link apps.docker.DockerAPI <em>API</em>}'.
@@ -591,6 +685,36 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 */
 	EOperation getDockerAPI__StopContainer__String();
+
+	/**
+	 * Returns the meta object for the '{@link apps.docker.DockerAPI#createContainerExecCommand(java.lang.String, java.lang.String[]) <em>Create Container Exec Command</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Create Container Exec Command</em>' operation.
+	 * @see apps.docker.DockerAPI#createContainerExecCommand(java.lang.String, java.lang.String[])
+	 * @generated
+	 */
+	EOperation getDockerAPI__CreateContainerExecCommand__String_String();
+
+	/**
+	 * Returns the meta object for the '{@link apps.docker.DockerAPI#pull(java.lang.String) <em>Pull</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Pull</em>' operation.
+	 * @see apps.docker.DockerAPI#pull(java.lang.String)
+	 * @generated
+	 */
+	EOperation getDockerAPI__Pull__String();
+
+	/**
+	 * Returns the meta object for the '{@link apps.docker.DockerAPI#listAvailableImages() <em>List Available Images</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>List Available Images</em>' operation.
+	 * @see apps.docker.DockerAPI#listAvailableImages()
+	 * @generated
+	 */
+	EOperation getDockerAPI__ListAvailableImages();
 
 	/**
 	 * Returns the meta object for class '{@link apps.docker.ContainerConfiguration <em>Container Configuration</em>}'.
@@ -721,6 +845,16 @@ public interface DockerPackage extends EPackage {
 	EOperation getDockerProjectLauncher__UpdateConnection__int();
 
 	/**
+	 * Returns the meta object for data type '<em>Command List</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for data type '<em>Command List</em>'.
+	 * @model instanceClass="java.lang.String[]"
+	 * @generated
+	 */
+	EDataType getCommandList();
+
+	/**
 	 * Returns the factory that creates the instances of the model.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -776,6 +910,30 @@ public interface DockerPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute DOCKER_ENVIRONMENT__DOCKERFILE = eINSTANCE.getDockerEnvironment_Dockerfile();
+
+		/**
+		 * The meta object literal for the '<em><b>Execute</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation DOCKER_ENVIRONMENT___EXECUTE__STRING_STRING = eINSTANCE.getDockerEnvironment__Execute__String_String();
+
+		/**
+		 * The meta object literal for the '<em><b>Has Docker</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation DOCKER_ENVIRONMENT___HAS_DOCKER = eINSTANCE.getDockerEnvironment__HasDocker();
+
+		/**
+		 * The meta object literal for the '<em><b>Pull Image</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation DOCKER_ENVIRONMENT___PULL_IMAGE__STRING = eINSTANCE.getDockerEnvironment__PullImage__String();
 
 		/**
 		 * The meta object literal for the '{@link apps.docker.impl.DockerAPIImpl <em>API</em>}' class.
@@ -842,6 +1000,30 @@ public interface DockerPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation DOCKER_API___STOP_CONTAINER__STRING = eINSTANCE.getDockerAPI__StopContainer__String();
+
+		/**
+		 * The meta object literal for the '<em><b>Create Container Exec Command</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation DOCKER_API___CREATE_CONTAINER_EXEC_COMMAND__STRING_STRING = eINSTANCE.getDockerAPI__CreateContainerExecCommand__String_String();
+
+		/**
+		 * The meta object literal for the '<em><b>Pull</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation DOCKER_API___PULL__STRING = eINSTANCE.getDockerAPI__Pull__String();
+
+		/**
+		 * The meta object literal for the '<em><b>List Available Images</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation DOCKER_API___LIST_AVAILABLE_IMAGES = eINSTANCE.getDockerAPI__ListAvailableImages();
 
 		/**
 		 * The meta object literal for the '{@link apps.docker.impl.ContainerConfigurationImpl <em>Container Configuration</em>}' class.
@@ -942,6 +1124,15 @@ public interface DockerPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation DOCKER_PROJECT_LAUNCHER___UPDATE_CONNECTION__INT = eINSTANCE.getDockerProjectLauncher__UpdateConnection__int();
+
+		/**
+		 * The meta object literal for the '<em>Command List</em>' data type.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see apps.docker.impl.DockerPackageImpl#getCommandList()
+		 * @generated
+		 */
+		EDataType COMMAND_LIST = eINSTANCE.getCommandList();
 
 	}
 

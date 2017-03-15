@@ -119,7 +119,7 @@
     </eOperations>
     <eOperations name="loadEnvironments"/>
     <eOperations name="startAllStoppedEnvironments"/>
-    <eOperations name="stoppRunningEnvironments"/>
+    <eOperations name="stopRunningEnvironments"/>
     <eOperations name="deleteEnvironment">
       <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
@@ -232,7 +232,7 @@
       <details key="documentation" value="The EnvironmentStorage interface provides a mechanism for persisting and loading environments. "/>
     </eAnnotations>
     <eOperations name="store">
-      <eParameters name="environments" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EEList"/>
+      <eParameters name="environments" eType="#//EnvironmentList"/>
     </eOperations>
     <eOperations name="load" upperBound="-1" eType="#//IEnvironment"/>
   </eClassifiers>
@@ -248,11 +248,20 @@
       <eParameters name="message" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="EnvironmentList" instanceClassName="org.eclipse.emf.common.util.EList&lt;IEnvironment>"/>
   <eSubpackages name="docker" nsURI="http://eclipse.org/apps/docker" nsPrefix="dockerenvironment">
     <eClassifiers xsi:type="ecore:EClass" name="DockerEnvironment" eSuperTypes="#//IEnvironment">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The DockerEnvironment is a realization of the IEnvironment interface that provides a launch method to create a scientific application environment in a Docker container. "/>
       </eAnnotations>
+      <eOperations name="execute" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eParameters name="imageName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        <eParameters name="command" eType="#//docker/CommandList"/>
+      </eOperations>
+      <eOperations name="hasDocker" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean"/>
+      <eOperations name="pullImage">
+        <eParameters name="imageName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="docker" eType="#//docker/DockerAPI"
           containment="true">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -310,6 +319,14 @@
       <eOperations name="stopContainer" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean">
         <eParameters name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       </eOperations>
+      <eOperations name="createContainerExecCommand" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eParameters name="imageName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        <eParameters name="command" eType="#//docker/CommandList"/>
+      </eOperations>
+      <eOperations name="pull">
+        <eParameters name="imageName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="listAvailableImages" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="containerRemotePort"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     </eClassifiers>
@@ -362,6 +379,7 @@
           eType="#//docker/ContainerConfiguration"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="projectName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EDataType" name="CommandList" instanceClassName="java.lang.String[]"/>
   </eSubpackages>
   <eSubpackages name="local" nsURI="https://eclipse.org/apps/local" nsPrefix="localenvironment">
     <eClassifiers xsi:type="ecore:EClass" name="LocalEnvironment" eSuperTypes="#//IEnvironment"/>

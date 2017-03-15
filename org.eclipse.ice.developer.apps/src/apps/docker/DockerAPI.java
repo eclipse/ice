@@ -5,6 +5,7 @@ package apps.docker;
 import org.eclipse.emf.ecore.EObject;
 
 import apps.EnvironmentConsole;
+import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -116,6 +117,30 @@ public interface DockerAPI extends EObject {
 	 */
 	boolean stopContainer(String id);
 	
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model commandDataType="apps.docker.CommandList"
+	 * @generated
+	 */
+	String createContainerExecCommand(String imageName, String[] command);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void pull(String imageName);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	EList<String> listAvailableImages();
+
 	void setEnvironmentConsole(EnvironmentConsole c);
 
 } // DockerAPI

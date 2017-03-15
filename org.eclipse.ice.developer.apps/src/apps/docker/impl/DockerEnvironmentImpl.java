@@ -384,11 +384,13 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	public NotificationChain basicSetConsole(EnvironmentConsole newConsole, NotificationChain msgs) {
 		EnvironmentConsole oldConsole = console;
 		console = newConsole;
+		if (docker != null) {
+			docker.setEnvironmentConsole(console);
+		}
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, DockerPackage.DOCKER_ENVIRONMENT__CONSOLE, oldConsole, newConsole);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
@@ -516,6 +518,33 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 		dockerfile = newDockerfile;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, DockerPackage.DOCKER_ENVIRONMENT__DOCKERFILE, oldDockerfile, dockerfile));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 */
+	public String execute(String imageName, String[] command) {
+		return ((DockerAPIImpl)docker).createContainerExecCommand(imageName, command);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 */
+	public boolean hasDocker() {
+		return docker != null;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void pullImage(String imageName) {
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -818,6 +847,13 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	@Override
 	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
 		switch (operationID) {
+			case DockerPackage.DOCKER_ENVIRONMENT___EXECUTE__STRING_STRING:
+				return execute((String)arguments.get(0), (String[])arguments.get(1));
+			case DockerPackage.DOCKER_ENVIRONMENT___HAS_DOCKER:
+				return hasDocker();
+			case DockerPackage.DOCKER_ENVIRONMENT___PULL_IMAGE__STRING:
+				pullImage((String)arguments.get(0));
+				return null;
 			case DockerPackage.DOCKER_ENVIRONMENT___BUILD:
 				return build();
 			case DockerPackage.DOCKER_ENVIRONMENT___CONNECT:

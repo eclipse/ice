@@ -2,6 +2,8 @@
  */
 package apps.tests;
 
+import org.eclipse.emf.common.util.EList;
+
 import apps.AppsFactory;
 import apps.EnvironmentManager;
 import apps.EnvironmentState;
@@ -31,7 +33,7 @@ import junit.textui.TestRunner;
  *   <li>{@link apps.EnvironmentManager#loadFromXMI(java.lang.String) <em>Load From XMI</em>}</li>
  *   <li>{@link apps.EnvironmentManager#loadEnvironments() <em>Load Environments</em>}</li>
  *   <li>{@link apps.EnvironmentManager#startAllStoppedEnvironments() <em>Start All Stopped Environments</em>}</li>
- *   <li>{@link apps.EnvironmentManager#stoppRunningEnvironments() <em>Stopp Running Environments</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#stopRunningEnvironments() <em>Stop Running Environments</em>}</li>
  *   <li>{@link apps.EnvironmentManager#deleteEnvironment(java.lang.String) <em>Delete Environment</em>}</li>
  * </ul>
  * </p>
@@ -241,9 +243,11 @@ public class EnvironmentManagerTest extends TestCase {
 	 * @see apps.EnvironmentManager#listAvailableSpackPackages()
 	 */
 	public void testListAvailableSpackPackages() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		//fail();
+		EList<String> packages = fixture.listAvailableSpackPackages();
+		for (String s : packages) {
+			System.out.println(s);
+		}
+		// FIXME Come up with a test for this.
 	}
 
 	/**
@@ -322,13 +326,13 @@ public class EnvironmentManagerTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link apps.EnvironmentManager#stoppRunningEnvironments() <em>Stopp Running Environments</em>}' operation.
+	 * Tests the '{@link apps.EnvironmentManager#stopRunningEnvironments() <em>Stop Running Environments</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see apps.EnvironmentManager#stoppRunningEnvironments()
+	 * @see apps.EnvironmentManager#stopRunningEnvironments()
 	 * @generated
 	 */
-	public void testStoppRunningEnvironments() {
+	public void testStopRunningEnvironments() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		fail();

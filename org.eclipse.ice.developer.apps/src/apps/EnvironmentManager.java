@@ -236,7 +236,7 @@ public interface EnvironmentManager extends EObject {
 	 * @model
 	 * @generated
 	 */
-	void stoppRunningEnvironments();
+	void stopRunningEnvironments();
 
 	/**
 	 * <!-- begin-user-doc -->

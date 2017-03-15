@@ -17,6 +17,7 @@
       <genEnumLiterals ecoreEnumLiteral="apps.ecore#//EnvironmentState/NotCreated"/>
       <genEnumLiterals ecoreEnumLiteral="apps.ecore#//EnvironmentState/Created"/>
     </genEnums>
+    <genDataTypes ecoreDataType="apps.ecore#//EnvironmentList"/>
     <genClasses image="false" ecoreClass="apps.ecore#//IEnvironment">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//IEnvironment/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//IEnvironment/os"/>
@@ -61,7 +62,7 @@
       </genOperations>
       <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/loadEnvironments"/>
       <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/startAllStoppedEnvironments"/>
-      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/stoppRunningEnvironments"/>
+      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/stopRunningEnvironments"/>
       <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/deleteEnvironment">
         <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/deleteEnvironment/name"/>
       </genOperations>
@@ -118,12 +119,21 @@
     </genClasses>
     <nestedGenPackages prefix="Docker" basePackage="apps" disposableProviderFactory="true"
         ecorePackage="apps.ecore#//docker">
+      <genDataTypes ecoreDataType="apps.ecore#//docker/CommandList"/>
       <genClasses ecoreClass="apps.ecore#//docker/DockerEnvironment">
         <genFeatures children="true" createChild="true" propertySortChoices="true"
             ecoreFeature="ecore:EReference apps.ecore#//docker/DockerEnvironment/docker"/>
         <genFeatures children="true" createChild="true" propertySortChoices="true"
             ecoreFeature="ecore:EReference apps.ecore#//docker/DockerEnvironment/containerConfiguration"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//docker/DockerEnvironment/Dockerfile"/>
+        <genOperations ecoreOperation="apps.ecore#//docker/DockerEnvironment/execute">
+          <genParameters ecoreParameter="apps.ecore#//docker/DockerEnvironment/execute/imageName"/>
+          <genParameters ecoreParameter="apps.ecore#//docker/DockerEnvironment/execute/command"/>
+        </genOperations>
+        <genOperations ecoreOperation="apps.ecore#//docker/DockerEnvironment/hasDocker"/>
+        <genOperations ecoreOperation="apps.ecore#//docker/DockerEnvironment/pullImage">
+          <genParameters ecoreParameter="apps.ecore#//docker/DockerEnvironment/pullImage/imageName"/>
+        </genOperations>
       </genClasses>
       <genClasses ecoreClass="apps.ecore#//docker/DockerAPI">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//docker/DockerAPI/containerRemotePort"/>
@@ -147,6 +157,14 @@
         <genOperations ecoreOperation="apps.ecore#//docker/DockerAPI/stopContainer">
           <genParameters ecoreParameter="apps.ecore#//docker/DockerAPI/stopContainer/id"/>
         </genOperations>
+        <genOperations ecoreOperation="apps.ecore#//docker/DockerAPI/createContainerExecCommand">
+          <genParameters ecoreParameter="apps.ecore#//docker/DockerAPI/createContainerExecCommand/imageName"/>
+          <genParameters ecoreParameter="apps.ecore#//docker/DockerAPI/createContainerExecCommand/command"/>
+        </genOperations>
+        <genOperations ecoreOperation="apps.ecore#//docker/DockerAPI/pull">
+          <genParameters ecoreParameter="apps.ecore#//docker/DockerAPI/pull/imageName"/>
+        </genOperations>
+        <genOperations ecoreOperation="apps.ecore#//docker/DockerAPI/listAvailableImages"/>
       </genClasses>
       <genClasses ecoreClass="apps.ecore#//docker/ContainerConfiguration">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//docker/ContainerConfiguration/name"/>

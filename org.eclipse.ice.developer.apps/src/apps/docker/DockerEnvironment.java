@@ -110,4 +110,28 @@ public interface DockerEnvironment extends IEnvironment {
 	 */
 	void setDockerfile(String value);
 
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model commandDataType="apps.docker.CommandList"
+	 * @generated
+	 */
+	String execute(String imageName, String[] command);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.Boolean"
+	 * @generated
+	 */
+	boolean hasDocker();
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void pullImage(String imageName);
+
 } // DockerEnvironment

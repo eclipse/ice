@@ -149,7 +149,7 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SpackPackageImpl() {
+	protected SpackPackageImpl() {
 		super();
 	}
 

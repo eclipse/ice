@@ -26,8 +26,10 @@ import apps.local.LocalPackage;
 
 import apps.local.impl.LocalPackageImpl;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
@@ -148,6 +150,13 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * @generated
 	 */
 	private EEnum environmentStateEEnum = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType environmentListEDataType = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -478,7 +487,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getEnvironmentManager__StoppRunningEnvironments() {
+	public EOperation getEnvironmentManager__StopRunningEnvironments() {
 		return environmentManagerEClass.getEOperations().get(12);
 	}
 
@@ -793,6 +802,15 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EDataType getEnvironmentList() {
+		return environmentListEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public AppsFactory getAppsFactory() {
 		return (AppsFactory)getEFactoryInstance();
 	}
@@ -845,7 +863,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___LOAD_FROM_XMI__STRING);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___LOAD_ENVIRONMENTS);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___START_ALL_STOPPED_ENVIRONMENTS);
-		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___STOPP_RUNNING_ENVIRONMENTS);
+		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___STOP_RUNNING_ENVIRONMENTS);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___DELETE_ENVIRONMENT__STRING);
 
 		spackPackageEClass = createEClass(SPACK_PACKAGE);
@@ -893,6 +911,9 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		// Create enums
 		packageTypeEEnum = createEEnum(PACKAGE_TYPE);
 		environmentStateEEnum = createEEnum(ENVIRONMENT_STATE);
+
+		// Create data types
+		environmentListEDataType = createEDataType(ENVIRONMENT_LIST);
 	}
 
 	/**
@@ -992,7 +1013,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 
 		initEOperation(getEnvironmentManager__StartAllStoppedEnvironments(), null, "startAllStoppedEnvironments", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		initEOperation(getEnvironmentManager__StoppRunningEnvironments(), null, "stoppRunningEnvironments", 0, 1, IS_UNIQUE, IS_ORDERED);
+		initEOperation(getEnvironmentManager__StopRunningEnvironments(), null, "stopRunningEnvironments", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		op = initEOperation(getEnvironmentManager__DeleteEnvironment__String(), null, "deleteEnvironment", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "name", 0, 1, IS_UNIQUE, IS_ORDERED);
@@ -1035,7 +1056,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		initEClass(environmentStorageEClass, EnvironmentStorage.class, "EnvironmentStorage", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		op = initEOperation(getEnvironmentStorage__Store__EList(), null, "store", 0, 1, IS_UNIQUE, IS_ORDERED);
-		addEParameter(op, ecorePackage.getEEList(), "environments", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, this.getEnvironmentList(), "environments", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEOperation(getEnvironmentStorage__Load(), this.getIEnvironment(), "load", 0, -1, IS_UNIQUE, IS_ORDERED);
 
@@ -1062,6 +1083,9 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		addEEnumLiteral(environmentStateEEnum, EnvironmentState.RUNNING);
 		addEEnumLiteral(environmentStateEEnum, EnvironmentState.NOT_CREATED);
 		addEEnumLiteral(environmentStateEEnum, EnvironmentState.CREATED);
+
+		// Initialize data types
+		initEDataType(environmentListEDataType, EList.class, "EnvironmentList", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS, "org.eclipse.emf.common.util.EList<IEnvironment>");
 
 		// Create resource
 		createResource(eNS_URI);

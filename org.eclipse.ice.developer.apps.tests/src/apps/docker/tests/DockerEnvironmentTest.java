@@ -3,6 +3,9 @@
 package apps.docker.tests;
 
 import junit.framework.TestCase;
+
+import com.spotify.docker.client.exceptions.DockerCertificateException;
+
 import apps.AppsFactory;
 import apps.docker.DockerEnvironment;
 import apps.docker.DockerFactory;
@@ -15,6 +18,9 @@ import junit.textui.TestRunner;
  * <p>
  * The following operations are tested:
  * <ul>
+ *   <li>{@link apps.docker.DockerEnvironment#execute(java.lang.String, java.lang.String[]) <em>Execute</em>}</li>
+ *   <li>{@link apps.docker.DockerEnvironment#hasDocker() <em>Has Docker</em>}</li>
+ *   <li>{@link apps.docker.DockerEnvironment#pullImage(java.lang.String) <em>Pull Image</em>}</li>
  *   <li>{@link apps.IEnvironment#build() <em>Build</em>}</li>
  *   <li>{@link apps.IEnvironment#connect() <em>Connect</em>}</li>
  *   <li>{@link apps.IEnvironment#delete() <em>Delete</em>}</li>
@@ -103,7 +109,50 @@ public class DockerEnvironmentTest extends TestCase {
 		setFixture(null);
 	}
 
+	/**
+	 * Tests the '{@link apps.docker.DockerEnvironment#execute(java.lang.String, java.lang.String[]) <em>Execute</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.docker.DockerEnvironment#execute(java.lang.String, java.lang.String[])
+	 * @generated
+	 */
+	public void testExecute__String_String() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.docker.DockerEnvironment#hasDocker() <em>Has Docker</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.docker.DockerEnvironment#hasDocker()
+	 * @generated
+	 */
+	public void testHasDocker() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.docker.DockerEnvironment#pullImage(java.lang.String) <em>Pull Image</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.docker.DockerEnvironment#pullImage(java.lang.String)
+	 * @generated
+	 */
+	public void testPullImage__String() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
 	private class FakeDockerAPI extends DockerAPIImpl {
+		protected FakeDockerAPI() throws DockerCertificateException {
+			super();
+		}
+
 		private boolean built = false;
 
 		public boolean wasBuilt() {
@@ -133,7 +182,15 @@ public class DockerEnvironmentTest extends TestCase {
 				+ "run git clone --recursive -b master https://github.com/ORNL-QCI/xacc xacc\n";
 		// Get a valid Environment
 		DockerEnvironment env = (DockerEnvironment) AppsFactory.eINSTANCE.createEnvironmentManager().create(jsonStr);
-		FakeDockerAPI api = new FakeDockerAPI();
+		FakeDockerAPI api = null;
+		try {
+			api = new FakeDockerAPI();
+		} catch (DockerCertificateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			fail();
+		}
+		assertNotNull(api);
 		env.setDocker(api);
 
 		assertTrue(env.build());

@@ -5,9 +5,12 @@ package apps.docker.impl;
 import apps.EnvironmentConsole;
 import apps.docker.ContainerConfiguration;
 import apps.docker.DockerAPI;
+import apps.docker.DockerFactory;
 import apps.docker.DockerPackage;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -16,21 +19,28 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
+import com.spotify.docker.client.AnsiProgressHandler;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
+import com.spotify.docker.client.EventStream;
+import com.spotify.docker.client.LogStream;
 import com.spotify.docker.client.ProgressHandler;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ContainerInfo;
+import com.spotify.docker.client.messages.Event;
+import com.spotify.docker.client.messages.ExecCreation;
 import com.spotify.docker.client.messages.HostConfig;
+import com.spotify.docker.client.messages.Image;
 import com.spotify.docker.client.messages.PortBinding;
 import com.spotify.docker.client.messages.ProgressMessage;
 
@@ -74,19 +84,13 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 
 	private EnvironmentConsole console;
 	
-	private ContainerConfiguration config;
-	
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 */
-	protected DockerAPIImpl() {
+	protected DockerAPIImpl() throws DockerCertificateException {
 		super();
 		DefaultDockerClient.Builder builder = null;
-		try {
-			builder = DefaultDockerClient.fromEnv();
-		} catch (DockerCertificateException e) {
-			e.printStackTrace();
-		}
+		builder = DefaultDockerClient.fromEnv();
 		dockerClient = builder.build();
 	}
 
@@ -267,6 +271,102 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 */
+	public String createContainerExecCommand(String imageName, String[] command) {
+		if (dockerClient != null) {
+			ContainerConfiguration config = DockerFactory.eINSTANCE.createContainerConfiguration();
+			createContainer(imageName, config);
+			for (String s: command) {
+				System.out.println(s);
+			}
+			String id = config.getId();
+			LogStream output = null;
+			try {
+				final ExecCreation execCreation = dockerClient.execCreate(id, command,
+						DockerClient.ExecCreateParam.attachStdout(), DockerClient.ExecCreateParam.attachStderr());
+				System.out.println("Exec:\n" + execCreation.toString());
+				output = dockerClient.execStart(execCreation.id());
+			} catch (DockerException | InterruptedException e) {
+				e.printStackTrace();
+				return "";
+			}
+			
+			String out = output.readFully();
+			stopContainer(id);
+			deleteContainer(id);
+			
+			return out;
+		}
+
+		return "";
+
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 */
+	public void pull(String imageName) {
+		if (dockerClient != null) {
+			try {
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				dockerClient.pull(imageName, new ProgressHandler() {
+					private boolean printedExtracting = false;
+					private boolean printedDownloading = false;
+					@Override
+					public void progress(ProgressMessage message) throws DockerException {
+						if (message.status() != null && console != null) {
+							
+							if ((message.status().contains("Downloading") && !printedDownloading) || (message.status().contains("Extracting") && !printedExtracting)) {
+								DockerAPIImpl.this.console.print("[Docker Pull] " + message.status() + " " + imageName);
+							}
+							
+							if (!message.status().contains("Downloading") && !message.status().contains("Extracting")) {
+								DockerAPIImpl.this.console.print("[Docker Pull] " + message.status());
+							}
+
+							if (message.status().contains("Extracting")) {
+								printedExtracting = true;
+							} else if (message.status().contains("Downloading")) {
+								printedDownloading = true;
+							}
+						}
+						if (message.error() != null && console != null) {
+							DockerAPIImpl.this.console.print("Error in pulling image: " + message.error());
+						}
+					}
+				});
+			} catch (DockerException | InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 */
+	public EList<String> listAvailableImages() {
+		if (dockerClient != null) {
+			EList<String> imageNames = new BasicEList<String>();
+			try {
+				List<Image> images = dockerClient.listImages();
+				for (Image i : images) {
+					imageNames.add(i.repoTags().get(0));
+				}
+				return imageNames;
+			} catch (DockerException | InterruptedException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		
+		return null;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
@@ -359,6 +459,13 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 				return deleteImage((String)arguments.get(0));
 			case DockerPackage.DOCKER_API___STOP_CONTAINER__STRING:
 				return stopContainer((String)arguments.get(0));
+			case DockerPackage.DOCKER_API___CREATE_CONTAINER_EXEC_COMMAND__STRING_STRING:
+				return createContainerExecCommand((String)arguments.get(0), (String[])arguments.get(1));
+			case DockerPackage.DOCKER_API___PULL__STRING:
+				pull((String)arguments.get(0));
+				return null;
+			case DockerPackage.DOCKER_API___LIST_AVAILABLE_IMAGES:
+				return listAvailableImages();
 		}
 		return super.eInvoke(operationID, arguments);
 	}
