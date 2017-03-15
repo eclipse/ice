@@ -4,6 +4,7 @@
 package org.eclipse.ice.developer.apps.ui;
 
 /**
+ * Bean for the folder
  * @author Anara Kozhokanova
  *
  */
@@ -13,6 +14,7 @@ public class Folder {
 	 * 
 	 */
 	public Folder() {
+		directory = ""; // set empty, otherwise 'null' is shown in its bound field
 	}
 	
 	public String getDirectory() {

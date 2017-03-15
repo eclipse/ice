@@ -3,7 +3,7 @@
  */
 package org.eclipse.ice.developer.apps.ui;
 
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
+
 import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
@@ -12,32 +12,29 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-import apps.docker.impl.ContainerConfigurationImpl;
-
 /**
  * @author Anara Kozhokanova
  *
  */
 public class DockerForm extends HorizontalLayout{
- 
-	private BeanFieldGroup<Docker> dockerFieldGroup;
+	
 	private VerticalLayout vLayout = new VerticalLayout();
 	private Label titleLabel = new Label();
 	
 	@PropertyId("name")
-	private TextField nameTxtField = new TextField();
+	private TextField nameTxtField;
 	
 	@PropertyId("ports")
-	private TextField portsTxtField = new TextField();
+	private TextField portsTxtField;
 	
 	@PropertyId("volumes")
-	private TextField volumesTxtField = new TextField();
+	private TextField volumesTxtField;
 	
 	@PropertyId("ephemeral")
-	private CheckBox ephemeralChBox = new CheckBox();
+	private CheckBox ephemeralChBox;
 	
 	@PropertyId("commands")
-	private TextArea dockerCommandsTxtArea = new TextArea();
+	private TextArea dockerCommandsTxtArea;
 	
 	
 	/**
@@ -45,11 +42,11 @@ public class DockerForm extends HorizontalLayout{
 	 */
 	public DockerForm() {
 		
-		// binding fields annotated '@PropertyId' to data model
-		dockerFieldGroup = new BeanFieldGroup<Docker>(Docker.class);
-		//dockerFieldGroup.setItemDataSource(new Docker());
-		dockerFieldGroup.bindMemberFields(this);
-		dockerFieldGroup.setBuffered(true);
+		nameTxtField = new TextField();
+		portsTxtField = new TextField();
+		volumesTxtField = new TextField();
+		ephemeralChBox = new CheckBox();
+		dockerCommandsTxtArea = new TextArea();
 		
 		titleLabel.setCaption("Container Configuration:");
 		nameTxtField.setCaption("Name:");

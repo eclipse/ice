@@ -17,8 +17,6 @@ public class FolderForm extends VerticalLayout{
 	@PropertyId("directory")
 	private TextField dirNameTxtField;
 	
-	private BeanFieldGroup<Folder> folderFieldGroup;
-	
 	/**
 	 * 
 	 */
@@ -26,12 +24,7 @@ public class FolderForm extends VerticalLayout{
 		dirNameTxtField = new TextField();
 		dirNameTxtField.setCaption("Directory:");
 		
-		folderFieldGroup = new BeanFieldGroup<Folder>(Folder.class);
-		folderFieldGroup.setItemDataSource(new Folder());
-		folderFieldGroup.bindMemberFields(this);
-		folderFieldGroup.setBuffered(true);
-		
-		addComponent(this.dirNameTxtField);
+		addComponent(dirNameTxtField);
 		setSpacing(true);
 	}
 }

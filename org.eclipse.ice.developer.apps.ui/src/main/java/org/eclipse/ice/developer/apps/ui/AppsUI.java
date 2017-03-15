@@ -18,6 +18,7 @@ import org.osgi.service.http.NamespaceException;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
@@ -29,6 +30,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -73,6 +75,22 @@ public class AppsUI extends UI {
 	 */
 	private VerticalLayout mainLayout;
 	
+	
+	/**
+	 * Containers for beans
+	 */
+	private BeanContainer<String, OSPackage> osPackageContainer;
+	private BeanContainer<String, SourcePackage> sourcePackageContainer;
+	private BeanContainer<String, SpackPackage> spackPackageContainer;
+	private BeanContainer<String, Docker> dockerContainer;
+	private BeanContainer<String, Folder> folderContainer;
+	
+	/**
+	 * Binders for folder and docker configurations data 
+	 */
+	private BeanFieldGroup<Docker> dockerBinder;
+	private BeanFieldGroup<Folder> folderBinder;
+	
 	//BeanFieldGroup<SpackPackage> binder = new BeanFieldGroup<SpackPackage>(SpackPackage.class);
 	
 	@Override
@@ -89,7 +107,6 @@ public class AppsUI extends UI {
     	addValidateCancelButtons();
     	
     	
-    	
     	//manager.persistEnvironments();
     }
 
@@ -104,9 +121,10 @@ public class AppsUI extends UI {
     	
     	cancelButton.setWidth("130px");
     	validateButton.setWidth("130px");
+    	//validateButton.setEnabled(false);
     	
     	validateButton.addClickListener( e -> {
-    		
+    		validateFields();
     	});
     	
     	cnlAndValBtnsLayout.addComponents(cancelButton, validateButton);
@@ -116,6 +134,44 @@ public class AppsUI extends UI {
     	mainLayout.addComponents(cnlAndValBtnsLayout);
     	mainLayout.setComponentAlignment(cnlAndValBtnsLayout, Alignment.BOTTOM_RIGHT);		
 	}
+
+	/**
+	 * Validate user input
+	 */
+	private void validateFields() {
+		
+		// instantiate folder and docker containers
+		dockerContainer = new BeanContainer<String, Docker>(Docker.class);
+		folderContainer = new BeanContainer<String, Folder>(Folder.class);
+		
+		// set id resolvers
+		dockerContainer.setBeanIdProperty("name");
+		folderContainer.setBeanIdProperty("directory");
+		
+		try {
+			// validate and get data, if validation fails commitException is thrown
+			dockerBinder.commit();
+			
+			// after successful validation add data to its container
+			dockerContainer.addBean(dockerBinder.getItemDataSource().getBean());
+			
+		} catch (CommitException e) {
+			Notification.show("Something is wrong with container configurations! :(",
+					Notification.Type.WARNING_MESSAGE);
+		}
+		
+		// same process as above
+		try {
+			folderBinder.commit();
+			folderContainer.addBean(folderBinder.getItemDataSource().getBean());
+			
+		} catch (CommitException e) {
+			Notification.show("Something is wrong with directory! :(",
+					Notification.Type.WARNING_MESSAGE);
+		}
+		
+	}
+
 
 	/**
 	 * Creates advanced button and it's functions and adds to main layout
@@ -131,6 +187,8 @@ public class AppsUI extends UI {
 			if (advancedButton.getIcon().equals(FontAwesome.CARET_RIGHT)) {
 				advancedButton.setIcon(FontAwesome.CARET_DOWN);
 				envLayout.addComponent(env);
+				dockerBinder = env.getDockerBinder();
+				folderBinder = env.getFolderBinder();
 			} else {
 				advancedButton.setIcon(FontAwesome.CARET_RIGHT);
 				envLayout.removeComponent(env);
@@ -157,8 +215,6 @@ public class AppsUI extends UI {
 		Button addOSButton = new Button("Add OS package...");
 		AddRepoWindow repoWindow = new AddRepoWindow();
 		AddOSWindow osWindow = new AddOSWindow();
-		// create container for the list of OS packages
-		BeanContainer<String, OSPackage> container;
 		
 		addRepoButton.addClickListener( e -> {
 			repoWindow.setHeight("350");
@@ -172,7 +228,7 @@ public class AppsUI extends UI {
 		});
 		
 		// get container with OS packages
-		container = osWindow.getContainer();
+		osPackageContainer = osWindow.getContainer();
 		
 		gitAndOsBtnsLayout.addComponents(addRepoButton, addOSButton);
 		gitAndOsBtnsLayout.setSpacing(true);
