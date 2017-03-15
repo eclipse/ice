@@ -121,10 +121,10 @@ public class DockerPTPSyncProjectLauncherImpl extends DockerProjectLauncherImpl
 
 			// Set up the Host Service
 			IRemoteConnectionHostService service = workingCopy.getService(IRemoteConnectionHostService.class);
-			service.setUsePassword(true);
+			service.setUsePassword(false);
 			service.setHostname("localhost");
-			service.setPassword("password");
-			service.setUsername("root");
+//			service.setPassword("password");
+			service.setUsername(System.getProperty("user.name"));
 			service.setPort(port);
 
 			// Create the new IRemoteConnection
@@ -280,10 +280,10 @@ public class DockerPTPSyncProjectLauncherImpl extends DockerProjectLauncherImpl
 			IRemoteConnectionWorkingCopy copy = conn.getWorkingCopy();
 			IRemoteConnectionHostService hostService = copy.getService(IRemoteConnectionHostService.class);
 			hostService.setPort(port);
-			hostService.setUsePassword(true);
+			hostService.setUsePassword(false);
 			hostService.setHostname("localhost");
-			hostService.setPassword("password");
-			hostService.setUsername("root");
+//			hostService.setPassword("password");
+			hostService.setUsername(System.getProperty("user.name"));
 			copy.setName("Docker Host - localhost:" + port);
 			conn = copy.save();
 			config.setConnection(conn);

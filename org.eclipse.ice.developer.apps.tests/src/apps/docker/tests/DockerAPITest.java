@@ -9,7 +9,6 @@ import org.apache.commons.io.FileUtils;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
-
 import apps.docker.DockerAPI;
 import apps.docker.DockerFactory;
 
@@ -30,6 +29,9 @@ import junit.textui.TestRunner;
  *   <li>{@link apps.docker.DockerAPI#deleteContainer(java.lang.String) <em>Delete Container</em>}</li>
  *   <li>{@link apps.docker.DockerAPI#deleteImage(java.lang.String) <em>Delete Image</em>}</li>
  *   <li>{@link apps.docker.DockerAPI#stopContainer(java.lang.String) <em>Stop Container</em>}</li>
+ *   <li>{@link apps.docker.DockerAPI#createContainerExecCommand(java.lang.String, java.lang.String[]) <em>Create Container Exec Command</em>}</li>
+ *   <li>{@link apps.docker.DockerAPI#pull(java.lang.String) <em>Pull</em>}</li>
+ *   <li>{@link apps.docker.DockerAPI#listAvailableImages() <em>List Available Images</em>}</li>
  * </ul>
  * </p>
  * @generated
@@ -220,6 +222,45 @@ public class DockerAPITest extends TestCase {
 	 * @generated
 	 */
 	public void testStopContainer__String() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.docker.DockerAPI#createContainerExecCommand(java.lang.String, java.lang.String[]) <em>Create Container Exec Command</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.docker.DockerAPI#createContainerExecCommand(java.lang.String, java.lang.String[])
+	 * @generated
+	 */
+	public void testCreateContainerExecCommand__String_String() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.docker.DockerAPI#pull(java.lang.String) <em>Pull</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.docker.DockerAPI#pull(java.lang.String)
+	 * @generated
+	 */
+	public void testPull__String() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.docker.DockerAPI#listAvailableImages() <em>List Available Images</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.docker.DockerAPI#listAvailableImages()
+	 * @generated
+	 */
+	public void testListAvailableImages() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		fail();

@@ -152,7 +152,7 @@ public class ContainerConfigurationImpl extends MinimalEObjectImpl.Container imp
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ContainerConfigurationImpl() {
+	protected ContainerConfigurationImpl() {
 		super();
 	}
 

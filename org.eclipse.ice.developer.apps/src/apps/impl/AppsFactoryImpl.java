@@ -13,6 +13,7 @@ import apps.PackageType;
 import apps.SourcePackage;
 import apps.SpackDependency;
 import apps.SpackPackage;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
@@ -90,6 +91,8 @@ public class AppsFactoryImpl extends EFactoryImpl implements AppsFactory {
 				return createPackageTypeFromString(eDataType, initialValue);
 			case AppsPackage.ENVIRONMENT_STATE:
 				return createEnvironmentStateFromString(eDataType, initialValue);
+			case AppsPackage.ENVIRONMENT_LIST:
+				return createEnvironmentListFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -107,6 +110,8 @@ public class AppsFactoryImpl extends EFactoryImpl implements AppsFactory {
 				return convertPackageTypeToString(eDataType, instanceValue);
 			case AppsPackage.ENVIRONMENT_STATE:
 				return convertEnvironmentStateToString(eDataType, instanceValue);
+			case AppsPackage.ENVIRONMENT_LIST:
+				return convertEnvironmentListToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -220,6 +225,25 @@ public class AppsFactoryImpl extends EFactoryImpl implements AppsFactory {
 	 */
 	public String convertEnvironmentStateToString(EDataType eDataType, Object instanceValue) {
 		return instanceValue == null ? null : instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@SuppressWarnings("unchecked")
+	public EList<Object> createEnvironmentListFromString(EDataType eDataType, String initialValue) {
+		return (EList<Object>)super.createFromString(initialValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertEnvironmentListToString(EDataType eDataType, Object instanceValue) {
+		return super.convertToString(instanceValue);
 	}
 
 	/**

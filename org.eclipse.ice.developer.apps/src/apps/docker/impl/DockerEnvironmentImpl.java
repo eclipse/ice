@@ -7,6 +7,7 @@ import apps.EnvironmentState;
 import apps.OSPackage;
 import apps.ProjectLauncher;
 import apps.SourcePackage;
+import apps.SpackPackage;
 import apps.docker.ContainerConfiguration;
 import apps.docker.DockerAPI;
 import apps.docker.DockerEnvironment;
@@ -384,11 +385,13 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	public NotificationChain basicSetConsole(EnvironmentConsole newConsole, NotificationChain msgs) {
 		EnvironmentConsole oldConsole = console;
 		console = newConsole;
+		if (docker != null) {
+			docker.setEnvironmentConsole(console);
+		}
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, DockerPackage.DOCKER_ENVIRONMENT__CONSOLE, oldConsole, newConsole);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
@@ -522,19 +525,47 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 */
+	public String execute(String imageName, String[] command) {
+		return ((DockerAPIImpl)docker).createContainerExecCommand(imageName, command);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 */
+	public boolean hasDocker() {
+		return docker != null;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void pullImage(String imageName) {
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 */
 	public boolean build() {
 		docker.setEnvironmentConsole(console);
 		// Create the build Dockerfile from the
 		// given Environment data.
-		dockerfile = "from mccaskey/base-fedora-gcc6\n";
-		String runSpackCommand = "";//run /bin/bash -c \"source /root/.bashrc && spack compiler find && ";
-		String runPrimaryApp = "run git clone --recursive ";
+		dockerfile = "from eclipseice/base-fedora\n";
+		String runSpackCommand = "run /bin/bash -c \"source /root/.bashrc && spack compiler find && ";
+		String initialSpackCmd = runSpackCommand;
+		String runPrimaryApp = primaryApp != null ? "run git clone --recursive " : "";
 		String runOSPkgInstaller = "run " + (os == "fedora" ? "dnf install -y " : "apt-get install -y ");
 		
 		// Loop over the dependent spack packages
 		// and create run commands for the Dockerfile
 		for (apps.Package pkg : dependentPackages) {
-			/*if (pkg instanceof SpackPackage) {
+			if (pkg instanceof SpackPackage) {
 				SpackPackage spkg = (SpackPackage) pkg;
 
 				String spackCommand = "spack install --fake " + pkg.getName() + " ";
@@ -543,20 +574,28 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 				}
 				spackCommand += "%" + spkg.getCompiler();
 				runSpackCommand += spackCommand + " && ";
-			} else */if (pkg instanceof OSPackage) {
+			} else if (pkg instanceof OSPackage) {
 				runOSPkgInstaller += pkg.getName() + " ";
 			}
 		}
-//		runSpackCommand = runSpackCommand.substring(0, runSpackCommand.length() - 3) + "\"\n";
-//		runOSPkgInstaller = runOSPkgInstaller.substring(0, runOSPkgInstaller.length() - 3) + "\n";
-
+		
+		boolean noSpackPackages = false;
+		if (runSpackCommand.equals(initialSpackCmd)) {
+			noSpackPackages = true;
+		}
+		
+		if (!noSpackPackages) {
+			runSpackCommand = runSpackCommand.substring(0, runSpackCommand.length() - 3) + "\"\n";
+		}
 		// Add a git clone command for the primary app if
 		// this is to be a Development Environment
-		runPrimaryApp += "-b " + ((SourcePackage) primaryApp).getBranch() + " "
-				+ ((SourcePackage) primaryApp).getRepoURL() + " " + primaryApp.getName() + "\n";
-
+		if (primaryApp != null) {
+			runPrimaryApp += "-b " + ((SourcePackage) primaryApp).getBranch() + " "
+					+ ((SourcePackage) primaryApp).getRepoURL() + " /projects/" + primaryApp.getName() + "\n";
+		}
+		
 		// Add to the Dockerfile contents
-		dockerfile += runSpackCommand + runOSPkgInstaller + "\n" + runPrimaryApp;
+		dockerfile += (!noSpackPackages ? runSpackCommand : "") + runOSPkgInstaller + "\n" + runPrimaryApp;
 
 		console.print("Current DockerFile Contents:\n" + dockerfile);
 
@@ -818,6 +857,13 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	@Override
 	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
 		switch (operationID) {
+			case DockerPackage.DOCKER_ENVIRONMENT___EXECUTE__STRING_STRING:
+				return execute((String)arguments.get(0), (String[])arguments.get(1));
+			case DockerPackage.DOCKER_ENVIRONMENT___HAS_DOCKER:
+				return hasDocker();
+			case DockerPackage.DOCKER_ENVIRONMENT___PULL_IMAGE__STRING:
+				pullImage((String)arguments.get(0));
+				return null;
 			case DockerPackage.DOCKER_ENVIRONMENT___BUILD:
 				return build();
 			case DockerPackage.DOCKER_ENVIRONMENT___CONNECT:

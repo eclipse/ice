@@ -5,6 +5,7 @@ package apps.docker.impl;
 import apps.docker.*;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 
@@ -70,6 +71,36 @@ public class DockerFactoryImpl extends EFactoryImpl implements DockerFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
+	public Object createFromString(EDataType eDataType, String initialValue) {
+		switch (eDataType.getClassifierID()) {
+			case DockerPackage.COMMAND_LIST:
+				return createCommandListFromString(eDataType, initialValue);
+			default:
+				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+		}
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String convertToString(EDataType eDataType, Object instanceValue) {
+		switch (eDataType.getClassifierID()) {
+			case DockerPackage.COMMAND_LIST:
+				return convertCommandListToString(eDataType, instanceValue);
+			default:
+				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+		}
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public DockerEnvironment createDockerEnvironment() {
 		DockerEnvironmentImpl dockerEnvironment = new DockerEnvironmentImpl();
 		return dockerEnvironment;
@@ -78,10 +109,15 @@ public class DockerFactoryImpl extends EFactoryImpl implements DockerFactory {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	public DockerAPI createDockerAPI() {
-		DockerAPIImpl dockerAPI = new DockerAPIImpl();
+		DockerAPIImpl dockerAPI = null;
+		try {
+			dockerAPI = new DockerAPIImpl();
+		} catch (Exception e) {
+			e.printStackTrace();
+			dockerAPI = null;
+		}
 		return dockerAPI;
 	}
 
@@ -103,6 +139,24 @@ public class DockerFactoryImpl extends EFactoryImpl implements DockerFactory {
 	public DockerProjectLauncher createDockerProjectLauncher() {
 		DockerProjectLauncherImpl dockerProjectLauncher = new DockerProjectLauncherImpl();
 		return dockerProjectLauncher;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String[] createCommandListFromString(EDataType eDataType, String initialValue) {
+		return (String[])super.createFromString(initialValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertCommandListToString(EDataType eDataType, Object instanceValue) {
+		return super.convertToString(instanceValue);
 	}
 
 	/**

@@ -11,6 +11,8 @@ import apps.EnvironmentState;
 import apps.EnvironmentStorage;
 import apps.IEnvironment;
 import apps.docker.DockerFactory;
+import apps.docker.impl.DockerEnvironmentImpl;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -427,12 +429,23 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
 	 */
 	public EList<String> listAvailableSpackPackages() {
-		// TODO: implement this method
-		// Ensure that you remove @generated or mark it @generated NOT
-		throw new UnsupportedOperationException();
+		// FIXME For now we only check with Docker
+		EList<String> packages = new BasicEList<String>();
+		DockerEnvironmentImpl dockEnv = (DockerEnvironmentImpl) DockerFactory.eINSTANCE.createDockerEnvironment();
+		dockEnv.setConsole(console);
+		if (dockEnv.hasDocker()) {
+			String stdOut = dockEnv.execute("eclipseice/base-fedora",
+					new String[] { "/bin/bash", "-c", "source /root/.bashrc && spack list" });
+			for (String s : stdOut.split("\n")) {
+				if (!s.contains("==> Added") && !s.contains("gcc@6.3.1") && !s.trim().isEmpty()) {
+					packages.add(s);
+				}
+			}
+		}
+		
+		return packages;
 	}
 
 	/**
@@ -531,9 +544,10 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 */
-	public void stoppRunningEnvironments() {
+	public void stopRunningEnvironments() {
 		for (IEnvironment e : environments.values()) {
 			if (e.getState() == EnvironmentState.RUNNING) {
 				e.stop();
@@ -678,8 +692,8 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 			case AppsPackage.ENVIRONMENT_MANAGER___START_ALL_STOPPED_ENVIRONMENTS:
 				startAllStoppedEnvironments();
 				return null;
-			case AppsPackage.ENVIRONMENT_MANAGER___STOPP_RUNNING_ENVIRONMENTS:
-				stoppRunningEnvironments();
+			case AppsPackage.ENVIRONMENT_MANAGER___STOP_RUNNING_ENVIRONMENTS:
+				stopRunningEnvironments();
 				return null;
 			case AppsPackage.ENVIRONMENT_MANAGER___DELETE_ENVIRONMENT__STRING:
 				deleteEnvironment((String)arguments.get(0));
