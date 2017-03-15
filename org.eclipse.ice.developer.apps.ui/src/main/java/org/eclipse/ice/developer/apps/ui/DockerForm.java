@@ -19,7 +19,8 @@ import apps.docker.impl.ContainerConfigurationImpl;
  *
  */
 public class DockerForm extends HorizontalLayout{
-	private BeanFieldGroup<ContainerConfigurationImpl> dockerFieldGroup;
+ 
+	private BeanFieldGroup<Docker> dockerFieldGroup;
 	private VerticalLayout vLayout = new VerticalLayout();
 	private Label titleLabel = new Label();
 	
@@ -29,11 +30,13 @@ public class DockerForm extends HorizontalLayout{
 	@PropertyId("ports")
 	private TextField portsTxtField = new TextField();
 	
-	@PropertyId("volumesConfig")
+	@PropertyId("volumes")
 	private TextField volumesTxtField = new TextField();
 	
 	@PropertyId("ephemeral")
 	private CheckBox ephemeralChBox = new CheckBox();
+	
+	@PropertyId("commands")
 	private TextArea dockerCommandsTxtArea = new TextArea();
 	
 	
@@ -43,17 +46,17 @@ public class DockerForm extends HorizontalLayout{
 	public DockerForm() {
 		
 		// binding fields annotated '@PropertyId' to data model
-		//this.dockerFieldGroup = new BeanFieldGroup<ContainerConfigurationImpl>(ContainerConfigurationImpl.class);
-		//this.dockerFieldGroup.setItemDataSource(new ContainerConfigurationImpl());
-		//this.dockerFieldGroup.bindMemberFields(this);
-		//this.dockerFieldGroup.setBuffered(true);
+		dockerFieldGroup = new BeanFieldGroup<Docker>(Docker.class);
+		//dockerFieldGroup.setItemDataSource(new Docker());
+		dockerFieldGroup.bindMemberFields(this);
+		dockerFieldGroup.setBuffered(true);
 		
-		this.titleLabel.setCaption("Container Configuration:");
-		this.nameTxtField.setCaption("Name:");
-		this.portsTxtField.setCaption("Ports:");
-		this.volumesTxtField.setCaption("Volumes:");
-		this.ephemeralChBox.setCaption("Ephemeral");
-		this.dockerCommandsTxtArea.setCaption("Additional Docker file settings");
+		titleLabel.setCaption("Container Configuration:");
+		nameTxtField.setCaption("Name:");
+		portsTxtField.setCaption("Ports:");
+		volumesTxtField.setCaption("Volumes:");
+		ephemeralChBox.setCaption("Ephemeral");
+		dockerCommandsTxtArea.setCaption("Additional Docker file settings");
 		
 		vLayout.addComponents(titleLabel, nameTxtField, portsTxtField, volumesTxtField, ephemeralChBox);
 		addComponents(vLayout, dockerCommandsTxtArea);

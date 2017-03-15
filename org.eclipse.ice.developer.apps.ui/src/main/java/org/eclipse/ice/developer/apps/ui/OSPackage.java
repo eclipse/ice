@@ -8,12 +8,21 @@ package org.eclipse.ice.developer.apps.ui;
  *
  */
 public class OSPackage {
+	private String name;
 
 	/**
 	 * 
 	 */
 	public OSPackage() {
-		// TODO Auto-generated constructor stub
+		this.name = "";  // if not set to empty explicitly, 'null' will show in its bound field
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

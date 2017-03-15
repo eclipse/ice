@@ -1,14 +1,6 @@
 package org.eclipse.ice.developer.apps.ui;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,18 +9,16 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
-import org.eclipse.core.runtime.FileLocator;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.util.BeanContainer;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
@@ -47,6 +37,9 @@ import com.vaadin.ui.VerticalLayout;
 import apps.AppsFactory;
 import apps.EnvironmentManager;
 import apps.IEnvironment;
+import apps.docker.ContainerConfiguration;
+import apps.docker.DockerEnvironment;
+import apps.docker.DockerFactory;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser
@@ -79,17 +72,23 @@ public class AppsUI extends UI {
 	 * The main layout of the app
 	 */
 	private VerticalLayout mainLayout;
-
+	
+	BeanFieldGroup<SpackPackage> binder = new BeanFieldGroup<SpackPackage>(SpackPackage.class);
+	
 	@Override
     protected void init(VaadinRequest vaadinRequest) {
-    	EnvironmentManager factory = AppsFactory.eINSTANCE.createEnvironmentManager();
-    	IEnvironment environment = factory.createEmpty("Docker");
+		
+		
+    	EnvironmentManager manager = AppsFactory.eINSTANCE.createEnvironmentManager();
+    	IEnvironment environment = manager.createEmpty("Docker");
     	
     	buildLayout();
     	addSpackPackagesLayout();
     	addOtherPackagesLayout();
     	addAdvancedView();
     	addValidateCancelButtons();
+    	
+    	manager.persistEnvironments();
     }
 
 	
@@ -156,7 +155,6 @@ public class AppsUI extends UI {
 		Button addOSButton = new Button("Add OS package...");
 		AddRepoWindow repoWindow = new AddRepoWindow();
 		AddOSWindow osWindow = new AddOSWindow();
-		
 		
 		addRepoButton.addClickListener( e -> {
 			repoWindow.setHeight("350");
@@ -259,9 +257,9 @@ public class AppsUI extends UI {
 	 */
 	private void buildLayout() {
 		 mainLayout = new VerticalLayout();
-		 setContent(mainLayout);
 		 mainLayout.setMargin(true);
 		 mainLayout.setSpacing(true);
+		 setContent(mainLayout);
 	}
 
 	@WebServlet(urlPatterns = "/*", name = "AppsUIServlet", asyncSupported = true)
