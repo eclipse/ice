@@ -36,7 +36,8 @@ public class EnvironmentForm extends HorizontalLayout {
 		vLayout.addComponents(titleLabel, installTypeOptGroup);
 		vLayout.setMargin(new MarginInfo(false,true,false,true));
 		vLayout.setSpacing(true);
-		addComponents(vLayout);
+		addComponents(vLayout, dockerView);
+		
 		installTypeOptGroup.addValueChangeListener( e -> {
 			if (this.installTypeOptGroup.getValue().equals("Docker")) {
 				if (folderView.isVisible()) {
