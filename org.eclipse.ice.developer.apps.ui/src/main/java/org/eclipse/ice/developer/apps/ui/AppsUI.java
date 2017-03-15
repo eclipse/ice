@@ -73,14 +73,14 @@ public class AppsUI extends UI {
 	 */
 	private VerticalLayout mainLayout;
 	
-	BeanFieldGroup<SpackPackage> binder = new BeanFieldGroup<SpackPackage>(SpackPackage.class);
+	//BeanFieldGroup<SpackPackage> binder = new BeanFieldGroup<SpackPackage>(SpackPackage.class);
 	
 	@Override
     protected void init(VaadinRequest vaadinRequest) {
 		
 		
-    	EnvironmentManager manager = AppsFactory.eINSTANCE.createEnvironmentManager();
-    	IEnvironment environment = manager.createEmpty("Docker");
+    	//EnvironmentManager manager = AppsFactory.eINSTANCE.createEnvironmentManager();
+    	//IEnvironment environment = manager.createEmpty("Docker");
     	
     	buildLayout();
     	addSpackPackagesLayout();
@@ -88,7 +88,9 @@ public class AppsUI extends UI {
     	addAdvancedView();
     	addValidateCancelButtons();
     	
-    	manager.persistEnvironments();
+    	
+    	
+    	//manager.persistEnvironments();
     }
 
 	
@@ -155,6 +157,8 @@ public class AppsUI extends UI {
 		Button addOSButton = new Button("Add OS package...");
 		AddRepoWindow repoWindow = new AddRepoWindow();
 		AddOSWindow osWindow = new AddOSWindow();
+		// create container for the list of OS packages
+		BeanContainer<String, OSPackage> container;
 		
 		addRepoButton.addClickListener( e -> {
 			repoWindow.setHeight("350");
@@ -167,6 +171,8 @@ public class AppsUI extends UI {
 			addWindow(osWindow);
 		});
 		
+		// get container with OS packages
+		container = osWindow.getContainer();
 		
 		gitAndOsBtnsLayout.addComponents(addRepoButton, addOSButton);
 		gitAndOsBtnsLayout.setSpacing(true);

@@ -150,4 +150,12 @@ public class AddOSWindow extends Window {
 		// TODO Auto-generated constructor stub
 	}
 
+	
+	/**
+	 * @return container with beans if any
+	 */
+	public BeanContainer<String, OSPackage> getContainer() {
+		return container;
+	}
+
 }
