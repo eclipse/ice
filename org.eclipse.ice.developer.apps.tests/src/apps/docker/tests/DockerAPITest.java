@@ -6,13 +6,9 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.emf.common.util.EList;
-
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
-
-import apps.AppsFactory;
 import apps.docker.DockerAPI;
 import apps.docker.DockerFactory;
 
@@ -252,8 +248,9 @@ public class DockerAPITest extends TestCase {
 	 * @generated
 	 */
 	public void testPull__String() {
-		fixture.setEnvironmentConsole(AppsFactory.eINSTANCE.createEnvironmentConsole());
-		fixture.pull("eclipseice/base-fedora");
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
 	}
 
 	/**
@@ -264,10 +261,9 @@ public class DockerAPITest extends TestCase {
 	 * @generated
 	 */
 	public void testListAvailableImages() {
-		EList<String> images = fixture.listAvailableImages();
-		for (String s : images) {
-			System.out.println(s);
-		}
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
 	}
 
 } //DockerAPITest

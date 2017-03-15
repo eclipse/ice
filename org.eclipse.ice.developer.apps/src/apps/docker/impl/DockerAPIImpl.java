@@ -10,7 +10,6 @@ import apps.docker.DockerPackage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -26,10 +25,9 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
-import com.spotify.docker.client.AnsiProgressHandler;
+import com.google.common.collect.ImmutableList;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
-import com.spotify.docker.client.EventStream;
 import com.spotify.docker.client.LogStream;
 import com.spotify.docker.client.ProgressHandler;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
@@ -37,7 +35,6 @@ import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ContainerInfo;
-import com.spotify.docker.client.messages.Event;
 import com.spotify.docker.client.messages.ExecCreation;
 import com.spotify.docker.client.messages.HostConfig;
 import com.spotify.docker.client.messages.Image;
@@ -52,6 +49,7 @@ import com.spotify.docker.client.messages.ProgressMessage;
  * </p>
  * <ul>
  *   <li>{@link apps.docker.impl.DockerAPIImpl#getContainerRemotePort <em>Container Remote Port</em>}</li>
+ *   <li>{@link apps.docker.impl.DockerAPIImpl#getSshContainerId <em>Ssh Container Id</em>}</li>
  * </ul>
  *
  * @generated
@@ -78,11 +76,32 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 	 */
 	protected int containerRemotePort = CONTAINER_REMOTE_PORT_EDEFAULT;
 
+	/**
+	 * The default value of the '{@link #getSshContainerId() <em>Ssh Container Id</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getSshContainerId()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String SSH_CONTAINER_ID_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getSshContainerId() <em>Ssh Container Id</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getSshContainerId()
+	 * @generated
+	 * @ordered
+	 */
+	protected String sshContainerId = SSH_CONTAINER_ID_EDEFAULT;
+
 	private DockerClient dockerClient;
 
 	private boolean imageBuildSuccess = true;
 
 	private EnvironmentConsole console;
+	
 	
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -130,6 +149,27 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 	}
 
 	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getSshContainerId() {
+		return sshContainerId;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setSshContainerId(String newSshContainerId) {
+		String oldSshContainerId = sshContainerId;
+		sshContainerId = newSshContainerId;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DockerPackage.DOCKER_API__SSH_CONTAINER_ID, oldSshContainerId, sshContainerId));
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 */
 	public boolean buildImage(String buildDir, String imagename) {
@@ -170,42 +210,30 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 	public boolean createContainer(String imageName, ContainerConfiguration config) {
 		// Local Declarations
 		String port = "";
-		List<String> envs = new ArrayList<String>();
-		final Map<String, List<PortBinding>> portBindings = new HashMap<String, List<PortBinding>>();
-		List<PortBinding> randomPort = new ArrayList<>();
-		randomPort.add(PortBinding.randomPort("0.0.0.0"));
-		portBindings.put("22", randomPort);
 
 		if (dockerClient != null) {
 
-			HostConfig hostConfig = HostConfig.builder().portBindings(portBindings).build();
 
 			// Create container with exposed ports
-			ContainerConfig containerConfig = ContainerConfig.builder().image(imageName).hostConfig(hostConfig)
-					.tty(true).attachStdout(true).attachStderr(true).exposedPorts(new String[] { "22" })
+			ContainerConfig containerConfig = ContainerConfig.builder().image(imageName)
+					.tty(true).attachStdout(true).attachStderr(true).cmd("bash")
 					.domainname("HELLO").build();
 
-			ContainerInfo info = null;
 			try {
 				ContainerCreation creation;
 				creation = dockerClient.createContainer(containerConfig, config.getName());
 				String containerId = creation.id();
 				config.setId(containerId);
 				dockerClient.startContainer(containerId);
-
-				// Query the info on the new container.
-				info = dockerClient.inspectContainer(containerId);
-
 			} catch (DockerException | InterruptedException e) {
 				e.printStackTrace();
 				return false;
 			}
 
 			// Get the dynamically assigned port
-			port = info.networkSettings().ports().get("22/tcp").get(0).hostPort();
-			containerRemotePort = Integer.valueOf(port);
-			config.setRemoteSSHPort(Integer.valueOf(port));
-			console.print("Container launched with name " + config.getName() + " with remote SSH port " + port);
+			containerRemotePort = configureSSH(config.getName());
+			config.setRemoteSSHPort(containerRemotePort);
+			console.print("Container launched with name " + config.getName() + " with remote SSH port " + containerRemotePort);
 			return true;
 		}
 
@@ -213,14 +241,61 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 
 	}
 
+	
+	private int configureSSH(String containerNameToAddSSH) {
+		if (dockerClient != null) {
+			// Local Declarations
+			String port = "";
+			final Map<String, List<PortBinding>> portBindings = new HashMap<String, List<PortBinding>>();
+			List<PortBinding> randomPort = new ArrayList<>();
+			randomPort.add(PortBinding.randomPort("0.0.0.0"));
+			portBindings.put("22", randomPort);
+			List<String> binds = ImmutableList.of("/var/run/docker.sock:/var/run/docker.sock");
+			HostConfig hostConfig = HostConfig.builder().portBindings(portBindings).binds(binds).build();
+			List<String> envs = new ArrayList<String>();
+			envs.add("CONTAINER="+containerNameToAddSSH);
+			envs.add("AUTH_MECHANISM=noAuth");
+			
+			String imageName = "jeroenpeeters/docker-ssh:latest"; 
+
+			// Create container with exposed ports
+			ContainerConfig containerConfig = ContainerConfig.builder().image(imageName).hostConfig(hostConfig)
+					.tty(true).attachStdout(true).attachStderr(true).exposedPorts(new String[] { "22" }).env(envs)
+					.domainname("HELLO").build();
+
+			ContainerInfo info = null;
+			try {
+				ContainerCreation creation;
+				creation = dockerClient.createContainer(containerConfig, "ssh-"+containerNameToAddSSH);
+				sshContainerId = creation.id();
+				dockerClient.startContainer(sshContainerId);
+
+				// Query the info on the new container.
+				info = dockerClient.inspectContainer(sshContainerId);
+
+			} catch (DockerException | InterruptedException e) {
+				e.printStackTrace();
+				return -1;
+			}
+
+			// Get the dynamically assigned port
+			port = info.networkSettings().ports().get("22/tcp").get(0).hostPort();
+			containerRemotePort = Integer.valueOf(port);
+			return containerRemotePort;
+		}
+		
+		return -1;
+	}
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 */
 	public boolean connectToExistingContainer(String id) {
 		try {
 			dockerClient.startContainer(id);
+			dockerClient.startContainer(sshContainerId);
+			
 			// Query the info on the new container.
-			ContainerInfo info = dockerClient.inspectContainer(id);
+			ContainerInfo info = dockerClient.inspectContainer(sshContainerId);
 			// Get the dynamically assigned port
 			String port = info.networkSettings().ports().get("22/tcp").get(0).hostPort();
 			containerRemotePort = Integer.valueOf(port);
@@ -258,6 +333,7 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 		if (dockerClient != null) {
 			try {
 				dockerClient.stopContainer(id, 2);
+				dockerClient.stopContainer(sshContainerId, 2);
 			} catch (DockerException | InterruptedException e) {
 				e.printStackTrace();
 				return false;
@@ -276,15 +352,11 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 		if (dockerClient != null) {
 			ContainerConfiguration config = DockerFactory.eINSTANCE.createContainerConfiguration();
 			createContainer(imageName, config);
-			for (String s: command) {
-				System.out.println(s);
-			}
 			String id = config.getId();
 			LogStream output = null;
 			try {
 				final ExecCreation execCreation = dockerClient.execCreate(id, command,
 						DockerClient.ExecCreateParam.attachStdout(), DockerClient.ExecCreateParam.attachStderr());
-				System.out.println("Exec:\n" + execCreation.toString());
 				output = dockerClient.execStart(execCreation.id());
 			} catch (DockerException | InterruptedException e) {
 				e.printStackTrace();
@@ -374,6 +446,8 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 		switch (featureID) {
 			case DockerPackage.DOCKER_API__CONTAINER_REMOTE_PORT:
 				return getContainerRemotePort();
+			case DockerPackage.DOCKER_API__SSH_CONTAINER_ID:
+				return getSshContainerId();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -388,6 +462,9 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 		switch (featureID) {
 			case DockerPackage.DOCKER_API__CONTAINER_REMOTE_PORT:
 				setContainerRemotePort((Integer)newValue);
+				return;
+			case DockerPackage.DOCKER_API__SSH_CONTAINER_ID:
+				setSshContainerId((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -404,6 +481,9 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 			case DockerPackage.DOCKER_API__CONTAINER_REMOTE_PORT:
 				setContainerRemotePort(CONTAINER_REMOTE_PORT_EDEFAULT);
 				return;
+			case DockerPackage.DOCKER_API__SSH_CONTAINER_ID:
+				setSshContainerId(SSH_CONTAINER_ID_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -418,6 +498,8 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 		switch (featureID) {
 			case DockerPackage.DOCKER_API__CONTAINER_REMOTE_PORT:
 				return containerRemotePort != CONTAINER_REMOTE_PORT_EDEFAULT;
+			case DockerPackage.DOCKER_API__SSH_CONTAINER_ID:
+				return SSH_CONTAINER_ID_EDEFAULT == null ? sshContainerId != null : !SSH_CONTAINER_ID_EDEFAULT.equals(sshContainerId);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -430,6 +512,7 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 		if (dockerClient != null) {
 			try {
 				dockerClient.removeContainer(id);
+				dockerClient.removeContainer(sshContainerId);
 			} catch (DockerException | InterruptedException e) {
 				e.printStackTrace();
 				return false;
@@ -482,6 +565,8 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (containerRemotePort: ");
 		result.append(containerRemotePort);
+		result.append(", sshContainerId: ");
+		result.append(sshContainerId);
 		result.append(')');
 		return result.toString();
 	}

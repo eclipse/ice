@@ -21,6 +21,7 @@ import org.eclipse.emf.common.util.EList;
  * </p>
  * <ul>
  *   <li>{@link apps.docker.DockerAPI#getContainerRemotePort <em>Container Remote Port</em>}</li>
+ *   <li>{@link apps.docker.DockerAPI#getSshContainerId <em>Ssh Container Id</em>}</li>
  * </ul>
  *
  * @see apps.docker.DockerPackage#getDockerAPI()
@@ -53,6 +54,32 @@ public interface DockerAPI extends EObject {
 	 * @generated
 	 */
 	void setContainerRemotePort(int value);
+
+	/**
+	 * Returns the value of the '<em><b>Ssh Container Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Ssh Container Id</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Ssh Container Id</em>' attribute.
+	 * @see #setSshContainerId(String)
+	 * @see apps.docker.DockerPackage#getDockerAPI_SshContainerId()
+	 * @model
+	 * @generated
+	 */
+	String getSshContainerId();
+
+	/**
+	 * Sets the value of the '{@link apps.docker.DockerAPI#getSshContainerId <em>Ssh Container Id</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Ssh Container Id</em>' attribute.
+	 * @see #getSshContainerId()
+	 * @generated
+	 */
+	void setSshContainerId(String value);
 
 	/**
 	 * <!-- begin-user-doc -->

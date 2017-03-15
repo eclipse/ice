@@ -178,7 +178,8 @@ public class DockerEnvironmentTest extends TestCase {
 	 */
 	public void testBuild() {
 		String expectedFile = "from eclipseice/base-fedora\n"
-				+ "run /bin/bash -c \"spack compiler find && spack install cmake %gcc@6.3.1 && spack install llvm %gcc@6.3.1 \"\n"
+				+ "run /bin/bash -c \"source /root/.bashrc && spack compiler find && spack install --fake cmake %gcc@6.3.1 && spack install --fake llvm %gcc@6.3.1 \"\n"
+				+ "run dnf install -y gcc-gfortran \n"
 				+ "run git clone --recursive -b master https://github.com/ORNL-QCI/xacc xacc\n";
 		// Get a valid Environment
 		DockerEnvironment env = (DockerEnvironment) AppsFactory.eINSTANCE.createEnvironmentManager().create(jsonStr);
@@ -195,7 +196,7 @@ public class DockerEnvironmentTest extends TestCase {
 
 		assertTrue(env.build());
 		assertTrue(api.wasBuilt());
-		assertTrue(expectedFile.contentEquals(env.getDockerfile()));
+		assertEquals(expectedFile, env.getDockerfile());
 	}
 
 	/**

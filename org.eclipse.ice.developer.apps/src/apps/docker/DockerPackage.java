@@ -260,13 +260,22 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_API__CONTAINER_REMOTE_PORT = 0;
 
 	/**
+	 * The feature id for the '<em><b>Ssh Container Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_API__SSH_CONTAINER_ID = 1;
+
+	/**
 	 * The number of structural features of the '<em>API</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_API_FEATURE_COUNT = 1;
+	int DOCKER_API_FEATURE_COUNT = 2;
 
 	/**
 	 * The operation id for the '<em>Build Image</em>' operation.
@@ -627,6 +636,17 @@ public interface DockerPackage extends EPackage {
 	EAttribute getDockerAPI_ContainerRemotePort();
 
 	/**
+	 * Returns the meta object for the attribute '{@link apps.docker.DockerAPI#getSshContainerId <em>Ssh Container Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Ssh Container Id</em>'.
+	 * @see apps.docker.DockerAPI#getSshContainerId()
+	 * @see #getDockerAPI()
+	 * @generated
+	 */
+	EAttribute getDockerAPI_SshContainerId();
+
+	/**
 	 * Returns the meta object for the '{@link apps.docker.DockerAPI#buildImage(java.lang.String, java.lang.String) <em>Build Image</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -952,6 +972,14 @@ public interface DockerPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute DOCKER_API__CONTAINER_REMOTE_PORT = eINSTANCE.getDockerAPI_ContainerRemotePort();
+
+		/**
+		 * The meta object literal for the '<em><b>Ssh Container Id</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DOCKER_API__SSH_CONTAINER_ID = eINSTANCE.getDockerAPI_SshContainerId();
 
 		/**
 		 * The meta object literal for the '<em><b>Build Image</b></em>' operation.

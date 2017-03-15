@@ -226,6 +226,15 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getDockerAPI_SshContainerId() {
+		return (EAttribute)dockerAPIEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EOperation getDockerAPI__BuildImage__String_String() {
 		return dockerAPIEClass.getEOperations().get(0);
 	}
@@ -457,6 +466,7 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 
 		dockerAPIEClass = createEClass(DOCKER_API);
 		createEAttribute(dockerAPIEClass, DOCKER_API__CONTAINER_REMOTE_PORT);
+		createEAttribute(dockerAPIEClass, DOCKER_API__SSH_CONTAINER_ID);
 		createEOperation(dockerAPIEClass, DOCKER_API___BUILD_IMAGE__STRING_STRING);
 		createEOperation(dockerAPIEClass, DOCKER_API___CREATE_CONTAINER__STRING_CONTAINERCONFIGURATION);
 		createEOperation(dockerAPIEClass, DOCKER_API___CONNECT_TO_EXISTING_CONTAINER__STRING);
@@ -537,6 +547,7 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 
 		initEClass(dockerAPIEClass, DockerAPI.class, "DockerAPI", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getDockerAPI_ContainerRemotePort(), ecorePackage.getEInt(), "containerRemotePort", null, 0, 1, DockerAPI.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDockerAPI_SshContainerId(), ecorePackage.getEString(), "sshContainerId", null, 0, 1, DockerAPI.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		op = initEOperation(getDockerAPI__BuildImage__String_String(), theXMLTypePackage.getBoolean(), "buildImage", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "buildFile", 0, 1, IS_UNIQUE, IS_ORDERED);
