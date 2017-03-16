@@ -71,59 +71,59 @@ public class ICEAppStoreHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		manager = AppsFactory.eINSTANCE.createEnvironmentManager();
 		// Local Declarations
-//		Shell shell = HandlerUtil.getActiveWorkbenchWindow(event).getShell();
+		Shell shell = HandlerUtil.getActiveWorkbenchWindow(event).getShell();
+
+		// Create a new ForkStorkWizard and Dialog
+		final AppStoreWizard wizard = new AppStoreWizard();
+		WizardDialog dialog = new WizardDialog(shell, wizard);
+
+		// Open the dialog
+		if (dialog.open() != 0) {
+			return null;
+		}
+
+//		// Create the Job to be executed
+//		final Job job = new WorkspaceJob("Creating Environment") {
 //
-//		// Create a new ForkStorkWizard and Dialog
-//		final AppStoreWizard wizard = new AppStoreWizard();
-//		WizardDialog dialog = new WizardDialog(shell, wizard);
+//			@Override
+//			public IStatus runInWorkspace(IProgressMonitor monitor) {
+//				// Create the EnvironmentMangaer and set it up to use
+//				// the Eclipse IPreferences to store IEnvironments
+//				ICEAppStoreHandler.this.manager
+//						.setEnvironmentStorage(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentStorage());
+//				ICEAppStoreHandler.this.manager
+//						.setConsole(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentConsole());
 //
-//		// Open the dialog
-//		if (dialog.open() != 0) {
-//			return null;
-//		}
-
-		// Create the Job to be executed
-		final Job job = new WorkspaceJob("Creating Environment") {
-
-			@Override
-			public IStatus runInWorkspace(IProgressMonitor monitor) {
-				// Create the EnvironmentMangaer and set it up to use
-				// the Eclipse IPreferences to store IEnvironments
-				ICEAppStoreHandler.this.manager
-						.setEnvironmentStorage(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentStorage());
-				ICEAppStoreHandler.this.manager
-						.setConsole(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentConsole());
-
-				// Show view to get Json string
-				String jsonStr = "{\n" + "   \"General\": {\n" + "       \"name\": \"mccaskey/test_env\",\n"
-						+ "       \"type\": \"Docker\"\n" + "    },\n" + "    \"Application\": {\n"
-						+ "       \"type\": \"Source\",\n" + "       \"name\": \"xacc\",\n"
-						+ "       \"repoURL\": \"https://github.com/ORNL-QCI/xacc\",\n"
-						+ "       \"buildCommand\": \"cd xacc && mkdir build && cd build && cmake .. && make\"\n"
-						+ "     },\n" + "     \"Dependencies\": [\n" + "         {\n" + "           \"type\": \"OS\",\n"
-						+ "           \"name\": \"cmake\"\n" + "         },\n" + "         {\n"
-						+ "           \"type\": \"OS\",\n"
-						+ "           \"name\": \"https://github.com/ORNL-QCI/ScaffCC/releases/download/v2.0/scaffold-2.0-1.fc25.x86_64.rpm\"\n"
-						+ "         },\n" + "         {\n" + "           \"type\": \"OS\",\n"
-						+ "           \"name\": \"boost-mpich-devel\"\n" + "         },\n" + "         {\n"
-						+ "           \"type\": \"OS\",\n" + "           \"name\": \"mpich-devel\"\n" + "         }\n"
-						+ "      ],\n" + "      \"ContainerConfig\": {\n" + "         \"name\": \"xaccdev\",\n"
-						+ "         \"ephemeral\": true\n" + "      }\n" + "}";
-
-				IEnvironment environment = ICEAppStoreHandler.this.manager.create(jsonStr);
-				environment.setProjectlauncher(EclipseappsFactory.eINSTANCE.createDockerPTPSyncProjectLauncher());
-				if (!environment.build() || !environment.connect()) {
-					String message = "Could not build or connect to the environment:\n";
-					logger.error(message, new ExecutionException("Could not build or connect to the environment."));
-					new Status(IStatus.ERROR, "org.eclipse.ice.developer.action.ICEAppStoreHandler", 1, message, null);
-				}
-
-				ICEAppStoreHandler.this.manager.persistEnvironments();
-				return Status.OK_STATUS;
-			}
-		};
-
-		job.schedule();
+//				// Show view to get Json string
+//				String jsonStr = "{\n" + "   \"General\": {\n" + "       \"name\": \"mccaskey/test_env\",\n"
+//						+ "       \"type\": \"Docker\"\n" + "    },\n" + "    \"Application\": {\n"
+//						+ "       \"type\": \"Source\",\n" + "       \"name\": \"xacc\",\n"
+//						+ "       \"repoURL\": \"https://github.com/ORNL-QCI/xacc\",\n"
+//						+ "       \"buildCommand\": \"cd xacc && mkdir build && cd build && cmake .. && make\"\n"
+//						+ "     },\n" + "     \"Dependencies\": [\n" + "         {\n" + "           \"type\": \"OS\",\n"
+//						+ "           \"name\": \"cmake\"\n" + "         },\n" + "         {\n"
+//						+ "           \"type\": \"OS\",\n"
+//						+ "           \"name\": \"https://github.com/ORNL-QCI/ScaffCC/releases/download/v2.0/scaffold-2.0-1.fc25.x86_64.rpm\"\n"
+//						+ "         },\n" + "         {\n" + "           \"type\": \"OS\",\n"
+//						+ "           \"name\": \"boost-mpich-devel\"\n" + "         },\n" + "         {\n"
+//						+ "           \"type\": \"OS\",\n" + "           \"name\": \"mpich-devel\"\n" + "         }\n"
+//						+ "      ],\n" + "      \"ContainerConfig\": {\n" + "         \"name\": \"xaccdev\",\n"
+//						+ "         \"ephemeral\": true\n" + "      }\n" + "}";
+//
+//				IEnvironment environment = ICEAppStoreHandler.this.manager.create(jsonStr);
+//				environment.setProjectlauncher(EclipseappsFactory.eINSTANCE.createDockerPTPSyncProjectLauncher());
+//				if (!environment.build() || !environment.connect()) {
+//					String message = "Could not build or connect to the environment:\n";
+//					logger.error(message, new ExecutionException("Could not build or connect to the environment."));
+//					new Status(IStatus.ERROR, "org.eclipse.ice.developer.action.ICEAppStoreHandler", 1, message, null);
+//				}
+//
+//				ICEAppStoreHandler.this.manager.persistEnvironments();
+//				return Status.OK_STATUS;
+//			}
+//		};
+//
+//		job.schedule();
 
 		return null;
 	}
