@@ -27,6 +27,7 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
@@ -271,7 +272,7 @@ public class AppsUI extends UI {
 	}
 
 	/**
-	 * Creates Spack packages representation and add it to main view.
+	 * Creates Spack packages representation and adds it to main view.
 	 */
 	private void addSpackPackagesLayout() {
 		HorizontalLayout packagesLayout = new  HorizontalLayout();
@@ -282,45 +283,41 @@ public class AppsUI extends UI {
 		Panel pkgsDescrPanel = new Panel("Package(s) in basket:");
 		TextField searchTxtField = new TextField("Packages:");
 		
+		// get list of spack packages from docker
 		EList<String> spackPackages = manager.listAvailableSpackPackages();
-		
-    	searchTxtField.setWidth("100%");
-    	searchTxtField.setDescription("type filter text");
-    	searchTxtField.setInputPrompt("type filter text");
-    	
-    	String path = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
-    	
-		
-		// This is just a dummy list - it is empty for now. Don't use a data
-		// structure like this, use an EMF class! ~JJB
-		//List<Map<String, String>> spackPackages = new ArrayList<Map<String, String>>();
 
+		// iterate over every package and add it to the panel
 		for (String spackPackageName : spackPackages) {
-			HashSet<String> selectedPackages = new HashSet<String>();
-			final PackageListItem packageItem = new PackageListItem();
-			List lst = new LinkedList(); 
 			
+			// create layout for the package item
+			final PackageListItem packageItem = new PackageListItem();
+			
+			// set the name of the package to package item
 			packageItem.getPkgChBox().setCaption(spackPackageName);
 			
-			//pkg.getPkgDescrTxtField().setCaption((String) spackPackage.get("description"));
-			
+			// set a listener to checkbox of the package item
 			packageItem.getPkgChBox().addValueChangeListener(e -> {
 				
-				String checkBoxCaption = packageItem.getPkgChBox().getCaption();
-				Label pkgDescItem = new Label(checkBoxCaption);
 				boolean checkBoxChecked = packageItem.getPkgChBox().getValue();
+				String checkBoxCaption = packageItem.getPkgChBox().getCaption();
+
+				// if a package is selected, add it to basket
 				if (checkBoxChecked) {
-					selectedPackages.add(spackPackageName);
+					Label pkgDescItem = new Label();
+					pkgDescItem.setCaption(checkBoxCaption);
 					pkgDescrLayout.addComponent(pkgDescItem);
 
 				} else if (!checkBoxChecked) {
-					if (selectedPackages.contains(checkBoxCaption)) {
-						pkgDescrLayout.removeComponent(pkgDescItem);
-					}					
+					// if a package is deselected, remove it from the basket
+					findAndRemoveFromBasket(checkBoxCaption, pkgDescrLayout);
 				}
 			});
 			pkgPanelLayout.addComponent(packageItem);
 		}
+		
+		searchTxtField.setWidth("100%");
+		searchTxtField.setDescription("type filter text");
+		searchTxtField.setInputPrompt("type filter text");
 		
 		
     	pkgsListPanel.setContent(pkgPanelLayout);
@@ -345,6 +342,23 @@ public class AppsUI extends UI {
     	mainLayout.addComponent(packagesLayout);
 		
 	}
+
+	
+	/**
+	 * Deletes a package from the basket if it's there.
+	 * @param packageName name of the package
+	 * @param basket the layout (basket)
+	 */
+	private boolean findAndRemoveFromBasket(String packageName, VerticalLayout basket) {
+		for (Component label : basket) {
+			if (label.getCaption().equals(packageName)) {
+				basket.removeComponent(label);
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 	/**
 	 * Creates main layout for the app
