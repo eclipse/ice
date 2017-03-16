@@ -2284,10 +2284,6 @@
               <styles xmi:type="notation:FontStyle" xmi:id="_syYQkQN2Eeez3Lu6GXwI3g" fontColor="2697711" fontName=".SF NS Text" fontHeight="14"/>
               <layoutConstraint xmi:type="notation:Location" xmi:id="_syYQkgN2Eeez3Lu6GXwI3g"/>
             </children>
-            <children xmi:type="notation:Node" xmi:id="_Wa28AAm4EeeRPqn3MLlfMA" type="3010" element="_WavAMAm4EeeRPqn3MLlfMA">
-              <styles xmi:type="notation:FontStyle" xmi:id="_Wa28AQm4EeeRPqn3MLlfMA" fontColor="2697711" fontName=".SF NS Text" fontHeight="14"/>
-              <layoutConstraint xmi:type="notation:Location" xmi:id="_Wa28Agm4EeeRPqn3MLlfMA"/>
-            </children>
             <styles xmi:type="notation:SortingStyle" xmi:id="_siaGE_exEeaf9eElEk8R_g"/>
             <styles xmi:type="notation:FilteringStyle" xmi:id="_siaGFPexEeaf9eElEk8R_g"/>
           </children>
@@ -2688,15 +2684,6 @@
         <target xmi:type="ecore:EAttribute" href="apps.ecore#//docker/DockerAPI/containerRemotePort"/>
         <semanticElements xmi:type="ecore:EAttribute" href="apps.ecore#//docker/DockerAPI/containerRemotePort"/>
         <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_uCcxUAN2Eeez3Lu6GXwI3g" labelSize="14" labelAlignment="LEFT">
-          <customFeatures>labelSize</customFeatures>
-          <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']/@style"/>
-        </ownedStyle>
-        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']"/>
-      </ownedElements>
-      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_WavAMAm4EeeRPqn3MLlfMA" name="sshContainerId : EString" tooltipText="">
-        <target xmi:type="ecore:EAttribute" href="apps.ecore#//docker/DockerAPI/sshContainerId"/>
-        <semanticElements xmi:type="ecore:EAttribute" href="apps.ecore#//docker/DockerAPI/sshContainerId"/>
-        <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_Xbhu0Am4EeeRPqn3MLlfMA" labelSize="14" labelAlignment="LEFT">
           <customFeatures>labelSize</customFeatures>
           <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']/@style"/>
         </ownedStyle>
