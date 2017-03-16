@@ -137,7 +137,6 @@
       </genClasses>
       <genClasses ecoreClass="apps.ecore#//docker/DockerAPI">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//docker/DockerAPI/containerRemotePort"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//docker/DockerAPI/sshContainerId"/>
         <genOperations ecoreOperation="apps.ecore#//docker/DockerAPI/buildImage">
           <genParameters ecoreParameter="apps.ecore#//docker/DockerAPI/buildImage/buildFile"/>
           <genParameters ecoreParameter="apps.ecore#//docker/DockerAPI/buildImage/imagename"/>
