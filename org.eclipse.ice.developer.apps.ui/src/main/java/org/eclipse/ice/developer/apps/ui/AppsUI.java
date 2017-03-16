@@ -17,6 +17,7 @@ import org.osgi.service.http.NamespaceException;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanContainer;
@@ -95,19 +96,11 @@ public class AppsUI extends UI {
 	
 	@Override
     protected void init(VaadinRequest vaadinRequest) {
-		
-		
-    	//EnvironmentManager manager = AppsFactory.eINSTANCE.createEnvironmentManager();
-    	//IEnvironment environment = manager.createEmpty("Docker");
-    	
     	buildLayout();
     	addSpackPackagesLayout();
     	addOtherPackagesLayout();
     	addAdvancedView();
-    	addValidateCancelButtons();
-    	
-    	
-    	//manager.persistEnvironments();
+    	addValidateCancelButtons();    	
     }
 
 	
@@ -144,16 +137,12 @@ public class AppsUI extends UI {
 		dockerContainer = new BeanContainer<String, Docker>(Docker.class);
 		folderContainer = new BeanContainer<String, Folder>(Folder.class);
 		
-		// set id resolvers
-		dockerContainer.setBeanIdProperty("name");
-		folderContainer.setBeanIdProperty("directory");
-		
 		try {
 			// validate and get data, if validation fails commitException is thrown
 			dockerBinder.commit();
 			
 			// after successful validation add data to its container
-			dockerContainer.addBean(dockerBinder.getItemDataSource().getBean());
+			dockerContainer.addItem("containerId", dockerBinder.getItemDataSource().getBean());
 			
 		} catch (CommitException e) {
 			Notification.show("Something is wrong with container configurations! :(",
@@ -163,13 +152,51 @@ public class AppsUI extends UI {
 		// same process as above
 		try {
 			folderBinder.commit();
-			folderContainer.addBean(folderBinder.getItemDataSource().getBean());
-			
+			folderContainer.addItem("folderId", folderBinder.getItemDataSource().getBean());
 		} catch (CommitException e) {
 			Notification.show("Something is wrong with directory! :(",
 					Notification.Type.WARNING_MESSAGE);
 		}
-		
+    	
+    	persistData();
+	}
+
+
+	/**
+	 * Persist data entered by user
+	 */
+	private void persistData() {
+    	EnvironmentManager manager = AppsFactory.eINSTANCE.createEnvironmentManager();
+    	IEnvironment environment = manager.createEmpty("Docker");
+    	//environment.setName("");
+    	
+    	// Set primary app
+    	apps.Package primaryApp = AppsFactory.eINSTANCE.createSourcePackage();
+    	environment.setPrimaryApp(primaryApp);
+    	
+    	// OS packages
+    	apps.Package osPackage = AppsFactory.eINSTANCE.createOSPackage();
+    	for (Object beanId : osPackageContainer.getItemIds()) {
+    		Item bean = osPackageContainer.getItem(beanId);
+    		osPackage.setName((String) bean.getItemProperty("name").getValue());
+//    		p.setType();
+//    		p.setVersion();
+    		environment.getDependentPackages().add(osPackage);
+    	}
+    	
+    	// Source packages
+    	apps.Package sourcePackage = AppsFactory.eINSTANCE.createSourcePackage();
+    	sourcePackage.setName((String) sourcePackageContainer.getContainerProperty("sourceId", "link").getValue());
+
+    	// Container configurations (need to add 'additional commands' field)
+    	DockerEnvironment dockerEnv = (DockerEnvironment) environment;
+    	ContainerConfiguration config = DockerFactory.eINSTANCE.createContainerConfiguration();
+    	dockerEnv.setContainerConfiguration(config);
+    	config.setEphemeral((boolean) dockerContainer.getContainerProperty("containerId", "ephemeral").getValue());
+    	config.setName((String) dockerContainer.getContainerProperty("containerId", "name").getValue());
+    	config.setVolumesConfig((String) dockerContainer.getContainerProperty("containerId", "volumes").getValue());
+    	
+    	//manager.persistEnvironments();
 	}
 
 
@@ -229,6 +256,9 @@ public class AppsUI extends UI {
 		
 		// get container with OS packages
 		osPackageContainer = osWindow.getContainer();
+		
+		// get container with a source package
+		sourcePackageContainer = repoWindow.getContainer();
 		
 		gitAndOsBtnsLayout.addComponents(addRepoButton, addOSButton);
 		gitAndOsBtnsLayout.setSpacing(true);

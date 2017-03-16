@@ -3,11 +3,16 @@
  */
 package org.eclipse.ice.developer.apps.ui;
 
+import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.fieldgroup.PropertyId;
+import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
+import com.vaadin.data.util.BeanContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -17,32 +22,87 @@ import com.vaadin.ui.Window;
  *
  */
 public class AddRepoWindow extends Window {
+	private VerticalLayout vLayout;
+	private HorizontalLayout btnsLayout;
+	private Label captionLabel;
+	
+	@PropertyId("link")
+	private TextField uriTextField;
+	@PropertyId("branch")
+	private TextField branchTextField;
+	
+	private Button cancelButton;
+	private Button okButton;
+	
+	// create binder
+	private BeanFieldGroup<SourcePackage> binder;
 
+	// create container
+	private BeanContainer<String, SourcePackage> container;
+	
+	
 	/**
 	 * 
 	 */
 	public AddRepoWindow() {
 		super("Clone Git Repository");
 		center();
-		VerticalLayout vLayout = new VerticalLayout();
-		HorizontalLayout btnsLayout = new HorizontalLayout();
-		Label captionLabel = new Label("Specify location of the source repository:");
-		TextField uriTextField = new TextField("URI:");
-		TextField branchTextField = new TextField("Branch:");
-		Button cancelButton = new Button("Cancel", e -> {
+		vLayout = new VerticalLayout();
+		btnsLayout = new HorizontalLayout();
+		captionLabel = new Label("Specify location of the source repository:");
+		uriTextField = new TextField("URI:");
+		branchTextField = new TextField("Branch:");
+		
+		binder = new BeanFieldGroup<SourcePackage>(SourcePackage.class);
+		// create bean
+		binder.setItemDataSource(new SourcePackage());
+		// bind member field 'osTextField' to the OSPackage bean
+		binder.bindMemberFields(this);
+		// set the binder's buffer
+		binder.setBuffered(true);
+		// create container that will store beans
+		container = new BeanContainer<String, SourcePackage>(SourcePackage.class);
+		
+		cancelButton = new Button("Cancel", e -> {
 			close(); 
 			uriTextField.clear();
 			branchTextField.clear();
 			uriTextField.focus();
 		});
-		Button okButton = new Button("OK", e -> {
+		
+		okButton = new Button("OK", e -> {
+			
+			if (!uriTextField.getValue().isEmpty()) {
+				try {
+					// validate and get data
+					binder.commit();
+					// after successful validation add data to container
+					container.addItem("sourceId", binder.getItemDataSource().getBean());
+				} catch (CommitException e1) {
+					Notification.show("Something went wrong :(",
+							Notification.Type.WARNING_MESSAGE);
+				}
+			}
 			close();
 			uriTextField.clear();
 			branchTextField.clear();
 			uriTextField.focus();
 		});
+		
+		okButton.setEnabled(false);
+		okButton.setDescription("Specify at least one package source.");
 		uriTextField.setWidth("400px");
 		uriTextField.focus();
+		
+		uriTextField.addValueChangeListener( e -> {
+			if (!uriTextField.getValue().isEmpty()) {
+				// set 'ok' button enabled and update its tooltip
+				okButton.setEnabled(true);
+				okButton.setDescription("Add package to the basket.");
+			}
+			
+		});
+		
 		branchTextField.setWidth("400px");
 		cancelButton.setWidth("130px");
 		okButton.setWidth("130px");
@@ -60,21 +120,11 @@ public class AddRepoWindow extends Window {
 		setContent(vLayout);
 	}
 
-	/**
-	 * @param caption
-	 */
-	public AddRepoWindow(String caption) {
-		super(caption);
-		// TODO Auto-generated constructor stub
-	}
 
 	/**
-	 * @param caption
-	 * @param content
+	 * @return container with beans if any
 	 */
-	public AddRepoWindow(String caption, Component content) {
-		super(caption, content);
-		// TODO Auto-generated constructor stub
+	public BeanContainer<String, SourcePackage> getContainer() {
+		return container;
 	}
-
 }

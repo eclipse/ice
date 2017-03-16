@@ -46,6 +46,7 @@ Import-Package: apps,
  javax.servlet.jsp.el,
  javax.servlet.jsp.tagext,
  org.eclipse.core.runtime;version="3.5.0",
+ org.eclipse.emf.common.util,
  org.osgi.framework,
  org.osgi.service.component.annotations;version="1.3.0",
  org.osgi.service.http;version="1.2.1"
