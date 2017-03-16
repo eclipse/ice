@@ -132,24 +132,6 @@ public class AddOSWindow extends Window {
 		vLayout.setMargin(true);
 		setContent(vLayout);
 	}
-
-	/**
-	 * @param caption
-	 */
-	public AddOSWindow(String caption) {
-		super(caption);
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @param caption
-	 * @param content
-	 */
-	public AddOSWindow(String caption, Component content) {
-		super(caption, content);
-		// TODO Auto-generated constructor stub
-	}
-
 	
 	/**
 	 * @return container with beans if any

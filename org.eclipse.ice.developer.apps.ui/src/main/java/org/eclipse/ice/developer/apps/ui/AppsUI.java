@@ -1,14 +1,13 @@
 package org.eclipse.ice.developer.apps.ui;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
+import org.eclipse.emf.common.util.EList;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -17,7 +16,9 @@ import org.osgi.service.http.NamespaceException;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
@@ -26,9 +27,9 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -40,6 +41,7 @@ import apps.IEnvironment;
 import apps.docker.ContainerConfiguration;
 import apps.docker.DockerEnvironment;
 import apps.docker.DockerFactory;
+import eclipseapps.EclipseappsFactory;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser
@@ -73,24 +75,32 @@ public class AppsUI extends UI {
 	 */
 	private VerticalLayout mainLayout;
 	
+	
+	/**
+	 * Containers for beans
+	 */
+	private BeanContainer<String, OSPackage> osPackageContainer;
+	private BeanContainer<String, SourcePackage> sourcePackageContainer;
+	private BeanContainer<String, SpackPackage> spackPackageContainer;
+	private BeanContainer<String, Docker> dockerContainer;
+	private BeanContainer<String, Folder> folderContainer;
+	private EnvironmentManager manager = AppsFactory.eINSTANCE.createEnvironmentManager();
+	
+	/**
+	 * Binders for folder and docker configurations data 
+	 */
+	private BeanFieldGroup<Docker> dockerBinder;
+	private BeanFieldGroup<Folder> folderBinder;
+	
 	//BeanFieldGroup<SpackPackage> binder = new BeanFieldGroup<SpackPackage>(SpackPackage.class);
 	
 	@Override
     protected void init(VaadinRequest vaadinRequest) {
-		
-		
-    	//EnvironmentManager manager = AppsFactory.eINSTANCE.createEnvironmentManager();
-    	//IEnvironment environment = manager.createEmpty("Docker");
-    	
     	buildLayout();
     	addSpackPackagesLayout();
     	addOtherPackagesLayout();
     	addAdvancedView();
-    	addValidateCancelButtons();
-    	
-    	
-    	
-    	//manager.persistEnvironments();
+    	addValidateCancelButtons();    	
     }
 
 	
@@ -104,9 +114,10 @@ public class AppsUI extends UI {
     	
     	cancelButton.setWidth("130px");
     	validateButton.setWidth("130px");
+    	//validateButton.setEnabled(false);
     	
     	validateButton.addClickListener( e -> {
-    		
+    		validateFields();
     	});
     	
     	cnlAndValBtnsLayout.addComponents(cancelButton, validateButton);
@@ -116,6 +127,81 @@ public class AppsUI extends UI {
     	mainLayout.addComponents(cnlAndValBtnsLayout);
     	mainLayout.setComponentAlignment(cnlAndValBtnsLayout, Alignment.BOTTOM_RIGHT);		
 	}
+
+	/**
+	 * Validate user input (need to check for empty fields/containers)
+	 */
+	private void validateFields() {
+		
+		// instantiate folder and docker containers
+		dockerContainer = new BeanContainer<String, Docker>(Docker.class);
+		folderContainer = new BeanContainer<String, Folder>(Folder.class);
+		
+		try {
+			// validate and get data, if validation fails commitException is thrown
+			dockerBinder.commit();
+			
+			// after successful validation add data to its container
+			dockerContainer.addItem("containerId", dockerBinder.getItemDataSource().getBean());
+			
+		} catch (CommitException e) {
+			Notification.show("Something is wrong with container configurations! :(",
+					Notification.Type.WARNING_MESSAGE);
+		}
+		
+		// same process as above
+		try {
+			folderBinder.commit();
+			folderContainer.addItem("folderId", folderBinder.getItemDataSource().getBean());
+		} catch (CommitException e) {
+			Notification.show("Something is wrong with directory! :(",
+					Notification.Type.WARNING_MESSAGE);
+		}
+    	
+    	persistData();
+	}
+
+
+	/**
+	 * Persist data entered by user
+	 */
+	private void persistData() {
+    	
+    	IEnvironment environment = manager.createEmpty("Docker");
+    	manager.setEnvironmentStorage(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentStorage());
+    	manager.setConsole(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentConsole());
+    	//environment.setName("");
+    	
+    	// Set primary app
+    	apps.Package primaryApp = AppsFactory.eINSTANCE.createSourcePackage();
+    	environment.setPrimaryApp(primaryApp);
+    	
+    	// OS packages
+    	for (Object beanId : osPackageContainer.getItemIds()) {
+        	apps.OSPackage osPackage = AppsFactory.eINSTANCE.createOSPackage();
+    		Item bean = osPackageContainer.getItem(beanId);
+    		osPackage.setName((String) bean.getItemProperty("name").getValue());
+//    		p.setType();
+//    		p.setVersion();
+    		environment.getDependentPackages().add(osPackage);
+    	}
+    	
+    	// Source packages
+    	apps.SourcePackage sourcePackage = AppsFactory.eINSTANCE.createSourcePackage();
+    	sourcePackage.setRepoURL((String) sourcePackageContainer.getContainerProperty("sourceId", "link").getValue());
+    	sourcePackage.setBranch((String) sourcePackageContainer.getContainerProperty("sourceId", "branch").getValue());
+    	
+    	// Container configurations (need to add 'additional commands' field)
+    	DockerEnvironment dockerEnv = (DockerEnvironment) environment;
+    	ContainerConfiguration config = DockerFactory.eINSTANCE.createContainerConfiguration();
+    	config.setEphemeral((boolean) dockerContainer.getContainerProperty("containerId", "ephemeral").getValue());
+    	config.setName((String) dockerContainer.getContainerProperty("containerId", "name").getValue());
+    	config.setVolumesConfig((String) dockerContainer.getContainerProperty("containerId", "volumes").getValue());
+    	dockerEnv.setContainerConfiguration(config);
+
+    	manager.persistEnvironments();
+	}
+
 
 	/**
 	 * Creates advanced button and it's functions and adds to main layout
@@ -131,6 +217,8 @@ public class AppsUI extends UI {
 			if (advancedButton.getIcon().equals(FontAwesome.CARET_RIGHT)) {
 				advancedButton.setIcon(FontAwesome.CARET_DOWN);
 				envLayout.addComponent(env);
+				dockerBinder = env.getDockerBinder();
+				folderBinder = env.getFolderBinder();
 			} else {
 				advancedButton.setIcon(FontAwesome.CARET_RIGHT);
 				envLayout.removeComponent(env);
@@ -157,8 +245,6 @@ public class AppsUI extends UI {
 		Button addOSButton = new Button("Add OS package...");
 		AddRepoWindow repoWindow = new AddRepoWindow();
 		AddOSWindow osWindow = new AddOSWindow();
-		// create container for the list of OS packages
-		BeanContainer<String, OSPackage> container;
 		
 		addRepoButton.addClickListener( e -> {
 			repoWindow.setHeight("350");
@@ -172,7 +258,10 @@ public class AppsUI extends UI {
 		});
 		
 		// get container with OS packages
-		container = osWindow.getContainer();
+		osPackageContainer = osWindow.getContainer();
+		
+		// get container with a source package
+		sourcePackageContainer = repoWindow.getContainer();
 		
 		gitAndOsBtnsLayout.addComponents(addRepoButton, addOSButton);
 		gitAndOsBtnsLayout.setSpacing(true);
@@ -193,6 +282,8 @@ public class AppsUI extends UI {
 		Panel pkgsDescrPanel = new Panel("Package(s) in basket:");
 		TextField searchTxtField = new TextField("Packages:");
 		
+		EList<String> spackPackages = manager.listAvailableSpackPackages();
+		
     	searchTxtField.setWidth("100%");
     	searchTxtField.setDescription("type filter text");
     	searchTxtField.setInputPrompt("type filter text");
@@ -202,36 +293,33 @@ public class AppsUI extends UI {
 		
 		// This is just a dummy list - it is empty for now. Don't use a data
 		// structure like this, use an EMF class! ~JJB
-		List<Map<String, String>> spackPackages = new ArrayList<Map<String, String>>();
+		//List<Map<String, String>> spackPackages = new ArrayList<Map<String, String>>();
 
-		for (Map<String, String> spackPackage : spackPackages) {
-			final PackageListItem pkg = new PackageListItem();
-			List lst = new LinkedList(); // Why is this untyped? ~JJB 20170314
-			pkg.getPkgChBox().setCaption((String) spackPackage.get("name"));
-			pkg.getPkgDescrTxtField().setCaption((String) spackPackage.get("description"));
-			pkg.getPkgChBox().addValueChangeListener(e -> {
-				Label pkgDescItem = new Label(pkg.getPkgChBox().getCaption());
-				Label temp = null;
-				if (pkg.getPkgChBox().getValue().equals(true)) {
-					// SpackPackageImpl spackPackageImpl = new
-					// SpackPackageImpl();
-
-					lst.add(pkg.getPkgChBox().getCaption());
+		for (String spackPackageName : spackPackages) {
+			HashSet<String> selectedPackages = new HashSet<String>();
+			final PackageListItem packageItem = new PackageListItem();
+			List lst = new LinkedList(); 
+			
+			packageItem.getPkgChBox().setCaption(spackPackageName);
+			
+			//pkg.getPkgDescrTxtField().setCaption((String) spackPackage.get("description"));
+			
+			packageItem.getPkgChBox().addValueChangeListener(e -> {
+				
+				String checkBoxCaption = packageItem.getPkgChBox().getCaption();
+				Label pkgDescItem = new Label(checkBoxCaption);
+				boolean checkBoxChecked = packageItem.getPkgChBox().getValue();
+				if (checkBoxChecked) {
+					selectedPackages.add(spackPackageName);
 					pkgDescrLayout.addComponent(pkgDescItem);
-				} else if (lst.contains(pkg.getPkgChBox().getCaption())) {
-					Iterator<Component> iter = pkgDescrLayout.iterator();
-					while (iter.hasNext()) {
-						Label lbl = (Label) iter.next();
-						if (lbl.getValue().equals(pkg.getPkgChBox().getCaption())) {
-							temp = lbl;
-						}
-					}
-					if (!temp.equals(null))
-						pkgDescrLayout.removeComponent(temp);
+
+				} else if (!checkBoxChecked) {
+					if (selectedPackages.contains(checkBoxCaption)) {
+						pkgDescrLayout.removeComponent(pkgDescItem);
+					}					
 				}
 			});
-			pkgPanelLayout.addComponent(pkg);
-
+			pkgPanelLayout.addComponent(packageItem);
 		}
 		
 		
