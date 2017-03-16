@@ -1,14 +1,13 @@
 package org.eclipse.ice.developer.apps.ui;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
+import org.eclipse.emf.common.util.EList;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -28,7 +27,6 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
@@ -43,6 +41,7 @@ import apps.IEnvironment;
 import apps.docker.ContainerConfiguration;
 import apps.docker.DockerEnvironment;
 import apps.docker.DockerFactory;
+import eclipseapps.EclipseappsFactory;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser
@@ -85,6 +84,7 @@ public class AppsUI extends UI {
 	private BeanContainer<String, SpackPackage> spackPackageContainer;
 	private BeanContainer<String, Docker> dockerContainer;
 	private BeanContainer<String, Folder> folderContainer;
+	private EnvironmentManager manager = AppsFactory.eINSTANCE.createEnvironmentManager();
 	
 	/**
 	 * Binders for folder and docker configurations data 
@@ -129,7 +129,7 @@ public class AppsUI extends UI {
 	}
 
 	/**
-	 * Validate user input
+	 * Validate user input (need to check for empty fields/containers)
 	 */
 	private void validateFields() {
 		
@@ -166,8 +166,10 @@ public class AppsUI extends UI {
 	 * Persist data entered by user
 	 */
 	private void persistData() {
-    	EnvironmentManager manager = AppsFactory.eINSTANCE.createEnvironmentManager();
+    	
     	IEnvironment environment = manager.createEmpty("Docker");
+    	manager.setEnvironmentStorage(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentStorage());
+    	manager.setConsole(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentConsole());
     	//environment.setName("");
     	
     	// Set primary app
@@ -175,8 +177,8 @@ public class AppsUI extends UI {
     	environment.setPrimaryApp(primaryApp);
     	
     	// OS packages
-    	apps.Package osPackage = AppsFactory.eINSTANCE.createOSPackage();
     	for (Object beanId : osPackageContainer.getItemIds()) {
+        	apps.OSPackage osPackage = AppsFactory.eINSTANCE.createOSPackage();
     		Item bean = osPackageContainer.getItem(beanId);
     		osPackage.setName((String) bean.getItemProperty("name").getValue());
 //    		p.setType();
@@ -185,18 +187,19 @@ public class AppsUI extends UI {
     	}
     	
     	// Source packages
-    	apps.Package sourcePackage = AppsFactory.eINSTANCE.createSourcePackage();
-    	sourcePackage.setName((String) sourcePackageContainer.getContainerProperty("sourceId", "link").getValue());
-
+    	apps.SourcePackage sourcePackage = AppsFactory.eINSTANCE.createSourcePackage();
+    	sourcePackage.setRepoURL((String) sourcePackageContainer.getContainerProperty("sourceId", "link").getValue());
+    	sourcePackage.setBranch((String) sourcePackageContainer.getContainerProperty("sourceId", "branch").getValue());
+    	
     	// Container configurations (need to add 'additional commands' field)
     	DockerEnvironment dockerEnv = (DockerEnvironment) environment;
     	ContainerConfiguration config = DockerFactory.eINSTANCE.createContainerConfiguration();
-    	dockerEnv.setContainerConfiguration(config);
     	config.setEphemeral((boolean) dockerContainer.getContainerProperty("containerId", "ephemeral").getValue());
     	config.setName((String) dockerContainer.getContainerProperty("containerId", "name").getValue());
     	config.setVolumesConfig((String) dockerContainer.getContainerProperty("containerId", "volumes").getValue());
-    	
-    	//manager.persistEnvironments();
+    	dockerEnv.setContainerConfiguration(config);
+
+    	manager.persistEnvironments();
 	}
 
 
@@ -279,6 +282,8 @@ public class AppsUI extends UI {
 		Panel pkgsDescrPanel = new Panel("Package(s) in basket:");
 		TextField searchTxtField = new TextField("Packages:");
 		
+		EList<String> spackPackages = manager.listAvailableSpackPackages();
+		
     	searchTxtField.setWidth("100%");
     	searchTxtField.setDescription("type filter text");
     	searchTxtField.setInputPrompt("type filter text");
@@ -288,36 +293,33 @@ public class AppsUI extends UI {
 		
 		// This is just a dummy list - it is empty for now. Don't use a data
 		// structure like this, use an EMF class! ~JJB
-		List<Map<String, String>> spackPackages = new ArrayList<Map<String, String>>();
+		//List<Map<String, String>> spackPackages = new ArrayList<Map<String, String>>();
 
-		for (Map<String, String> spackPackage : spackPackages) {
-			final PackageListItem pkg = new PackageListItem();
-			List lst = new LinkedList(); // Why is this untyped? ~JJB 20170314
-			pkg.getPkgChBox().setCaption((String) spackPackage.get("name"));
-			pkg.getPkgDescrTxtField().setCaption((String) spackPackage.get("description"));
-			pkg.getPkgChBox().addValueChangeListener(e -> {
-				Label pkgDescItem = new Label(pkg.getPkgChBox().getCaption());
-				Label temp = null;
-				if (pkg.getPkgChBox().getValue().equals(true)) {
-					// SpackPackageImpl spackPackageImpl = new
-					// SpackPackageImpl();
-
-					lst.add(pkg.getPkgChBox().getCaption());
+		for (String spackPackageName : spackPackages) {
+			HashSet<String> selectedPackages = new HashSet<String>();
+			final PackageListItem packageItem = new PackageListItem();
+			List lst = new LinkedList(); 
+			
+			packageItem.getPkgChBox().setCaption(spackPackageName);
+			
+			//pkg.getPkgDescrTxtField().setCaption((String) spackPackage.get("description"));
+			
+			packageItem.getPkgChBox().addValueChangeListener(e -> {
+				
+				String checkBoxCaption = packageItem.getPkgChBox().getCaption();
+				Label pkgDescItem = new Label(checkBoxCaption);
+				boolean checkBoxChecked = packageItem.getPkgChBox().getValue();
+				if (checkBoxChecked) {
+					selectedPackages.add(spackPackageName);
 					pkgDescrLayout.addComponent(pkgDescItem);
-				} else if (lst.contains(pkg.getPkgChBox().getCaption())) {
-					Iterator<Component> iter = pkgDescrLayout.iterator();
-					while (iter.hasNext()) {
-						Label lbl = (Label) iter.next();
-						if (lbl.getValue().equals(pkg.getPkgChBox().getCaption())) {
-							temp = lbl;
-						}
-					}
-					if (!temp.equals(null))
-						pkgDescrLayout.removeComponent(temp);
+
+				} else if (!checkBoxChecked) {
+					if (selectedPackages.contains(checkBoxCaption)) {
+						pkgDescrLayout.removeComponent(pkgDescItem);
+					}					
 				}
 			});
-			pkgPanelLayout.addComponent(pkg);
-
+			pkgPanelLayout.addComponent(packageItem);
 		}
 		
 		
