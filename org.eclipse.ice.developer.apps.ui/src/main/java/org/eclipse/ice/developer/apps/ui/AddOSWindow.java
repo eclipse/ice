@@ -3,6 +3,7 @@
  */
 package org.eclipse.ice.developer.apps.ui;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.fieldgroup.PropertyId;
@@ -44,12 +45,16 @@ public class AddOSWindow extends Window {
 	// create container
 	private BeanContainer<String, OSPackage> container;
 	
+	// create a reference to basket
+	private VerticalLayout basket;
+	
 	/**
 	 * 
 	 */
-	public AddOSWindow() {
+	public AddOSWindow(VerticalLayout pkgLayout) {
 		super("Add OS Package");
 		center();
+		basket = pkgLayout;
 		vLayout = new VerticalLayout();
 		pkgListLayout = new VerticalLayout();
 		btnsLayout = new HorizontalLayout();
@@ -79,11 +84,13 @@ public class AddOSWindow extends Window {
 		});
 		
 		okButton = new Button("OK", e -> {
+			addOSPackagesToBasket();
 			close(); 
 			pkgListLayout.removeAllComponents();
 			osTextField.clear();
-			osTextField.focus();
+			osTextField.focus();			
 		});
+		
 		osTextField.setWidth("400px");
 		cancelButton.setWidth("130px");
 		okButton.setWidth("130px");
@@ -133,6 +140,35 @@ public class AddOSWindow extends Window {
 		setContent(vLayout);
 	}
 	
+	/**
+	 * Add OS packages to basket whenever 'ok' button is clicked
+	 * 
+	 */
+	private synchronized boolean addOSPackagesToBasket() {
+		if (container.size() > 0) {
+			// iterate over every package in the container
+			for (Object itemId : container.getItemIds()) {
+				Label label = new Label();
+				Item item = container.getItem(itemId);
+				label.setCaption((String) item.getItemProperty("name").getValue());
+				// check if a package is already added
+				if (basket.getComponentCount() > 0) {
+					for (Component labelComponent : basket) {
+						// add to basket only new packages
+						if (!labelComponent.getCaption().equals(label.getCaption())) {
+							basket.addComponent(label);
+
+						}
+					}
+				} else if (basket.getComponentCount() == 0) {
+					basket.addComponent(label);
+				}
+			}
+			return true;
+		}
+		return false;		
+	}
+
 	/**
 	 * @return container with beans if any
 	 */

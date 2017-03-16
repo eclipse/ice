@@ -17,6 +17,7 @@ import org.osgi.service.http.NamespaceException;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanContainer;
@@ -245,7 +246,7 @@ public class AppsUI extends UI {
 		Button addRepoButton = new Button("Add from Git repo...");
 		Button addOSButton = new Button("Add OS package...");
 		AddRepoWindow repoWindow = new AddRepoWindow();
-		AddOSWindow osWindow = new AddOSWindow();
+		AddOSWindow osWindow = new AddOSWindow(pkgDescrLayout);
 		
 		addRepoButton.addClickListener( e -> {
 			repoWindow.setHeight("350");
@@ -263,6 +264,15 @@ public class AppsUI extends UI {
 		
 		// get container with a source package
 		sourcePackageContainer = repoWindow.getContainer();
+		if (sourcePackageContainer.size() > 0) {
+			for (Object itemId : sourcePackageContainer.getItemIds()) {
+				Label label = new Label();
+				Item item = sourcePackageContainer.getItem(itemId);
+				label.setCaption((String) item.getItemProperty("name").getValue());
+				pkgDescrLayout.addComponent(label);
+			}
+		}
+		
 		
 		gitAndOsBtnsLayout.addComponents(addRepoButton, addOSButton);
 		gitAndOsBtnsLayout.setSpacing(true);
@@ -271,6 +281,8 @@ public class AppsUI extends UI {
 		
 	}
 
+	private VerticalLayout pkgDescrLayout = new VerticalLayout();
+	
 	/**
 	 * Creates Spack packages representation and adds it to main view.
 	 */
@@ -278,7 +290,6 @@ public class AppsUI extends UI {
 		HorizontalLayout packagesLayout = new  HorizontalLayout();
 		VerticalLayout pkgPanelLayout = new VerticalLayout();
 		VerticalLayout pkgListLayout = new VerticalLayout();
-		VerticalLayout pkgDescrLayout = new VerticalLayout();
 		Panel pkgsListPanel = new Panel();
 		Panel pkgsDescrPanel = new Panel("Package(s) in basket:");
 		TextField searchTxtField = new TextField("Packages:");
@@ -308,7 +319,7 @@ public class AppsUI extends UI {
 					pkgDescrLayout.addComponent(pkgDescItem);
 
 				} else if (!checkBoxChecked) {
-					// if a package is deselected, remove it from the basket
+					// if a package is de-selected, remove it from the basket
 					findAndRemoveFromBasket(checkBoxCaption, pkgDescrLayout);
 				}
 			});
