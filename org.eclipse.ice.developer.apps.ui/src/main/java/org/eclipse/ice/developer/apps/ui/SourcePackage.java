@@ -11,41 +11,36 @@ package org.eclipse.ice.developer.apps.ui;
 public class SourcePackage {
 	private String link;
 	private String branch;
+	private String name;
 
-	/**
-	 * 
-	 */
 	public SourcePackage() {
-		link = "";      // needs to set empty, otherwise 'null' is shown in bound fields
+		link = "";      // needs to be set empty, otherwise 'null' is shown in bound fields
 		branch = "";
+		name = "";
 	}
 
-	/**
-	 * @return the link
-	 */
 	public String getLink() {
 		return link;
 	}
 
-	/**
-	 * @param link, link to set
-	 */
 	public void setLink(String link) {
 		this.link = link;
 	}
 
-	/**
-	 * @return the branch
-	 */
 	public String getBranch() {
 		return branch;
 	}
 
-	/**
-	 * @param branch, branch to set
-	 */
 	public void setBranch(String branch) {
 		this.branch = branch;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

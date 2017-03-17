@@ -30,6 +30,8 @@ public class AddRepoWindow extends Window {
 	private TextField uriTextField;
 	@PropertyId("branch")
 	private TextField branchTextField;
+	@PropertyId("name")
+	private TextField nameTextField;
 	
 	private Button cancelButton;
 	private Button okButton;
@@ -52,6 +54,7 @@ public class AddRepoWindow extends Window {
 		captionLabel = new Label("Specify location of the source repository:");
 		uriTextField = new TextField("URI:");
 		branchTextField = new TextField("Branch:");
+		nameTextField = new TextField("Name:");
 		
 		binder = new BeanFieldGroup<SourcePackage>(SourcePackage.class);
 		// create bean
@@ -64,15 +67,16 @@ public class AddRepoWindow extends Window {
 		container = new BeanContainer<String, SourcePackage>(SourcePackage.class);
 		
 		cancelButton = new Button("Cancel", e -> {
-			close(); 
+			close();
+			nameTextField.clear();
 			uriTextField.clear();
 			branchTextField.clear();
-			uriTextField.focus();
+			nameTextField.focus();
 		});
 		
 		okButton = new Button("OK", e -> {
 			
-			if (!uriTextField.getValue().isEmpty()) {
+			if (!uriTextField.getValue().isEmpty() && !nameTextField.getValue().isEmpty()) {
 				try {
 					// validate and get data
 					binder.commit();
@@ -84,26 +88,29 @@ public class AddRepoWindow extends Window {
 				}
 			}
 			close();
+			nameTextField.clear();
 			uriTextField.clear();
 			branchTextField.clear();
-			uriTextField.focus();
+			nameTextField.focus();
 		});
 		
 		okButton.setEnabled(false);
 		okButton.setDescription("Specify at least one package source.");
 		uriTextField.setWidth("400px");
-		uriTextField.focus();
+		nameTextField.setWidth("400px");
+		branchTextField.setWidth("400px");
+		nameTextField.focus();
 		
+		// set 'ok' button enabled and update its tooltip
+		// if uri is entered by user
 		uriTextField.addValueChangeListener( e -> {
 			if (!uriTextField.getValue().isEmpty()) {
-				// set 'ok' button enabled and update its tooltip
 				okButton.setEnabled(true);
 				okButton.setDescription("Add package to the basket.");
 			}
 			
 		});
 		
-		branchTextField.setWidth("400px");
 		cancelButton.setWidth("130px");
 		okButton.setWidth("130px");
 		btnsLayout.addComponents(cancelButton, okButton);
@@ -111,9 +118,8 @@ public class AddRepoWindow extends Window {
 		btnsLayout.setHeight("100px");
 		btnsLayout.setComponentAlignment(cancelButton, Alignment.BOTTOM_RIGHT);
 		btnsLayout.setComponentAlignment(okButton, Alignment.BOTTOM_RIGHT);
-		
-		
-		vLayout.addComponents(captionLabel, uriTextField, branchTextField, btnsLayout);
+				
+		vLayout.addComponents(captionLabel, nameTextField, uriTextField, branchTextField, btnsLayout);
 		vLayout.setComponentAlignment(btnsLayout, Alignment.BOTTOM_RIGHT);
 		vLayout.setSpacing(true);
 		vLayout.setMargin(true);

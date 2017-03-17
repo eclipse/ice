@@ -1,9 +1,5 @@
 package org.eclipse.ice.developer.apps.ui;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
@@ -19,14 +15,15 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
+import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
@@ -79,6 +76,7 @@ public class AppsUI extends UI {
 	/**
 	 * Containers for beans
 	 */
+	private BeanContainer<String, Environment> envContainer;
 	private BeanContainer<String, OSPackage> osPackageContainer;
 	private BeanContainer<String, SourcePackage> sourcePackageContainer;
 	private BeanContainer<String, SpackPackage> spackPackageContainer;
@@ -91,12 +89,14 @@ public class AppsUI extends UI {
 	 */
 	private BeanFieldGroup<Docker> dockerBinder;
 	private BeanFieldGroup<Folder> folderBinder;
+	private BeanFieldGroup<Environment> envBinder;
 	
 	//BeanFieldGroup<SpackPackage> binder = new BeanFieldGroup<SpackPackage>(SpackPackage.class);
 	
 	@Override
     protected void init(VaadinRequest vaadinRequest) {
     	buildLayout();
+    	addEnvNameLayout();
     	addSpackPackagesLayout();
     	addOtherPackagesLayout();
     	addAdvancedView();
@@ -105,6 +105,25 @@ public class AppsUI extends UI {
 
 	
     /**
+     * Creates 'environment' field
+     */
+    private void addEnvNameLayout() {
+    	// create layout that'll contain environment field
+    	Environment environmentLayout = new Environment();
+    	// create binder
+    	envBinder = new BeanFieldGroup<Environment>(Environment.class);
+		// set data source of the binder
+		envBinder.setItemDataSource(environmentLayout);
+		// bind member field fields of Environment
+		envBinder.bindMemberFields(environmentLayout);
+		// set the binder's buffer
+		envBinder.setBuffered(true);
+		// add layout to main view
+    	mainLayout.addComponent(environmentLayout);
+	}
+
+
+	/**
      * Creates validate and cancel buttons and adds them to layout
      */
     private void addValidateCancelButtons() {
@@ -133,10 +152,12 @@ public class AppsUI extends UI {
 	 */
 	private void validateFields() {
 		
-		// instantiate folder and docker containers
+		// instantiate folder, docker, and environment containers
 		dockerContainer = new BeanContainer<String, Docker>(Docker.class);
 		folderContainer = new BeanContainer<String, Folder>(Folder.class);
+		envContainer = new BeanContainer<String, Environment>(Environment.class);
 		
+		// adding data to docker container
 		try {
 			// validate and get data, if validation fails commitException is thrown
 			dockerBinder.commit();
@@ -149,7 +170,7 @@ public class AppsUI extends UI {
 					Notification.Type.WARNING_MESSAGE);
 		}
 		
-		// same process as above
+		// adding data to folder container
 		try {
 			folderBinder.commit();
 			folderContainer.addItem("folderId", folderBinder.getItemDataSource().getBean());
@@ -158,7 +179,16 @@ public class AppsUI extends UI {
 					Notification.Type.WARNING_MESSAGE);
 		}
     	
-    	persistData();
+		// adding data to environment container
+		try {
+			envBinder.commit();
+			envContainer.addItem("environmentId", envBinder.getItemDataSource().getBean());
+		} catch (CommitException e) {
+			Notification.show("Something is wrong with environment name! :(",
+					Notification.Type.WARNING_MESSAGE);
+		}
+		
+    	persistData();  // persisting data
 	}
 
 
@@ -170,7 +200,7 @@ public class AppsUI extends UI {
     	IEnvironment environment = manager.createEmpty("Docker");
     	manager.setEnvironmentStorage(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentStorage());
     	manager.setConsole(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentConsole());
-    	//environment.setName("");
+    	environment.setName((String) envContainer.getContainerProperty("environmentId", "name").getValue());
     	
     	// Set primary app
     	apps.Package primaryApp = AppsFactory.eINSTANCE.createSourcePackage();
@@ -188,6 +218,7 @@ public class AppsUI extends UI {
     	
     	// Source packages
     	apps.SourcePackage sourcePackage = AppsFactory.eINSTANCE.createSourcePackage();
+    	sourcePackage.setName((String) sourcePackageContainer.getContainerProperty("sourceId", "name").getValue());
     	sourcePackage.setRepoURL((String) sourcePackageContainer.getContainerProperty("sourceId", "link").getValue());
     	sourcePackage.setBranch((String) sourcePackageContainer.getContainerProperty("sourceId", "branch").getValue());
     	
@@ -244,7 +275,7 @@ public class AppsUI extends UI {
 		Button addRepoButton = new Button("Add from Git repo...");
 		Button addOSButton = new Button("Add OS package...");
 		AddRepoWindow repoWindow = new AddRepoWindow();
-		AddOSWindow osWindow = new AddOSWindow();
+		AddOSWindow osWindow = new AddOSWindow(pkgDescrLayout);
 		
 		addRepoButton.addClickListener( e -> {
 			repoWindow.setHeight("350");
@@ -262,6 +293,15 @@ public class AppsUI extends UI {
 		
 		// get container with a source package
 		sourcePackageContainer = repoWindow.getContainer();
+		if (sourcePackageContainer.size() > 0) {
+			for (Object itemId : sourcePackageContainer.getItemIds()) {
+				Label label = new Label();
+				Item item = sourcePackageContainer.getItem(itemId);
+				label.setCaption((String) item.getItemProperty("name").getValue());
+				pkgDescrLayout.addComponent(label);
+			}
+		}
+		
 		
 		gitAndOsBtnsLayout.addComponents(addRepoButton, addOSButton);
 		gitAndOsBtnsLayout.setSpacing(true);
@@ -270,57 +310,54 @@ public class AppsUI extends UI {
 		
 	}
 
+	private VerticalLayout pkgDescrLayout = new VerticalLayout();
+	
 	/**
-	 * Creates Spack packages representation and add it to main view.
+	 * Creates Spack packages representation and adds it to main view.
 	 */
 	private void addSpackPackagesLayout() {
 		HorizontalLayout packagesLayout = new  HorizontalLayout();
 		VerticalLayout pkgPanelLayout = new VerticalLayout();
 		VerticalLayout pkgListLayout = new VerticalLayout();
-		VerticalLayout pkgDescrLayout = new VerticalLayout();
 		Panel pkgsListPanel = new Panel();
 		Panel pkgsDescrPanel = new Panel("Package(s) in basket:");
 		TextField searchTxtField = new TextField("Packages:");
 		
+		// get list of spack packages from docker
 		EList<String> spackPackages = manager.listAvailableSpackPackages();
-		
-    	searchTxtField.setWidth("100%");
-    	searchTxtField.setDescription("type filter text");
-    	searchTxtField.setInputPrompt("type filter text");
-    	
-    	String path = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
-    	
-		
-		// This is just a dummy list - it is empty for now. Don't use a data
-		// structure like this, use an EMF class! ~JJB
-		//List<Map<String, String>> spackPackages = new ArrayList<Map<String, String>>();
 
+		// iterate over every package and add it to the panel
 		for (String spackPackageName : spackPackages) {
-			HashSet<String> selectedPackages = new HashSet<String>();
-			final PackageListItem packageItem = new PackageListItem();
-			List lst = new LinkedList(); 
 			
+			// create layout for the package item
+			final PackageListItem packageItem = new PackageListItem();
+			
+			// set the name of the package to package item
 			packageItem.getPkgChBox().setCaption(spackPackageName);
 			
-			//pkg.getPkgDescrTxtField().setCaption((String) spackPackage.get("description"));
-			
+			// set a listener to checkbox of the package item
 			packageItem.getPkgChBox().addValueChangeListener(e -> {
 				
-				String checkBoxCaption = packageItem.getPkgChBox().getCaption();
-				Label pkgDescItem = new Label(checkBoxCaption);
 				boolean checkBoxChecked = packageItem.getPkgChBox().getValue();
+				String checkBoxCaption = packageItem.getPkgChBox().getCaption();
+
+				// if a package is selected, add it to basket
 				if (checkBoxChecked) {
-					selectedPackages.add(spackPackageName);
+					Label pkgDescItem = new Label();
+					pkgDescItem.setCaption(checkBoxCaption);
 					pkgDescrLayout.addComponent(pkgDescItem);
 
 				} else if (!checkBoxChecked) {
-					if (selectedPackages.contains(checkBoxCaption)) {
-						pkgDescrLayout.removeComponent(pkgDescItem);
-					}					
+					// if a package is de-selected, remove it from the basket
+					findAndRemoveFromBasket(checkBoxCaption, pkgDescrLayout);
 				}
 			});
 			pkgPanelLayout.addComponent(packageItem);
 		}
+		
+		searchTxtField.setWidth("100%");
+		searchTxtField.setDescription("type filter text");
+		searchTxtField.setInputPrompt("type filter text");
 		
 		
     	pkgsListPanel.setContent(pkgPanelLayout);
@@ -345,6 +382,23 @@ public class AppsUI extends UI {
     	mainLayout.addComponent(packagesLayout);
 		
 	}
+
+	
+	/**
+	 * Deletes a package from the basket if it's there.
+	 * @param packageName name of the package
+	 * @param basket the layout (basket)
+	 */
+	private boolean findAndRemoveFromBasket(String packageName, VerticalLayout basket) {
+		for (Component label : basket) {
+			if (label.getCaption().equals(packageName)) {
+				basket.removeComponent(label);
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 	/**
 	 * Creates main layout for the app
