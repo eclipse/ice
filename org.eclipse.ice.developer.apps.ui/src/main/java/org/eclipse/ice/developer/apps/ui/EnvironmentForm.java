@@ -11,6 +11,8 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.VerticalLayout;
 
+import apps.IEnvironment;
+
 /**
  * @author Anara Kozhokanova
  *
@@ -22,15 +24,14 @@ public class EnvironmentForm extends HorizontalLayout {
 	private OptionGroup installTypeOptGroup;
 	private Label titleLabel;
 	
-	// create binders
-	private BeanFieldGroup<Docker> dockerBinder;
-	private BeanFieldGroup<Folder> folderBinder;
+	private IEnvironment environment;
 	
 	/**
 	 * 
 	 */
-	public EnvironmentForm() {
-		dockerView = new DockerForm();
+	public EnvironmentForm(IEnvironment env) {
+		environment = env;
+		dockerView = new DockerForm(environment);
 		folderView = new FolderForm();
 		vLayout  = new VerticalLayout();
 		titleLabel = new Label();
@@ -63,37 +64,5 @@ public class EnvironmentForm extends HorizontalLayout {
 				addComponent(folderView);
 			}			
 		});
-
-		// binding fields annotated '@PropertyId' to data model
-		dockerBinder = new BeanFieldGroup<Docker>(Docker.class);
-		folderBinder = new BeanFieldGroup<Folder>(Folder.class);
-		
-		// set the docker and folder beans as the source
-		dockerBinder.setItemDataSource(new Docker());
-		folderBinder.setItemDataSource(new Folder());
-		
-
-		// bind fields of the beans to the forms
-		dockerBinder.bindMemberFields(dockerView);
-		folderBinder.bindMemberFields(folderView);
-		
-		// enable buffering
-		dockerBinder.setBuffered(true);
-		folderBinder.setBuffered(true);
 	}
-
-	/**
-	 * @return the docker binder
-	 */
-	public BeanFieldGroup<Docker> getDockerBinder() {
-		return dockerBinder;
-	}
-
-	/**
-	 * @return the folder binder
-	 */
-	public BeanFieldGroup<Folder> getFolderBinder() {
-		return folderBinder;
-	}
-
 }

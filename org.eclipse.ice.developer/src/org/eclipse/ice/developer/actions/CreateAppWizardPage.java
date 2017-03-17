@@ -46,6 +46,8 @@ public class CreateAppWizardPage extends WizardPage {
 		browser.addStatusTextListener(event -> status.setText("localhost:8081"));
 		browser.setUrl("http://localhost:8081");
 		setControl(shell);
+		
+		shell.setBounds(0, 0, 600, 400);;
 	}
 	
 }

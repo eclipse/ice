@@ -7,6 +7,8 @@ import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanContainer;
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -17,6 +19,9 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import apps.AppsFactory;
+import apps.IEnvironment;
+
 /**
  * @author Anara Kozhokanova
  *
@@ -26,45 +31,51 @@ public class AddRepoWindow extends Window {
 	private HorizontalLayout btnsLayout;
 	private Label captionLabel;
 	
-	@PropertyId("link")
 	private TextField uriTextField;
-	@PropertyId("branch")
 	private TextField branchTextField;
-	@PropertyId("name")
 	private TextField nameTextField;
 	
 	private Button cancelButton;
 	private Button okButton;
 	
-	// create binder
-	private BeanFieldGroup<SourcePackage> binder;
-
-	// create container
-	private BeanContainer<String, SourcePackage> container;
+	private IEnvironment environment;
 	
 	
 	/**
 	 * 
 	 */
-	public AddRepoWindow() {
+	public AddRepoWindow(IEnvironment env, VerticalLayout basket) {
 		super("Clone Git Repository");
+		environment = env;
 		center();
+		apps.SourcePackage p = AppsFactory.eINSTANCE.createSourcePackage();
+		env.setPrimaryApp(p);
+		
 		vLayout = new VerticalLayout();
 		btnsLayout = new HorizontalLayout();
 		captionLabel = new Label("Specify location of the source repository:");
 		uriTextField = new TextField("URI:");
-		branchTextField = new TextField("Branch:");
-		nameTextField = new TextField("Name:");
+		uriTextField.addTextChangeListener(new TextChangeListener() {
+			@Override
+			public void textChange(TextChangeEvent event) {
+				((apps.SourcePackage)environment.getPrimaryApp()).setRepoURL(event.getText());
+			}
+		});
 		
-		binder = new BeanFieldGroup<SourcePackage>(SourcePackage.class);
-		// create bean
-		binder.setItemDataSource(new SourcePackage());
-		// bind member field 'osTextField' to the OSPackage bean
-		binder.bindMemberFields(this);
-		// set the binder's buffer
-		binder.setBuffered(true);
-		// create container that will store beans
-		container = new BeanContainer<String, SourcePackage>(SourcePackage.class);
+		branchTextField = new TextField("Branch:");
+		branchTextField.addTextChangeListener(new TextChangeListener() {
+			@Override
+			public void textChange(TextChangeEvent event) {
+				((apps.SourcePackage)environment.getPrimaryApp()).setBranch(event.getText());
+			}
+		});
+		nameTextField = new TextField("Name:");
+		nameTextField.addTextChangeListener(new TextChangeListener() {
+			@Override
+			public void textChange(TextChangeEvent event) {
+				((apps.SourcePackage)environment.getPrimaryApp()).setName(event.getText());
+			}
+		});
 		
 		cancelButton = new Button("Cancel", e -> {
 			close();
@@ -75,18 +86,10 @@ public class AddRepoWindow extends Window {
 		});
 		
 		okButton = new Button("OK", e -> {
-			
-			if (!uriTextField.getValue().isEmpty() && !nameTextField.getValue().isEmpty()) {
-				try {
-					// validate and get data
-					binder.commit();
-					// after successful validation add data to container
-					container.addItem("sourceId", binder.getItemDataSource().getBean());
-				} catch (CommitException e1) {
-					Notification.show("Something went wrong :(",
-							Notification.Type.WARNING_MESSAGE);
-				}
-			}
+			// Add to the packages basket
+			Label label = new Label();
+			label.setCaption(environment.getPrimaryApp().getName());
+			basket.addComponent(label);
 			close();
 			nameTextField.clear();
 			uriTextField.clear();
@@ -124,13 +127,5 @@ public class AddRepoWindow extends Window {
 		vLayout.setSpacing(true);
 		vLayout.setMargin(true);
 		setContent(vLayout);
-	}
-
-
-	/**
-	 * @return container with beans if any
-	 */
-	public BeanContainer<String, SourcePackage> getContainer() {
-		return container;
 	}
 }

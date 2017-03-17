@@ -4,13 +4,21 @@
 package org.eclipse.ice.developer.apps.ui;
 
 
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.PropertyId;
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+
+import apps.IEnvironment;
+import apps.docker.DockerEnvironment;
+import apps.docker.DockerFactory;
 
 /**
  * @author Anara Kozhokanova
@@ -21,42 +29,69 @@ public class DockerForm extends HorizontalLayout{
 	private VerticalLayout vLayout = new VerticalLayout();
 	private Label titleLabel = new Label();
 	
-	@PropertyId("name")
+	private IEnvironment environment;
+	
 	private TextField nameTxtField;
 	
-	@PropertyId("ports")
 	private TextField portsTxtField;
 	
-	@PropertyId("volumes")
 	private TextField volumesTxtField;
 	
-	@PropertyId("ephemeral")
 	private CheckBox ephemeralChBox;
 	
-	@PropertyId("commands")
-	private TextArea dockerCommandsTxtArea;
-	
+//	private TextArea dockerCommandsTxtArea;
 	
 	/**
 	 * 
 	 */
-	public DockerForm() {
+	public DockerForm(IEnvironment env) {
+		environment = env;
+		apps.docker.ContainerConfiguration config = DockerFactory.eINSTANCE.createContainerConfiguration();
+		((DockerEnvironment)environment).setContainerConfiguration(config);
 		
 		nameTxtField = new TextField();
+		nameTxtField.addTextChangeListener(new TextChangeListener() {
+			@Override
+			public void textChange(TextChangeEvent event) {
+				((DockerEnvironment)environment).getContainerConfiguration().setName(event.getText());
+			}
+		});
+		
 		portsTxtField = new TextField();
+		portsTxtField.addTextChangeListener(new TextChangeListener() {
+			@Override
+			public void textChange(TextChangeEvent event) {
+				((DockerEnvironment)environment).getContainerConfiguration().getPorts().add(Integer.valueOf(event.getText()));
+			}
+		});
+				
 		volumesTxtField = new TextField();
+		volumesTxtField.addTextChangeListener(new TextChangeListener() {
+			@Override
+			public void textChange(TextChangeEvent event) {
+				((DockerEnvironment)environment).getContainerConfiguration().setVolumesConfig(event.getText());
+			}
+		});
+		
 		ephemeralChBox = new CheckBox();
-		dockerCommandsTxtArea = new TextArea();
+		ephemeralChBox.addValueChangeListener(new ValueChangeListener() {
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				System.out.println("HELLO FROM EPHEMERAL: " + event.getProperty().getValue());
+				
+			}
+		});
+//		dockerCommandsTxtArea = new TextArea();
 		
 		titleLabel.setCaption("Container Configuration:");
 		nameTxtField.setCaption("Name:");
 		portsTxtField.setCaption("Ports:");
 		volumesTxtField.setCaption("Volumes:");
 		ephemeralChBox.setCaption("Ephemeral");
-		dockerCommandsTxtArea.setCaption("Additional Docker file settings");
+//		dockerCommandsTxtArea.setCaption("Additional Docker file settings");
 		
 		vLayout.addComponents(titleLabel, nameTxtField, portsTxtField, volumesTxtField, ephemeralChBox);
-		addComponents(vLayout, dockerCommandsTxtArea);
+		addComponents(vLayout);
 		setSpacing(true);
 	}
 }

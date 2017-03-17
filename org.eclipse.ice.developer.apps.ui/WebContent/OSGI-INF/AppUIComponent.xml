@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" name="org.eclipse.ice.developer.apps.ui">
-   <implementation class="org.eclipse.ice.developer.apps.ui.AppsUI"/>
+   <implementation class="org.eclipse.ice.developer.apps.ui.ICEAppStoreVaadinUI"/>
    <reference bind="setService" cardinality="1..1" interface="org.osgi.service.http.HttpService" name="HttpService" policy="static"/>
 </scr:component>

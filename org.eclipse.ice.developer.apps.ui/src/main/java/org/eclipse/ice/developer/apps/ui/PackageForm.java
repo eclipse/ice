@@ -15,6 +15,7 @@ import com.vaadin.ui.VerticalLayout;
  *
  */
 public class PackageForm extends VerticalLayout {
+	private static final long serialVersionUID = 1L;
 	private VerticalLayout vLayout = new VerticalLayout();
 	private Label pkgDescrTxtField = new Label();
 	

@@ -99,7 +99,7 @@ public class ICEAppStoreHandler extends AbstractHandler {
 			// Create a new ForkStorkWizard and Dialog
 			final AppStoreWizard wizard = new AppStoreWizard();
 			WizardDialog dialog = new WizardDialog(shell, wizard);
-
+			dialog.setPageSize(1100, 1000);
 			// Open the dialog
 			if (dialog.open() != 0) {
 				return null;
@@ -126,7 +126,6 @@ public class ICEAppStoreHandler extends AbstractHandler {
 
 			@Override
 			public IStatus runInWorkspace(IProgressMonitor monitor) {
-
 				environment.setProjectlauncher(EclipseappsFactory.eINSTANCE.createDockerPTPSyncProjectLauncher());
 				if (!environment.build() || !environment.connect()) {
 					String message = "Could not build or connect to the environment:\n";

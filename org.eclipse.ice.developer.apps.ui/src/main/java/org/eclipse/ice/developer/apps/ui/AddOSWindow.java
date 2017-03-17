@@ -8,6 +8,8 @@ import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.util.BeanContainer;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -20,6 +22,9 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
+
+import apps.AppsFactory;
+import apps.IEnvironment;
 
 /**
  * @author Anara Kozhokanova
@@ -39,20 +44,14 @@ public class AddOSWindow extends Window {
 	private Button cancelButton;
 	private Button okButton;
 	
-	// create binder
-	private BeanFieldGroup<OSPackage> binder;
-	
-	// create container
-	private BeanContainer<String, OSPackage> container;
-	
 	// create a reference to basket
 	private VerticalLayout basket;
 	
-	/**
-	 * 
-	 */
-	public AddOSWindow(VerticalLayout pkgLayout) {
+	private IEnvironment environment;
+	
+	public AddOSWindow(IEnvironment env, VerticalLayout pkgLayout) {
 		super("Add OS Package");
+		environment = env;
 		center();
 		basket = pkgLayout;
 		vLayout = new VerticalLayout();
@@ -64,18 +63,6 @@ public class AddOSWindow extends Window {
 		osTextField = new TextField();
 		addPkgButton = new Button();
 		
-		binder = new BeanFieldGroup<OSPackage>(OSPackage.class);
-		// create bean
-		binder.setItemDataSource(new OSPackage());
-		// bind member field 'osTextField' to the OSPackage bean
-		binder.bindMemberFields(this);
-		// set the binder's buffer
-		binder.setBuffered(true);
-		// create container that will store beans
-		container = new BeanContainer<String, OSPackage>(OSPackage.class);
-		// set id resolver
-		container.setBeanIdProperty("name");
-		
 		cancelButton = new Button("Cancel", e -> {
 			close(); 
 			pkgListLayout.removeAllComponents();
@@ -84,7 +71,6 @@ public class AddOSWindow extends Window {
 		});
 		
 		okButton = new Button("OK", e -> {
-			addOSPackagesToBasket();
 			close(); 
 			pkgListLayout.removeAllComponents();
 			osTextField.clear();
@@ -113,23 +99,29 @@ public class AddOSWindow extends Window {
 				okButton.setDescription("Add package(s) to the basket.");
 				// display what package was entered
 				pkgListLayout.addComponent(new Label(osTextField.getValue() 
-						+ "- is added!"));
-				try {
-					// validate and get data
-					binder.commit();
-					// after successful validation add data to container
-					container.addBean(binder.getItemDataSource().getBean());
-					// create a new bean
-					binder.setItemDataSource(new OSPackage());
-				} catch (CommitException e1) {
-					Notification.show("Something went wrong :(",
-							Notification.Type.WARNING_MESSAGE);
-				}
+						+ " - is added!"));
+				apps.OSPackage p = AppsFactory.eINSTANCE.createOSPackage();
+				p.setName(osTextField.getValue());
+				environment.getDependentPackages().add(p);
+				
+				// Add to the packages basket
+				Label label = new Label();
+				label.setCaption(osTextField.getValue());
+				basket.addComponent(label);
+				
 				osTextField.clear();
 				osTextField.focus();
 			}
 		});
 		
+		osTextField.addShortcutListener(new ShortcutListener("Shortcut Name", ShortcutAction.KeyCode.ENTER, null) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+		    public void handleAction(Object sender, Object target) {
+				addPkgButton.click();
+		    }
+		});
 		addPkgLayout.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
 		addPkgLayout.addComponents(osTextField, addPkgButton);
 		
@@ -139,41 +131,4 @@ public class AddOSWindow extends Window {
 		vLayout.setMargin(true);
 		setContent(vLayout);
 	}
-	
-	/**
-	 * Add OS packages to basket whenever 'ok' button is clicked
-	 * 
-	 */
-	private synchronized boolean addOSPackagesToBasket() {
-		if (container.size() > 0) {
-			// iterate over every package in the container
-			for (Object itemId : container.getItemIds()) {
-				Label label = new Label();
-				Item item = container.getItem(itemId);
-				label.setCaption((String) item.getItemProperty("name").getValue());
-				// check if a package is already added
-				if (basket.getComponentCount() > 0) {
-					for (Component labelComponent : basket) {
-						// add to basket only new packages
-						if (!labelComponent.getCaption().equals(label.getCaption())) {
-							basket.addComponent(label);
-
-						}
-					}
-				} else if (basket.getComponentCount() == 0) {
-					basket.addComponent(label);
-				}
-			}
-			return true;
-		}
-		return false;		
-	}
-
-	/**
-	 * @return container with beans if any
-	 */
-	public BeanContainer<String, OSPackage> getContainer() {
-		return container;
-	}
-
 }

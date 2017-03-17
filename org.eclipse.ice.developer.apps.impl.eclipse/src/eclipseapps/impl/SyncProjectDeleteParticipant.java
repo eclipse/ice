@@ -98,7 +98,7 @@ public class SyncProjectDeleteParticipant extends DeleteParticipant {
 				environmentToDelete.stop();
 			}
 			environmentToDelete.delete();
-			manager.deleteEnvironment(environmentToDelete.getName());
+//			manager.deleteEnvironment(environmentToDelete.getName());
 		}
 		return null;
 	}
