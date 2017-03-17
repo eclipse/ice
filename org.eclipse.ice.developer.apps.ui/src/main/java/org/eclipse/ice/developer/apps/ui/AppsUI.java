@@ -1,9 +1,5 @@
 package org.eclipse.ice.developer.apps.ui;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
@@ -17,13 +13,12 @@ import org.osgi.service.http.NamespaceException;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
+import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
@@ -81,6 +76,7 @@ public class AppsUI extends UI {
 	/**
 	 * Containers for beans
 	 */
+	private BeanContainer<String, Environment> envContainer;
 	private BeanContainer<String, OSPackage> osPackageContainer;
 	private BeanContainer<String, SourcePackage> sourcePackageContainer;
 	private BeanContainer<String, SpackPackage> spackPackageContainer;
@@ -93,12 +89,14 @@ public class AppsUI extends UI {
 	 */
 	private BeanFieldGroup<Docker> dockerBinder;
 	private BeanFieldGroup<Folder> folderBinder;
+	private BeanFieldGroup<Environment> envBinder;
 	
 	//BeanFieldGroup<SpackPackage> binder = new BeanFieldGroup<SpackPackage>(SpackPackage.class);
 	
 	@Override
     protected void init(VaadinRequest vaadinRequest) {
     	buildLayout();
+    	addEnvNameLayout();
     	addSpackPackagesLayout();
     	addOtherPackagesLayout();
     	addAdvancedView();
@@ -107,6 +105,25 @@ public class AppsUI extends UI {
 
 	
     /**
+     * Creates 'environment' field
+     */
+    private void addEnvNameLayout() {
+    	// create layout that'll contain environment field
+    	Environment environmentLayout = new Environment();
+    	// create binder
+    	envBinder = new BeanFieldGroup<Environment>(Environment.class);
+		// set data source of the binder
+		envBinder.setItemDataSource(environmentLayout);
+		// bind member field fields of Environment
+		envBinder.bindMemberFields(environmentLayout);
+		// set the binder's buffer
+		envBinder.setBuffered(true);
+		// add layout to main view
+    	mainLayout.addComponent(environmentLayout);
+	}
+
+
+	/**
      * Creates validate and cancel buttons and adds them to layout
      */
     private void addValidateCancelButtons() {
@@ -135,10 +152,12 @@ public class AppsUI extends UI {
 	 */
 	private void validateFields() {
 		
-		// instantiate folder and docker containers
+		// instantiate folder, docker, and environment containers
 		dockerContainer = new BeanContainer<String, Docker>(Docker.class);
 		folderContainer = new BeanContainer<String, Folder>(Folder.class);
+		envContainer = new BeanContainer<String, Environment>(Environment.class);
 		
+		// adding data to docker container
 		try {
 			// validate and get data, if validation fails commitException is thrown
 			dockerBinder.commit();
@@ -151,7 +170,7 @@ public class AppsUI extends UI {
 					Notification.Type.WARNING_MESSAGE);
 		}
 		
-		// same process as above
+		// adding data to folder container
 		try {
 			folderBinder.commit();
 			folderContainer.addItem("folderId", folderBinder.getItemDataSource().getBean());
@@ -160,7 +179,16 @@ public class AppsUI extends UI {
 					Notification.Type.WARNING_MESSAGE);
 		}
     	
-    	persistData();
+		// adding data to environment container
+		try {
+			envBinder.commit();
+			envContainer.addItem("environmentId", envBinder.getItemDataSource().getBean());
+		} catch (CommitException e) {
+			Notification.show("Something is wrong with environment name! :(",
+					Notification.Type.WARNING_MESSAGE);
+		}
+		
+    	persistData();  // persisting data
 	}
 
 
@@ -172,7 +200,7 @@ public class AppsUI extends UI {
     	IEnvironment environment = manager.createEmpty("Docker");
     	manager.setEnvironmentStorage(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentStorage());
     	manager.setConsole(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentConsole());
-    	//environment.setName("");
+    	environment.setName((String) envContainer.getContainerProperty("environmentId", "name").getValue());
     	
     	// Set primary app
     	apps.Package primaryApp = AppsFactory.eINSTANCE.createSourcePackage();
@@ -190,6 +218,7 @@ public class AppsUI extends UI {
     	
     	// Source packages
     	apps.SourcePackage sourcePackage = AppsFactory.eINSTANCE.createSourcePackage();
+    	sourcePackage.setName((String) sourcePackageContainer.getContainerProperty("sourceId", "name").getValue());
     	sourcePackage.setRepoURL((String) sourcePackageContainer.getContainerProperty("sourceId", "link").getValue());
     	sourcePackage.setBranch((String) sourcePackageContainer.getContainerProperty("sourceId", "branch").getValue());
     	
