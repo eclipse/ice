@@ -76,7 +76,7 @@ public class AppsUI extends UI {
 	/**
 	 * Containers for beans
 	 */
-	private BeanContainer<String, Environment> envContainer;
+	private BeanContainer<String, EnvironmentBean> envContainer;
 	private BeanContainer<String, OSPackage> osPackageContainer;
 	private BeanContainer<String, SourcePackage> sourcePackageContainer;
 	private BeanContainer<String, SpackPackage> spackPackageContainer;
@@ -89,7 +89,7 @@ public class AppsUI extends UI {
 	 */
 	private BeanFieldGroup<Docker> dockerBinder;
 	private BeanFieldGroup<Folder> folderBinder;
-	private BeanFieldGroup<Environment> envBinder;
+	private BeanFieldGroup<EnvironmentBean> envBinder;
 	
 	//BeanFieldGroup<SpackPackage> binder = new BeanFieldGroup<SpackPackage>(SpackPackage.class);
 	
@@ -111,9 +111,9 @@ public class AppsUI extends UI {
     	// create layout that'll contain environment field
     	Environment environmentLayout = new Environment();
     	// create binder
-    	envBinder = new BeanFieldGroup<Environment>(Environment.class);
+    	envBinder = new BeanFieldGroup<EnvironmentBean>(EnvironmentBean.class);
 		// set data source of the binder
-		envBinder.setItemDataSource(environmentLayout);
+		envBinder.setItemDataSource(new EnvironmentBean());
 		// bind member field fields of Environment
 		envBinder.bindMemberFields(environmentLayout);
 		// set the binder's buffer
@@ -155,7 +155,7 @@ public class AppsUI extends UI {
 		// instantiate folder, docker, and environment containers
 		dockerContainer = new BeanContainer<String, Docker>(Docker.class);
 		folderContainer = new BeanContainer<String, Folder>(Folder.class);
-		envContainer = new BeanContainer<String, Environment>(Environment.class);
+		envContainer = new BeanContainer<String, EnvironmentBean>(EnvironmentBean.class);
 		
 		// adding data to docker container
 		try {
@@ -200,6 +200,7 @@ public class AppsUI extends UI {
     	IEnvironment environment = manager.createEmpty("Docker");
     	manager.setEnvironmentStorage(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentStorage());
     	manager.setConsole(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentConsole());
+    	System.out.println("HELLO WORLD: " + (envContainer.getContainerProperty("environmentId", "name") == null));
     	environment.setName((String) envContainer.getContainerProperty("environmentId", "name").getValue());
     	
     	// Set primary app
@@ -221,6 +222,7 @@ public class AppsUI extends UI {
     	sourcePackage.setName((String) sourcePackageContainer.getContainerProperty("sourceId", "name").getValue());
     	sourcePackage.setRepoURL((String) sourcePackageContainer.getContainerProperty("sourceId", "link").getValue());
     	sourcePackage.setBranch((String) sourcePackageContainer.getContainerProperty("sourceId", "branch").getValue());
+    	environment.setPrimaryApp(sourcePackage);
     	
     	// Container configurations (need to add 'additional commands' field)
     	DockerEnvironment dockerEnv = (DockerEnvironment) environment;

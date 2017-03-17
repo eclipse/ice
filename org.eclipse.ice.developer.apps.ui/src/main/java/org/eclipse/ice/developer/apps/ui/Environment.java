@@ -22,7 +22,7 @@ public class Environment extends VerticalLayout {
 	public Environment() {
 		//vLayout = new VerticalLayout();
 		envNameTxtField = new TextField();
-    	envNameTxtField.setCaption("Environment name:");
+    	envNameTxtField.setCaption("Environment Name:");
     	addComponent(envNameTxtField);
     	setSpacing(true);
     	setMargin(new MarginInfo(false,true,false,true));

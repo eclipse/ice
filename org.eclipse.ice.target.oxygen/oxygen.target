@@ -115,7 +115,7 @@
 <unit id="org.eclipse.remote.proxy.feature.group" version="0.0.0"/>
 <repository location="http://download.eclipse.org/tools/ptp/builds/remote/nightly"/>
 </location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<!--<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.ease.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.ease.lang.javascript.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.ease.lang.python.feature.feature.group" version="0.0.0"/>
@@ -126,7 +126,7 @@
 <unit id="org.eclipse.ease.python.jython.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.ease.ui.feature.feature.group" version="0.0.0"/>
 <repository location="http://download.eclipse.org/ease/update/nightly"/>
-</location>
+</location>-->
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.eavp.feature.feature.group" version="0.0.0"/>
 <repository location="http://download.eclipse.org/eavp/builds/next"/>
