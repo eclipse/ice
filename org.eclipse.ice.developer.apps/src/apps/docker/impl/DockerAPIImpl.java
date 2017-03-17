@@ -271,15 +271,11 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 		if (dockerClient != null) {
 			ContainerConfiguration config = DockerFactory.eINSTANCE.createContainerConfiguration();
 			createContainer(imageName, config);
-			for (String s: command) {
-				System.out.println(s);
-			}
 			String id = config.getId();
 			LogStream output = null;
 			try {
 				final ExecCreation execCreation = dockerClient.execCreate(id, command,
 						DockerClient.ExecCreateParam.attachStdout(), DockerClient.ExecCreateParam.attachStderr());
-				System.out.println("Exec:\n" + execCreation.toString());
 				output = dockerClient.execStart(execCreation.id());
 			} catch (DockerException | InterruptedException e) {
 				e.printStackTrace();

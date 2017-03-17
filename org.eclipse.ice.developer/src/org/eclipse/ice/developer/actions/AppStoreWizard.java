@@ -5,17 +5,16 @@ import org.eclipse.ui.IWorkbenchWindow;
 
 public class AppStoreWizard extends Wizard {
 
-	private AppStoreWizardPage page; 
+	private CreateAppWizardPage page; 
 	
 	@Override
 	public boolean performFinish() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 	/**
 	 */
 	public AppStoreWizard() {
-		page = new AppStoreWizardPage("App Store");
+		page = new CreateAppWizardPage("App Store");
 		setWindowTitle("ICE Scientific Application Store");
 		this.setForcePreviousAndNextButtons(false);
 
@@ -32,8 +31,7 @@ public class AppStoreWizard extends Wizard {
 		// Initialize the default information.
 		this();
 		// Store a reference to the workbench window.
-//		workbenchWindow = window;
-		page = new AppStoreWizardPage("Fork the Stork!");
+		page = new CreateAppWizardPage("Create App Environment!");
 
 	}
 

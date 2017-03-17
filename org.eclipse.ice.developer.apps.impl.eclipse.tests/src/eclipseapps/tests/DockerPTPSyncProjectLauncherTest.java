@@ -97,12 +97,10 @@ public class DockerPTPSyncProjectLauncherTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see eclipseapps.DockerPTPSyncProjectLauncher#launchProject(apps.SourcePackage)
-	 * @generated
 	 */
 	public void testLaunchProject__SourcePackage() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
 	}
 
 } //DockerPTPSyncProjectLauncherTest

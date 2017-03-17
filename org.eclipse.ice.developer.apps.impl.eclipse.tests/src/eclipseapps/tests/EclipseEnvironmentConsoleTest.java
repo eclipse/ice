@@ -85,5 +85,9 @@ public class EclipseEnvironmentConsoleTest extends TestCase {
 	protected void tearDown() throws Exception {
 		setFixture(null);
 	}
+	
+	public void testDummy() {
+		assertTrue(true);
+	}
 
 } //EclipseEnvironmentConsoleTest

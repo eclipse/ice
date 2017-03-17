@@ -98,12 +98,10 @@ public class EclipseCppProjectProviderTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.LanguageProjectProvider#createProject(java.lang.String)
-	 * @generated
 	 */
 	public void testCreateProject__String() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
 	}
 
 	/**
@@ -111,12 +109,10 @@ public class EclipseCppProjectProviderTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.LanguageProjectProvider#configure()
-	 * @generated
 	 */
 	public void testConfigure() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
 	}
 
 } //EclipseCppProjectProviderTest

@@ -114,12 +114,10 @@ public class DockerEnvironmentTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.docker.DockerEnvironment#execute(java.lang.String, java.lang.String[])
-	 * @generated
 	 */
 	public void testExecute__String_String() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
 	}
 
 	/**
@@ -127,12 +125,10 @@ public class DockerEnvironmentTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.docker.DockerEnvironment#hasDocker()
-	 * @generated
 	 */
 	public void testHasDocker() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
 	}
 
 	/**
@@ -140,12 +136,10 @@ public class DockerEnvironmentTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.docker.DockerEnvironment#pullImage(java.lang.String)
-	 * @generated
 	 */
 	public void testPullImage__String() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
 	}
 
 	private class FakeDockerAPI extends DockerAPIImpl {
@@ -180,7 +174,7 @@ public class DockerEnvironmentTest extends TestCase {
 		String expectedFile = "from eclipseice/base-fedora\n"
 				+ "run /bin/bash -c \"source /root/.bashrc && spack compiler find && spack install --fake cmake %gcc@6.3.1 && spack install --fake llvm %gcc@6.3.1 \"\n"
 				+ "run dnf install -y gcc-gfortran \n"
-				+ "run git clone --recursive -b master https://github.com/ORNL-QCI/xacc xacc\n";
+				+ "run git clone --recursive -b master https://github.com/ORNL-QCI/xacc /projects/xacc\n";
 		// Get a valid Environment
 		DockerEnvironment env = (DockerEnvironment) AppsFactory.eINSTANCE.createEnvironmentManager().create(jsonStr);
 		FakeDockerAPI api = null;

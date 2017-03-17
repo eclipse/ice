@@ -9,9 +9,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-public class AppStoreWizardPage extends WizardPage {
+public class CreateAppWizardPage extends WizardPage {
 
-	protected AppStoreWizardPage(String pageName) {
+	protected CreateAppWizardPage(String pageName) {
 		super(pageName);
 		setTitle("App Environment Creation");
 		setDescription("Fill out the information below to construct you scientific application environment.");
