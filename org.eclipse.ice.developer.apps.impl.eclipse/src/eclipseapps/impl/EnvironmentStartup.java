@@ -22,7 +22,6 @@ public class EnvironmentStartup implements IStartup {
 		
 		// Make sure we have the proper Docker Images...
 		String baseICEImage = "eclipseice/base-fedora:latest";
-		String baseSshImage = "jeroenpeeters/docker-ssh:latest";
 		
 		try {
 			api = DockerFactory.eINSTANCE.createDockerAPI();
@@ -41,10 +40,6 @@ public class EnvironmentStartup implements IStartup {
 					if (!images.contains(baseICEImage)) {
 						console.print(baseICEImage + " image not found locally. Pulling from Dockerhub...");
 						api.pull(baseICEImage);
-					}
-					if (!images.contains(baseSshImage)) {
-						console.print(baseSshImage + " image not found locally. Pulling from Dockerhub...");
-						api.pull(baseSshImage);
 					}
 				}
 				

@@ -343,7 +343,9 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 			try {
 				List<Image> images = dockerClient.listImages();
 				for (Image i : images) {
-					imageNames.add(i.repoTags().get(0));
+					if (i.repoTags() != null) {
+						imageNames.add(i.repoTags().get(0));
+					}
 				}
 				return imageNames;
 			} catch (DockerException | InterruptedException e) {
