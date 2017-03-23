@@ -59,7 +59,8 @@
   	<module>../org.eclipse.ice.tests.vibe</module>
   	<module>../org.eclipse.ice.core.feature</module> 
   	<module>../org.eclipse.ice.feature</module>  	
-  	<module>../org.eclipse.ice.repository</module>    	
-  	<module>../org.eclipse.ice.product</module>  		  	
+  	<module>../org.eclipse.ice.repository</module>
+    <module>../org.eclipse.ice.headless.product</module>
+  	<module>../org.eclipse.ice.product</module>		  	
   </modules>
 </project>

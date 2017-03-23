@@ -23,26 +23,24 @@
       </loginModule>
    </extension>
    <extension
+         point="org.eclipse.core.runtime.applications"
+         id="app"
+         name="%appName">
+      <application>
+         <run
+            class="org.eclipse.ice.core.launcher.CoreIApplication">
+         </run>
+      </application>
+   </extension>   
+   <extension
          id="headless_product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.eclipse.e4.ui.workbench.swt.E4Application"
-            name="ICE Headless product">
+            application="org.eclipse.ice.core.application"
+            name="ICE Headless Product">
          <property
-               name="windowImages"
-               value="/icons/ice_logo_16x16.png,/icons/ice_logo_32x32.png,/icons/ice_logo_64x64.png,/icons/ice_logo_128x128.png,/icons/ice_logo_256x256.png">
-         </property>
-         <property
-               name="startupForegroundColor"
-               value="FFFFFF">
-         </property>
-         <property
-               name="startupProgressRect"
-               value="5,470,665,15">
-         </property>
-         <property
-               name="startupMessageRect"
-               value="7,485,665,20">
+               name="appName"
+               value="ICE Headless Product">
          </property>
       </product>
    </extension>
