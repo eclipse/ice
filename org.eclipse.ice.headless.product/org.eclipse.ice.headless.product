@@ -7,7 +7,7 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-consoleLog -console -clean -data testDir
+      <programArgs>-consoleLog -console -clean -data testDir -noExit
       </programArgs>
       <vmArgs>-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=8082 -Dcom.sun.jersey.config.property.packages=org.eclipse.ice.core.iCore -Dorg.osgi.framework.bundle.parent=ext; -Declipse.log.level=INFO
       </vmArgs>

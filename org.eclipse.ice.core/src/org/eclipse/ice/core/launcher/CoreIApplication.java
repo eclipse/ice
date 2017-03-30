@@ -32,8 +32,11 @@ public class CoreIApplication implements IApplication {
 	 */
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
+		
+		System.out.println("Running in headless mode.");
+		
 		// TODO Auto-generated method stub
-		return null;
+		return IApplication.EXIT_OK;
 	}
 
 	/*

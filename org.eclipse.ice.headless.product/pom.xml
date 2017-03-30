@@ -56,16 +56,14 @@
 						<!-- (optional) customize the root folder name of the product zip -->
 						<configuration>
 							<formats>
-								<win32>${win32-format}</win32>
 								<linux>${linux-format}</linux>
-								<macosx>${macosx-format}</macosx>
 							</formats>
 							<products>
 								<product>
 									<id>org.eclipse.ice.headless.product</id>
 									<rootFolders>
 										<rootFolder>ICE-headless</rootFolder>
-										<macosx>ICE-headless.app</macosx>
+									<!-- <macosx>ICE-headless.app</macosx> -->	
 									</rootFolders>
 									<attachId>ICEHeadless</attachId>
 								</product>
