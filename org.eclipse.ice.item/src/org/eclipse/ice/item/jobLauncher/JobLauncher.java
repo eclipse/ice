@@ -267,7 +267,7 @@ public class JobLauncher extends Item {
 	 * 
 	 * @author Jay Jay Billings
 	 */
-	private static class FileType {
+	public static class FileType {
 		/**
 		 * The name of the input file type. ("Input" or "Host configuration" or
 		 * "Materials information" for example)
@@ -591,7 +591,7 @@ public class JobLauncher extends Item {
 		DataComponent fileData = null, parallelData = null, dockerComponent;
 		IEntry fileEntry = null, mpiEntry = null;
 		int numProcs = 1, numTBBThreads = 1;
-
+		
 		// Get the project space directory
 		String projectSpace = project.getLocation().toOSString();
 
@@ -662,9 +662,15 @@ public class JobLauncher extends Item {
 		}
 		// Get the hostname and os
 		ArrayList<IEntry> hostEntries = hostsTable.getRow(selectedRowId);
-		hostname = hostEntries.get(0).getValue();
-		os = hostEntries.get(1).getValue();
-		installDir = hostEntries.get(2).getValue();
+		if (hostEntries != null) {
+			hostname = hostEntries.get(0).getValue();
+			os = hostEntries.get(1).getValue();
+			installDir = hostEntries.get(2).getValue();
+		} else {
+			hostname = "localhost";
+			os = "Linux";
+			installDir = "";
+		}
 
 		// Could put the queue type in the map here
 
@@ -700,7 +706,7 @@ public class JobLauncher extends Item {
 		actionDataMap.put("uploadInput", String.valueOf(uploadInput));
 		// Note: "no append" is reversed logic from "append". ICE also checks
 		// the command name to determine it too.
-		if (appendInput && !executableCommandName.contains("${inputFile}")) {
+		if (!appendInput || !executableCommandName.contains("${inputFile}")) {
 			actionDataMap.put("noAppendInput", "false");
 		} else {
 			actionDataMap.put("noAppendInput", "true");
@@ -1113,33 +1119,20 @@ public class JobLauncher extends Item {
 		// moved to the job launch directory.
 		actionList.add(actionFactory.getAction("Local Files Copy"));
 
-		// If docker launch is enabled, then
-		// we need to launch the correct container and
-		// modify the hostname/port in the action data map
-		// to point to that container
-		// if (enableDocker) {
-		// Action dockerAction = actionFactory.getAction("Create Docker
-		// Container");
-		//
-		// // This execution should create the container and remote connection
-		// // and modify the host/port/connectionName in the map.
-		// dockerAction.execute(actionDataMap);
-		// }
-
 		// Create the List of Actions to execute... The list is
 		// different depending on whether we are local or remote,
 		// or using Docker or not...
-		if (isLocalhost(actionDataMap.get("hostname"))) {
-			// For a local execution, we just need the Local Execution
-			// Action
-			actionList.add(actionFactory.getAction("Local Execution"));
-		} else {
+		if (!isLocalhost(actionDataMap.get("hostname")) || actionDataMap.get("remotePort") != null) {
 			System.out.println("Setting up remote launch");
 			// For a remote execution, we need to push files to the
 			// remote host, execute remotely, then download resultant files.
 			actionList.add(actionFactory.getAction("Remote File Upload"));
 			actionList.add(actionFactory.getAction("Remote Execution"));
 			actionList.add(actionFactory.getAction("Remote File Download"));
+		} else {
+			// For a local execution, we just need the Local Execution
+			// Action
+			actionList.add(actionFactory.getAction("Local Execution"));
 		}
 
 		return actionList;
@@ -1151,7 +1144,7 @@ public class JobLauncher extends Item {
 	 * 
 	 * @return folder The local job launch folder.
 	 */
-	private IFolder createLocalJobLaunchFolder() {
+	protected IFolder createLocalJobLaunchFolder() {
 
 		// Here we should create a scratch job directory
 		// in project/jobs

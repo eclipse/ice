@@ -278,7 +278,10 @@ public class ExecutionHelper {
 		// Print some debug information
 		logger.info("Execution Helper Message: Raw executable command = " + fixedExecutableName);
 
-		fixedExecutableName += " ${inputFile}";
+		if (Boolean.valueOf(execDictionary.get("noAppendInput"))) {
+			System.out.println("Adding INPUT FILE TO APPEND");
+			fixedExecutableName += " ${inputFile}";
+		}
 
 		// Determine the proper separator - just check to see if it is Windows,
 		// which will have a :\ in it somewhere.

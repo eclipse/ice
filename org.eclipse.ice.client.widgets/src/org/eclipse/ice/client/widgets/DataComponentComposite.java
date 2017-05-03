@@ -165,7 +165,8 @@ public class DataComponentComposite extends Composite
 		// Set the initial layout for the parent class. This should default to
 		// a GridLayout with 3 equally sized columns.
 		setLayout(new GridLayout(3, true));
-
+//		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
 		// Render the Entries.
 		renderEntries();
 

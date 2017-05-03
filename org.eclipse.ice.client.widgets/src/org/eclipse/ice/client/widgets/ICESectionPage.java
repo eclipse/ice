@@ -55,7 +55,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	/**
 	 * The IManagedForm for the SectionPage.
 	 */
-	private IManagedForm managedFormRef;
+	protected IManagedForm managedFormRef;
 
 	/**
 	 * <p>
@@ -64,7 +64,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 * </p>
 	 *
 	 */
-	private ArrayList<DataComponent> dataComponents;
+	protected ArrayList<DataComponent> dataComponents;
 
 	/**
 	 * <p>
@@ -205,7 +205,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 * </p>
 	 *
 	 */
-	private void createDataComponentSections() {
+	protected void createDataComponentSections() {
 
 		// Get the parent form and the ToolKit to create decorated Sections.
 		final ScrolledForm scrolledForm = managedFormRef.getForm();

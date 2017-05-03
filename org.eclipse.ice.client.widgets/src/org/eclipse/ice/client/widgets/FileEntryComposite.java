@@ -18,6 +18,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -64,11 +70,46 @@ public class FileEntryComposite extends DiscreteEntryComposite {
 		// If this is a File entry, draw dropdown (if applicable)
 		// and browse button
 		createLabel();
-		if (numAllowedValues > 0) {
-			createDropdown();
-		}
+		createDropdown();
 		createBrowseButton();
 		setLayout(setupDropDownLayout(numAllowedValues));
+
+		// Setup the FileEntry for drag and drop of files. 
+		DropTarget dt = new DropTarget(widget, DND.DROP_DEFAULT | DND.DROP_MOVE);
+		dt.setTransfer(new Transfer[] { FileTransfer.getInstance() });
+		dt.addDropListener(new DropTargetAdapter() {
+			public void drop(DropTargetEvent event) {
+				String fileList[] = null;
+				FileTransfer ft = FileTransfer.getInstance();
+				if (ft.isSupportedType(event.currentDataType)) {
+					fileList = (String[]) event.data;
+					// Get the Client
+					IClient client = null;
+					try {
+						client = IClient.getClient();
+					} catch (CoreException e1) {
+						logger.error("Could not get reference to IClient instance.", e1);
+					}
+
+					// Import the files
+					File importedFile = new File(fileList[0]);
+					client.importFile(importedFile.toURI());
+					// Create a new content provider with the new file
+					// in the allowed values list
+					List<String> valueList = entry.getAllowedValues();
+					if (!valueList.contains(importedFile.getName())) {
+						valueList.add(importedFile.getName());
+					}
+
+					// Finish setting the allowed values and default
+					// value
+					entry.setAllowedValues(valueList);
+
+					// Set the entry's value to the new file
+					setEntryValue(importedFile.getName());
+				}
+			}
+		});
 	}
 
 	/**

@@ -36,6 +36,10 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
 
+import apps.docker.DockerAPI;
+import apps.docker.DockerFactory;
+import eclipseapps.EclipseappsFactory;
+
 /**
  * The ICEJob is a subclass of the Eclipse Job class that provides a run
  * implementation that executes a list of ICE Actions.
@@ -165,49 +169,81 @@ public class ICEJob extends Job {
 	private void cleanDockerExecution() {
 		String id = actionDataMap.get("containerId");
 		String connectionName = actionDataMap.get("remoteConnectionName");
-		DockerClient dockerClient = null;
-		try {
-			dockerClient = new DockerClientFactory().getDockerClient();
-		} catch (DockerCertificateException | IOException | InterruptedException e1) {
-			e1.printStackTrace();
-		}
+		
+		// FIXME, PULL DOCKERAPI STUFF OUT INTO SEPARATE BUNDLE
+		DockerAPI dockerAPI = DockerFactory.eINSTANCE.createDockerAPI();
+		dockerAPI.setEnvironmentConsole(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentConsole());
+		
+		dockerAPI.stopContainer(id);
+		dockerAPI.deleteContainer(id);
+		
+		// Create the connection to the container
+		IRemoteServicesManager remoteManager = getService(IRemoteServicesManager.class);
 
-		if (dockerClient != null) {
+		// If valid, continue on an get the IRemoteConnection
+		if (remoteManager != null) {
 
-			// If it's finished, we should
-			// remove the docker container and
-			// the remote connection
-			try {
-				dockerClient.killContainer(id);
-				dockerClient.removeContainer(id);
-			} catch (DockerException | InterruptedException e) {
-				e.printStackTrace();
+			// Get the connection type - basically Jsch is index 0
+			IRemoteConnectionType connectionType = remoteManager.getRemoteConnectionTypes().get(0);
+			IRemoteConnection connection = null;
+			for (IRemoteConnection c : connectionType.getConnections()) {
+				if (connectionName.equals(c.getName())) {
+					connection = c;
+				}
 			}
 
-			// Create the connection to the container
-			IRemoteServicesManager remoteManager = getService(IRemoteServicesManager.class);
-
-			// If valid, continue on an get the IRemoteConnection
-			if (remoteManager != null) {
-
-				// Get the connection type - basically Jsch is index 0
-				IRemoteConnectionType connectionType = remoteManager.getRemoteConnectionTypes().get(0);
-				IRemoteConnection connection = null;
-				for (IRemoteConnection c : connectionType.getConnections()) {
-					if (connectionName.equals(c.getName())) {
-						connection = c;
-					}
-				}
-
-				if (connection != null) {
-					try {
-						connectionType.removeConnection(connection);
-					} catch (RemoteConnectionException e) {
-						e.printStackTrace();
-					}
+			if (connection != null) {
+				try {
+					connectionType.removeConnection(connection);
+				} catch (RemoteConnectionException e) {
+					e.printStackTrace();
 				}
 			}
 		}
+		
+//		DockerClient dockerClient = null;
+//		try {
+//			dockerClient = new DockerClientFactory().getDockerClient();
+//		} catch (DockerCertificateException | IOException | InterruptedException e1) {
+//			e1.printStackTrace();
+//		}
+//
+//		if (dockerClient != null) {
+//
+//			// If it's finished, we should
+//			// remove the docker container and
+//			// the remote connection
+//			try {
+//				dockerClient.killContainer(id);
+//				dockerClient.removeContainer(id);
+//			} catch (DockerException | InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//
+//			// Create the connection to the container
+//			IRemoteServicesManager remoteManager = getService(IRemoteServicesManager.class);
+//
+//			// If valid, continue on an get the IRemoteConnection
+//			if (remoteManager != null) {
+//
+//				// Get the connection type - basically Jsch is index 0
+//				IRemoteConnectionType connectionType = remoteManager.getRemoteConnectionTypes().get(0);
+//				IRemoteConnection connection = null;
+//				for (IRemoteConnection c : connectionType.getConnections()) {
+//					if (connectionName.equals(c.getName())) {
+//						connection = c;
+//					}
+//				}
+//
+//				if (connection != null) {
+//					try {
+//						connectionType.removeConnection(connection);
+//					} catch (RemoteConnectionException e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//		}
 
 	}
 

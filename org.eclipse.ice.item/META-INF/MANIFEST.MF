@@ -64,7 +64,9 @@ Require-Bundle: org.eclipse.core.resources;bundle-version="3.7.100",
  org.eclipse.e4.core.di;bundle-version="1.5.0",
  javax.ws.rs,
  org.eclipse.eavp.geometry.view.model;bundle-version="0.1.0",
- com.spotify.dockerclient.shaded;bundle-version="8.0.1"
+ com.spotify.dockerclient.shaded;bundle-version="8.0.1",
+ org.eclipse.ice.developer.apps;bundle-version="2.2.1",
+ org.eclipse.ice.developer.apps.impl.eclipse;bundle-version="2.2.1"
 Service-Component: OSGi-INF/*.xml
 Meta-Persistence: META-INF/persistence.xml
 JPA-PersistenceUnits: org.eclipse.ice.item
