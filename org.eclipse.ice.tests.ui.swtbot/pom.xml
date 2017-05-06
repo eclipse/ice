@@ -10,7 +10,7 @@
 		<relativePath>../org.eclipse.ice.parent/pom.xml</relativePath>
 	</parent>
 	<groupId>org.eclipse.ice</groupId>
-	<artifactId>org.eclipse.ice.ui.swtbot.test</artifactId>
+	<artifactId>org.eclipse.ice.tests.ui.swtbot</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
 
 	<build>

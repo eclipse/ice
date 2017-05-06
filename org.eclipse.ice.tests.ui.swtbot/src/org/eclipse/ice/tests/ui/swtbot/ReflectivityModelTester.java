@@ -92,7 +92,7 @@ public class ReflectivityModelTester extends AbstractWorkbenchTester {
 
 		// Check that the cancel button is working
 		assertTrue(bot.button("Cancel").isEnabled());
-
+		
 		// Get the nattable
 		NatTable realTable = bot.widget(widgetOfType(NatTable.class));
 		SWTBotNatTable table = new SWTBotNatTable(realTable);
@@ -120,26 +120,28 @@ public class ReflectivityModelTester extends AbstractWorkbenchTester {
 		assertEquals(6, table.rowCount());
 
 		// Select the new row and try to move it down a row. This shouldn't do
-		// anything.
+		// anything. Type the cell's current value into it to reset the focus
 		table.selectCell(bot, 0, 5);
-		bot.button("v").click();
+		bot.button(5).click();
 		cellName = (String) realTable.getDataValueByPosition(1, 6);
 		assertTrue("107Ag".equals(cellName));
 
 		// Move it up two rows
 		table.selectCell(bot, 0, 5);
-		bot.button("^").click();
-		bot.button("^").click();
+		bot.text().typeText("107Ag");
+		bot.button(4).click();
+		bot.button(4).click();
 		cellName = (String) realTable.getDataValueByPosition(1, 4);
 		assertTrue("107Ag".equals(cellName));
 
 		// Move it up five times. This should let it reach the top of the table
 		// then stop.
-		bot.button("^").click();
-		bot.button("^").click();
-		bot.button("^").click();
-		bot.button("^").click();
-		bot.button("^").click();
+		bot.button(4).click();
+		bot.button(4).click();
+		bot.button(4).click();
+		bot.button(4).click();
+		bot.button(4).click();
+		
 		cellName = (String) realTable.getDataValueByPosition(1, 1);
 		assertTrue("107Ag".equals(cellName));
 
@@ -150,7 +152,7 @@ public class ReflectivityModelTester extends AbstractWorkbenchTester {
 		assertTrue("Air".equals(cellName));
 		cellName = (String) realTable.getDataValueByPosition(1, 5);
 		assertTrue("Si".equals(cellName));
-
+		
 		// Check that the wave vector file brows button is enabled
 		bot.viewByPartName("Properties").setFocus();
 		assertTrue(bot.button("Browse...").isEnabled());
@@ -161,6 +163,7 @@ public class ReflectivityModelTester extends AbstractWorkbenchTester {
 		enterText("deltaQ0:", "invalid input");
 		enterText("deltaQ1ByQ:", "invalid input");
 		enterText("Wave Length:", "invalid input");
+
 
 	}
 
