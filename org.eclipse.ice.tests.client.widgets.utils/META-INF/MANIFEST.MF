@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ICE Client Widget Test Utilities
 Bundle-SymbolicName: org.eclipse.ice.tests.client.widgets.utils
-Bundle-Version: 2.2.0.qualifier
+Bundle-Version: 2.2.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.ice.datastructures,
  org.eclipse.ice.client.compatibility,

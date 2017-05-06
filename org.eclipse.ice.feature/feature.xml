@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.ice"
       label="ICE Infrastructure Feature"
-      version="2.2.0.qualifier"
+      version="2.2.1.qualifier"
       provider-name="Oak Ridge National Laboratory"
       plugin="org.eclipse.ice.client.rcp"
       os="linux,macosx,win32"

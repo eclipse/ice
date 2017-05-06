@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ICE XML Persistence Provider Tests
 Bundle-SymbolicName: org.eclipse.ice.tests.persistence.xml
-Bundle-Version: 2.2.0.qualifier
+Bundle-Version: 2.2.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit,
  org.eclipse.ice.persistence.xml,

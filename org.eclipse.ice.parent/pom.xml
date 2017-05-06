@@ -24,8 +24,8 @@
 	<!-- This is the parent POM from which all ICE modules inherit common settings -->
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.eclipse.ice</groupId>
-	<artifactId>org.eclipse.ice.build</artifactId>
-	<version>2.2.0-SNAPSHOT</version>
+	<artifactId>org.eclipse.ice.parent</artifactId>
+	<version>2.2.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<pluginRepositories>
