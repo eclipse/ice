@@ -3,12 +3,9 @@
 package eclipseapps;
 
 import apps.AppsPackage;
-
-import apps.docker.DockerPackage;
-
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.ice.developer.apps.docker.environment.EnvironmentPackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -67,43 +64,7 @@ public interface EclipseappsPackage extends EPackage {
 	 * @see eclipseapps.impl.EclipseappsPackageImpl#getEclipseEnvironmentStorage()
 	 * @generated
 	 */
-	int ECLIPSE_ENVIRONMENT_STORAGE = 0;
-
-	/**
-	 * The number of structural features of the '<em>Eclipse Environment Storage</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ECLIPSE_ENVIRONMENT_STORAGE_FEATURE_COUNT = AppsPackage.ENVIRONMENT_STORAGE_FEATURE_COUNT + 0;
-
-	/**
-	 * The operation id for the '<em>Store</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ECLIPSE_ENVIRONMENT_STORAGE___STORE__ELIST = AppsPackage.ENVIRONMENT_STORAGE___STORE__ELIST;
-
-	/**
-	 * The operation id for the '<em>Load</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ECLIPSE_ENVIRONMENT_STORAGE___LOAD = AppsPackage.ENVIRONMENT_STORAGE___LOAD;
-
-	/**
-	 * The number of operations of the '<em>Eclipse Environment Storage</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ECLIPSE_ENVIRONMENT_STORAGE_OPERATION_COUNT = AppsPackage.ENVIRONMENT_STORAGE_OPERATION_COUNT + 0;
+	int ECLIPSE_ENVIRONMENT_STORAGE = 3;
 
 	/**
 	 * The meta object id for the '{@link eclipseapps.impl.DockerPTPSyncProjectLauncherImpl <em>Docker PTP Sync Project Launcher</em>}' class.
@@ -113,7 +74,7 @@ public interface EclipseappsPackage extends EPackage {
 	 * @see eclipseapps.impl.EclipseappsPackageImpl#getDockerPTPSyncProjectLauncher()
 	 * @generated
 	 */
-	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER = 1;
+	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER = 0;
 
 	/**
 	 * The feature id for the '<em><b>Languageprojectprovider</b></em>' containment reference.
@@ -122,7 +83,7 @@ public interface EclipseappsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER = DockerPackage.DOCKER_PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER;
+	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER = EnvironmentPackage.DOCKER_PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER;
 
 	/**
 	 * The feature id for the '<em><b>Environmentconsole</b></em>' containment reference.
@@ -131,7 +92,7 @@ public interface EclipseappsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER__ENVIRONMENTCONSOLE = DockerPackage.DOCKER_PROJECT_LAUNCHER__ENVIRONMENTCONSOLE;
+	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER__ENVIRONMENTCONSOLE = EnvironmentPackage.DOCKER_PROJECT_LAUNCHER__ENVIRONMENTCONSOLE;
 
 	/**
 	 * The feature id for the '<em><b>Containerconfiguration</b></em>' reference.
@@ -140,7 +101,16 @@ public interface EclipseappsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER__CONTAINERCONFIGURATION = DockerPackage.DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION;
+	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER__CONTAINERCONFIGURATION = EnvironmentPackage.DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION;
+
+	/**
+	 * The feature id for the '<em><b>Project Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER__PROJECT_NAME = EnvironmentPackage.DOCKER_PROJECT_LAUNCHER__PROJECT_NAME;
 
 	/**
 	 * The number of structural features of the '<em>Docker PTP Sync Project Launcher</em>' class.
@@ -149,7 +119,7 @@ public interface EclipseappsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER_FEATURE_COUNT = DockerPackage.DOCKER_PROJECT_LAUNCHER_FEATURE_COUNT + 0;
+	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER_FEATURE_COUNT = EnvironmentPackage.DOCKER_PROJECT_LAUNCHER_FEATURE_COUNT + 0;
 
 	/**
 	 * The operation id for the '<em>Launch Project</em>' operation.
@@ -158,7 +128,16 @@ public interface EclipseappsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE = DockerPackage.DOCKER_PROJECT_LAUNCHER_OPERATION_COUNT + 0;
+	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE = EnvironmentPackage.DOCKER_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE;
+
+	/**
+	 * The operation id for the '<em>Update Connection</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER___UPDATE_CONNECTION__INT = EnvironmentPackage.DOCKER_PROJECT_LAUNCHER___UPDATE_CONNECTION__INT;
 
 	/**
 	 * The number of operations of the '<em>Docker PTP Sync Project Launcher</em>' class.
@@ -167,7 +146,7 @@ public interface EclipseappsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER_OPERATION_COUNT = DockerPackage.DOCKER_PROJECT_LAUNCHER_OPERATION_COUNT + 1;
+	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER_OPERATION_COUNT = EnvironmentPackage.DOCKER_PROJECT_LAUNCHER_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link eclipseapps.impl.EclipseCppProjectProviderImpl <em>Eclipse Cpp Project Provider</em>}' class.
@@ -177,7 +156,7 @@ public interface EclipseappsPackage extends EPackage {
 	 * @see eclipseapps.impl.EclipseappsPackageImpl#getEclipseCppProjectProvider()
 	 * @generated
 	 */
-	int ECLIPSE_CPP_PROJECT_PROVIDER = 2;
+	int ECLIPSE_CPP_PROJECT_PROVIDER = 1;
 
 	/**
 	 * The number of structural features of the '<em>Eclipse Cpp Project Provider</em>' class.
@@ -224,7 +203,7 @@ public interface EclipseappsPackage extends EPackage {
 	 * @see eclipseapps.impl.EclipseappsPackageImpl#getEclipseEnvironmentConsole()
 	 * @generated
 	 */
-	int ECLIPSE_ENVIRONMENT_CONSOLE = 3;
+	int ECLIPSE_ENVIRONMENT_CONSOLE = 2;
 
 	/**
 	 * The number of structural features of the '<em>Eclipse Environment Console</em>' class.
@@ -253,6 +232,42 @@ public interface EclipseappsPackage extends EPackage {
 	 */
 	int ECLIPSE_ENVIRONMENT_CONSOLE_OPERATION_COUNT = AppsPackage.ENVIRONMENT_CONSOLE_OPERATION_COUNT + 0;
 
+	/**
+	 * The number of structural features of the '<em>Eclipse Environment Storage</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ECLIPSE_ENVIRONMENT_STORAGE_FEATURE_COUNT = AppsPackage.ENVIRONMENT_STORAGE_FEATURE_COUNT + 0;
+
+	/**
+	 * The operation id for the '<em>Store</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ECLIPSE_ENVIRONMENT_STORAGE___STORE__ELIST = AppsPackage.ENVIRONMENT_STORAGE___STORE__ELIST;
+
+	/**
+	 * The operation id for the '<em>Load</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ECLIPSE_ENVIRONMENT_STORAGE___LOAD = AppsPackage.ENVIRONMENT_STORAGE___LOAD;
+
+	/**
+	 * The number of operations of the '<em>Eclipse Environment Storage</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ECLIPSE_ENVIRONMENT_STORAGE_OPERATION_COUNT = AppsPackage.ENVIRONMENT_STORAGE_OPERATION_COUNT + 0;
+
 
 	/**
 	 * Returns the meta object for class '{@link eclipseapps.EclipseEnvironmentStorage <em>Eclipse Environment Storage</em>}'.
@@ -273,16 +288,6 @@ public interface EclipseappsPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getDockerPTPSyncProjectLauncher();
-
-	/**
-	 * Returns the meta object for the '{@link eclipseapps.DockerPTPSyncProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>Launch Project</em>' operation.
-	 * @see eclipseapps.DockerPTPSyncProjectLauncher#launchProject(apps.SourcePackage)
-	 * @generated
-	 */
-	EOperation getDockerPTPSyncProjectLauncher__LaunchProject__SourcePackage();
 
 	/**
 	 * Returns the meta object for class '{@link eclipseapps.EclipseCppProjectProvider <em>Eclipse Cpp Project Provider</em>}'.
@@ -346,14 +351,6 @@ public interface EclipseappsPackage extends EPackage {
 		 * @generated
 		 */
 		EClass DOCKER_PTP_SYNC_PROJECT_LAUNCHER = eINSTANCE.getDockerPTPSyncProjectLauncher();
-
-		/**
-		 * The meta object literal for the '<em><b>Launch Project</b></em>' operation.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EOperation DOCKER_PTP_SYNC_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE = eINSTANCE.getDockerPTPSyncProjectLauncher__LaunchProject__SourcePackage();
 
 		/**
 		 * The meta object literal for the '{@link eclipseapps.impl.EclipseCppProjectProviderImpl <em>Eclipse Cpp Project Provider</em>}' class.

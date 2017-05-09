@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.ice.docker/src" modelPluginID="org.eclipse.ice.docker"
+    modelName="Org.eclipse.ice" modelPluginClass="" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0" copyrightFields="false"
+    operationReflection="true" importOrganizing="true" pluginKey="org.eclipse.ice.docker">
+  <foreignModel>org.eclipse.ice.docker.ecore</foreignModel>
+  <genPackages prefix="Dockerapi" basePackage="org.eclipse.ice.docker" disposableProviderFactory="true"
+      ecorePackage="org.eclipse.ice.docker.ecore#/">
+    <genDataTypes ecoreDataType="org.eclipse.ice.docker.ecore#//CommandList"/>
+    <genClasses image="false" ecoreClass="org.eclipse.ice.docker.ecore#//DockerAPI">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference org.eclipse.ice.docker.ecore#//DockerAPI/console"/>
+      <genOperations ecoreOperation="org.eclipse.ice.docker.ecore#//DockerAPI/buildImage">
+        <genParameters ecoreParameter="org.eclipse.ice.docker.ecore#//DockerAPI/buildImage/buildFile"/>
+        <genParameters ecoreParameter="org.eclipse.ice.docker.ecore#//DockerAPI/buildImage/imagename"/>
+      </genOperations>
+      <genOperations ecoreOperation="org.eclipse.ice.docker.ecore#//DockerAPI/createContainer">
+        <genParameters ecoreParameter="org.eclipse.ice.docker.ecore#//DockerAPI/createContainer/imageName"/>
+        <genParameters ecoreParameter="org.eclipse.ice.docker.ecore#//DockerAPI/createContainer/config"/>
+      </genOperations>
+      <genOperations ecoreOperation="org.eclipse.ice.docker.ecore#//DockerAPI/connectToExistingContainer">
+        <genParameters ecoreParameter="org.eclipse.ice.docker.ecore#//DockerAPI/connectToExistingContainer/id"/>
+      </genOperations>
+      <genOperations ecoreOperation="org.eclipse.ice.docker.ecore#//DockerAPI/deleteContainer">
+        <genParameters ecoreParameter="org.eclipse.ice.docker.ecore#//DockerAPI/deleteContainer/id"/>
+      </genOperations>
+      <genOperations ecoreOperation="org.eclipse.ice.docker.ecore#//DockerAPI/deleteImage">
+        <genParameters ecoreParameter="org.eclipse.ice.docker.ecore#//DockerAPI/deleteImage/imageName"/>
+      </genOperations>
+      <genOperations ecoreOperation="org.eclipse.ice.docker.ecore#//DockerAPI/stopContainer">
+        <genParameters ecoreParameter="org.eclipse.ice.docker.ecore#//DockerAPI/stopContainer/id"/>
+      </genOperations>
+      <genOperations ecoreOperation="org.eclipse.ice.docker.ecore#//DockerAPI/createContainerExecCommand">
+        <genParameters ecoreParameter="org.eclipse.ice.docker.ecore#//DockerAPI/createContainerExecCommand/imageName"/>
+        <genParameters ecoreParameter="org.eclipse.ice.docker.ecore#//DockerAPI/createContainerExecCommand/command"/>
+      </genOperations>
+      <genOperations ecoreOperation="org.eclipse.ice.docker.ecore#//DockerAPI/pull">
+        <genParameters ecoreParameter="org.eclipse.ice.docker.ecore#//DockerAPI/pull/imageName"/>
+      </genOperations>
+      <genOperations ecoreOperation="org.eclipse.ice.docker.ecore#//DockerAPI/listAvailableImages"/>
+      <genOperations ecoreOperation="org.eclipse.ice.docker.ecore#//DockerAPI/isContainerRunning">
+        <genParameters ecoreParameter="org.eclipse.ice.docker.ecore#//DockerAPI/isContainerRunning/id"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="org.eclipse.ice.docker.ecore#//ContainerConfiguration">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute org.eclipse.ice.docker.ecore#//ContainerConfiguration/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute org.eclipse.ice.docker.ecore#//ContainerConfiguration/ephemeral"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute org.eclipse.ice.docker.ecore#//ContainerConfiguration/ports"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute org.eclipse.ice.docker.ecore#//ContainerConfiguration/volumesConfig"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute org.eclipse.ice.docker.ecore#//ContainerConfiguration/remoteSSHPort"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute org.eclipse.ice.docker.ecore#//ContainerConfiguration/id"/>
+    </genClasses>
+    <genClasses ecoreClass="org.eclipse.ice.docker.ecore#//DockerMessageConsole">
+      <genOperations ecoreOperation="org.eclipse.ice.docker.ecore#//DockerMessageConsole/print">
+        <genParameters ecoreParameter="org.eclipse.ice.docker.ecore#//DockerMessageConsole/print/msg"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="org.eclipse.ice.docker.ecore#//StdOutConsole"/>
+    <nestedGenPackages prefix="Spotify" disposableProviderFactory="true" ecorePackage="org.eclipse.ice.docker.ecore#//spotify">
+      <genClasses ecoreClass="org.eclipse.ice.docker.ecore#//spotify/SpotifyDockerClient"/>
+    </nestedGenPackages>
+  </genPackages>
+</genmodel:GenModel>

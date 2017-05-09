@@ -106,13 +106,13 @@ public class EclipseEnvironmentStorageImpl extends MinimalEObjectImpl.Container 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
 		switch (operationID) {
 			case EclipseappsPackage.ECLIPSE_ENVIRONMENT_STORAGE___STORE__ELIST:
-				store((EList)arguments.get(0));
+				store((EList<IEnvironment>)arguments.get(0));
 				return null;
 			case EclipseappsPackage.ECLIPSE_ENVIRONMENT_STORAGE___LOAD:
 				return load();

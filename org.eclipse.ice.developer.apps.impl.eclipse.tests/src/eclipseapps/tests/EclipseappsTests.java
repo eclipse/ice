@@ -31,10 +31,10 @@ public class EclipseappsTests extends TestSuite {
 	 */
 	public static Test suite() {
 		TestSuite suite = new EclipseappsTests("eclipseapps Tests");
-		suite.addTestSuite(EclipseEnvironmentStorageTest.class);
 		suite.addTestSuite(DockerPTPSyncProjectLauncherTest.class);
 		suite.addTestSuite(EclipseCppProjectProviderTest.class);
 		suite.addTestSuite(EclipseEnvironmentConsoleTest.class);
+		suite.addTestSuite(EclipseEnvironmentStorageTest.class);
 		return suite;
 	}
 

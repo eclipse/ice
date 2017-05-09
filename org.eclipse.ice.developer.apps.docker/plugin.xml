@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated org.eclipse.ice.developer.apps.docker -->
+      <package
+            uri="http://eclipse.org/ice/apps/docker"
+            class="org.eclipse.ice.developer.apps.docker.environment.EnvironmentPackage"
+            genModel="model/org.eclipse.ice.developer.apps.docker.genmodel"/>
+   </extension>
+   <extension
+         id="dockerenvironmentbuilder"
+         name="Docker Environment Builder"
+         point="org.eclipse.ice.developer.apps.environmentbuilder">
+      <implementation
+            class="org.eclipse.ice.developer.apps.docker.environment.impl.DockerEnvironmentBuilderImpl">
+      </implementation>
+   </extension>
+
+</plugin>

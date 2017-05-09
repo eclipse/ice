@@ -11,6 +11,8 @@ Export-Package: eclipseapps.tests
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ice.developer.apps.impl.eclipse;visibility:=reexport,
  org.eclipse.ice.developer.apps;visibility:=reexport,
+ org.eclipse.ice.developer.apps.docker;visibility:=reexport,
+ org.eclipse.ice.docker;visibility:=reexport,
  org.eclipse.emf.ecore.xmi;visibility:=reexport,
  org.junit;visibility:=reexport
 Bundle-ActivationPolicy: lazy

@@ -29,7 +29,6 @@ import org.apache.commons.cli.ParseException;
 import apps.AppsFactory;
 import apps.EnvironmentManager;
 import apps.IEnvironment;
-import apps.docker.DockerEnvironment;
 
 /**
  * This class is responsible for taking user command 
@@ -130,10 +129,6 @@ public class EnvironmentCommandLineParser {
 				throw new RuntimeException("Could not connect to environment");
 			}
 			
-			if (env instanceof DockerEnvironment) {
-				System.out.println("Connect to Environment " + env.getName());
-				System.out.println("ssh root@localhost -p " + ((DockerEnvironment)env).getContainerConfiguration().getRemoteSSHPort());
-			}
 		}
 		return;
 	}

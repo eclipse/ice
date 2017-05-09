@@ -1,6 +1,9 @@
 package eclipseapps.impl;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.ice.docker.api.DockerAPI;
+import org.eclipse.ice.docker.api.DockerapiFactory;
+import org.eclipse.ice.docker.api.spotify.SpotifyFactory;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
@@ -9,8 +12,6 @@ import org.eclipse.ui.PlatformUI;
 import apps.AppsFactory;
 import apps.EnvironmentConsole;
 import apps.EnvironmentManager;
-import apps.docker.DockerAPI;
-import apps.docker.DockerFactory;
 import eclipseapps.EclipseappsFactory;
 
 public class EnvironmentStartup implements IStartup {
@@ -24,21 +25,21 @@ public class EnvironmentStartup implements IStartup {
 		String baseICEImage = "eclipseice/base-fedora:latest";
 		
 		try {
-			api = DockerFactory.eINSTANCE.createDockerAPI();
+			api = SpotifyFactory.eINSTANCE.createSpotifyDockerClient();
 		} catch (Exception e) {
 			e.printStackTrace();
 			api = null;
 		}
 
 		if (api != null) {
-			EnvironmentConsole console = EclipseappsFactory.eINSTANCE.createEclipseEnvironmentConsole();
-			api.setEnvironmentConsole(console);
+//			EnvironmentConsole console = EclipseappsFactory.eINSTANCE.createEclipseEnvironmentConsole();
+//			api.setEnvironmentConsole(console);
 			Thread dockerPullThread = new Thread(new Runnable() {
 				@Override
 				public void run() {
 					EList<String> images = api.listAvailableImages();
 					if (!images.contains(baseICEImage)) {
-						console.print(baseICEImage + " image not found locally. Pulling from Dockerhub...");
+//						console.print(baseICEImage + " image not found locally. Pulling from Dockerhub...");
 						api.pull(baseICEImage);
 					}
 				}

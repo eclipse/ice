@@ -3,16 +3,12 @@
     modelDirectory="/org.eclipse.ice.developer.apps.impl.eclipse/src"
     modelPluginID="org.eclipse.ice.developer.apps.impl.eclipse" modelName="Eclipseapps"
     rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" importerID="org.eclipse.emf.importer.ecore"
-    complianceLevel="8.0" copyrightFields="false" usedGenPackages="../../org.eclipse.ice.developer.apps/model/apps.genmodel#//apps"
+    complianceLevel="8.0" copyrightFields="false" usedGenPackages="../../org.eclipse.ice.developer.apps/model/apps.genmodel#//apps ../../org.eclipse.ice.developer.apps.docker/model/org.eclipse.ice.developer.apps.docker.genmodel#//environment ../../org.eclipse.ice.docker/model/org.eclipse.ice.docker.genmodel#//api"
     operationReflection="true" importOrganizing="true">
   <foreignModel>eclipseapps.ecore</foreignModel>
   <genPackages prefix="Eclipseapps" disposableProviderFactory="true" ecorePackage="eclipseapps.ecore#/">
     <genClasses ecoreClass="eclipseapps.ecore#//EclipseEnvironmentStorage"/>
-    <genClasses ecoreClass="eclipseapps.ecore#//DockerPTPSyncProjectLauncher">
-      <genOperations ecoreOperation="eclipseapps.ecore#//DockerPTPSyncProjectLauncher/launchProject">
-        <genParameters ecoreParameter="eclipseapps.ecore#//DockerPTPSyncProjectLauncher/launchProject/project"/>
-      </genOperations>
-    </genClasses>
+    <genClasses ecoreClass="eclipseapps.ecore#//DockerPTPSyncProjectLauncher"/>
     <genClasses ecoreClass="eclipseapps.ecore#//EclipseCppProjectProvider"/>
     <genClasses ecoreClass="eclipseapps.ecore#//EclipseEnvironmentConsole"/>
   </genPackages>

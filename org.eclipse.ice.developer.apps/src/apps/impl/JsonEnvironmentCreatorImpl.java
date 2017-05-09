@@ -4,15 +4,13 @@ package apps.impl;
 
 import apps.AppsFactory;
 import apps.AppsPackage;
+import apps.EnvironmentBuilder;
 import apps.IEnvironment;
 import apps.JsonEnvironmentCreator;
 import apps.OSPackage;
 import apps.PackageType;
 import apps.SourcePackage;
 import apps.SpackPackage;
-import apps.docker.ContainerConfiguration;
-import apps.docker.DockerEnvironment;
-import apps.docker.DockerFactory;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -21,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
@@ -77,19 +76,31 @@ public class JsonEnvironmentCreatorImpl extends MinimalEObjectImpl.Container imp
 	 * @return
 	 */
 	public IEnvironment create(Reader reader) {
-		IEnvironment env = null;
 		JsonParser parser = new JsonParser();
 		JsonObject root = parser.parse(reader).getAsJsonObject();	
 		JsonObject generalData = root.getAsJsonObject("General");
 		JsonObject appData = root.getAsJsonObject("Application");
 		JsonArray deps = root.getAsJsonArray("Dependencies");
 		
-		// Create the Environment
+		IEnvironment env = null;
+		EnvironmentBuilder builders[] = null;
 		String type = generalData.get("type").getAsString();
-		if (type.equals("Docker")) {
-			env = DockerFactory.eINSTANCE.createDockerEnvironment();
-		} else {
-			throw new UnsupportedOperationException("Cannot create anything other than Docker Environments for now...");
+
+		try {
+			builders = EnvironmentBuilder.getEnvironmentBuilders();
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		for (EnvironmentBuilder b : builders) {
+			if (type.equals(b.name())) {
+				env = b.build();
+				break;
+			}
+		}
+		
+		// Create the Environment
+		if (env == null) {
+			throw new UnsupportedOperationException("Cannot create the requested environment type.");
 		}
 		
 		env.setName(generalData.get("name").getAsString());
@@ -153,20 +164,20 @@ public class JsonEnvironmentCreatorImpl extends MinimalEObjectImpl.Container imp
 			}
 		}
 
-		if (type.equals("Docker")) {
-			ContainerConfiguration config = DockerFactory.eINSTANCE.createContainerConfiguration();
-			JsonObject containerConfig = root.getAsJsonObject("ContainerConfig");
-			if (containerConfig.get("name") != null) {
-				config.setName(containerConfig.get("name").getAsString()); 
-			}
-			if (containerConfig.get("ephemeral") != null ) {
-				config.setEphemeral(containerConfig.get("ephemeral").getAsBoolean());
-			}
-			// FIXME ADD MORE LATER
-			
-			((DockerEnvironment)env).setContainerConfiguration(config);
-		}
-		
+//		if (type.equals("Docker")) {
+//			ContainerConfiguration config = DockerFactory.eINSTANCE.createContainerConfiguration();
+//			JsonObject containerConfig = root.getAsJsonObject("ContainerConfig");
+//			if (containerConfig.get("name") != null) {
+//				config.setName(containerConfig.get("name").getAsString()); 
+//			}
+//			if (containerConfig.get("ephemeral") != null ) {
+//				config.setEphemeral(containerConfig.get("ephemeral").getAsBoolean());
+//			}
+//			// FIXME ADD MORE LATER
+//			
+//			((DockerEnvironment)env).setContainerConfiguration(config);
+//		}
+//		
 		return env;
 	}
 	

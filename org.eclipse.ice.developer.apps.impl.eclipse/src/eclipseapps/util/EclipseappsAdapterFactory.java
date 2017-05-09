@@ -6,9 +6,6 @@ import apps.EnvironmentConsole;
 import apps.EnvironmentStorage;
 import apps.LanguageProjectProvider;
 import apps.ProjectLauncher;
-
-import apps.docker.DockerProjectLauncher;
-
 import eclipseapps.*;
 
 import org.eclipse.emf.common.notify.Adapter;
@@ -17,6 +14,7 @@ import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.ice.developer.apps.docker.environment.DockerProjectLauncher;
 
 /**
  * <!-- begin-user-doc -->
@@ -75,10 +73,6 @@ public class EclipseappsAdapterFactory extends AdapterFactoryImpl {
 	protected EclipseappsSwitch<Adapter> modelSwitch =
 		new EclipseappsSwitch<Adapter>() {
 			@Override
-			public Adapter caseEclipseEnvironmentStorage(EclipseEnvironmentStorage object) {
-				return createEclipseEnvironmentStorageAdapter();
-			}
-			@Override
 			public Adapter caseDockerPTPSyncProjectLauncher(DockerPTPSyncProjectLauncher object) {
 				return createDockerPTPSyncProjectLauncherAdapter();
 			}
@@ -91,8 +85,8 @@ public class EclipseappsAdapterFactory extends AdapterFactoryImpl {
 				return createEclipseEnvironmentConsoleAdapter();
 			}
 			@Override
-			public Adapter caseEnvironmentStorage(EnvironmentStorage object) {
-				return createEnvironmentStorageAdapter();
+			public Adapter caseEclipseEnvironmentStorage(EclipseEnvironmentStorage object) {
+				return createEclipseEnvironmentStorageAdapter();
 			}
 			@Override
 			public Adapter caseProjectLauncher(ProjectLauncher object) {
@@ -109,6 +103,10 @@ public class EclipseappsAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseEnvironmentConsole(EnvironmentConsole object) {
 				return createEnvironmentConsoleAdapter();
+			}
+			@Override
+			public Adapter caseEnvironmentStorage(EnvironmentStorage object) {
+				return createEnvironmentStorageAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -215,13 +213,13 @@ public class EclipseappsAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link apps.docker.DockerProjectLauncher <em>Project Launcher</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.ice.developer.apps.docker.environment.DockerProjectLauncher <em>Docker Project Launcher</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see apps.docker.DockerProjectLauncher
+	 * @see org.eclipse.ice.developer.apps.docker.environment.DockerProjectLauncher
 	 * @generated
 	 */
 	public Adapter createDockerProjectLauncherAdapter() {

@@ -6,15 +6,13 @@ import apps.EnvironmentConsole;
 import apps.EnvironmentStorage;
 import apps.LanguageProjectProvider;
 import apps.ProjectLauncher;
-
-import apps.docker.DockerProjectLauncher;
-
 import eclipseapps.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 
 import org.eclipse.emf.ecore.util.Switch;
+import org.eclipse.ice.developer.apps.docker.environment.DockerProjectLauncher;
 
 /**
  * <!-- begin-user-doc -->
@@ -73,13 +71,6 @@ public class EclipseappsSwitch<T> extends Switch<T> {
 	@Override
 	protected T doSwitch(int classifierID, EObject theEObject) {
 		switch (classifierID) {
-			case EclipseappsPackage.ECLIPSE_ENVIRONMENT_STORAGE: {
-				EclipseEnvironmentStorage eclipseEnvironmentStorage = (EclipseEnvironmentStorage)theEObject;
-				T result = caseEclipseEnvironmentStorage(eclipseEnvironmentStorage);
-				if (result == null) result = caseEnvironmentStorage(eclipseEnvironmentStorage);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case EclipseappsPackage.DOCKER_PTP_SYNC_PROJECT_LAUNCHER: {
 				DockerPTPSyncProjectLauncher dockerPTPSyncProjectLauncher = (DockerPTPSyncProjectLauncher)theEObject;
 				T result = caseDockerPTPSyncProjectLauncher(dockerPTPSyncProjectLauncher);
@@ -99,6 +90,13 @@ public class EclipseappsSwitch<T> extends Switch<T> {
 				EclipseEnvironmentConsole eclipseEnvironmentConsole = (EclipseEnvironmentConsole)theEObject;
 				T result = caseEclipseEnvironmentConsole(eclipseEnvironmentConsole);
 				if (result == null) result = caseEnvironmentConsole(eclipseEnvironmentConsole);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case EclipseappsPackage.ECLIPSE_ENVIRONMENT_STORAGE: {
+				EclipseEnvironmentStorage eclipseEnvironmentStorage = (EclipseEnvironmentStorage)theEObject;
+				T result = caseEclipseEnvironmentStorage(eclipseEnvironmentStorage);
+				if (result == null) result = caseEnvironmentStorage(eclipseEnvironmentStorage);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -197,13 +195,13 @@ public class EclipseappsSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Project Launcher</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Docker Project Launcher</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Project Launcher</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Docker Project Launcher</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */

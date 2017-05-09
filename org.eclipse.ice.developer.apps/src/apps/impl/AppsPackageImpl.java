@@ -4,6 +4,7 @@ package apps.impl;
 
 import apps.AppsFactory;
 import apps.AppsPackage;
+import apps.EnvironmentBuilder;
 import apps.EnvironmentConsole;
 import apps.EnvironmentCreator;
 import apps.EnvironmentManager;
@@ -18,10 +19,6 @@ import apps.ProjectLauncher;
 import apps.SourcePackage;
 import apps.SpackDependency;
 import apps.SpackPackage;
-
-import apps.docker.DockerPackage;
-
-import apps.docker.impl.DockerPackageImpl;
 import apps.local.LocalPackage;
 
 import apps.local.impl.LocalPackageImpl;
@@ -142,6 +139,13 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	private EClass environmentBuilderEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	private EEnum packageTypeEEnum = null;
 
 	/**
@@ -208,17 +212,14 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		XMLTypePackage.eINSTANCE.eClass();
 
 		// Obtain or create and register interdependencies
-		DockerPackageImpl theDockerPackage = (DockerPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(DockerPackage.eNS_URI) instanceof DockerPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(DockerPackage.eNS_URI) : DockerPackage.eINSTANCE);
 		LocalPackageImpl theLocalPackage = (LocalPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(LocalPackage.eNS_URI) instanceof LocalPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(LocalPackage.eNS_URI) : LocalPackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theAppsPackage.createPackageContents();
-		theDockerPackage.createPackageContents();
 		theLocalPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theAppsPackage.initializePackageContents();
-		theDockerPackage.initializePackageContents();
 		theLocalPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
@@ -784,6 +785,33 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getEnvironmentBuilder() {
+		return environmentBuilderEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EOperation getEnvironmentBuilder__Build() {
+		return environmentBuilderEClass.getEOperations().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EOperation getEnvironmentBuilder__Name() {
+		return environmentBuilderEClass.getEOperations().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EEnum getPackageType() {
 		return packageTypeEEnum;
 	}
@@ -908,6 +936,10 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		environmentConsoleEClass = createEClass(ENVIRONMENT_CONSOLE);
 		createEOperation(environmentConsoleEClass, ENVIRONMENT_CONSOLE___PRINT__STRING);
 
+		environmentBuilderEClass = createEClass(ENVIRONMENT_BUILDER);
+		createEOperation(environmentBuilderEClass, ENVIRONMENT_BUILDER___BUILD);
+		createEOperation(environmentBuilderEClass, ENVIRONMENT_BUILDER___NAME);
+
 		// Create enums
 		packageTypeEEnum = createEEnum(PACKAGE_TYPE);
 		environmentStateEEnum = createEEnum(ENVIRONMENT_STATE);
@@ -940,12 +972,10 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		setNsURI(eNS_URI);
 
 		// Obtain other dependent packages
-		DockerPackage theDockerPackage = (DockerPackage)EPackage.Registry.INSTANCE.getEPackage(DockerPackage.eNS_URI);
 		LocalPackage theLocalPackage = (LocalPackage)EPackage.Registry.INSTANCE.getEPackage(LocalPackage.eNS_URI);
 		XMLTypePackage theXMLTypePackage = (XMLTypePackage)EPackage.Registry.INSTANCE.getEPackage(XMLTypePackage.eNS_URI);
 
 		// Add subpackages
-		getESubpackages().add(theDockerPackage);
 		getESubpackages().add(theLocalPackage);
 
 		// Create type parameters
@@ -1071,6 +1101,12 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 
 		op = initEOperation(getEnvironmentConsole__Print__String(), null, "print", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "message", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		initEClass(environmentBuilderEClass, EnvironmentBuilder.class, "EnvironmentBuilder", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEOperation(getEnvironmentBuilder__Build(), this.getIEnvironment(), "build", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		initEOperation(getEnvironmentBuilder__Name(), ecorePackage.getEString(), "name", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(packageTypeEEnum, PackageType.class, "PackageType");

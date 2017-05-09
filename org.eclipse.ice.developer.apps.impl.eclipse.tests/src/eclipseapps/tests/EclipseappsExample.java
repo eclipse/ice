@@ -2,7 +2,7 @@
  */
 package eclipseapps.tests;
 
-import eclipseapps.EclipseEnvironmentStorage;
+import eclipseapps.DockerPTPSyncProjectLauncher;
 import eclipseapps.EclipseappsFactory;
 import eclipseapps.EclipseappsPackage;
 
@@ -60,7 +60,7 @@ public class EclipseappsExample {
 			System.out.println("Enter a list of file paths or URIs that have content like this:");
 			try {
 				Resource resource = resourceSet.createResource(URI.createURI("http:///My.eclipseapps"));
-				EclipseEnvironmentStorage root = EclipseappsFactory.eINSTANCE.createEclipseEnvironmentStorage();
+				DockerPTPSyncProjectLauncher root = EclipseappsFactory.eINSTANCE.createDockerPTPSyncProjectLauncher();
 				resource.getContents().add(root);
 				resource.save(System.out, null);
 			}

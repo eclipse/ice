@@ -4,6 +4,11 @@
 package org.eclipse.ice.developer.apps.ui;
 
 
+import org.eclipse.ice.developer.apps.docker.environment.EnvironmentFactory;
+import org.eclipse.ice.developer.apps.docker.environment.DockerEnvironment;
+import org.eclipse.ice.docker.api.ContainerConfiguration;
+import org.eclipse.ice.docker.api.DockerapiFactory;
+
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.PropertyId;
@@ -17,8 +22,6 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import apps.IEnvironment;
-import apps.docker.DockerEnvironment;
-import apps.docker.DockerFactory;
 
 /**
  * @author Anara Kozhokanova
@@ -46,7 +49,7 @@ public class DockerForm extends HorizontalLayout{
 	 */
 	public DockerForm(IEnvironment env) {
 		environment = env;
-		apps.docker.ContainerConfiguration config = DockerFactory.eINSTANCE.createContainerConfiguration();
+		ContainerConfiguration config = DockerapiFactory.eINSTANCE.createContainerConfiguration();
 		((DockerEnvironment)environment).setContainerConfiguration(config);
 		
 		nameTxtField = new TextField();

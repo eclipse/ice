@@ -4,14 +4,13 @@ package apps.impl;
 
 import apps.AppsFactory;
 import apps.AppsPackage;
+import apps.EnvironmentBuilder;
 import apps.EnvironmentConsole;
 import apps.EnvironmentCreator;
 import apps.EnvironmentManager;
 import apps.EnvironmentState;
 import apps.EnvironmentStorage;
 import apps.IEnvironment;
-import apps.docker.DockerFactory;
-import apps.docker.impl.DockerEnvironmentImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.BasicEList;
@@ -37,6 +37,8 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.eclipse.ice.docker.api.DockerAPI;
+import org.eclipse.ice.docker.api.spotify.SpotifyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -433,18 +435,13 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	public EList<String> listAvailableSpackPackages() {
 		// FIXME For now we only check with Docker
 		EList<String> packages = new BasicEList<String>();
-		DockerEnvironmentImpl dockEnv = (DockerEnvironmentImpl) DockerFactory.eINSTANCE.createDockerEnvironment();
-		dockEnv.setConsole(console);
-		if (dockEnv.hasDocker()) {
-			String stdOut = dockEnv.execute("eclipseice/base-fedora",
-					new String[] { "/bin/bash", "-c", "source /root/.bashrc && spack list" });
-			for (String s : stdOut.split("\n")) {
-				if (!s.contains("==> Added") && !s.contains("gcc@6.3.1") && !s.trim().isEmpty()) {
-					packages.add(s);
-				}
+		DockerAPI api = SpotifyFactory.eINSTANCE.createSpotifyDockerClient();
+		String stdOut = api.createContainerExecCommand("eclipseice/base-fedora", new String[] { "/bin/bash", "-c", "source /root/.bashrc && spack list" });
+		for (String s : stdOut.split("\n")) {
+			if (!s.contains("==> Added") && !s.contains("gcc@6.3.1") && !s.trim().isEmpty()) {
+				packages.add(s);
 			}
 		}
-		
 		return packages;
 	}
 
@@ -468,9 +465,22 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	 * 
 	 */
 	public IEnvironment createEmpty(String type) {
-		if (type.equals("Docker")) {
-			console.print("Creating a new empty Environment");
-			IEnvironment env = DockerFactory.eINSTANCE.createDockerEnvironment();
+		
+		IEnvironment env = null;
+		EnvironmentBuilder builders[] = null;
+		try {
+			builders = EnvironmentBuilder.getEnvironmentBuilders();
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		for (EnvironmentBuilder b : builders) {
+			if (type.equals(b.name())) {
+				env = b.build();
+				break;
+			}
+		}
+		
+		if (env != null) {
 			env.setName("unknown");
 			env.setState(EnvironmentState.NOT_CREATED);
 			env.setConsole(console);
@@ -483,17 +493,18 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 						EAttribute attr = (EAttribute) featureObject;
 						if (attr.getName().equals("name")) {
 							// Update the IEnvironments map
-							environments.remove((String) notification.getOldValue());
-							environments.put(env.getName(), env);
+							String oldName = (String) notification.getOldValue();
+							String newName = (String) notification.getNewValue();
+							IEnvironment environment = environments.remove(oldName);
+							environments.put(newName, environment);
 						}
 					}
 				}
 			};
 			env.eAdapters().add(adapter);
-			return env;
-		} else {
-			throw new IllegalArgumentException("Illegal Environment type");
 		}
+		
+		return env;
 	}
 
 	/**

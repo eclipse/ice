@@ -946,6 +946,52 @@ public interface AppsPackage extends EPackage {
 	int ENVIRONMENT_CONSOLE_OPERATION_COUNT = 1;
 
 	/**
+	 * The meta object id for the '{@link apps.EnvironmentBuilder <em>Environment Builder</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentBuilder
+	 * @see apps.impl.AppsPackageImpl#getEnvironmentBuilder()
+	 * @generated
+	 */
+	int ENVIRONMENT_BUILDER = 13;
+
+	/**
+	 * The number of structural features of the '<em>Environment Builder</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_BUILDER_FEATURE_COUNT = 0;
+
+	/**
+	 * The operation id for the '<em>Build</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_BUILDER___BUILD = 0;
+
+	/**
+	 * The operation id for the '<em>Name</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_BUILDER___NAME = 1;
+
+	/**
+	 * The number of operations of the '<em>Environment Builder</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_BUILDER_OPERATION_COUNT = 2;
+
+	/**
 	 * The meta object id for the '{@link apps.PackageType <em>Package Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -953,7 +999,7 @@ public interface AppsPackage extends EPackage {
 	 * @see apps.impl.AppsPackageImpl#getPackageType()
 	 * @generated
 	 */
-	int PACKAGE_TYPE = 13;
+	int PACKAGE_TYPE = 14;
 
 	/**
 	 * The meta object id for the '{@link apps.EnvironmentState <em>Environment State</em>}' enum.
@@ -963,7 +1009,7 @@ public interface AppsPackage extends EPackage {
 	 * @see apps.impl.AppsPackageImpl#getEnvironmentState()
 	 * @generated
 	 */
-	int ENVIRONMENT_STATE = 14;
+	int ENVIRONMENT_STATE = 15;
 
 	/**
 	 * The meta object id for the '<em>Environment List</em>' data type.
@@ -973,7 +1019,7 @@ public interface AppsPackage extends EPackage {
 	 * @see apps.impl.AppsPackageImpl#getEnvironmentList()
 	 * @generated
 	 */
-	int ENVIRONMENT_LIST = 15;
+	int ENVIRONMENT_LIST = 16;
 
 	/**
 	 * Returns the meta object for class '{@link apps.IEnvironment <em>IEnvironment</em>}'.
@@ -1609,6 +1655,36 @@ public interface AppsPackage extends EPackage {
 	EOperation getEnvironmentConsole__Print__String();
 
 	/**
+	 * Returns the meta object for class '{@link apps.EnvironmentBuilder <em>Environment Builder</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Environment Builder</em>'.
+	 * @see apps.EnvironmentBuilder
+	 * @generated
+	 */
+	EClass getEnvironmentBuilder();
+
+	/**
+	 * Returns the meta object for the '{@link apps.EnvironmentBuilder#build() <em>Build</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Build</em>' operation.
+	 * @see apps.EnvironmentBuilder#build()
+	 * @generated
+	 */
+	EOperation getEnvironmentBuilder__Build();
+
+	/**
+	 * Returns the meta object for the '{@link apps.EnvironmentBuilder#name() <em>Name</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Name</em>' operation.
+	 * @see apps.EnvironmentBuilder#name()
+	 * @generated
+	 */
+	EOperation getEnvironmentBuilder__Name();
+
+	/**
 	 * Returns the meta object for enum '{@link apps.PackageType <em>Package Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2175,6 +2251,32 @@ public interface AppsPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation ENVIRONMENT_CONSOLE___PRINT__STRING = eINSTANCE.getEnvironmentConsole__Print__String();
+
+		/**
+		 * The meta object literal for the '{@link apps.EnvironmentBuilder <em>Environment Builder</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see apps.EnvironmentBuilder
+		 * @see apps.impl.AppsPackageImpl#getEnvironmentBuilder()
+		 * @generated
+		 */
+		EClass ENVIRONMENT_BUILDER = eINSTANCE.getEnvironmentBuilder();
+
+		/**
+		 * The meta object literal for the '<em><b>Build</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT_BUILDER___BUILD = eINSTANCE.getEnvironmentBuilder__Build();
+
+		/**
+		 * The meta object literal for the '<em><b>Name</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT_BUILDER___NAME = eINSTANCE.getEnvironmentBuilder__Name();
 
 		/**
 		 * The meta object literal for the '{@link apps.PackageType <em>Package Type</em>}' enum.

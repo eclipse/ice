@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated dockerapi -->
+      <package
+            uri="http://eclipse.org/ice/docker"
+            class="dockerapi.DockerapiPackage"
+            genModel="model/dockerapi.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated org.eclipse.ice.docker -->
+      <package
+            uri="http://eclipse.org/ice/docker"
+            class="org.eclipse.ice.docker.api.DockerapiPackage"
+            genModel="model/org.eclipse.ice.docker.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated org.eclipse.ice.docker -->
+      <package
+            uri="http://eclipse.org/ice/docker/spotify"
+            class="org.eclipse.ice.docker.api.spotify.SpotifyPackage"
+            genModel="model/org.eclipse.ice.docker.genmodel"/>
+   </extension>
+
+</plugin>

@@ -2,14 +2,14 @@
  */
 package apps.tests;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.EList;
 
 import apps.AppsFactory;
+import apps.EnvironmentBuilder;
 import apps.EnvironmentManager;
 import apps.EnvironmentState;
 import apps.IEnvironment;
-import apps.docker.DockerEnvironment;
-import apps.docker.DockerFactory;
 import apps.impl.JsonEnvironmentCreatorImpl;
 import junit.framework.TestCase;
 
@@ -143,7 +143,13 @@ public class EnvironmentManagerTest extends TestCase {
 	private class FakeEnvironmentCreator extends JsonEnvironmentCreatorImpl {
 		private boolean envCreated = false;
 		public IEnvironment create(String dataString) {
-			IEnvironment env = DockerFactory.eINSTANCE.createDockerEnvironment();
+			IEnvironment env = null;
+			try {
+				env = EnvironmentBuilder.getEnvironmentBuilder("docker").build();
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			env.setName("fake");
 			envCreated = true;
 			return env;
@@ -161,7 +167,6 @@ public class EnvironmentManagerTest extends TestCase {
 		FakeEnvironmentCreator creator = new FakeEnvironmentCreator();
 		fixture.setEnvironmentCreator(creator);
 		IEnvironment env = fixture.create("");
-		assertTrue(env instanceof DockerEnvironment);
 		assertEquals(env.getState(), EnvironmentState.CREATED);
 		assertTrue(creator.wasCreated());
 	}

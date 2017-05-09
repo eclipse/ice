@@ -5,6 +5,7 @@
 -->
 
 <plugin>
+   <extension-point id="environmentbuilder" name="Environment Builder" schema="schema/environmentBuilder.exsd"/>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <!-- @generated environment -->

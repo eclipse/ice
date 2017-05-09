@@ -56,10 +56,10 @@ public class EclipseappsFactoryImpl extends EFactoryImpl implements EclipseappsF
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
-			case EclipseappsPackage.ECLIPSE_ENVIRONMENT_STORAGE: return createEclipseEnvironmentStorage();
 			case EclipseappsPackage.DOCKER_PTP_SYNC_PROJECT_LAUNCHER: return createDockerPTPSyncProjectLauncher();
 			case EclipseappsPackage.ECLIPSE_CPP_PROJECT_PROVIDER: return createEclipseCppProjectProvider();
 			case EclipseappsPackage.ECLIPSE_ENVIRONMENT_CONSOLE: return createEclipseEnvironmentConsole();
+			case EclipseappsPackage.ECLIPSE_ENVIRONMENT_STORAGE: return createEclipseEnvironmentStorage();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}

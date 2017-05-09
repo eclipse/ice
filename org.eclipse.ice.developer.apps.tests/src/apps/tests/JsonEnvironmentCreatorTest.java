@@ -21,7 +21,6 @@ import apps.OSPackage;
 import apps.PackageType;
 import apps.SourcePackage;
 import apps.SpackPackage;
-import apps.docker.DockerEnvironment;
 import junit.framework.TestCase;
 import junit.textui.TestRunner;
 
@@ -151,7 +150,6 @@ public class JsonEnvironmentCreatorTest extends TestCase {
 		
 		IEnvironment env = AppsFactory.eINSTANCE.createJsonEnvironmentCreator().create(jsonStr);		
 		assertEquals(env.getName(), "mccaskey/test_env");
-		assertTrue(env instanceof DockerEnvironment);
 		assertEquals(env.getPrimaryApp().getName(), "xacc");
 		assertEquals(env.getPrimaryApp().getType(), PackageType.SOURCE);
 		assertTrue(env.getPrimaryApp() instanceof SourcePackage);
@@ -171,9 +169,5 @@ public class JsonEnvironmentCreatorTest extends TestCase {
 		assertTrue(env.getDependentPackages().get(2) instanceof OSPackage);
 		assertEquals(env.getDependentPackages().get(2).getName(), "gcc-gfortran");
 
-		DockerEnvironment denv = (DockerEnvironment) env;
-		
-		assertEquals(denv.getContainerConfiguration().getName(), "xaccdev");
-		assertTrue(denv.getContainerConfiguration().isEphemeral());
 	}
 }

@@ -13,6 +13,7 @@
             class="eclipseapps.EclipseappsPackage"
             genModel="model/eclipseapps.genmodel"/>
    </extension>
+
    <extension
          point="org.eclipse.ui.startup">
       <startup

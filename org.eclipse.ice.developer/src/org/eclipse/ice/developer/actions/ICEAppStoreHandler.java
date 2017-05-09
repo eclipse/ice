@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.ice.developer.apps.docker.environment.DockerEnvironment;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -35,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import apps.AppsFactory;
 import apps.EnvironmentManager;
 import apps.IEnvironment;
+import apps.ProjectLauncher;
 import eclipseapps.EclipseappsFactory;
 
 /**
@@ -126,7 +128,8 @@ public class ICEAppStoreHandler extends AbstractHandler {
 
 			@Override
 			public IStatus runInWorkspace(IProgressMonitor monitor) {
-				environment.setProjectlauncher(EclipseappsFactory.eINSTANCE.createDockerPTPSyncProjectLauncher());
+				((DockerEnvironment) environment).setProjectlauncher(
+						(ProjectLauncher) EclipseappsFactory.eINSTANCE.createDockerPTPSyncProjectLauncher());
 				if (!environment.build() || !environment.connect()) {
 					String message = "Could not build or connect to the environment:\n";
 					logger.error(message, new ExecutionException("Could not build or connect to the environment."));

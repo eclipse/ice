@@ -20,6 +20,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.docker.api.DockerAPI;
+import org.eclipse.ice.docker.api.DockerapiFactory;
+import org.eclipse.ice.docker.api.spotify.SpotifyFactory;
 import org.eclipse.ice.item.action.Action;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteConnectionType;
@@ -36,8 +39,6 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
 
-import apps.docker.DockerAPI;
-import apps.docker.DockerFactory;
 import eclipseapps.EclipseappsFactory;
 
 /**
@@ -171,8 +172,8 @@ public class ICEJob extends Job {
 		String connectionName = actionDataMap.get("remoteConnectionName");
 		
 		// FIXME, PULL DOCKERAPI STUFF OUT INTO SEPARATE BUNDLE
-		DockerAPI dockerAPI = DockerFactory.eINSTANCE.createDockerAPI();
-		dockerAPI.setEnvironmentConsole(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentConsole());
+		DockerAPI dockerAPI = SpotifyFactory.eINSTANCE.createSpotifyDockerClient();
+//		dockerAPI.setEnvironmentConsole(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentConsole());
 		
 		dockerAPI.stopContainer(id);
 		dockerAPI.deleteContainer(id);

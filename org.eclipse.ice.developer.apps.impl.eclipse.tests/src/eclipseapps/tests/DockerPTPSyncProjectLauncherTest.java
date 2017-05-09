@@ -13,12 +13,6 @@ import junit.textui.TestRunner;
  * <!-- begin-user-doc -->
  * A test case for the model object '<em><b>Docker PTP Sync Project Launcher</b></em>'.
  * <!-- end-user-doc -->
- * <p>
- * The following operations are tested:
- * <ul>
- *   <li>{@link eclipseapps.DockerPTPSyncProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}</li>
- * </ul>
- * </p>
  * @generated
  */
 public class DockerPTPSyncProjectLauncherTest extends TestCase {

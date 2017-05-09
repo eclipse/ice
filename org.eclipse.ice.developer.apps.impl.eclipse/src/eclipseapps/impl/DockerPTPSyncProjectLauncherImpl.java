@@ -3,14 +3,12 @@
 package eclipseapps.impl;
 
 import apps.SourcePackage;
-import apps.docker.impl.DockerProjectLauncherImpl;
 import eclipseapps.DockerPTPSyncProjectLauncher;
 import eclipseapps.EclipseappsFactory;
 import eclipseapps.EclipseappsPackage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -19,9 +17,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.ice.developer.apps.docker.environment.impl.DockerProjectLauncherImpl;
 import org.eclipse.ptp.internal.rdt.sync.ui.handlers.CommonSyncExceptionHandler;
 import org.eclipse.ptp.rdt.sync.core.SyncConfig;
 import org.eclipse.ptp.rdt.sync.core.SyncConfigManager;
@@ -297,20 +294,6 @@ public class DockerPTPSyncProjectLauncherImpl extends DockerProjectLauncherImpl
 		
 		
 		
-	}
-	
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
-		switch (operationID) {
-			case EclipseappsPackage.DOCKER_PTP_SYNC_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE:
-				launchProject((SourcePackage)arguments.get(0));
-				return null;
-		}
-		return super.eInvoke(operationID, arguments);
 	}
 
 } // DockerPTPSyncProjectLauncherImpl

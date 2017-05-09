@@ -2,9 +2,7 @@
  */
 package eclipseapps;
 
-import apps.SourcePackage;
-
-import apps.docker.DockerProjectLauncher;
+import org.eclipse.ice.developer.apps.docker.environment.DockerProjectLauncher;
 
 /**
  * <!-- begin-user-doc -->
@@ -17,15 +15,5 @@ import apps.docker.DockerProjectLauncher;
  * @generated
  */
 public interface DockerPTPSyncProjectLauncher extends DockerProjectLauncher {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Launch the new Eclipse project for the given application. 
-	 * <!-- end-model-doc -->
-	 * @model
-	 * @generated
-	 */
-	boolean launchProject(SourcePackage project);
 
 } // DockerPTPSyncProjectLauncher
