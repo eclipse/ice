@@ -410,6 +410,8 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 		assertTrue("Abs xs".equals(cellName));
 		cellValue = (double) realTable.getDataValueByPosition(2, 1);
 		assertEquals(0.231, cellValue);
+		
+		bot.resetWorkbench();
 	}
 
 	/*

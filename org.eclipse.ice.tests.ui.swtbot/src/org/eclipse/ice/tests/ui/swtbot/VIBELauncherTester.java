@@ -111,5 +111,7 @@ public class VIBELauncherTester extends AbstractWorkbenchTester {
 		
 		// See if the tab can be changed
 		bot.cTabItem("Output Files and Data").activate();
+		
+		
 	}
 }

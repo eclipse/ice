@@ -65,6 +65,12 @@ public class VIBEKeyValuePairTester extends AbstractWorkbenchTester {
 		// Check that the cancel button is enabled
 		assertTrue(bot.button("Cancel").isEnabled());
 
+		//The table should be empty at the start
+		assertEquals(0, bot.table(1).rowCount());
+		
+		//Set the table to the NTG template
+		bot.radio(1).click();
+		
 		// Check the table's values for the default settings
 		assertTrue("ELECTRICAL".equals(bot.table(1).cell(0, 0)));
 
@@ -104,7 +110,7 @@ public class VIBEKeyValuePairTester extends AbstractWorkbenchTester {
 		assertTrue(bot.clabel(0).getText().equals("Done!"));
 
 		// Set the template to DualFoil
-		bot.radio(1).click();
+		bot.radio(2).click();
 
 		// Check that a couple of the DualFoil's rows are set up correctly
 		assertTrue("NUMSEG".equals(bot.table(1).cell(14, 0)));
@@ -128,12 +134,6 @@ public class VIBEKeyValuePairTester extends AbstractWorkbenchTester {
 
 		// CUTOFFL should have been reduced to only 4 numbers
 		assertTrue("2.0,2.0,2.0,2.0".equals(bot.table(1).cell(17, 1)));
-
-		// Set the template back to NTG
-		bot.radio(0).click();
-
-		// Check one of the rows to ensure that the NTG template has been loaded
-		assertTrue("CUTOFF".equals(bot.table(1).cell(15, 0)));
 
 	}
 }
