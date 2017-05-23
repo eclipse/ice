@@ -58,8 +58,8 @@ import org.junit.BeforeClass;
  * @author Jordan Deyton
  *
  */
-public abstract class AbstractWorkbenchTester extends
-		AbstractICEUITester<SWTWorkbenchBot> {
+public abstract class AbstractWorkbenchTester
+		extends AbstractICEUITester<SWTWorkbenchBot> {
 
 	/**
 	 * The {@code SWTBot} for this test class instance. This bot is to aid in
@@ -243,7 +243,8 @@ public abstract class AbstractWorkbenchTester extends
 	 *            The Eclipse editor's ID as defined in the plug-in extensions.
 	 * @return The opened editor, or {@code null} if it could not be opened.
 	 */
-	protected IEditorReference openICEFormEditor(ICEFormInput input, String id) {
+	protected IEditorReference openICEFormEditor(ICEFormInput input,
+			String id) {
 		return openEditor(input, id);
 	}
 
@@ -271,13 +272,15 @@ public abstract class AbstractWorkbenchTester extends
 		SWTWorkbenchBot bot = getBot();
 
 		// Open "Window" > "Show View" > "Other..."
+		bot.menu("Window").click();
+		bot.menu("Window").menu("Show View").click();
 		bot.menu("Window").menu("Show View").menu("Other...").click();
 		// To pick from the dialog, we must activate it.
 		bot.shell("Show View").activate();
 		// Select "category" > "name"
 		bot.tree().expandNode(category, false).select(name);
 		// Close the dialog by clicking OK.
-		bot.button("OK").click();
+		bot.button().click();
 		// Return the view itself.
 		return bot.viewByTitle(name);
 	}
