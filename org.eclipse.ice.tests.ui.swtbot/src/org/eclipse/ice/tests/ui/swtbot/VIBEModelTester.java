@@ -206,7 +206,8 @@ public class VIBEModelTester extends AbstractWorkbenchTester {
 		bot.text(8).typeText("Test");
 
 		// Delete a row and make sure it's gone
-		bot.table().select(0);
+		bot.table(1).select(0);
+		bot.text(1).selectAll();
 		bot.button(3).click();
 		assertTrue("11 DUALFOIL".equals(bot.table(1).cell(9, 0)));
 		
