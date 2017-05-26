@@ -37,7 +37,7 @@ public class VIBEModelTester extends AbstractWorkbenchTester {
 		bot.menu("Window").menu("Perspective").menu("Open Perspective")
 				.menu("Other...").click();
 		bot.table(0).select("ICE");
-		bot.button("OK").click();
+		bot.button().click();
 
 		// Create a new reflectivity model item
 		bot.toolbarButtonWithTooltip("Create an Item").click();
