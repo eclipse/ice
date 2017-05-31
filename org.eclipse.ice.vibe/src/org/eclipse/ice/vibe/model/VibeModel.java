@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -58,6 +59,7 @@ public class VibeModel extends Model {
 	
 	private ArrayList<String> actionItems;
 
+	@XmlTransient
 	private IIOService ioService;
 
 

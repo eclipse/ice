@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ICEEclipseWidgets
 Bundle-SymbolicName: org.eclipse.ice.client.widgets;singleton:=true
-Bundle-Version: 2.2.0.qualifier
+Bundle-Version: 2.2.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.ice.datastructures,
  org.eclipse.ice.client.compatibility,
@@ -32,7 +32,7 @@ Import-Package:
  org.eclipse.e4.ui.model,
  org.eclipse.e4.ui.model.application,
  org.eclipse.e4.ui.model.application.ui,
- org.eclipse.eavp.viz.datastructures,
+ org.eclipse.eavp.viz.datastructures.ui,
  org.eclipse.eavp.viz.datastructures.VizObject,
  org.eclipse.eavp.viz.modeling,
  org.eclipse.eavp.viz.modeling.base,

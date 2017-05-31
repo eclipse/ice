@@ -37,8 +37,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -158,6 +156,12 @@ public class Core extends Application implements ICore, BundleActivator {
 	private ServiceRegistration<ICore> registration;
 
 	/**
+	 * This constant is used by ECF to register the exported interfaces for the
+	 * remote OSGI service.
+	 */
+	private static final String OSGI_SERVICE_EXPORTED_INTERFACES = "service.exported.interfaces";
+
+	/**
 	 * An alternative constructor that allows the Core to be constructed with a
 	 * particular ItemManager. This is used for testing.
 	 *
@@ -168,7 +172,7 @@ public class Core extends Application implements ICore, BundleActivator {
 
 		// Setup the ItemManager and the project table
 		itemManager = manager;
-		projectTable = new Hashtable<String, IProject>();
+		projectTable = new Hashtable<>();
 
 		// Set the project location
 		if (!setupProjectLocation()) {
@@ -189,7 +193,7 @@ public class Core extends Application implements ICore, BundleActivator {
 
 		// Setup the ItemManager and the project table
 		itemManager = new ItemManager();
-		projectTable = new Hashtable<String, IProject>();
+		projectTable = new Hashtable<>();
 
 		// Set the project location
 		if (!setupProjectLocation()) {
@@ -248,13 +252,25 @@ public class Core extends Application implements ICore, BundleActivator {
 		// Start the webservice!
 		startHttpService();
 
-		// Check the currently registered extensions - LEAVE FOR NOW! ~JJB
-		// 20151026 11:15
-		// debugCheckExtensions();
+		// Configure the remote service properties
+		Dictionary<String, Object> props = new Hashtable<>();
+		// Add OSGi required remote service properties
+		props.put(OSGI_SERVICE_EXPORTED_INTERFACES, System.getProperty(OSGI_SERVICE_EXPORTED_INTERFACES, "*"));
+		// Use ECF generic server config.
+		props.put("service.exported.configs", "ecf.generic.server");
+		// Setup hostname config (default:localhost)
+		String hostname = System.getProperty("ecf.generic.server.hostname");
+		if (hostname != null) {
+			props.put("ecf.generic.server.hostname", hostname);
+		}
+		// Setup port config (default:-1)
+		props.put("ecf.generic.server.port", new Integer(System.getProperty("ecf.generic.server.port", "-1")));
+		// Setup IRaspberryPiAsync as async remote service
+		props.put("ecf.exported.async.interfaces", "*");
 
 		// Register this class as a service with the framework.
 		if (context != null) {
-			registration = context.registerService(ICore.class, this, null);
+			registration = context.registerService(ICore.class, this, props);
 		}
 
 		return;
@@ -300,38 +316,6 @@ public class Core extends Application implements ICore, BundleActivator {
 
 		// Unregister this service from the framework
 		registration.unregister();
-	}
-
-	/**
-	 * This function is used for logging information on the extensions available
-	 * to the Core.
-	 *
-	 * @deprecated
-	 */
-	@Deprecated
-	private void debugCheckExtensions() {
-		Set<String> extensionPoints = new HashSet<String>();
-		extensionPoints.add("org.eclipse.ice.item.itemBuilder");
-		extensionPoints.add("org.eclipse.ice.item.compositeItemBuilder");
-		extensionPoints.add("org.eclipse.ice.io.writer");
-		extensionPoints.add("org.eclipse.ice.io.reader");
-		extensionPoints.add("org.eclipse.ice.core.persistenceProvider");
-		extensionPoints.add("org.eclipse.ice.datastructures.jaxbClassProvider");
-		for (String extensionPointName : extensionPoints) {
-			IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(extensionPointName);
-			logger.debug("##### Extensions for: " + extensionPointName + " #####");
-			if (point != null) {
-				IExtension[] extensions = point.getExtensions();
-				for (IExtension extension : extensions) {
-					logger.debug("--" + extension.getSimpleIdentifier());
-				}
-			} else {
-				logger.debug("Point does not exist");
-			}
-
-			logger.debug("##### end of " + extensionPointName + " #####");
-		}
-
 	}
 
 	/*
@@ -461,7 +445,7 @@ public class Core extends Application implements ICore, BundleActivator {
 
 		// FIXME - this is posting a warning in Eclipse about unchecked types.
 		// It passes unit tests, so I am inclined to leave it.
-		ICEList<String> retList = new ICEList<String>();
+		ICEList<String> retList = new ICEList<>();
 
 		// Fix the list
 		retList.setList(types);
@@ -573,7 +557,7 @@ public class Core extends Application implements ICore, BundleActivator {
 
 		// Local Declarations
 		boolean status = false;
-		ArrayList<String> serializedItemNames = new ArrayList<String>();
+		ArrayList<String> serializedItemNames = new ArrayList<>();
 		SerializedItemBuilder builder = null;
 		IProject project;
 		IResource[] resources = null;
@@ -653,7 +637,7 @@ public class Core extends Application implements ICore, BundleActivator {
 			if (httpServiceRef != null) {
 
 				// Local Declaration
-				Dictionary<String, String> servletParams = new Hashtable<String, String>();
+				Dictionary<String, String> servletParams = new Hashtable<>();
 
 				// Get the service
 				httpService = bundleContext.getService(httpServiceRef);
@@ -706,7 +690,7 @@ public class Core extends Application implements ICore, BundleActivator {
 	@Override
 	public Set<Object> getSingletons() {
 		// Create a set that just points to this class as the servlet
-		Set<Object> result = new HashSet<Object>();
+		Set<Object> result = new HashSet<>();
 		result.add(this);
 		return result;
 	}
@@ -831,7 +815,7 @@ public class Core extends Application implements ICore, BundleActivator {
 	private ArrayList<Message> buildMessagesFromString(String messageString) {
 
 		// Create the ArrayList of messages
-		ArrayList<Message> messages = new ArrayList<Message>();
+		ArrayList<Message> messages = new ArrayList<>();
 
 		// Create the parser and gson utility
 		JsonParser parser = new JsonParser();

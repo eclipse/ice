@@ -40,8 +40,7 @@ public interface ItemBuilder {
 	 * This operation returns the short name of the Item that can be constructed
 	 * by this ItemBuilder.
 	 *
-	 * @return
-	 *         The name
+	 * @return The name
 	 */
 	public String getItemName();
 
@@ -49,8 +48,7 @@ public interface ItemBuilder {
 	 * This operation returns the type of Item that can be built by the
 	 * ItemBuilder.
 	 *
-	 * @return
-	 *         The type
+	 * @return The type
 	 */
 	public ItemType getItemType();
 
@@ -70,8 +68,7 @@ public interface ItemBuilder {
 	 *
 	 * @param projectSpace
 	 *            The Eclipse project that the Item should use for storage.
-	 * @return
-	 *         The newly created Item.
+	 * @return The newly created Item.
 	 */
 	public Item build(IProject projectSpace);
 
@@ -89,7 +86,6 @@ public interface ItemBuilder {
 		 * Logger for handling event messages and other information.
 		 */
 		Logger logger = LoggerFactory.getLogger(ItemBuilder.class);
-
 		ItemBuilder[] builders = null;
 		String id = "org.eclipse.ice.item.itemBuilder";
 		IExtensionPoint point = Platform.getExtensionRegistry()

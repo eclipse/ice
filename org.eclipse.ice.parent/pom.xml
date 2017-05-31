@@ -4,8 +4,8 @@
 
 	<!-- Custom properties -->
 	<properties>
-		<releaseName>master</releaseName>
-		<tycho-version>0.24.0</tycho-version>
+		<releaseName>2.2.1</releaseName>
+		<tycho-version>0.26.0</tycho-version>
 		<tycho-extras-version>${tycho-version}</tycho-extras-version>
 		<cbi-plugins.version>1.1.3</cbi-plugins.version>
 		<pom-filename>pom.xml</pom-filename>
@@ -24,8 +24,8 @@
 	<!-- This is the parent POM from which all ICE modules inherit common settings -->
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.eclipse.ice</groupId>
-	<artifactId>org.eclipse.ice.build</artifactId>
-	<version>2.2.0-SNAPSHOT</version>
+	<artifactId>org.eclipse.ice.parent</artifactId>
+	<version>2.2.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<pluginRepositories>
@@ -240,9 +240,9 @@
 					<target>
 						<artifact>
 							<groupId>org.eclipse.ice</groupId>
-							<artifactId>org.eclipse.ice.target.neon</artifactId>
-							<version>2.2.0-SNAPSHOT</version>
-							<classifier>neon</classifier>
+							<artifactId>org.eclipse.ice.target.oxygen</artifactId>
+							<version>2.2.1-SNAPSHOT</version>
+							<classifier>oxygen</classifier>
 						</artifact>
 					</target>
 				</configuration>

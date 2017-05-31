@@ -29,7 +29,7 @@
   <setupTask
       xsi:type="setup:EclipseIniTask"
       option="-Doomph.redirection.ice"
-      value="=https://git.eclipse.org/c/eclipse/ice.git/plain/org.eclipse.ice.aggregator/ICE.setup->${git.clone.ice.location|uri}/org.eclipse.ice.aggregator/ICE.setup"
+      value="=https://raw.githubusercontent.com/eclipse/ice/master/org.eclipse.ice.aggregator/ICE.setup->${git.clone.ice.location|uri}/org.eclipse.ice.aggregator/ICE.setup"
       vm="true">
     <description>Set an Oomph redirection system property to redirect the logical location of this setup to its physical location in the Git clone.</description>
   </setupTask>
@@ -97,7 +97,7 @@
       </detail>
       <detail
           key="label">
-        <value>${scope.project.label} github.remote.uris repository</value>
+        <value>${scope.project.label} Github repository</value>
       </detail>
       <detail
           key="target">
@@ -124,6 +124,8 @@
             url="http://download.eclipse.org/releases/oxygen"/>
         <repository
             url="http://download.eclipse.org/cbi/updates/license"/>
+        <repository
+            url="http://download.eclipse.org/modeling/emf/cdo/orbit/latest-R"/>
       </repositoryList>
       <repositoryList
           name="Neon">
@@ -131,6 +133,8 @@
             url="http://download.eclipse.org/releases/neon"/>
         <repository
             url="http://download.eclipse.org/cbi/updates/license"/>
+        <repository
+            url="http://download.eclipse.org/modeling/emf/cdo/orbit/latest-R"/>
       </repositoryList>
       <repositoryList
           name="Mars">

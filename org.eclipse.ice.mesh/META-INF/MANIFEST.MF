@@ -2,12 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mesh
 Bundle-SymbolicName: org.eclipse.ice.mesh;singleton:=true
-Bundle-Version: 2.2.0.qualifier
+Bundle-Version: 2.2.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.ice.datastructures
 Import-Package: org.eclipse.core.resources,
- org.eclipse.eavp.viz.datastructures,
+ org.eclipse.eavp.viz.datastructures.ui,
+ org.eclipse.eavp.viz.datastructures.VizObject,
  org.eclipse.eavp.viz.service.mesh.datastructures,
  org.eclipse.ice.item
 Service-Component: OSGI-INF/meshEditorComponent.xml
 Bundle-Vendor: Oak Ridge National Laboratory
+Export-Package: org.eclipse.ice.mesh.editor

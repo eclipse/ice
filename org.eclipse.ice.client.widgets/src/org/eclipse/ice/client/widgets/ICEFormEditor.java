@@ -237,7 +237,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 *            The service factory that should be used for generating
 	 *            visualizations.
 	 */
-	public static void setVizServiceFactory(IVizServiceFactory factory) {
+	public void setVizServiceFactory(IVizServiceFactory factory) {
 		vizFactory = factory;
 		Logger staticLogger = LoggerFactory.getLogger(ICEFormEditor.class);
 		staticLogger.info("ICEFormEditor Message: IVizServiceFactory set!");
