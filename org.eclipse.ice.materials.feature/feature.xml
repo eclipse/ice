@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.ice.materials.feature"
       label="ICE Advanced Materials Feature"
-      version="2.2.0.qualifier"
+      version="2.2.1.qualifier"
       provider-name="Oak Ridge National Laboratory"
       os="linux,macosx,win32"
       ws="cocoa,gtk,win32"

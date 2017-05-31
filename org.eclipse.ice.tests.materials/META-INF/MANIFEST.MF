@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Materials Tests
 Bundle-SymbolicName: org.eclipse.ice.tests.materials
-Bundle-Version: 2.2.0.qualifier
+Bundle-Version: 2.2.1.qualifier
 Fragment-Host: org.eclipse.ice.materials
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit
