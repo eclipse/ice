@@ -83,20 +83,14 @@ public class JsonEnvironmentCreatorImpl extends MinimalEObjectImpl.Container imp
 		JsonArray deps = root.getAsJsonArray("Dependencies");
 		
 		IEnvironment env = null;
-		EnvironmentBuilder builders[] = null;
+		EnvironmentBuilder builder = null;
 		String type = generalData.get("type").getAsString();
-
 		try {
-			builders = EnvironmentBuilder.getEnvironmentBuilders();
+			builder = EnvironmentBuilder.getEnvironmentBuilder(type);
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
-		for (EnvironmentBuilder b : builders) {
-			if (type.equals(b.name())) {
-				env = b.build();
-				break;
-			}
-		}
+		env = builder.build();
 		
 		// Create the Environment
 		if (env == null) {

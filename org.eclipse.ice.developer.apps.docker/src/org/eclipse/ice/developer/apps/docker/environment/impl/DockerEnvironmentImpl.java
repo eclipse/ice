@@ -205,7 +205,7 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected DockerEnvironmentImpl() {
+	public DockerEnvironmentImpl() {
 		super();
 	}
 

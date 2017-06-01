@@ -43,11 +43,12 @@ public class CreateAppWizardPage extends WizardPage {
 		data.horizontalSpan = 2;
 		status.setLayoutData(data);
 
+		String hostPort = System.getProperty("org.eclipse.equinox.http.jetty.http.port");
 		browser.addStatusTextListener(event -> status.setText("localhost:8081"));
-		browser.setUrl("http://localhost:8081");
+		browser.setUrl("http://localhost:" + hostPort);
 		setControl(shell);
 		
-		shell.setBounds(0, 0, 600, 400);;
+		shell.setBounds(0, 0, 600, 400);
 	}
 	
 }

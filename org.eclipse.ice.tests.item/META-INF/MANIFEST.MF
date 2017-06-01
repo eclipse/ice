@@ -19,7 +19,6 @@ Import-Package: gov.lbnl.visit.swt,
  org.eclipse.ice.item.action,
  org.eclipse.ice.persistence.xml,
  org.osgi.framework;version="1.6.0"
-Require-Bundle: org.junit;bundle-version="4.8.1",
- com.spotify.dockerclient.shaded;bundle-version="8.0.1"
+Require-Bundle: org.junit;bundle-version="4.8.1"
 Bundle-Vendor: Oak Ridge National Laboratory
 

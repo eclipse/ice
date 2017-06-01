@@ -3,7 +3,7 @@
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.ice.developer.apps.docker/src" modelPluginID="org.eclipse.ice.developer.apps.docker"
     modelName="Org.eclipse.ice.developer.apps" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
     importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0" copyrightFields="false"
-    usedGenPackages="../../org.eclipse.ice.developer.apps/model/apps.genmodel#//apps ../../org.eclipse.ice.docker/model/org.eclipse.ice.docker.genmodel#//api"
+    publicConstructors="true" usedGenPackages="../../org.eclipse.ice.developer.apps/model/apps.genmodel#//apps ../../org.eclipse.ice.docker/model/org.eclipse.ice.docker.genmodel#//api"
     operationReflection="true" importOrganizing="true">
   <foreignModel>org.eclipse.ice.developer.apps.docker.ecore</foreignModel>
   <genPackages prefix="Environment" basePackage="org.eclipse.ice.developer.apps.docker"

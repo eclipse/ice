@@ -115,8 +115,6 @@ public class JobLauncherForm extends Form {
 	 */
 	private static final String TBBEntryName = "Number of TBB Threads";
 
-	private DockerClientFactory clientFactory;
-
 	/**
 	 * <p>
 	 * The constructor.
@@ -140,86 +138,8 @@ public class JobLauncherForm extends Form {
 						+ "used by this Job.");
 		fileComponent.setName("Input File(s)");
 
-/*		DataComponent dockerComponent = new DataComponent();
-		dockerComponent.setName("Docker Configuration");
-		dockerComponent.setDescription(
-				"This section enables the use of docker for this Job Launch.");
-		dockerComponent.setId(dockerId);
-
-		// Create a docker launch check box.
-		IEntry dockerLaunch = new DiscreteEntry("true", "false");
-		dockerLaunch.setDefaultValue("false");
-		dockerLaunch.setName("Launch with Docker");
-		dockerLaunch.setDescription(
-				"Check to perform this job launch in a docker container.");
-		dockerLaunch.setId(33);
-		dockerComponent.addEntry(dockerLaunch);
-
-		// Create the list of images that displays itself
-		// when the docker launch check box is checked.
-		IEntry imagesList = new DiscreteEntry("Select Image") {
-			@Override
-			public void update(IUpdateable component) {
-				if (component instanceof DiscreteEntry
-						&& "Launch with Docker".equals(component.getName())) {
-					boolean enable = Boolean
-							.valueOf(((IEntry) component).getValue());
-					setReady(enable);
-					if (enable) {
-						// Set up the allowed values
-						DockerClient dockerClient;
-						try {
-							dockerClient = new DockerClientFactory()
-									.getDockerClient();
-							if (dockerClient != null) {
-								allowedValues = new ArrayList<String>();
-								for (Image i : dockerClient.listImages()) {
-									allowedValues.add(i.repoTags().get(0));
-								}
-								if (allowedValues.isEmpty()) {
-									allowedValues.add("No Images Found.");
-								}
-								setValue(allowedValues.get(0));
-							} else {
-								logger.error(
-										"Error in getting a reference to Docker or listing available Images.");
-								allowedValues = new ArrayList<String>();
-								allowedValues
-										.add("Error connecting to Docker.");
-								setValue(allowedValues.get(0));
-								return;
-							}
-						} catch (DockerCertificateException | DockerException
-								| InterruptedException | IOException e1) {
-							e1.printStackTrace();
-							logger.error(
-									"Error in getting a reference to Docker or listing available Images.",
-									e1);
-							allowedValues = new ArrayList<String>();
-							allowedValues.add("Error connecting to Docker.");
-							setValue(allowedValues.get(0));
-							return;
-						}
-					}
-				}
-				return;
-			}
-		};
-
-		imagesList.setName("Available Images");
-		imagesList.setDescription(
-				"Select the docker image to use for this docker launch.");
-		imagesList.setReady(false);
-		imagesList.setId(34);
-		dockerComponent.addEntry(imagesList);
-
-		// Register the list of images as a listener
-		// of the docker launch entry.
-		dockerLaunch.register(imagesList);
-*/
 		// Add the data components
 		addComponent(fileComponent);
-//		addComponent(dockerComponent);
 
 		// Create a ResourceComponent
 		ResourceComponent outputData = new ResourceComponent();

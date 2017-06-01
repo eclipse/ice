@@ -467,17 +467,17 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	public IEnvironment createEmpty(String type) {
 		
 		IEnvironment env = null;
-		EnvironmentBuilder builders[] = null;
+		EnvironmentBuilder builder = null;
 		try {
-			builders = EnvironmentBuilder.getEnvironmentBuilders();
+			builder = EnvironmentBuilder.getEnvironmentBuilder(type);
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
-		for (EnvironmentBuilder b : builders) {
-			if (type.equals(b.name())) {
-				env = b.build();
-				break;
-			}
+		if (builder != null) {
+			env = builder.build();
+		} else {
+			logger.error("Could not find EnvironmentBuilder of name " + type);
+			return null;
 		}
 		
 		if (env != null) {

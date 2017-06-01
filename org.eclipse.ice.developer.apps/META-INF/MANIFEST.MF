@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.ice.developer.apps;singleton:=true
-Bundle-Version: 2.2.1.qualifier
+Bundle-Version: 2.2.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -17,8 +17,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.slf4j.api;bundle-version="1.7.2",
  com.google.gson;bundle-version="2.2.4",
- com.spotify.dockerclient.shaded;bundle-version="8.0.1",
- org.eclipse.emf
+ org.eclipse.emf,
+ org.eclipse.ice.docker;bundle-version="2.2.0"
 Bundle-ActivationPolicy: lazy
 Import-Package: com.google.gson;version="2.2.4",
  com.google.gson.stream;version="2.2.4",
@@ -27,6 +27,4 @@ Import-Package: com.google.gson;version="2.2.4",
  org.apache.commons.io,
  org.apache.commons.logging,
  org.eclipse.emf.ecore.xmi.impl,
- org.eclipse.emf.ecore.xmi.util,
- org.eclipse.ice.docker.api,
- org.eclipse.ice.docker.api.spotify
+ org.eclipse.emf.ecore.xmi.util

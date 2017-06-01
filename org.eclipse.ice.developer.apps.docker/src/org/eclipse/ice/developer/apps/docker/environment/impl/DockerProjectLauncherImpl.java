@@ -94,7 +94,7 @@ public class DockerProjectLauncherImpl extends MinimalEObjectImpl.Container impl
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected DockerProjectLauncherImpl() {
+	public DockerProjectLauncherImpl() {
 		super();
 	}
 

@@ -27,8 +27,13 @@
   	<module>../org.eclipse.ice.tests.core</module>
   	<module>../org.eclipse.ice.datastructures</module>
   	<module>../org.eclipse.ice.tests.datastructures</module>
+  	<module>../org.eclipse.ice.docker</module>
+  	<module>../org.eclipse.ice.docker.tests</module>
   	<module>../org.eclipse.ice.developer</module>
   	<module>../org.eclipse.ice.developer.apps</module>
+  	<module>../org.eclipse.ice.developer.apps.ui/WebContent</module>
+  	<module>../org.eclipse.ice.developer.apps.docker</module>
+  	<module>../org.eclipse.ice.developer.apps.docker.tests</module>
   	<module>../org.eclipse.ice.developer.apps.tests</module>
   	<module>../org.eclipse.ice.developer.apps.impl.eclipse</module>
   	<module>../org.eclipse.ice.developer.apps.impl.eclipse.tests</module>

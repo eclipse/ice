@@ -29,7 +29,7 @@ public class DockerEnvironmentBuilderImpl extends MinimalEObjectImpl.Container i
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected DockerEnvironmentBuilderImpl() {
+	public DockerEnvironmentBuilderImpl() {
 		super();
 	}
 
@@ -47,6 +47,7 @@ public class DockerEnvironmentBuilderImpl extends MinimalEObjectImpl.Container i
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 */
+	@Override
 	public IEnvironment build() {
 		// Ensure that you remove @generated or mark it @generated NOT
 		return EnvironmentFactory.eINSTANCE.createDockerEnvironment();
@@ -57,7 +58,7 @@ public class DockerEnvironmentBuilderImpl extends MinimalEObjectImpl.Container i
 	 * <!-- end-user-doc -->
 	 */
 	public String name() {
-		return "docker";
+		return "Docker";
 	}
 
 	/**
