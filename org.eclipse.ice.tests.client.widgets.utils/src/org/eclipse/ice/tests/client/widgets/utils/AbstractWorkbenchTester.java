@@ -271,9 +271,7 @@ public abstract class AbstractWorkbenchTester
 		SWTWorkbenchBot bot = getBot();
 
 		// Open "Window" > "Show View" > "Other..."
-		bot.menu("Window").click();
-		bot.menu("Window").menu("Show View").click();
-		bot.menu("Window").menu("Show View").menu("Other...").click();
+		bot.menu("Show View").menu("Other...").click();
 		// To pick from the dialog, we must activate it.
 		bot.shell("Show View").activate();
 		// Select "category" > "name"
