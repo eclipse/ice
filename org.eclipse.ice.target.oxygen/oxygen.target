@@ -57,11 +57,8 @@
 <unit id="org.eclipse.ecf.osgi.services.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.ecf.remoteservice.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.ecf.remoteservice.rest.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ecf.remoteservice.rest.synd.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.ecf.remoteservice.rosgi.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ecf.remoteservice.sdk.source.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.ecf.remoteservice.servlet.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ecf.remoteservice.soap.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.egf.sdk.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.egit.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.emf.compare.diagram.papyrus.feature.group" version="0.0.0"/>
