@@ -85,12 +85,7 @@
 <unit id="org.eclipse.equinox.p2.extras.feature.source.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.equinox.p2.user.ui.source.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.equinox.sdk.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.fx.ide.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.gef.sdk.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.gmf.sdk.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.gmf.tooling.codegen.xtend2.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.gmf.tooling.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.gmf.tooling.runtime.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.graphiti.export.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.graphiti.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.graphiti.feature.tools.feature.group" version="0.0.0"/>
@@ -168,6 +163,19 @@
 <unit id="org.eclipse.remote.console.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.remote.proxy.feature.group" version="0.0.0"/>
 <repository location="http://download.eclipse.org/tools/ptp/builds/remote/nightly"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.fx.ide.feature.feature.group" version="0.0.0"/>
+<repository location="http://download.eclipse.org/efxclipse/updates-released/1.0.0/site"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.january.form" version="2.1.0.v201705241711"/>
+<unit id="org.eclipse.january.geometry.dsl.iges" version="2.1.0.v201704041521"/>
+<unit id="org.eclipse.january.geometry.dsl.mtl" version="2.1.0.v201704041521"/>
+<unit id="org.eclipse.january.geometry.dsl.obj" version="2.1.0.v201704041521"/>
+<unit id="org.eclipse.january.geometry.dsl.vtk" version="2.1.0.v201704041521"/>
+<unit id="org.eclipse.january.geometry.model" version="2.1.0.v201705241711"/>
+<repository location="http://download.eclipse.org/january/builds/january-forms-master/latest/repository/"/>
 </location>
 </locations>
 </target>
