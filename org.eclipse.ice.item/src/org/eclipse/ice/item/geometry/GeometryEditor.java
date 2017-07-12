@@ -32,7 +32,7 @@ import org.eclipse.ice.item.ItemType;
 import org.eclipse.january.geometry.Geometry;
 import org.eclipse.january.geometry.GeometryFactory;
 import org.eclipse.january.geometry.INode;
-import org.eclipse.january.geometry.xtext.obj.importer.OBJGeometryImporter;
+import org.eclipse.january.geometry.dsl.obj.importer.OBJGeometryImporter;
 
 /**
  * <p>
