@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.ice"
       label="ICE Infrastructure Feature"
-      version="2.2.0.qualifier"
+      version="2.2.1.qualifier"
       provider-name="Oak Ridge National Laboratory"
       plugin="org.eclipse.ice.client.rcp"
       os="linux,macosx,win32"
@@ -76,6 +76,13 @@ Content may contain encryption software. The country in which you are currently 
 
 Java and all Java-based trademarks are trademarks of Oracle Corporation in the United States, or countries, or both.
    </license>
+
+   <requires>
+      <import plugin="org.eclipse.userstorage"/>
+      <import plugin="org.eclipse.userstorage.ui"/>
+      <import feature="org.eclipse.epp.mpc" version="1.6.0.v20170315-2032"/>
+      <import plugin="org.apache.httpcomponents.httpclient"/>
+   </requires>
 
    <plugin
          id="org.eclipse.ice.caebat.batml"
@@ -211,48 +218,28 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
          unpack="false"/>
 
    <plugin
+         id="com.spotify.docker-client.shaded"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="bcpkix"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="bcprov"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.ice.geometry"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ice.developer.apps"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ice.developer.apps.impl.eclipse"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ice.developer.apps.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.spotify.dockerclient.shaded"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.eclipse.ice.developer.apps.docker"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ice.docker"
          download-size="0"
          install-size="0"
          version="0.0.0"

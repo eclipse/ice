@@ -35,7 +35,7 @@ public class MOOSETester extends AbstractWorkbenchTester {
 		bot.menu("Window").menu("Perspective").menu("Open Perspective")
 				.menu("Other...").click();
 		bot.table(0).select("MOOSE");
-		bot.button("OK").click();
+		bot.button().click();
 
 		// Select fork the stork
 		bot.menu("Developer").menu("Framework").menu("MOOSE")

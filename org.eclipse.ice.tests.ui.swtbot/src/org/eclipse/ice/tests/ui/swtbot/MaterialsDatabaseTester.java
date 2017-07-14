@@ -62,10 +62,13 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 		bot.viewByTitle("Welcome").close();
 		
 		// Open the ICE perspective
+		bot.menu("Window");
+		bot.menu("Window").menu("Perspective");
+		bot.menu("Window").menu("Perspective").menu("Open Perspective");
 		bot.menu("Window").menu("Perspective").menu("Open Perspective")
 				.menu("Other...").click();
 		bot.table(0).select("ICE");
-		bot.button("OK").click();
+		bot.button().click();
 
 		// Open the materials database
 		bot.toolbarButtonWithTooltip("Edit Materials Database").click();

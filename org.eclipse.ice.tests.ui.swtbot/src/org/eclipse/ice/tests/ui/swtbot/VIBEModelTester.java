@@ -37,7 +37,7 @@ public class VIBEModelTester extends AbstractWorkbenchTester {
 		bot.menu("Window").menu("Perspective").menu("Open Perspective")
 				.menu("Other...").click();
 		bot.table(0).select("ICE");
-		bot.button("OK").click();
+		bot.button().click();
 
 		// Create a new reflectivity model item
 		bot.toolbarButtonWithTooltip("Create an Item").click();
@@ -206,7 +206,8 @@ public class VIBEModelTester extends AbstractWorkbenchTester {
 		bot.text(8).typeText("Test");
 
 		// Delete a row and make sure it's gone
-		bot.table().select(0);
+		bot.table(1).select(0);
+		bot.text(1).selectAll();
 		bot.button(3).click();
 		assertTrue("11 DUALFOIL".equals(bot.table(1).cell(9, 0)));
 		

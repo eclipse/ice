@@ -22,7 +22,6 @@ import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
 import org.eclipse.ui.IEditorInput;
@@ -58,8 +57,8 @@ import org.junit.BeforeClass;
  * @author Jordan Deyton
  *
  */
-public abstract class AbstractWorkbenchTester extends
-		AbstractICEUITester<SWTWorkbenchBot> {
+public abstract class AbstractWorkbenchTester
+		extends AbstractICEUITester<SWTWorkbenchBot> {
 
 	/**
 	 * The {@code SWTBot} for this test class instance. This bot is to aid in
@@ -243,7 +242,8 @@ public abstract class AbstractWorkbenchTester extends
 	 *            The Eclipse editor's ID as defined in the plug-in extensions.
 	 * @return The opened editor, or {@code null} if it could not be opened.
 	 */
-	protected IEditorReference openICEFormEditor(ICEFormInput input, String id) {
+	protected IEditorReference openICEFormEditor(ICEFormInput input,
+			String id) {
 		return openEditor(input, id);
 	}
 
@@ -266,20 +266,18 @@ public abstract class AbstractWorkbenchTester extends
 	 *            seen in the plug-in extensions and the UI itself.
 	 * @return The view wrapped by the {@code SWTBot}.
 	 */
-	protected SWTBotView openView(String category, String name) {
+	protected void openView(String category, String name) {
 
 		SWTWorkbenchBot bot = getBot();
 
 		// Open "Window" > "Show View" > "Other..."
-		bot.menu("Window").menu("Show View").menu("Other...").click();
+		bot.menu("Show View").menu("Other...").click();
 		// To pick from the dialog, we must activate it.
 		bot.shell("Show View").activate();
 		// Select "category" > "name"
 		bot.tree().expandNode(category, false).select(name);
 		// Close the dialog by clicking OK.
-		bot.button("OK").click();
-		// Return the view itself.
-		return bot.viewByTitle(name);
+		bot.button().click();
 	}
 
 	/**

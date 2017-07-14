@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ICE" uid="ice.sdk.product" id="org.eclipse.ice.client.rcp.sdk_product" application="org.eclipse.ui.ide.workbench" version="2.2.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="ICE" uid="ice.sdk.product" id="org.eclipse.ice.client.rcp.sdk_product" application="org.eclipse.ui.ide.workbench" version="2.2.1.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -236,9 +236,6 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.client.widgets" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.datastructures" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.developer" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.developer.apps" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.developer.apps.impl.eclipse" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.developer.apps.ui" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.developer.moose" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.geometry" autoStart="false" startLevel="0" />
       <plugin id="org.eclipse.ice.io" autoStart="true" startLevel="0" />

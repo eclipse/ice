@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ICEItem
 Bundle-SymbolicName: org.eclipse.ice.item;singleton:=true
-Bundle-Version: 2.2.0.qualifier
+Bundle-Version: 2.2.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.jcraft.jsch;version="0.1.51",
  org.apache.commons.io,
@@ -22,7 +22,7 @@ Import-Package: com.jcraft.jsch;version="0.1.51",
  org.eclipse.ice.io.serializable,
  org.eclipse.ice.materials,
  org.eclipse.january.geometry,
- org.eclipse.january.geometry.xtext.obj.importer,
+ org.eclipse.january.geometry.dsl.obj.importer,
  org.eclipse.jface.images,
  org.eclipse.remote.core,
  org.eclipse.remote.core.exception,
