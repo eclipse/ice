@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="eclipseapps" nsURI="http://eclipse.org/ice/apps/eclipseimpl"
-    nsPrefix="eclipseappsimpl">
-  <eClassifiers xsi:type="ecore:EClass" name="DockerPTPSyncProjectLauncher" eSuperTypes="../../org.eclipse.ice.developer.apps.docker/model/org.eclipse.ice.developer.apps.docker.ecore#//DockerProjectLauncher"/>
-  <eClassifiers xsi:type="ecore:EClass" name="EclipseCppProjectProvider" eSuperTypes="../../org.eclipse.ice.developer.apps/model/apps.ecore#//LanguageProjectProvider"/>
-  <eClassifiers xsi:type="ecore:EClass" name="EclipseEnvironmentConsole" eSuperTypes="../../org.eclipse.ice.developer.apps/model/apps.ecore#//EnvironmentConsole"/>
-  <eClassifiers xsi:type="ecore:EClass" name="EclipseEnvironmentStorage" eSuperTypes="../../org.eclipse.ice.developer.apps/model/apps.ecore#//EnvironmentStorage"/>
-</ecore:EPackage>
