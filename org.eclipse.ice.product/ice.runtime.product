@@ -31,6 +31,7 @@
       startupForegroundColor="FFFFFF" />
    <launcher name="ICE">
       <macosx icon="/icons/ice_logo_runtime.icns"/>
+      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
@@ -249,8 +250,6 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.reflectivity" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.vibe" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.january.geometry.model" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.january.geometry.xtext.obj" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.january.geometry.xtext.vtk" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
       <plugin id="org.eclipse.platform" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ui.forms" autoStart="true" startLevel="0" />
