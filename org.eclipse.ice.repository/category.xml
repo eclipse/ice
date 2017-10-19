@@ -17,6 +17,6 @@
       </description>
    </category-def>
    <repository-reference location="http://download.eclipse.org/releases/oxygen/" enabled="true" />
-   <repository-reference location="http://download.eclipse.org/technology/nebula/archives/Q32014/release/" enabled="true" />
+   <repository-reference location="http://download.eclipse.org/nebula/releases/1.0.0/" enabled="true" />
    <repository-reference location="http://download.eclipse.org/eavp/builds/0.2.0/" enabled="true" />
 </site>

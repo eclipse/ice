@@ -123,7 +123,7 @@
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.eavp.feature.feature.group" version="0.0.0"/>
-<repository location="http://download.eclipse.org/eavp/builds/next"/>
+<repository location="http://download.eclipse.org/eavp/builds/0.2.0/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.apache.log4j" version="0.0.0"/>
