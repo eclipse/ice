@@ -148,7 +148,7 @@
 <unit id="org.eclipse.ease.modules.unittest.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.ease.lang.python.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.ease.python.jython.feature.feature.group" version="0.0.0"/>
-<repository location="http://download.eclipse.org/ease/update/nightly"/>
+<repository location="http://download.eclipse.org/ease/update/release"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="javax.ws.rs" version="1.1.1.v20130318-1750"/>
