@@ -7,7 +7,7 @@
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.nebula.visualization.feature.feature.group" version="0.0.0"/>
-<repository location="http://download.eclipse.org/nebula/releases/1.0.0/"/>
+<repository location="http://download.eclipse.org/nebula/releases/1.3.0/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.january.form" version="2.1.0.v201705241711"/>
@@ -157,6 +157,19 @@
 <unit id="org.eclipse.ptp.feature.group" version="9.1.2.201705091731"/>
 <unit id="org.eclipse.dltk.tcl.feature.group" version="5.8.0.201706030400"/>
 <repository location="http://download.eclipse.org/releases/oxygen/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.january.form" version="2.1.0.v201705241711"/>
+<unit id="org.eclipse.january.geometry.dsl.iges" version="2.1.0.v201704041521"/>
+<unit id="org.eclipse.january.geometry.dsl.mtl" version="2.1.0.v201704041521"/>
+<unit id="org.eclipse.january.geometry.dsl.obj" version="2.1.0.v201704041521"/>
+<unit id="org.eclipse.january.geometry.dsl.vtk" version="2.1.0.v201704041521"/>
+<unit id="org.eclipse.january.geometry.model" version="2.1.0.v201705241711"/>
+<repository location="http://download.eclipse.org/january/builds/january-forms-master/latest/repository/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.fx.ide.feature.feature.group" version="0.0.0"/>
+<repository location="http://download.eclipse.org/efxclipse/updates-released/1.0.0/site"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.january.form" version="2.1.0.v201705241711"/>
