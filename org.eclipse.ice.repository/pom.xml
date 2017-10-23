@@ -79,6 +79,7 @@
 								<site>http://download.eclipse.org/eavp/builds/0.2.0/</site>
 								<site>http://download.eclipse.org/nebula/releases/1.3.0/</site>
 								<site>http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository</site>
+								<site>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository</site>
 							</associateSites>
 						</configuration>
 					</execution>

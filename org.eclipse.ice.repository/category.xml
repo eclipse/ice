@@ -20,4 +20,5 @@
    <repository-reference location="http://download.eclipse.org/nebula/releases/1.3.0/" enabled="true" />
    <repository-reference location="http://download.eclipse.org/eavp/builds/0.2.0/" enabled="true" />
    <repository-reference location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository" enabled="true" />
+   <repository-reference location="http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository" enabled="true" />
 </site>
