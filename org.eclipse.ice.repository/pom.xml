@@ -75,6 +75,10 @@
 	                            <target.eclipse.version>${target.eclipse.version}</target.eclipse.version>
 	                        </symbols>
 	                        <siteTemplateFolder>siteTemplateFolder/</siteTemplateFolder>
+							<associateSites>
+								<site>http://download.eclipse.org/eavp/builds/0.2.0/</site>
+								<site>http://download.eclipse.org/nebula/releases/1.3.0/</site>
+							</associateSites>
 						</configuration>
 					</execution>
 				</executions>
