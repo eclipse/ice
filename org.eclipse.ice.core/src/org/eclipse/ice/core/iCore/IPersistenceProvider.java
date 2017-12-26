@@ -21,7 +21,7 @@ import org.eclipse.ice.item.Item;
  * An interface designed for item persistence within ICE.
  * </p>
  * 
- * @author Scott Forest Hull II
+ * @author Scott Forest Hull II, Jay Jay Billings
  */
 public interface IPersistenceProvider {
 	/**
