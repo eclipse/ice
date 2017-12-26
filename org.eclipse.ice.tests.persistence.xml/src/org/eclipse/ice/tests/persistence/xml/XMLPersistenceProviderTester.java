@@ -42,7 +42,6 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.jobprofile.JobProfileBuilder;
 import org.eclipse.ice.persistence.xml.XMLPersistenceProvider;
-import org.eclipse.ice.vibe.launcher.VibeLauncherBuilder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -90,7 +89,7 @@ public class XMLPersistenceProviderTester {
 		// Register the the CAEBAT key-value pair builders with
 		// it so that it can determine class information for unmarshalling
 		// Items.
-		xmlpp.addBuilder(new VibeLauncherBuilder());
+		xmlpp.addBuilder(new JobProfileBuilder());
 
 		// Add a Class Provider so that we can persist the forms.
 		xmlpp.registerClassProvider(new ICEJAXBClassProvider());
@@ -335,7 +334,7 @@ public class XMLPersistenceProviderTester {
 
 		// Create a MOOSE item
 		JobProfileBuilder builder = new JobProfileBuilder();
-		VibeLauncherBuilder vibeBuilder = new VibeLauncherBuilder();
+		JobProfileBuilder vibeBuilder = new JobProfileBuilder();
 		Item item = builder.build(project);
 		String name;
 		int passedCount = 0;
