@@ -11,7 +11,6 @@ Require-Bundle: org.junit,
  org.eclipse.ice.datastructures,
  org.eclipse.ice.item
 Import-Package: org.eclipse.ice.vibe.kvPair,
- org.eclipse.ice.vibe.launcher,
- org.eclipse.ice.item.nuclear
+ org.eclipse.ice.vibe.launcher
 Bundle-Vendor: Oak Ridge National Laboratory
 Export-Package: org.eclipse.ice.tests.persistence.xml

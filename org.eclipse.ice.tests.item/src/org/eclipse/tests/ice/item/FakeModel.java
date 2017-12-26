@@ -13,8 +13,8 @@ package org.eclipse.tests.ice.item;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.item.IActionFactory;
+import org.eclipse.ice.item.model.IMaterialsDatabase;
 import org.eclipse.ice.item.model.Model;
-import org.eclipse.ice.materials.IMaterialsDatabase;
 
 /**
  * This is a fake subclass of Model that returns the IMaterialsDatabase so it

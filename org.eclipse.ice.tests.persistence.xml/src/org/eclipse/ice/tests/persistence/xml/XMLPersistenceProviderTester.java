@@ -39,7 +39,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.nuclear.MOOSEModelBuilder;
+import org.eclipse.ice.item.ItemBuilder;
+import org.eclipse.ice.item.jobprofile.JobProfileBuilder;
 import org.eclipse.ice.persistence.xml.XMLPersistenceProvider;
 import org.eclipse.ice.vibe.launcher.VibeLauncherBuilder;
 import org.junit.AfterClass;
@@ -71,9 +72,9 @@ public class XMLPersistenceProviderTester {
 
 	/**
 	 * This operation sets up the tester and creates the project space. It also
-	 * copies a data file for the MOOSEModel Item into the workspace so that it
-	 * can be used. It is the biggest normal Item in ICE and using it makes the
-	 * test realistic.
+	 * copies a data file for the MOOSEModel Item into the workspace so that it can
+	 * be used. It is the biggest normal Item in ICE and using it makes the test
+	 * realistic.
 	 * 
 	 * The project name is chosen to match the name expected by the
 	 * XMLPersistenceProvider.
@@ -86,10 +87,9 @@ public class XMLPersistenceProviderTester {
 
 		// Setup the XMLPersistenceProvider
 		xmlpp = new XMLPersistenceProvider(project);
-		// Register the MOOSE model and the CAEBAT key-value pair builders with
+		// Register the the CAEBAT key-value pair builders with
 		// it so that it can determine class information for unmarshalling
 		// Items.
-		xmlpp.addBuilder(new MOOSEModelBuilder());
 		xmlpp.addBuilder(new VibeLauncherBuilder());
 
 		// Add a Class Provider so that we can persist the forms.
@@ -120,8 +120,7 @@ public class XMLPersistenceProviderTester {
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		URI defaultProjectLocation = null;
 		String separator = System.getProperty("file.separator");
-		String userDir = System.getProperty("user.home") + separator
-				+ "ICETests" + separator + "persistenceData";
+		String userDir = System.getProperty("user.home") + separator + "ICETests" + separator + "persistenceData";
 		String projectPath = userDir + separator + projectName;
 		IProject createdProject = null;
 
@@ -134,8 +133,7 @@ public class XMLPersistenceProviderTester {
 				// Set the location as ${workspace_loc}/ItemTesterWorkspace
 				defaultProjectLocation = (new File(projectPath).toURI());
 				// Create the project description
-				IProjectDescription desc = ResourcesPlugin.getWorkspace()
-						.newProjectDescription(projectName);
+				IProjectDescription desc = ResourcesPlugin.getWorkspace().newProjectDescription(projectName);
 				// Set the location of the project
 				desc.setLocationURI(defaultProjectLocation);
 				// Create the project
@@ -188,16 +186,14 @@ public class XMLPersistenceProviderTester {
 	 */
 	private boolean checkPersistedFile(String name, IProject projectToCheck) {
 
-		System.out.println("XMLPersistenceProviderTester Message: "
-				+ "Searching for " + name);
+		System.out.println("XMLPersistenceProviderTester Message: " + "Searching for " + name);
 
 		try {
 			// Get the list of resources
 			IResource[] resources = projectToCheck.members();
 			// Check the list and make sure the file was stored
 			for (IResource resource : resources) {
-				System.out.println("XMLPersistenceProviderTester Message: "
-						+ "Found resource " + resource.getName());
+				System.out.println("XMLPersistenceProviderTester Message: " + "Found resource " + resource.getName());
 				if (resource.getName().equals(name)) {
 					return true;
 				}
@@ -212,8 +208,8 @@ public class XMLPersistenceProviderTester {
 	}
 
 	/**
-	 * This is a utility operation that just delays the execution of the program
-	 * for the specified number of seconds.
+	 * This is a utility operation that just delays the execution of the program for
+	 * the specified number of seconds.
 	 * 
 	 * @param seconds
 	 *            The time to delay.
@@ -239,7 +235,7 @@ public class XMLPersistenceProviderTester {
 	@Test
 	public void checkRename() {
 		// Create a MOOSE item
-		MOOSEModelBuilder builder = new MOOSEModelBuilder();
+		JobProfileBuilder builder = new JobProfileBuilder();
 		Item item = builder.build(project);
 		String name = item.getName().replace(" ", "_") + ".xml";
 
@@ -260,15 +256,15 @@ public class XMLPersistenceProviderTester {
 	}
 
 	/**
-	 * This operation checks the ability of the XMLPersistenceProvider to
-	 * persist Items to its project space. It also checks update() since that
-	 * operation is identical to persist().
+	 * This operation checks the ability of the XMLPersistenceProvider to persist
+	 * Items to its project space. It also checks update() since that operation is
+	 * identical to persist().
 	 */
 	@Test
 	public void checkPersist() {
 
 		// Create a MOOSE item
-		MOOSEModelBuilder builder = new MOOSEModelBuilder();
+		JobProfileBuilder builder = new JobProfileBuilder();
 		Item item = builder.build(project);
 		String name = item.getName().replace(" ", "_") + ".xml";
 
@@ -330,15 +326,15 @@ public class XMLPersistenceProviderTester {
 
 	/**
 	 * This operation checks the load operation to make sure that the
-	 * XMLPersistenceProvider can properly load Items from the workspace. It
-	 * also checks the loadAll() and delete() operation since they are closely
-	 * related to the ability to load a single Item.
+	 * XMLPersistenceProvider can properly load Items from the workspace. It also
+	 * checks the loadAll() and delete() operation since they are closely related to
+	 * the ability to load a single Item.
 	 */
 	@Test
 	public void checkLoad() {
 
 		// Create a MOOSE item
-		MOOSEModelBuilder builder = new MOOSEModelBuilder();
+		JobProfileBuilder builder = new JobProfileBuilder();
 		VibeLauncherBuilder vibeBuilder = new VibeLauncherBuilder();
 		Item item = builder.build(project);
 		String name;
@@ -367,7 +363,7 @@ public class XMLPersistenceProviderTester {
 		// Check the list
 		Item listItem = items.get(0);
 		// Look for the correct name and item id
-		assertEquals(listItem.getName(), MOOSEModelBuilder.name);
+		assertEquals(listItem.getName(), builder.getItemName());
 		assertEquals(listItem.getId(), 3);
 
 		// Delete the item
@@ -418,8 +414,8 @@ public class XMLPersistenceProviderTester {
 	}
 
 	/**
-	 * This operation insures that IWriter interface is implemented as described
-	 * by the XML persistence provider and that the operations function.
+	 * This operation insures that IWriter interface is implemented as described by
+	 * the XML persistence provider and that the operations function.
 	 * 
 	 * @throws JAXBException
 	 *             JAXB wasn't able to load
@@ -453,8 +449,8 @@ public class XMLPersistenceProviderTester {
 	}
 
 	/**
-	 * This operation insures that IReader interface is implemented as described
-	 * by the XML persistence provider and that the operations function.
+	 * This operation insures that IReader interface is implemented as described by
+	 * the XML persistence provider and that the operations function.
 	 * 
 	 * @throws JAXBException
 	 *             JAXB could not load
@@ -476,8 +472,7 @@ public class XMLPersistenceProviderTester {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		marshaller.marshal(form, outputStream);
 		// Convert it to an input stream so it can be pushed to file
-		ByteArrayInputStream inputStream = new ByteArrayInputStream(
-				outputStream.toByteArray());
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 		// Update the output file if it already exists
 		if (file.exists()) {
 			file.setContents(inputStream, IResource.FORCE, null);

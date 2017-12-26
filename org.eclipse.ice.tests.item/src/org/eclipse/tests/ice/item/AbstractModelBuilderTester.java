@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.ice.item.IActionFactory;
 import org.eclipse.ice.item.model.AbstractModelBuilder;
-import org.eclipse.ice.materials.IMaterialsDatabase;
+import org.eclipse.ice.item.model.IMaterialsDatabase;
 import org.junit.Test;
 
 /**
@@ -36,7 +36,7 @@ public class AbstractModelBuilderTester {
 
 	/**
 	 * Test method for
-	 * {@link org.eclipse.ice.item.model.AbstractModelBuilder#setMaterialsDatabase(org.eclipse.ice.materials.IMaterialsDatabase)}
+	 * {@link org.eclipse.ice.item.model.AbstractModelBuilder#setMaterialsDatabase(org.eclipse.ice.item.model.IMaterialsDatabase)}
 	 * .
 	 */
 	@Test
