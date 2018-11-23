@@ -117,7 +117,7 @@ public class INIWriterTester {
 		INIReader reader = new INIReader();
 		INIWriter writer = new INIWriter();
 		assertNotNull(writer);
-		assertEquals(writer.getWriterType(), "INIWriter");
+		assertEquals(writer.getWriterType(), "INI");
 
 		// Try to read in invalid INI file
 		Form form = null;

@@ -26,6 +26,7 @@ import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.ui.IEditorReference;
 import org.junit.Test;
@@ -105,7 +106,7 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 	public void beforeAllTests() {
 		super.beforeAllTests();
 		// Initialize static or otherwise shared resources here.
-
+		SWTBotPreferences.PLAYBACK_DELAY = 100;
 		openView("Other", "Resources");
 
 		// ---- Open an ICEFormEditor with an ICEResourcePage. ---- //
@@ -127,22 +128,14 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 		sharedPage = editor.getResourcePage();
 		// -------------------------------------------------------- //
 
+		// try {
+		// Thread.sleep(99999);
+		// } catch (InterruptedException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+
 		return;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.ice.client.widgets.test.AbstractWorkbenchTester#
-	 * beforeEachTest ()
-	 */
-	@Override
-	public void beforeEachTest() {
-		super.beforeEachTest();
-		// Initialize per-test resources here.
-
-		// Activate the main test editor.
-		getBot().editor(getExactMatcher(sharedEditorRef)).show();
 	}
 
 	/*
@@ -267,7 +260,7 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 
 		// These are the extensions for files that should be opened in the
 		// default text editor (provided there's no viz service that uses them).
-		String[] extensions = new String[] { "txt", "sh", "i", "csv" };
+		String[] extensions = new String[] { "txt", "sh", "i" };
 
 		SWTWorkbenchBot bot = getBot();
 

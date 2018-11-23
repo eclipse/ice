@@ -16,9 +16,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.eavp.viz.modeling.ShapeController;
-import org.eclipse.eavp.viz.modeling.ShapeMesh;
-import org.eclipse.eavp.viz.modeling.base.BasicView;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -29,6 +26,7 @@ import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.model.Model;
+import org.eclipse.january.geometry.GeometryFactory;
 
 @XmlRootElement(name = "DemoModel")
 public class DemoModel extends Model {
@@ -71,8 +69,7 @@ public class DemoModel extends Model {
 		geomComp.setName("Geometry");
 		geomComp.setDescription("A geometry");
 		geomComp.setContext("demo-geometry");
-		geomComp.setGeometry(
-				new ShapeController(new ShapeMesh(), new BasicView()));
+		geomComp.setGeometry(GeometryFactory.eINSTANCE.createGeometry());
 
 		// Create a data component
 		DataComponent dataComp = new DataComponent();

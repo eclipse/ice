@@ -21,16 +21,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import org.eclipse.eavp.viz.modeling.EdgeController;
-import org.eclipse.eavp.viz.modeling.EdgeMesh;
+import org.eclipse.eavp.viz.modeling.Edge;
 import org.eclipse.eavp.viz.modeling.factory.IControllerProviderFactory;
 import org.eclipse.eavp.viz.modeling.properties.MeshCategory;
 import org.eclipse.eavp.viz.modeling.properties.MeshProperty;
 import org.eclipse.eavp.viz.modeling.VertexController;
-import org.eclipse.eavp.viz.modeling.VertexMesh;
+import org.eclipse.eavp.viz.modeling.base.IController;
+import org.eclipse.eavp.viz.modeling.Vertex;
 import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryConditionType;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
-import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonMesh;
+import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygon;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
@@ -113,6 +114,7 @@ public class NekReader {
 	 * elements, number of fluid elements, number of passive scalar sets).
 	 */
 	private ProblemProperties properties;
+	
 	/**
 	 * The factory which the reader will use to produce views and controllers
 	 * for the objects it generates.
@@ -761,11 +763,12 @@ public class NekReader {
 							z = 0f;
 
 							// Create new vertex and add to vertices ArrayList
-							VertexMesh vertexComponent = new VertexMesh(x, y,
+							Vertex vertexComponent = new Vertex(x, y,
 									z);
 							vertex = (VertexController) factory
 									.createProvider(vertexComponent)
 									.createController(vertexComponent);
+							vertex.setProperty(MeshProperty.NAME, "Vertex");
 							vertex.setProperty(MeshProperty.ID,
 									Integer.toString(vertexId)); // Set unique
 																	// ID
@@ -811,11 +814,12 @@ public class NekReader {
 							}
 
 							// Create a new edge and add to edges ArrayList
-							EdgeMesh edgeComponent = new EdgeMesh(
+							Edge edgeComponent = new Edge(
 									vertexCombo.get(0), vertexCombo.get(1));
 							edge = (EdgeController) factory
 									.createProvider(edgeComponent)
 									.createController(edgeComponent);
+							edge.setProperty(MeshProperty.NAME, "Edge");
 							edge.setProperty(MeshProperty.ID,
 									Integer.toString(edgeId)); // Set
 							// unique
@@ -829,7 +833,7 @@ public class NekReader {
 						}
 
 						// Create new quad, add it to the MeshComponent
-						NekPolygonMesh quadComponent = new NekPolygonMesh();
+						NekPolygon quadComponent = new NekPolygon();
 						quad = (NekPolygonController) factory
 								.createProvider(quadComponent)
 								.createController(quadComponent);
@@ -839,6 +843,7 @@ public class NekReader {
 						}
 
 						quad.setPolygonProperties(materialId, groupNum);
+						
 
 						// Set the boundary conditions of the quad by edge ID
 						int currEdgeId;
@@ -905,6 +910,7 @@ public class NekReader {
 				}
 			}
 		}
+		
 
 		// Return the Mesh Component containing mesh elements/quads with a
 		// set of (2 + NPSCAL) boundary conditions associated to each edge
@@ -1559,7 +1565,7 @@ public class NekReader {
 		// If entry's value can only be T/F
 		if (isDiscrete) {
 			entry = new DiscreteEntry();
-			entry.setAllowedValues(Arrays.asList("no", "yes"));
+			entry.setAllowedValues(Arrays.asList("NO", "YES"));
 
 			entry.setName("Nek5000 Default Entry");
 			entry.setDescription("");

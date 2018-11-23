@@ -117,7 +117,7 @@ public class IPSReaderTester {
 		// Create an IPSReader to test
 		IPSReader reader = new IPSReader();
 		assertNotNull(reader);
-		assertEquals(reader.getReaderType(), "IPSReader");
+		assertEquals(reader.getReaderType(), "IPS");
 		
 		// Try to read in invalid INI file
 		IFile fakeFile = null;

@@ -45,14 +45,14 @@ import com.google.inject.Module;
 @XmlRootElement(name = "ParserGenerator")
 public class ParserGenerator extends Model {
 
-	private String itemName; 
-	private String itemDesc; 
-    private String exportString; 
+	private String itemName;
+	private String itemDesc;
+	private String exportString;
 	private IIOService ioService;
 	private XtextProjectInfo info;
 	private XtextProjectCreator creator;
 	private FileOpener fileOpener;
-	
+
 	public ParserGenerator() {
 		this(null);
 	}
@@ -62,20 +62,19 @@ public class ParserGenerator extends Model {
 	}
 
 	/**
-	 * Adds relevant information that specify the ui provided
-	 * to the user when they create the ParserGenerator Model Item
-	 * in ICE.  
+	 * Adds relevant information that specify the ui provided to the user when
+	 * they create the ParserGenerator Model Item in ICE.
 	 */
 	@Override
 	public void setupForm() {
 		form = new Form();
-		
+
 		ioService = getIOService();
 		if (ioService == null) {
 			setIOService(new IOService());
 			ioService = getIOService();
 		}
-	
+
 		DataComponent projectComponent = new DataComponent();
 		projectComponent.setName("Project Details");
 		projectComponent.setId(0);
@@ -92,10 +91,9 @@ public class ParserGenerator extends Model {
 		form.addComponent(projectComponent);
 		form.addComponent(parserComponent);
 	}
-	
+
 	/**
-	 * Sets the name, description, and custom action name 
-	 * for the item.
+	 * Sets the name, description, and custom action name for the item.
 	 */
 	@Override
 	protected void setupItemInfo() {
@@ -108,10 +106,10 @@ public class ParserGenerator extends Model {
 	}
 
 	/**
-	 * The reviewEntries method is used to ensure that the form is 
-	 * in an acceptable state before processing the information it
-	 * contains.  If the form is not ready to process it is advisable
-	 * to have this method return FormStatus.InfoError.
+	 * The reviewEntries method is used to ensure that the form is in an
+	 * acceptable state before processing the information it contains. If the
+	 * form is not ready to process it is advisable to have this method return
+	 * FormStatus.InfoError.
 	 * 
 	 * @param preparedForm
 	 * 
@@ -122,27 +120,28 @@ public class ParserGenerator extends Model {
 		FormStatus retStatus = FormStatus.ReadyToProcess;
 
 		// Make sure that the project details are set up
-		ArrayList<IEntry> projectEntries = ((DataComponent) form.getComponent(0)).retrieveAllEntries();
+		ArrayList<IEntry> projectEntries = ((DataComponent) form
+				.getComponent(0)).retrieveAllEntries();
 		for (IEntry ent : projectEntries) {
 			if (ent.getName() == "" || ent.getValue() == "") {
 				retStatus = FormStatus.InfoError;
 			}
 		}
-		
+
 		// Make sure that the parser details are set up
-		ArrayList<IEntry> parserEntries = ((DataComponent) form.getComponent(1)).retrieveAllEntries();
+		ArrayList<IEntry> parserEntries = ((DataComponent) form.getComponent(1))
+				.retrieveAllEntries();
 		for (IEntry ent : parserEntries) {
 			if (ent.getName() == "" || ent.getValue() == "") {
 				retStatus = FormStatus.InfoError;
 			}
-		}	
-	
+		}
+
 		return retStatus;
 	}
 
 	/**
-	 * Use this method to process the data that has been 
-	 * specified in the form. 
+	 * Use this method to process the data that has been specified in the form.
 	 * 
 	 * @param actionName
 	 * @return
@@ -152,24 +151,26 @@ public class ParserGenerator extends Model {
 	public FormStatus process(String actionName) {
 		FormStatus retStatus = FormStatus.ReadyToProcess;
 		ArrayList<Component> components = form.getComponents();
-		ArrayList<IEntry> projectEntries = ((DataComponent)components.get(0)).retrieveAllEntries();
-		ArrayList<IEntry> parserEntries = ((DataComponent)components.get(1)).retrieveAllEntries();
-		String outputName     = projectEntries.get(1).getValue();
-		String projectName    = projectEntries.get(0).getValue(); 
-		String parserName     = projectEntries.get(1).getValue();
-		String fileExt        = projectEntries.get(2).getValue();
-		String sectionOpen    = parserEntries.get(0).getValue();
-		String sectionClose   = parserEntries.get(1).getValue(); 
-		String assignOperator = parserEntries.get(2).getValue(); 
-		String commentSymbol  = parserEntries.get(3).getValue();
-		
+		ArrayList<IEntry> projectEntries = ((DataComponent) components.get(0))
+				.retrieveAllEntries();
+		ArrayList<IEntry> parserEntries = ((DataComponent) components.get(1))
+				.retrieveAllEntries();
+		String outputName = projectEntries.get(1).getValue();
+		String projectName = projectEntries.get(0).getValue();
+		String parserName = projectEntries.get(1).getValue();
+		String fileExt = projectEntries.get(2).getValue();
+		String sectionOpen = parserEntries.get(0).getValue();
+		String sectionClose = parserEntries.get(1).getValue();
+		String assignOperator = parserEntries.get(2).getValue();
+		String commentSymbol = parserEntries.get(3).getValue();
+
 		if (actionName == exportString) {
 			IFile outputFile = project.getFile(outputName);
 			try {
 				retStatus = FormStatus.Processing;
-			
+
 				IWorkspace workspace = ResourcesPlugin.getWorkspace();
-				
+
 				// Create a new Xtext/Plugin Project
 				fileOpener = new FileOpener();
 				info = new XtextProjectInfo();
@@ -178,7 +179,8 @@ public class ParserGenerator extends Model {
 				lang.setName(projectName + "." + parserName);
 				info.setBaseName(projectName);
 				info.setWorkingSets(Arrays.asList(new IWorkingSet[] {}));
-				info.setRootLocation(workspace.getRoot().getLocation().toOSString());
+				info.setRootLocation(
+						workspace.getRoot().getLocation().toOSString());
 				info.setWorkbench(PlatformUI.getWorkbench());
 				info.setEncoding(Charset.defaultCharset());
 				info.setPreferredBuildSystem(BuildSystem.NONE);
@@ -189,22 +191,26 @@ public class ParserGenerator extends Model {
 				info.getIntellijProject().setEnabled(false);
 				info.getWebProject().setEnabled(false);
 				info.getUiProject().setEnabled(false);
-				
+
 				IRunnableWithProgress op = new IRunnableWithProgress() {
 					@Override
-					public void run(IProgressMonitor monitor) throws InvocationTargetException {
+					public void run(IProgressMonitor monitor)
+							throws InvocationTargetException {
 						try {
-							Injector injector = Guice.createInjector(new Module() {
-								@Override
-								public void configure(Binder binder) {
-									binder.bind(IWorkspace.class).toInstance(workspace);
-								}
-							});
-							creator = injector.getInstance(XtextProjectCreator.class);
+							Injector injector = Guice
+									.createInjector(new Module() {
+										@Override
+										public void configure(Binder binder) {
+											binder.bind(IWorkspace.class)
+													.toInstance(workspace);
+										}
+									});
+							creator = injector
+									.getInstance(XtextProjectCreator.class);
 							creator.setProjectInfo(info);
 							creator.run(monitor);
 							fileOpener.selectAndReveal(creator.getResult());
-						} catch(Exception e) {
+						} catch (Exception e) {
 							throw new InvocationTargetException(e);
 						} finally {
 							monitor.done();
@@ -212,7 +218,7 @@ public class ParserGenerator extends Model {
 					}
 				};
 				op.run(new NullProgressMonitor());
-				
+
 				project.refreshLocal(1, new NullProgressMonitor());
 				retStatus = FormStatus.Processed;
 			} catch (CoreException e) {
@@ -228,47 +234,48 @@ public class ParserGenerator extends Model {
 		return retStatus;
 	}
 
-	private String buildGrammar(String open, String close, String assign, String comment) {
+	private String buildGrammar(String open, String close, String assign,
+			String comment) {
 		String sep = System.lineSeparator();
 		String header = "grammar ItemParser";
 		String declaration = "sections+=Section*";
 		String content = "section*";
 		String entry = "name=ID + ASSIGN + value=TEXT";
-		String section = "OPEN + name=ID + CLOSE" + sep + 
-		             "    (NEWLINE+ lines+=Line)+" + sep + 
-		             "    NEWLINE+";
-		String id = "('A'..'Z' | 'a'..'z') ('A'..'Z' | 'a'..'z' | '_' | '-' | '0'..'9')"; 
+		String section = "OPEN + name=ID + CLOSE" + sep
+				+ "    (NEWLINE+ lines+=Line)+" + sep + "    NEWLINE+";
+		String id = "('A'..'Z' | 'a'..'z') ('A'..'Z' | 'a'..'z' | '_' | '-' | '0'..'9')";
 		String whitespace = "(' '|'\t')+;";
 		String newline = "'\r'? '\n'+";
-		String text = "(WHITESPACE+ | STRING+)*";		
-		
-		BiFunction<String, String, String> build = (k,v) -> (k + ":" + sep + "    " + v + ";" + sep); 
-		
+		String text = "(WHITESPACE+ | STRING+)*";
+
+		BiFunction<String, String, String> build = (k,
+				v) -> (k + ":" + sep + "    " + v + ";" + sep);
+
 		StringBuilder sb = new StringBuilder();
-		
+
 		sb.append(header);
 		sb.append(build.apply("ItemParser", declaration));
-		
+
 		// Intermediate nodes in parse tree
 		sb.append(build.apply("content", content));
 		sb.append(build.apply("section", section));
 		sb.append(build.apply("comment", "COMMENT " + text));
 		sb.append(build.apply("entry", entry));
-		
+
 		// 'terminal' prefix denotes leaf nodes of parse tree
 		sb.append(build.apply("terminal ID", id));
 		sb.append(build.apply("terminal TEXT", text));
 		sb.append(build.apply("terminal NEWLINE", newline));
 		sb.append(build.apply("terminal WHITESPACE", whitespace));
-		
+
 		sb.append(build.apply("terminal OPEN", open));
 		sb.append(build.apply("terminal CLOSE", close));
 		sb.append(build.apply("terminal ASSIGN", assign));
-		sb.append(build.apply("terminal COMMENT", comment));		
-	
+		sb.append(build.apply("terminal COMMENT", comment));
+
 		return sb.toString();
 	}
-	
+
 	private StringEntry createEntry(String name, String value) {
 		StringEntry entry = new StringEntry();
 		entry.setName(name);

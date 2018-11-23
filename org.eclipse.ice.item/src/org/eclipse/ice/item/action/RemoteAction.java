@@ -2,6 +2,7 @@ package org.eclipse.ice.item.action;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteConnectionHostService;
@@ -39,7 +40,8 @@ public abstract class RemoteAction extends Action {
 	 * @return the specified service or null if it's not registered
 	 */
 	protected <T> T getService(Class<T> service) {
-		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
+		BundleContext context = FrameworkUtil.getBundle(getClass())
+				.getBundleContext();
 		if (context != null) {
 			ServiceReference<T> ref = context.getServiceReference(service);
 			return ref != null ? context.getService(ref) : null;
@@ -57,22 +59,41 @@ public abstract class RemoteAction extends Action {
 	 */
 	protected IRemoteConnection getRemoteConnection(String host) {
 		// Get the IRemoteServicesManager
-		IRemoteServicesManager remoteManager = getService(IRemoteServicesManager.class);
+		IRemoteServicesManager remoteManager = getService(
+				IRemoteServicesManager.class);
 
 		// If valid, continue on an get the IRemoteConnection
 		if (remoteManager != null) {
 
 			// Get the connection type - basically Jsch is index 0
-			IRemoteConnectionType connectionType = remoteManager.getRemoteConnectionTypes().get(0);
+			// Get the types of available remote connections
+			List<IRemoteConnectionType> types = getService(
+					IRemoteServicesManager.class).getRemoteConnectionTypes();
+
+			// The type of connection being used, SSH in this case
+			IRemoteConnectionType connectionType = null;
+
+			// Search for the connections of type SSH.
+			for (IRemoteConnectionType type : types) {
+				if ("SSH".equals(type.getName())) {
+					connectionType = type;
+					break;
+				}
+			}
+
 			if (connectionType != null) {
 				try {
 					// Loop over existing connections to see if the user already
 					// specified
 					// a connection to the provided host
-					for (IRemoteConnection c : connectionType.getConnections()) {
-						String connectionHost = c.getService(IRemoteConnectionHostService.class).getHostname();
+					for (IRemoteConnection c : connectionType
+							.getConnections()) {
+						String connectionHost = c
+								.getService(IRemoteConnectionHostService.class)
+								.getHostname();
 						if (InetAddress.getByName(host).getHostAddress()
-								.equals(InetAddress.getByName(connectionHost).getHostAddress())) {
+								.equals(InetAddress.getByName(connectionHost)
+										.getHostAddress())) {
 							connection = c;
 
 							// Found it, return the connection
@@ -86,6 +107,9 @@ public abstract class RemoteAction extends Action {
 				// If no connection found, let's ask the user to define it.
 				if (connection == null) {
 
+					// Get a final reference to the connection type
+					final IRemoteConnectionType finalType = connectionType;
+
 					// Open the Remote Connection Wizard, syncExec here
 					// because we want to wait til its finished.
 					Display.getDefault().syncExec(new Runnable() {
@@ -93,12 +117,16 @@ public abstract class RemoteAction extends Action {
 						public void run() {
 
 							// Get the UI Connection Service
-							IRemoteUIConnectionService uiConnService = connectionType
-									.getService(IRemoteUIConnectionService.class);
+							IRemoteUIConnectionService uiConnService = finalType
+									.getService(
+											IRemoteUIConnectionService.class);
 
 							// Create a UI Connection Wizard
-							IRemoteUIConnectionWizard wizard = uiConnService.getConnectionWizard(
-									PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+							IRemoteUIConnectionWizard wizard = uiConnService
+									.getConnectionWizard(
+											PlatformUI.getWorkbench()
+													.getActiveWorkbenchWindow()
+													.getShell());
 
 							// If valid, open it and save/open the
 							// IRemoteConnection
@@ -110,7 +138,8 @@ public abstract class RemoteAction extends Action {
 										connection.open(null);
 									}
 								} catch (RemoteConnectionException e) {
-									logger.error(getClass().getName() + " Exception!", e);
+									logger.error(getClass().getName()
+											+ " Exception!", e);
 								}
 							}
 						}

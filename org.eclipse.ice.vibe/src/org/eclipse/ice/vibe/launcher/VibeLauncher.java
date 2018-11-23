@@ -163,7 +163,7 @@ public class VibeLauncher extends JobLauncher {
 	@Override
 	public FormStatus process(String actionName) {
 
-		IReader reader = (IReader) ioService.getReader("IPSReader");
+		IReader reader = (IReader) ioService.getReader("IPS");
 		DataComponent fileComponent = (DataComponent) form.getComponent(1);
 		IEntry inputFileEntry = fileComponent.retrieveEntry("Input File");
 		IEntry kvPairFileEntry = fileComponent.retrieveEntry("Use custom key-value pair file?");

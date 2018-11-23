@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.moose;
 
-import org.eclipse.ice.persistence.xml.XMLFormContentDescriber;;
+import org.eclipse.ice.persistence.xml.XMLFormContentDescriber;
 
 /**
  * This is a content describer for the XML files that are persisted by ICE's

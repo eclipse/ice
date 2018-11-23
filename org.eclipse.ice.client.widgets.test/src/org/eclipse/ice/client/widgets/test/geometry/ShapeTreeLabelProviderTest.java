@@ -15,14 +15,11 @@ package org.eclipse.ice.client.widgets.test.geometry;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.eavp.viz.modeling.base.BasicView;
-import org.eclipse.eavp.viz.modeling.properties.MeshProperty;
-import org.eclipse.eavp.viz.modeling.ShapeController;
-import org.eclipse.eavp.viz.modeling.ShapeMesh;
-import org.eclipse.eavp.viz.service.geometry.shapes.GeometryMeshProperty;
-import org.eclipse.eavp.viz.service.geometry.shapes.OperatorType;
-import org.eclipse.eavp.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeLabelProvider;
+import org.eclipse.january.geometry.Cube;
+import org.eclipse.january.geometry.GeometryFactory;
+import org.eclipse.january.geometry.Intersection;
+import org.eclipse.january.geometry.Union;
 import org.junit.Test;
 
 /**
@@ -67,16 +64,8 @@ public class ShapeTreeLabelProviderTest {
 		// Any input should produce a null return value
 
 		// Create a shape
-		ShapeMesh geometryModel = new ShapeMesh();
-		BasicView geometryView = new BasicView();
-		ShapeController geometryShape = new ShapeController(geometryModel,
-				geometryView);
-
-		ShapeController cube1 = (ShapeController) geometryShape.clone();
-		cube1.setProperty(MeshProperty.TYPE, ShapeType.Cube.toString());
-		ShapeController intersection1 = (ShapeController) geometryShape.clone();
-		intersection1.setProperty(GeometryMeshProperty.OPERATOR,
-				OperatorType.Intersection.toString());
+		Cube cube1 = GeometryFactory.eINSTANCE.createCube();
+		Intersection intersection1 = GeometryFactory.eINSTANCE.createIntersection();
 
 		assertNull(labelProvider.getImage(cube1));
 		assertNull(labelProvider.getImage(intersection1));
@@ -98,42 +87,30 @@ public class ShapeTreeLabelProviderTest {
 		// Create some named shapes
 
 		// Create a shape
-		ShapeMesh geometryModel = new ShapeMesh();
-		BasicView geometryView = new BasicView();
-		ShapeController geometryShape = new ShapeController(geometryModel,
-				geometryView);
+		Cube cube1 = GeometryFactory.eINSTANCE.createCube();
+		Union union1 = GeometryFactory.eINSTANCE.createUnion();
+		Intersection intersection1 = GeometryFactory.eINSTANCE.createIntersection();
 
-		ShapeController cube1 = (ShapeController) geometryShape.clone();
-		cube1.setProperty(MeshProperty.TYPE, ShapeType.Cube.toString());
+		cube1.setName("KUB");
 
-		ShapeController union1 = (ShapeController) geometryShape.clone();
-		union1.setProperty(GeometryMeshProperty.OPERATOR,
-				OperatorType.Union.toString());
-		ShapeController intersection1 = (ShapeController) geometryShape.clone();
-		intersection1.setProperty(GeometryMeshProperty.OPERATOR,
-				OperatorType.Intersection.toString());
+		intersection1.setName("INTRASECSION");
 
-		cube1.setProperty(MeshProperty.NAME, "KUB");
-
-		intersection1.setProperty(MeshProperty.NAME, "INTRASECSION");
-
-		union1.setProperty(MeshProperty.NAME, "Not a name");
-		union1.setProperty(MeshProperty.ID, "1111");
+		union1.setName("Not a name");
+		union1.setId(1111);
 
 		// Check that the ShapeTreeLabelProvider returns the correct names
 		// with the format "<name> <id>"
 
-		String expectedCube1Text = cube1.getProperty(MeshProperty.NAME) + " "
-				+ cube1.getProperty(MeshProperty.ID);
+		String expectedCube1Text = cube1.getName() + " "
+				+ cube1.getId();
 		assertTrue(labelProvider.getText(cube1).equals(expectedCube1Text));
 
-		String expectedIntersection1Text = intersection1.getProperty(
-				MeshProperty.NAME) + " " + intersection1.getProperty(MeshProperty.ID);
+		String expectedIntersection1Text = intersection1.getName() + " " + intersection1.getId();
 		assertTrue(labelProvider.getText(intersection1)
 				.equals(expectedIntersection1Text));
 
-		String expectedUnion1Text = union1.getProperty(MeshProperty.NAME) + " "
-				+ union1.getProperty(MeshProperty.ID);
+		String expectedUnion1Text = union1.getName() + " "
+				+ union1.getId();
 		assertTrue(labelProvider.getText(union1).equals(expectedUnion1Text));
 
 		// Check a null parameter

@@ -26,6 +26,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.eavp.viz.modeling.factory.IControllerProviderFactory;
+import org.eclipse.eavp.viz.service.IVizService;
+import org.eclipse.eavp.viz.service.IVizServiceFactory;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
@@ -35,6 +37,7 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
+import org.eclipse.ice.nek5000.internal.VizServiceFactoryHolder;
 
 /**
  * This class extends the Item to create a modeler for Nek5000 input files. It
@@ -81,6 +84,11 @@ public class NekModel extends Item {
 	 * A flag signaling that the construction of the item has finished.
 	 */
 	private boolean constructionFinished = false;
+
+	/**
+	 * The factory containing the visualization services.
+	 */
+	private IVizServiceFactory factory;
 
 	/**
 	 * The nullary constructor. This should only be used for testing.
@@ -309,6 +317,17 @@ public class NekModel extends Item {
 	private void loadExample(String name)
 			throws FileNotFoundException, IOException {
 
+		// Get the factory
+		if (factory == null) {
+			factory = VizServiceFactoryHolder.getFactory();
+		}
+
+		// TODO Provide a way for the user to select which mesh editor service
+		// is desired
+		// Set the reader's ControllerProviderFactory
+		IVizService service = factory.get("ICE JavaFX Mesh Editor");
+		reader.setControllerFactory(service.getControllerProviderFactory());
+
 		// Load the components from the file
 		File file = new File(name);
 		ArrayList<Component> components = reader.loadREAFile(file);
@@ -463,8 +482,7 @@ public class NekModel extends Item {
 						problemFiles = getProjectFiles();
 
 						// Create the DataComponent that selects which problem
-						// to
-						// load
+						// to load
 						form.addComponent(
 								createSelectorComponent(problemFiles));
 
@@ -473,7 +491,7 @@ public class NekModel extends Item {
 
 							// Push the work onto the loader
 							loadExample(nekFolder.getLocation().toOSString()
-									+ separator + exampleName);
+									+ separator + problemFiles.get(0));
 						}
 
 					} catch (FileNotFoundException e) {

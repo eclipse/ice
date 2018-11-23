@@ -39,11 +39,5 @@ Import-Package: com.sun.jersey.api.client,
  org.eclipse.ui.internal.ide.application,
  org.osgi.framework,
  org.osgi.util.tracker
-Require-Bundle: org.eclipse.ui,
- org.eclipse.ui.forms,
- org.eclipse.ui.workbench,
- org.eclipse.ui.ide,
- org.eclipse.ice.datastructures,
- com.sun.jersey
 Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-Localization: plugin

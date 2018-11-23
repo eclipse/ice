@@ -69,9 +69,8 @@ public class BatMLModelTester {
 				// Set the location as
 				// ${workspace_loc}/CAEBATModelTesterWorkspace
 				defaultProjectLocation = (new File(
-						System.getProperty("user.home") + separator
-								+ "ICETests" + separator + projectName))
-						.toURI();
+						System.getProperty("user.home") + separator + "ICETests"
+								+ separator + projectName)).toURI();
 				// Create the project description
 				IProjectDescription desc = ResourcesPlugin.getWorkspace()
 						.newProjectDescription(projectName);
@@ -104,7 +103,6 @@ public class BatMLModelTester {
 	@Test
 	public void checkSetupForm() {
 
-
 		// Local declarations
 		BatMLModel batMLModel;
 		Form form = new Form();
@@ -128,10 +126,10 @@ public class BatMLModelTester {
 	@Test
 	public void checkProcess() {
 
-
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
-		String userDir = System.getProperty("user.home") + separator + "ICETests";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests";
 		String filePath = userDir + separator + "batMLTesterWorkspace"
 				+ separator + "electrical.xml";
 
@@ -164,7 +162,6 @@ public class BatMLModelTester {
 		// Check to see if the file is created and exists. It will create a file
 		// in relation to the Id of the item.
 		assertTrue(Files.exists(Paths.get(filePath)));
-
 
 	}
 

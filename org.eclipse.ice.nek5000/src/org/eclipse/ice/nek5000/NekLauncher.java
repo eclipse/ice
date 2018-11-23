@@ -55,7 +55,7 @@ public class NekLauncher extends SuiteLauncher {
 
 		// Setup the Form
 		super.setupForm();
-		
+
 		// Create the list of executables
 		ArrayList<String> executables = new ArrayList<String>();
 		executables.add("2d_eigtest");
@@ -115,7 +115,8 @@ public class NekLauncher extends SuiteLauncher {
 	 *         examples are setup as ${executable}/nek5000.
 	 */
 	@Override
-	protected String updateExecutablePath(String installDir, String executable) {
+	protected String updateExecutablePath(String installDir,
+			String executable) {
 
 		// Map of proper file names so that the examples work. Nek5000 has
 		// different directory, executable and input file names. The executable
@@ -162,24 +163,31 @@ public class NekLauncher extends SuiteLauncher {
 		executableMap.put("vortex2", "v2d");
 
 		// Launch Stages. These commands copy the example into the working
-		// directory, remove the unneeded object files, rename the input file
-		// to what Nek expects, and then copies nek executable builder in
-		// working directory.
+		// directory, remove the unneeded object files, and rename the input
+		// file
+		// to what Nek expects.
 		String exampleCopyStage = "cp -r " + installDir + "/examples/"
 				+ executable + "/* .;";
-		String rmObjStage = "rm -rf obj/;";
 		String inputCopyStage = "cp ${inputFile} "
 				+ executableMap.get(executable) + ".rea;";
 
-		// Define the nek and visnek launch stages
+		// Define the nek and visnek launch stages. We attempt to launch the
+		// scripts from two different locations, in order to support both the
+		// current and legacy versions of the repo structure.
 		String launchStage = "${installDir}trunk/tools/scripts/nek "
+				+ executableMap.get(executable) + "; ${installDir}bin/nek "
 				+ executableMap.get(executable) + ";";
 		String vizStage = "${installDir}trunk/tools/scripts/visnek "
+				+ executableMap.get(executable) + "; ${installDir}bin/visnek "
 				+ executableMap.get(executable) + ";";
 
+		// Remove the copy of the nek5000 application we needed to make in the
+		// run directory
+		String rmObjStage = "rm -rf nek5000";
+
 		// Configure the entire launch script
-		String launchCommand = exampleCopyStage + rmObjStage + inputCopyStage
-				+ launchStage + vizStage;
+		String launchCommand = exampleCopyStage + inputCopyStage + launchStage
+				+ vizStage + rmObjStage;
 
 		return launchCommand;
 	}

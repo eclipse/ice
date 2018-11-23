@@ -10,28 +10,18 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.eavp.viz.modeling.base.BasicController;
+import org.eclipse.eavp.viz.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.eavp.viz.datastructures.VizObject.IVizUpdateableListener;
 import org.eclipse.eavp.viz.modeling.base.BasicMesh;
 import org.eclipse.eavp.viz.modeling.base.BasicView;
 import org.eclipse.eavp.viz.modeling.base.IController;
 import org.eclipse.eavp.viz.modeling.properties.MeshProperty;
-import org.eclipse.eavp.viz.datastructures.VizObject.IVizUpdateable;
-import org.eclipse.eavp.viz.datastructures.VizObject.IVizUpdateableListener;
-import org.eclipse.eavp.viz.service.geometry.reactor.HeatExchangerController;
-import org.eclipse.eavp.viz.service.geometry.reactor.HeatExchangerMesh;
-import org.eclipse.eavp.viz.service.geometry.reactor.JunctionController;
-import org.eclipse.eavp.viz.service.geometry.reactor.JunctionMesh;
-import org.eclipse.eavp.viz.service.geometry.reactor.PipeController;
-import org.eclipse.eavp.viz.service.geometry.reactor.PipeMesh;
-import org.eclipse.eavp.viz.service.geometry.reactor.ReactorController;
-import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMesh;
-import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshCategory;
-import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshProperty;
-import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewControllerProviderFactory;
-import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewRootController;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.IPlantData;
+import org.eclipse.january.geometry.Geometry;
+import org.eclipse.january.geometry.GeometryFactory;
 
 /**
  * A class which interfaces between a PlantComposite and a tree of
@@ -53,7 +43,7 @@ public class FXPlantCompositeConverter
 	/**
 	 * The root of the tree of plant parts converted from the source.
 	 */
-	FXPlantViewRootController output;
+	Geometry output;
 
 	/**
 	 * The PlantComposite containing the RELAP7 representation of the plant's
@@ -77,10 +67,10 @@ public class FXPlantCompositeConverter
 	 * Convert the PlantComposite data structure into an equivalent
 	 * FXPlantViewRootController data structure.
 	 * 
-	 * @return A JavaFX modeling data structure representation fo the plant.
+	 * @return A JavaFX modeling data structure representation for the plant.
 	 */
 	@Override
-	public BasicController getPlant() {
+	public Geometry getPlant() {
 
 		// If the output has not been initialized, create it
 		if (output == null) {
@@ -96,8 +86,7 @@ public class FXPlantCompositeConverter
 	private void refresh() {
 
 		// Create a new root
-		output = new FXPlantViewRootController(new BasicMesh(),
-				new BasicView());
+		output = GeometryFactory.eINSTANCE.createGeometry();
 
 		// Visit each plant component, converting it for the new data structure
 		FXPlantComponentVisitor visitor = new FXPlantComponentVisitor(output);
@@ -111,12 +100,17 @@ public class FXPlantCompositeConverter
 		/**
 		 * The root of the tree of plant parts
 		 */
-		FXPlantViewRootController root;
+		Geometry root;
 
 		/**
-		 * The factory for constructing controllers and views for the meshs.
+		 * The list of all heat exchangers in the plant
 		 */
-		FXPlantViewControllerProviderFactory factory;
+		List<org.eclipse.january.geometry.HeatExchanger> heatExchangerList;
+
+		/**
+		 * The list of all pipes in the plant
+		 */
+		List<org.eclipse.january.geometry.Pipe> pipeList;
 
 		/**
 		 * The default constructor.
@@ -124,33 +118,27 @@ public class FXPlantCompositeConverter
 		 * @param root
 		 *            The root controller all visited objects will be added to.
 		 */
-		public FXPlantComponentVisitor(FXPlantViewRootController root) {
+		public FXPlantComponentVisitor(Geometry root) {
 			this.root = root;
-			factory = new FXPlantViewControllerProviderFactory();
+
+			// Initialize the data members
+			pipeList = new ArrayList<org.eclipse.january.geometry.Pipe>();
+
 		}
 
 		/**
-		 * Find an AbstractController which is under the Pipes or Core Channels
-		 * category with the given ID.
+		 * Find a Pipe with the given ID.
 		 * 
 		 * @param ID
 		 *            The unique ID to search for
-		 * @return The AbstractController with the property Id equal to ID that
-		 *         is under the root's "Pipes" or "Core Channels" category, or
-		 *         null if no such pipe exists.
+		 * @return The Pipe with the Id equal to ID that is in the Root
+		 *         Geometry, or null if no such pipe exists.
 		 */
-		private IController findPipe(Integer ID) {
-
-			// Create a list of all pipes in the plant by combining the pipes
-			// with the core channels
-			List<IController> pipeList = root
-					.getEntitiesFromCategory(ReactorMeshCategory.PIPES);
-			pipeList.addAll(root
-					.getEntitiesFromCategory(ReactorMeshCategory.CORE_CHANNELS));
+		private org.eclipse.january.geometry.Pipe findPipe(Integer ID) {
 
 			// Check the root to see if a pipe with that id already exists
-			for (IController pipe : pipeList) {
-				if (Integer.parseInt(pipe.getProperty(MeshProperty.ID)) == ID) {
+			for (org.eclipse.january.geometry.Pipe pipe : pipeList) {
+				if (pipe.getId() == ID) {
 					return pipe;
 				}
 			}
@@ -161,26 +149,28 @@ public class FXPlantCompositeConverter
 			// Convert the pipe into a modeling data structure
 			source.getPlantComponent(ID).accept(this);
 
-			// Refresh the list of pipes
-			pipeList = root.getEntitiesFromCategory(ReactorMeshCategory.PIPES);
-			pipeList.addAll(root
-					.getEntitiesFromCategory(ReactorMeshCategory.CORE_CHANNELS));
+			// // Refresh the list of pipes
+			// pipeList =
+			// root.getEntitiesFromCategory(ReactorMeshCategory.PIPES);
+			// pipeList.addAll(root.getEntitiesFromCategory(
+			// ReactorMeshCategory.CORE_CHANNELS));
 
 			// Now that the pipe is guaranteed to be in the root, as it
 			// was added when visited, find the pipe with that id and
 			// return it
-			for (IController pipe : pipeList) {
-				if (Integer.parseInt(pipe.getProperty(MeshProperty.ID)) == ID) {
+			for (org.eclipse.january.geometry.Pipe pipe : pipeList) {
+				if (pipe.getId() == ID) {
 					return pipe;
 				}
 			}
 
+			// A pipe that was not in the plant was requested, so return null.
 			return null;
 		}
 
 		/**
-		 * Find an AbstractController which is under the Heat Exchangers
-		 * category with the given ID.
+		 * Find a HeatExchanger which is under the Root Geometry category with
+		 * the given ID.
 		 * 
 		 * @param ID
 		 *            The unique ID to search for
@@ -188,13 +178,13 @@ public class FXPlantCompositeConverter
 		 *         is under the root's "Heat Exchangers" category, or null if no
 		 *         such heat exchanger exists.
 		 */
-		private IController findHeatExchanger(Integer ID) {
+		private org.eclipse.january.geometry.HeatExchanger findHeatExchanger(
+				Integer ID) {
 
 			// Check the root to see if a pipe with that id already exists
-			for (IController pipe : root.getEntitiesFromCategory(
-					ReactorMeshCategory.HEAT_EXCHANGERS)) {
-				if (Integer.parseInt(pipe.getProperty(MeshProperty.ID)) == ID) {
-					return pipe;
+			for (org.eclipse.january.geometry.HeatExchanger exchanger : heatExchangerList) {
+				if (exchanger.getId() == ID) {
+					return exchanger;
 				}
 			}
 
@@ -207,13 +197,15 @@ public class FXPlantCompositeConverter
 			// Now that the pipe is guaranteed to be in the root, as it
 			// was added when visited, find the pipe with that id and
 			// return it
-			for (IController pipe : root.getEntitiesFromCategory(
-					ReactorMeshCategory.HEAT_EXCHANGERS)) {
-				if (Integer.parseInt(pipe.getProperty(MeshProperty.ID)) == ID) {
-					return pipe;
+			// Check the root to see if a pipe with that id already exists
+			for (org.eclipse.january.geometry.HeatExchanger exchanger : heatExchangerList) {
+				if (exchanger.getId() == ID) {
+					return exchanger;
 				}
 			}
 
+			// A heat exchanger that was not in the plant was requested, so
+			// return null
 			return null;
 		}
 
@@ -228,152 +220,130 @@ public class FXPlantCompositeConverter
 		}
 
 		@Override
-		public void visit(Junction plantComp) {
+		public void visit(org.eclipse.ice.reactor.plant.Junction plantComp) {
 
-			// Create a new junction
-			JunctionMesh mesh = new JunctionMesh();
-			JunctionController junction = (JunctionController) factory
-					.createProvider(mesh).createController(mesh);
-
-			junction.setProperty(MeshProperty.NAME, plantComp.getName());
-
-			// Create a list of all pipes in the plant by combining the pipes
-			// with the core channels
-			List<IController> pipeList = root
-					.getEntitiesFromCategory(ReactorMeshCategory.PIPES);
-			pipeList.addAll(root
-					.getEntitiesFromCategory(ReactorMeshCategory.CORE_CHANNELS));
-
-			// Add all the input pipes to the junction
-			for (PlantComponent input : plantComp.getInputs()) {
-
-				// Get the pipe with the correct ID
-				IController pipe = findPipe(input.getId());
-
-				// If the pipe was found, add it
-				if (pipe != null) {
-
-					// Set up this junction as an output to that pipe
-					junction.addEntityToCategory(pipe,
-							ReactorMeshCategory.INPUT);
-					pipe.addEntityToCategory(junction,
-							ReactorMeshCategory.OUTPUT);
-				}
-
-				// If no pipe was found, it must be a heat exchanger instead
-				else {
-
-					// Find the heat exchanger
-					pipe = findHeatExchanger(input.getId());
-
-					// TODO We currently just check if the input is a
-					// HeatExchanger as primary pipes are added directly as
-					// pipes while secondary pipes are added through the Heat
-					// Exchanger. This should be changed after figuring out how
-					// the Junction is referencing the primary pipe directly
-					// despite it sharing its ID with its parent HeatExchanger
-					// and not
-					// being directly in the PlantComposite's component tree.
-					// See
-					// org.eclipse.ice.client.widgets.reactoreditor.plant.JunctionController's
-					// addPipes() function.
-					if (input instanceof HeatExchanger) {
-						// Set up this junction as an output to the heat
-						// exchanger's
-						// secondary pipe
-						junction.addEntityToCategory(pipe,
-								ReactorMeshCategory.INPUT);
-						pipe.addEntityToCategory(junction,
-								ReactorMeshCategory.OUTPUT);
-					}
-
-					else {
-						junction.addEntityToCategory(
-								((HeatExchangerController) pipe)
-										.getPrimaryPipe(),
-								ReactorMeshCategory.INPUT);
-						((HeatExchangerController) pipe).getPrimaryPipe()
-								.addEntityToCategory(junction,
-										ReactorMeshCategory.SECONDARY_OUTPUT);
-					}
-
-				}
-
-			}
-
-			// Add all the output pipes to the junction
-			for (PlantComponent output : plantComp.getOutputs()) {
-
-				// Get the pipe with the correct ID
-				IController pipe = findPipe(output.getId());
-
-				// If the pipe was found, add it
-				if (pipe != null) {
-
-					// Set up this junction as an output to that pipe
-					junction.addEntityToCategory(pipe,
-							ReactorMeshCategory.OUTPUT);
-					pipe.addEntityToCategory(junction,
-							ReactorMeshCategory.INPUT);
-				}
-
-				// If no pipe was found, it must be a heat exchanger instead
-				else {
-
-					// Find the heat exchanger
-					pipe = findHeatExchanger(output.getId());
-
-					// TODO We currently just check if the input is a
-					// HeatExchanger as primary pipes are added directly as
-					// pipes while secondary pipes are added through the Heat
-					// Exchanger. This should be changed after figuring out how
-					// the Junction is referencing the primary pipe directly
-					// despite it sharing its ID with its parent HeatExchanger
-					// and not
-					// being directly in the PlantComposite's component tree.
-					// See
-					// org.eclipse.ice.client.widgets.reactoreditor.plant.JunctionController's
-					// addPipes() function.
-					if (output instanceof HeatExchanger) {
-						// Set up this junction as an input to the heat
-						// exchanger's
-						// secondary pipe
-						junction.addEntityToCategory(pipe,
-								ReactorMeshCategory.OUTPUT);
-						pipe.addEntityToCategory(junction,
-								ReactorMeshCategory.INPUT);
-					}
-
-					else {
-						junction.addEntityToCategory(
-								((HeatExchangerController) pipe)
-										.getPrimaryPipe(),
-								ReactorMeshCategory.OUTPUT);
-						((HeatExchangerController) pipe).getPrimaryPipe()
-								.addEntityToCategory(junction,
-										ReactorMeshCategory.SECONDARY_INPUT);
-					}
-
-				}
-
-			}
-
-			// Add the junction to the root
-			root.addEntityToCategory(junction, ReactorMeshCategory.JUNCTIONS);
+//			// Create a new junction
+//			org.eclipse.january.geometry.Junction junction = GeometryFactory.eINSTANCE.createJunction();
+//
+//			junction.setName(plantComp.getName());
+//
+//			// Add all the input pipes to the junction
+//			for (PlantComponent input : plantComp.getInputs()) {
+//
+//				// Get the pipe with the correct ID
+//				org.eclipse.january.geometry.Pipe pipe = findPipe(input.getId());
+//
+//				// If the pipe was found, add it
+//				if (pipe != null) {
+//
+//					// Set up this junction as an output to that pipe
+//					junction.getInput().add(pipe);
+//				}
+//
+//				// If no pipe was found, it must be a heat exchanger instead
+//				else {
+//
+//					// Find the heat exchanger
+//					org.eclipse.january.geometry.HeatExchanger exchanger = findHeatExchanger(input.getId());
+//
+//					// TODO We currently just check if the input is a
+//					// HeatExchanger as primary pipes are added directly as
+//					// pipes while secondary pipes are added through the Heat
+//					// Exchanger. This should be changed after figuring out how
+//					// the Junction is referencing the primary pipe directly
+//					// despite it sharing its ID with its parent HeatExchanger
+//					// and not
+//					// being directly in the PlantComposite's component tree.
+//					// See
+//					// org.eclipse.ice.client.widgets.reactoreditor.plant.JunctionController's
+//					// addPipes() function.
+//					if (input instanceof HeatExchanger) {
+//						// Set up this junction as an output to the heat
+//						// exchanger's
+//						// secondary pipe
+//						junction.getInput().add(exchanger.getPipe());
+//					}
+//
+//					else {
+//						junction.getInput().add(exchanger.getPipe());
+//						exchanger.setOutput(junction);
+//					}
+//
+//				}
+//
+//			}
+//
+//			// Add all the output pipes to the junction
+//			for (PlantComponent output : plantComp.getOutputs()) {
+//
+//				// Get the pipe with the correct ID
+//				org.eclipse.january.geometry.Pipe pipe = findPipe(output.getId());
+//
+//				// If the pipe was found, add it
+//				if (pipe != null) {
+//
+//					// Set up this junction as an input to that pipe
+//					junction.getOutput().add(pipe);
+//				}
+//
+//				// If no pipe was found, it must be a heat exchanger instead
+//				else {
+//
+//					// Find the heat exchanger
+//					org.eclipse.january.geometry.HeatExchanger exchanger = findHeatExchanger(output.getId());
+//
+//					// TODO We currently just check if the input is a
+//					// HeatExchanger as primary pipes are added directly as
+//					// pipes while secondary pipes are added through the Heat
+//					// Exchanger. This should be changed after figuring out how
+//					// the Junction is referencing the primary pipe directly
+//					// despite it sharing its ID with its parent HeatExchanger
+//					// and not
+//					// being directly in the PlantComposite's component tree.
+//					// See
+//					// org.eclipse.ice.client.widgets.reactoreditor.plant.JunctionController's
+//					// addPipes() function.
+//					if (output instanceof HeatExchanger) {
+//						// Set up this junction as an input to the heat
+//						// exchanger's
+//						// secondary pipe
+//						junction.addEntityToCategory(pipe,
+//								ReactorMeshCategory.OUTPUT);
+//						pipe.addEntityToCategory(junction,
+//								ReactorMeshCategory.INPUT);
+//						junction.get
+//					}
+//
+//					else {
+//						junction.addEntityToCategory(
+//								((HeatExchangerController) pipe)
+//										.getPrimaryPipe(),
+//								ReactorMeshCategory.OUTPUT);
+//						((HeatExchangerController) pipe).getPrimaryPipe()
+//								.addEntityToCategory(junction,
+//										ReactorMeshCategory.SECONDARY_INPUT);
+//					}
+//
+//				}
+//
+//			}
+//
+//			// Add the junction to the root
+//			root.addEntityToCategory(junction, ReactorMeshCategory.JUNCTIONS);
 
 		}
 
 		@Override
 		public void visit(Reactor plantComp) {
 
-			// Create a new reactor
-			ReactorMesh mesh = new ReactorMesh();
-			ReactorController reactor = (ReactorController) factory
-					.createProvider(mesh).createController(mesh);
-
-			// Simply add the reactor, as the plant view assumes there is only
-			// one and the root will take care of adding the core channels.
-			root.addEntityToCategory(reactor, ReactorMeshCategory.REACTORS);
+//			// Create a new reactor
+//			org.eclipse.eavp.viz.service.geometry.reactor.Reactor mesh = new org.eclipse.eavp.viz.service.geometry.reactor.Reactor();
+//			ReactorController reactor = (ReactorController) factory
+//					.createProvider(mesh).createController(mesh);
+//
+//			// Simply add the reactor, as the plant view assumes there is only
+//			// one and the root will take care of adding the core channels.
+//			root.addEntityToCategory(reactor, ReactorMeshCategory.REACTORS);
 
 		}
 
@@ -386,96 +356,96 @@ public class FXPlantCompositeConverter
 		@Override
 		public void visit(HeatExchanger plantComp) {
 
-			// Create a new heat exchanger
-			HeatExchangerMesh mesh = new HeatExchangerMesh();
-			HeatExchangerController heatExchanger = (HeatExchangerController) factory
-					.createProvider(mesh).createController(mesh);
-
-			// Heat Exchangers require a contained primary pipe, so create one
-			// for it.
-			PipeController pipe = createPipe(plantComp.getPrimaryPipe());
-			heatExchanger.setPrimaryPipe(pipe);
-
-			// Set the heat exchanger's position
-			applyTransformation(heatExchanger, plantComp.getPosition(),
-					plantComp.getOrientation(), plantComp.getLength());
-
-			// Add the heat exchanger to the root
-			root.addEntityToCategory(heatExchanger,
-					ReactorMeshCategory.HEAT_EXCHANGERS);
+//			// Create a new heat exchanger
+//			org.eclipse.eavp.viz.service.geometry.reactor.HeatExchanger mesh = new org.eclipse.eavp.viz.service.geometry.reactor.HeatExchanger();
+//			HeatExchangerController heatExchanger = (HeatExchangerController) factory
+//					.createProvider(mesh).createController(mesh);
+//
+//			// Heat Exchangers require a contained primary pipe, so create one
+//			// for it.
+//			PipeController pipe = createPipe(plantComp.getPrimaryPipe());
+//			heatExchanger.setPrimaryPipe(pipe);
+//
+//			// Set the heat exchanger's position
+//			applyTransformation(heatExchanger, plantComp.getPosition(),
+//					plantComp.getOrientation(), plantComp.getLength());
+//
+//			// Add the heat exchanger to the root
+//			root.addEntityToCategory(heatExchanger,
+//					ReactorMeshCategory.HEAT_EXCHANGERS);
 
 		}
 
 		@Override
 		public void visit(Pipe plantComp) {
 
-			// If this pipe has already been converted, ignore it
-			boolean found = false;
-
-			// Create a list of all pipes in the plant by combining the pipes
-			// with the core channels
-			List<IController> pipeList = root
-					.getEntitiesFromCategory(ReactorMeshCategory.PIPES);
-			pipeList.addAll(root
-					.getEntitiesFromCategory(ReactorMeshCategory.CORE_CHANNELS));
-
-			// Check the root to see if a pipe with that id already exists
-			for (IController pipe : pipeList) {
-				if (Integer.parseInt(
-						pipe.getProperty(MeshProperty.ID)) == plantComp
-								.getId()) {
-
-					// Match found, stop the search
-					found = true;
-					break;
-				}
-			}
-
-			if (!found) {
-
-				// Convert the pipe and add it to the root.
-				root.addEntityToCategory(createPipe(plantComp),
-						ReactorMeshCategory.PIPES);
-
-			}
+//			// If this pipe has already been converted, ignore it
+//			boolean found = false;
+//
+//			// Create a list of all pipes in the plant by combining the pipes
+//			// with the core channels
+//			List<IController> pipeList = root
+//					.getEntitiesFromCategory(ReactorMeshCategory.PIPES);
+//			pipeList.addAll(root.getEntitiesFromCategory(
+//					ReactorMeshCategory.CORE_CHANNELS));
+//
+//			// Check the root to see if a pipe with that id already exists
+//			for (IController pipe : pipeList) {
+//				if (Integer.parseInt(
+//						pipe.getProperty(MeshProperty.ID)) == plantComp
+//								.getId()) {
+//
+//					// Match found, stop the search
+//					found = true;
+//					break;
+//				}
+//			}
+//
+//			if (!found) {
+//
+//				// Convert the pipe and add it to the root.
+//				root.addEntityToCategory(createPipe(plantComp),
+//						ReactorMeshCategory.PIPES);
+//
+//			}
 
 		}
 
 		@Override
 		public void visit(CoreChannel plantComp) {
 
-			// If this pipe has already been converted, ignore it
-			boolean found = false;
-
-			// Create a list of all pipes in the plant by combining the pipes
-			// with the core channels
-			List<IController> pipeList = root
-					.getEntitiesFromCategory(ReactorMeshCategory.PIPES);
-			pipeList.addAll(root
-					.getEntitiesFromCategory(ReactorMeshCategory.CORE_CHANNELS));
-
-			// Check the root to see if a pipe with that id already exists
-			for (IController pipe : pipeList) {
-				if (Integer.parseInt(
-						pipe.getProperty(MeshProperty.ID)) == plantComp
-								.getId()) {
-
-					// Match found, stop the search
-					found = true;
-					break;
-				}
-			}
-
-			if (!found) {
-
-				// Convert the pipe
-				PipeController pipe = createPipe(plantComp);
-
-				// Set the pipe as a core channel and add it to the root
-				pipe.setProperty(ReactorMeshProperty.CORE_CHANNEL, "True");
-				root.addEntity(pipe);
-
-			}
+//			// If this pipe has already been converted, ignore it
+//			boolean found = false;
+//
+//			// Create a list of all pipes in the plant by combining the pipes
+//			// with the core channels
+//			List<IController> pipeList = root
+//					.getEntitiesFromCategory(ReactorMeshCategory.PIPES);
+//			pipeList.addAll(root.getEntitiesFromCategory(
+//					ReactorMeshCategory.CORE_CHANNELS));
+//
+//			// Check the root to see if a pipe with that id already exists
+//			for (IController pipe : pipeList) {
+//				if (Integer.parseInt(
+//						pipe.getProperty(MeshProperty.ID)) == plantComp
+//								.getId()) {
+//
+//					// Match found, stop the search
+//					found = true;
+//					break;
+//				}
+//			}
+//
+//			if (!found) {
+//
+//				// Convert the pipe
+//				PipeController pipe = createPipe(plantComp);
+//
+//				// Set the pipe as a core channel and add it to the root
+//				pipe.setProperty(ReactorMeshProperty.CORE_CHANNEL, "True");
+//				root.addEntity(pipe);
+//
+//			}
 
 		}
 
@@ -738,37 +708,37 @@ public class FXPlantCompositeConverter
 			}
 		}
 
-		/**
-		 * Creates a JavaFX PipeController from a RELAP7 Pipe.
-		 * 
-		 * @param plantComp
-		 *            The pipe to be converted.
-		 * @return The converted pipe.
-		 */
-		public PipeController createPipe(Pipe plantComp) {
-			// Create a new pipe
-			PipeMesh mesh = new PipeMesh();
-
-			// Set the pipe's properties
-			mesh.setProperty(MeshProperty.ID,
-					Integer.toString(plantComp.getId()));
-			mesh.setLength(plantComp.getLength() * SCALE);
-			mesh.setRadius(plantComp.getRadius() * SCALE);
-			mesh.setInnerRadius(plantComp.getRadius() * SCALE);
-			mesh.setAxialSamples(plantComp.getNumElements());
-
-			mesh.setProperty(MeshProperty.NAME, plantComp.getName());
-
-			// Create the view and controller
-			PipeController pipe = (PipeController) factory.createProvider(mesh)
-					.createController(mesh);
-
-			// Apply the position and orientation
-			applyTransformation(pipe, plantComp.getPosition(),
-					plantComp.getOrientation(), plantComp.getLength());
-
-			return pipe;
-		}
+//		/**
+//		 * Creates a JavaFX PipeController from a RELAP7 Pipe.
+//		 * 
+//		 * @param plantComp
+//		 *            The pipe to be converted.
+//		 * @return The converted pipe.
+//		 */
+//		public PipeController createPipe(Pipe plantComp) {
+//			// Create a new pipe
+//			org.eclipse.eavp.viz.service.geometry.reactor.PipeRefactor mesh = new org.eclipse.eavp.viz.service.geometry.reactor.PipeRefactor();
+//
+//			// Set the pipe's properties
+//			mesh.setProperty(MeshProperty.ID,
+//					Integer.toString(plantComp.getId()));
+//			mesh.setLength(plantComp.getLength() * SCALE);
+//			mesh.setRadius(plantComp.getRadius() * SCALE);
+//			mesh.setInnerRadius(plantComp.getRadius() * SCALE);
+//			mesh.setAxialSamples(plantComp.getNumElements());
+//
+//			mesh.setProperty(MeshProperty.NAME, plantComp.getName());
+//
+//			// Create the view and controller
+//			PipeController pipe = (PipeController) factory.createProvider(mesh)
+//					.createController(mesh);
+//
+//			// Apply the position and orientation
+//			applyTransformation(pipe, plantComp.getPosition(),
+//					plantComp.getOrientation(), plantComp.getLength());
+//
+//			return pipe;
+//		}
 
 	}
 

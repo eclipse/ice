@@ -96,10 +96,8 @@ public class PROTEUSModel extends Item {
 	 *            which they should be retrieved.
 	 */
 	public PROTEUSModel(IProject projectSpace) {
-
 		// Call super
 		super(projectSpace);
-
 	}
 
 	/**
@@ -121,7 +119,7 @@ public class PROTEUSModel extends Item {
 		form = new Form();
 
 		if (project != null) {
-			loadInput(null);
+			loadDefault();
 		}
 	}
 
@@ -152,10 +150,10 @@ public class PROTEUSModel extends Item {
 			setIOService(new IOService());
 			ioService = getIOService();
 		}
-		if (ioService.getTemplatedReader("INIReader") == null) {
+		if (ioService.getTemplatedReader("INI") == null) {
 			ioService.addTemplatedReader(new INIReader());
 		}
-		if (ioService.getWriter("INIWriter") == null) {
+		if (ioService.getWriter("INI") == null) {
 			ioService.addWriter(new INIWriter());
 		}
 
@@ -217,7 +215,7 @@ public class PROTEUSModel extends Item {
 			if (components.size() > 0) {
 
 				// create a new IPSWriter with the output file
-				INIWriter writer = (INIWriter) ioService.getWriter("INIWriter");
+				INIWriter writer = (INIWriter) ioService.getWriter("INI");
 				writer.setSectionPattern("!", " ");
 				try {
 					// Write the output file
@@ -252,7 +250,6 @@ public class PROTEUSModel extends Item {
 	 */
 	@Override
 	public void loadInput(String name) {
-		// If nothing is specified, load case 6 from inside the plugin
 		IFile inputFile = null;
 		IFile templateFile = project
 				.getFile("PROTEUS_Model_Builder"
@@ -273,7 +270,7 @@ public class PROTEUSModel extends Item {
 				+ inputFile.getLocation().toOSString());
 
 		// Set up the reader to use the template if it exists
-		ITemplatedReader reader = ioService.getTemplatedReader("INIReader");
+		ITemplatedReader reader = ioService.getTemplatedReader("INI");
 		reader.setCommentString("!");
 		reader.setAssignmentPattern("\\s\\s\\s+");
 		if (new File(templateFile.getLocation().toOSString()).exists()) {
@@ -306,5 +303,12 @@ public class PROTEUSModel extends Item {
 			form = new Form();
 			form.addComponent(errorComponent);
 		}
+	}
+	
+	/**
+	 * Load the dataset that should be provided in the default location
+	 */
+	public void loadDefault() {
+		loadInput("PROTEUS_Model_Builder" + System.getProperty("file.separator") + "proteus_model.inp");
 	}
 }

@@ -28,6 +28,7 @@ import java.util.HashMap;
 import org.eclipse.eavp.viz.modeling.base.IController;
 import org.eclipse.eavp.viz.modeling.properties.MeshCategory;
 import org.eclipse.eavp.viz.modeling.properties.MeshProperty;
+import org.eclipse.eavp.viz.modeling.EdgeController;
 import org.eclipse.eavp.viz.modeling.VertexController;
 import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryConditionType;
@@ -401,7 +402,6 @@ public class NekWriter implements IComponentVisitor {
 		NekPolygonController currQuad;
 		IController currEdge;
 		int currEdgeId;
-		ArrayList<VertexController> currVertices = new ArrayList<VertexController>();
 		String currValue;
 
 		// String buffer used to construct the mesh data, as the MeshComponent
@@ -436,22 +436,11 @@ public class NekWriter implements IComponentVisitor {
 
 			/* --- Construct mesh elements --- */
 
-			// Check each descendent vertex. If it is not yet in the list of
-			// vertices, add it
-			for (IController entity : currQuad
-					.getEntitiesFromCategory(MeshCategory.EDGES)) {
-				for (VertexController v : entity.getEntitiesFromCategory(
-						MeshCategory.VERTICES, VertexController.class)) {
-					if (!currVertices.contains(v)) {
-						currVertices.add(v);
-					}
-				}
-			}
-
-			// Extract the x, y coordinates of the Quad's vertices
-			for (int k = 0; k < 4; k++) {
-				xCoords.add((float) currVertices.get(k).getLocation()[0]);
-				yCoords.add((float) currVertices.get(k).getLocation()[1]);
+			// Populate the lists of coordinates, in order, from the start points of the entity's edges.
+			for (EdgeController entity : currQuad
+					.getEntitiesFromCategory(MeshCategory.EDGES, EdgeController.class)) {
+				xCoords.add((float) entity.getStartLocation()[0]); 
+				yCoords.add((float) entity.getStartLocation()[1]); 
 			}
 
 			// Iterate through the Edges of the current Quad

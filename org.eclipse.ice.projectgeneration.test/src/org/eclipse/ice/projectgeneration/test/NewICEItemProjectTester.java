@@ -36,8 +36,8 @@ public class NewICEItemProjectTester {
 	private static SWTWorkbenchBot bot;
 	private static final String SEP = System.getProperty("file.separator");
 	private static final String PROJECT_NAME = "org.eclipse.ice.newitem";
-	private static final int MANIFEST_LINE_COUNT = 25;
-	private static final int MODEL_LINE_COUNT = 182;
+	private static final int MANIFEST_LINE_COUNT = 16;
+	private static final int MODEL_LINE_COUNT = 239;
 	private static final int LAUNCHER_LINE_COUNT = 82;
 
 	/**
@@ -49,19 +49,19 @@ public class NewICEItemProjectTester {
 		bot = new SWTWorkbenchBot();
 		bot.viewByTitle("Welcome").close();
 		bot.menu("File").menu("New").menu("Other...").click().setFocus();
-		bot.tree().getTreeItem("ICE Item Creation Wizards").expand();
-		bot.tree().getTreeItem("ICE Item Creation Wizards").getNode("ICE Item Project Creation Wizard").select();
+		bot.tree().getTreeItem("ICE Item Project Creation Wizards").expand();
+		bot.tree().getTreeItem("ICE Item Project Creation Wizards").getNode("New ICE Item Project").select();
 		bot.button("Next >").click();
 		bot.textWithLabel("&Project name:").setText("org.eclipse.ice.newitem");
 		bot.button("Next >").click();
 		bot.comboBox().setText("Oak Ridge National Laboratory");
 		bot.button("Next >").click();
-		bot.textWithLabel("Class Base Name").setText("NewItem");
+		bot.textWithLabel("Item Class Base Name").setText("NewItem");
 		bot.button("Finish").click();
 
 		// Wait for the wizard to complete
 		try {
-			Thread.sleep(8000);
+			Thread.sleep(20000);
 		} catch (InterruptedException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -116,7 +116,7 @@ public class NewICEItemProjectTester {
 		try {
 			lnr = new LineNumberReader(new FileReader(modelFile.getLocation().toFile()));
 			lnr.skip(Long.MAX_VALUE);
-			lineCount = lnr.getLineNumber() + 1;
+			lineCount = lnr.getLineNumber();
 			lnr.close();
 		} catch (Exception e) {
 			e.printStackTrace();

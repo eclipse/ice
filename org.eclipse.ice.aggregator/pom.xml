@@ -15,7 +15,6 @@
   	<module>../org.eclipse.ice.caebat.batml</module>
   	<module>../org.eclipse.ice.caebat.batml.test</module>
   	<module>../org.eclipse.ice.client</module>
-  	<module>../org.eclipse.ice.client.compatibility</module>
   	<module>../org.eclipse.ice.client.rcp</module>
   	<module>../org.eclipse.ice.client.test</module>
   	<module>../org.eclipse.ice.client.widgets</module>
@@ -53,11 +52,11 @@
   	<module>../org.eclipse.ice.reflectivity</module>
   	<module>../org.eclipse.ice.reflectivity.test</module>
   	<module>../org.eclipse.ice.reflectivity.ui</module>
-  	<module>../org.eclipse.ice.target.mars</module>
+  	<module>../org.eclipse.ice.target.neon</module>
   	<module>../org.eclipse.ice.vibe</module>
   	<module>../org.eclipse.ice.vibe.test</module>
   	<module>../org.eclipse.ice.feature</module>  	
-  	<module>../org.eclipse.ice.repository</module>
-  	<module>../org.eclipse.ice.product</module>  	
+  	<module>../org.eclipse.ice.repository</module>    	
+  	<module>../org.eclipse.ice.product</module>  		  	
   </modules>
 </project>

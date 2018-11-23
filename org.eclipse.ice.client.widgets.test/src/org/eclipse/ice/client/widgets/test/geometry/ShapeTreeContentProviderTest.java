@@ -18,15 +18,17 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.eavp.viz.modeling.base.BasicView;
-import org.eclipse.eavp.viz.modeling.properties.MeshProperty;
-import org.eclipse.eavp.viz.modeling.ShapeController;
-import org.eclipse.eavp.viz.modeling.ShapeMesh;
-import org.eclipse.eavp.viz.service.geometry.shapes.GeometryMeshProperty;
-import org.eclipse.eavp.viz.service.geometry.shapes.OperatorType;
-import org.eclipse.eavp.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeContentProvider;
+import org.eclipse.eavp.viz.service.javafx.canvas.FXAttachment;
+import org.eclipse.eavp.viz.service.javafx.canvas.FXAttachmentManager;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
+import org.eclipse.january.geometry.Complement;
+import org.eclipse.january.geometry.Cube;
+import org.eclipse.january.geometry.Geometry;
+import org.eclipse.january.geometry.GeometryFactory;
+import org.eclipse.january.geometry.Intersection;
+import org.eclipse.january.geometry.Sphere;
+import org.eclipse.january.geometry.Union;
 import org.junit.Test;
 
 /**
@@ -48,35 +50,21 @@ public class ShapeTreeContentProviderTest {
 
 		// Create all needed objects
 
-		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider();
+		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider(
+				new FXAttachment(new FXAttachmentManager()));
 
 		// Create a shape
-		ShapeMesh geometryModel = new ShapeMesh();
-		BasicView geometryView = new BasicView();
-		ShapeController geometryShape = new ShapeController(geometryModel,
-				geometryView);
-
-		ShapeController sphere1 = (ShapeController) geometryShape.clone();
-		sphere1.setProperty(MeshProperty.TYPE, ShapeType.Sphere.toString());
-		ShapeController cube1 = (ShapeController) geometryShape.clone();
-		cube1.setProperty(MeshProperty.TYPE, ShapeType.Cube.toString());
-
-		ShapeController union1 = (ShapeController) geometryShape.clone();
-		union1.setProperty(GeometryMeshProperty.OPERATOR,
-				OperatorType.Union.toString());
-		ShapeController complement1 = (ShapeController) geometryShape.clone();
-		complement1.setProperty(GeometryMeshProperty.OPERATOR,
-				OperatorType.Complement.toString());
-		ShapeController intersection1 = (ShapeController) geometryShape.clone();
-		intersection1.setProperty(GeometryMeshProperty.OPERATOR,
-				OperatorType.Intersection.toString());
+		Sphere sphere1 = GeometryFactory.eINSTANCE.createSphere();
+		Cube cube1 = GeometryFactory.eINSTANCE.createCube();
+		Union union1 = GeometryFactory.eINSTANCE.createUnion();
+		Complement complement1 = GeometryFactory.eINSTANCE.createComplement();
+		Intersection intersection1 = GeometryFactory.eINSTANCE.createIntersection();;
 
 		// Create a simple CSG tree
-
-		union1.addEntity(sphere1);
-		union1.addEntity(complement1);
-		union1.addEntity(intersection1);
-		complement1.addEntity(cube1);
+		union1.addNode(sphere1);
+		union1.addNode(complement1);
+		union1.addNode(intersection1);
+		complement1.addNode(cube1);
 
 		// Using the ShapeTreeContentProvider, get and check the children
 		// of all the previously created shapes
@@ -127,35 +115,21 @@ public class ShapeTreeContentProviderTest {
 
 		// Create all needed objects
 
-		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider();
+		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider(
+				new FXAttachment(new FXAttachmentManager()));
 
 		// Create a shape
-		ShapeMesh geometryModel = new ShapeMesh();
-		BasicView geometryView = new BasicView();
-		ShapeController geometryShape = new ShapeController(geometryModel,
-				geometryView);
-
-		ShapeController sphere1 = (ShapeController) geometryShape.clone();
-		sphere1.setProperty(MeshProperty.TYPE, ShapeType.Sphere.toString());
-		ShapeController cube1 = (ShapeController) geometryShape.clone();
-		cube1.setProperty(MeshProperty.TYPE, ShapeType.Cube.toString());
-
-		ShapeController union1 = (ShapeController) geometryShape.clone();
-		union1.setProperty(GeometryMeshProperty.OPERATOR,
-				OperatorType.Union.toString());
-		ShapeController complement1 = (ShapeController) geometryShape.clone();
-		complement1.setProperty(GeometryMeshProperty.OPERATOR,
-				OperatorType.Complement.toString());
-		ShapeController intersection1 = (ShapeController) geometryShape.clone();
-		intersection1.setProperty(GeometryMeshProperty.OPERATOR,
-				OperatorType.Intersection.toString());
+		Sphere sphere1 = GeometryFactory.eINSTANCE.createSphere();
+		Cube cube1 = GeometryFactory.eINSTANCE.createCube();
+		Union union1 = GeometryFactory.eINSTANCE.createUnion();
+		Complement complement1 = GeometryFactory.eINSTANCE.createComplement();
+		Intersection intersection1 = GeometryFactory.eINSTANCE.createIntersection();;
 
 		// Create a simple CSG tree
-
-		union1.addEntity(sphere1);
-		union1.addEntity(complement1);
-		union1.addEntity(intersection1);
-		complement1.addEntity(cube1);
+		union1.addNode(sphere1);
+		union1.addNode(complement1);
+		union1.addNode(intersection1);
+		complement1.addNode(cube1);
 
 		// Using the ShapeTreeContentProvider, get and check the children
 		// of all the previously created shapes
@@ -189,7 +163,8 @@ public class ShapeTreeContentProviderTest {
 		// but we can still check whether it doesn't throw exceptions upon
 		// creation and destruction.
 
-		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider();
+		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider(
+				new FXAttachment(new FXAttachmentManager()));
 
 		shapeProvider.dispose();
 
@@ -206,29 +181,27 @@ public class ShapeTreeContentProviderTest {
 
 		// Create all needed objects
 
-		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider();
+		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider(
+				new FXAttachment(new FXAttachmentManager()));
 
-		ShapeMesh geometryModel = new ShapeMesh();
-		geometryModel.setProperty(MeshProperty.TYPE, ShapeType.Sphere.toString());
-		BasicView geometryView = new BasicView();
-		ShapeController geometry = new ShapeController(geometryModel,
-				geometryView);
+		Geometry geometry = GeometryFactory.eINSTANCE.createGeometry();
 
-		ShapeController sphere1 = (ShapeController) geometry.clone();
-		ShapeController cube1 = (ShapeController) geometry.clone();
-		ShapeController union1 = (ShapeController) geometry.clone();
-		ShapeController complement1 = (ShapeController) geometry.clone();
-		ShapeController intersection1 = (ShapeController) geometry.clone();
+		Sphere sphere1 = GeometryFactory.eINSTANCE.createSphere();
+		Cube cube1 = GeometryFactory.eINSTANCE.createCube();
+		Union union1 = GeometryFactory.eINSTANCE.createUnion();
+		Complement complement1 = GeometryFactory.eINSTANCE.createComplement();
+		Intersection intersection1 = GeometryFactory.eINSTANCE
+				.createIntersection();
 
 		// Put them all in a GeometryComponent
 
 		GeometryComponent geometryComponent = new GeometryComponent();
 		geometryComponent.setGeometry(geometry);
-		geometryComponent.getGeometry().addEntity(sphere1);
-		geometryComponent.getGeometry().addEntity(cube1);
-		geometryComponent.getGeometry().addEntity(union1);
-		geometryComponent.getGeometry().addEntity(complement1);
-		geometryComponent.getGeometry().addEntity(sphere1);
+		geometryComponent.getGeometry().addNode(sphere1);
+		geometryComponent.getGeometry().addNode(cube1);
+		geometryComponent.getGeometry().addNode(union1);
+		geometryComponent.getGeometry().addNode(complement1);
+		geometryComponent.getGeometry().addNode(sphere1);
 
 		Object[] expectedElements = new Object[] { sphere1, cube1, union1,
 				complement1, sphere1 };

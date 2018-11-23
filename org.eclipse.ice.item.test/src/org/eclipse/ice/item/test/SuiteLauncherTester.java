@@ -46,7 +46,7 @@ public class SuiteLauncherTester {
 		ArrayList<String> execs = new ArrayList<String>();
 		execs.add("conj_ht");
 		execs.add("conj_ht_moab");
-		execs.add("bison");
+		execs.add("testExec");
 
 		// Set the list
 		launcher.addExecutables(execs);
@@ -74,7 +74,7 @@ public class SuiteLauncherTester {
 		ArrayList<String> execs = new ArrayList<String>();
 		execs.add("conj_ht");
 		execs.add("conj_ht_moab");
-		execs.add("bison");
+		execs.add("testExec");
 
 		// Set the launcher details
 		jobItem.setDescription("I am a job!");
@@ -162,7 +162,7 @@ public class SuiteLauncherTester {
 		ArrayList<String> execs = new ArrayList<String>();
 		execs.add("conj_ht");
 		execs.add("conj_ht_moab");
-		execs.add("bison");
+		execs.add("testExec");
 
 		// Set ids
 		equalItem.setId(item.getId());

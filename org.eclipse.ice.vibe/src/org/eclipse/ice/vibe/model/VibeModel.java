@@ -55,13 +55,12 @@ public class VibeModel extends Model {
 	 * </p>
 	 */
 	private String customTaggedExportString = "Export to VIBE INI format";
-
-	// The name of the example chosen
-	protected String exampleName; // Default for now
 	
 	private ArrayList<String> actionItems;
 
 	private IIOService ioService;
+
+
 	
 	/**
 	 * A nullary constructor that delegates to the project constructor.
@@ -101,14 +100,14 @@ public class VibeModel extends Model {
 			setIOService(new IOService());
 			ioService = getIOService();
 		}
-		
+
 		// If loading from the new item button we should just
 		// load up the default case 6 file by passing in null
 		if (project != null) {
-			loadInput(null);
+			loadDefault();
 		}
 	}
-	
+
 	/**
 	 * <p>
 	 * This operation overrides the Item.setupItemInfo() operation.
@@ -144,8 +143,8 @@ public class VibeModel extends Model {
 
 		// Make sure the form has the right amount of data
 		if (components.size() != 4) {
-			logger.info("VibeModel Message: Could not find enough data to write a complete input format." +
-					" 4 Components are required, but " + components.size() + " were found.");
+			logger.info("VibeModel Message: Could not find enough data to write a complete input format."
+					+ " 4 Components are required, but " + components.size() + " were found.");
 			retStatus = FormStatus.InfoError;
 		}
 		return retStatus;
@@ -165,8 +164,7 @@ public class VibeModel extends Model {
 		if (this.customTaggedExportString.equals(actionName)) {
 
 			// Get the file from the project space to create the output
-			String filename = getName().replaceAll("\\s+", "_") + "_" + getId()
-					+ ".conf";
+			String filename = getName().replaceAll("\\s+", "_") + "_" + getId() + ".conf";
 			// Get the file path and build the URI that will be used to write
 			IFile outputFile = project.getFile(filename);
 
@@ -177,7 +175,7 @@ public class VibeModel extends Model {
 			if (components.size() > 3) {
 
 				// create a new IPSWriter with the output file
-				IWriter writer = (IWriter) ioService.getWriter("IPSWriter");
+				IWriter writer = (IWriter) ioService.getWriter("IPS");
 				try {
 					// Write the output file
 					writer.write(form, outputFile);
@@ -185,9 +183,8 @@ public class VibeModel extends Model {
 					project.refreshLocal(IResource.DEPTH_ONE, null);
 				} catch (CoreException e) {
 					// Complain
-					System.err.println("VibeModel Message: "
-							+ "Failed to refresh the project space.");
-					logger.error(getClass().getName() + " Exception!",e);
+					System.err.println("VibeModel Message: " + "Failed to refresh the project space.");
+					logger.error(getClass().getName() + " Exception!", e);
 				}
 				// return a success
 				retStatus = FormStatus.Processed;
@@ -213,67 +210,76 @@ public class VibeModel extends Model {
 	 */
 	@Override
 	public void loadInput(String name) {
-		// If nothing is specified, load case 6 from inside the plugin
-		IFile inputFile = null;
-		File temp = null;
-		if (name == null) {
-			try {
-				// Create a filepath for the default file
-				String defaultFilePath = project.getLocation().toOSString()
-							+ System.getProperty("file.separator")
-							+ "case_6.conf";			
-				// Create a temporary location to load the default file
-				temp = new File(defaultFilePath);
-				if (!temp.exists()) {
-					temp.createNewFile();
-				}
-				
-				// Pull the default file from inside the plugin
-				URI uri = new URI(
-						"platform:/plugin/org.eclipse.ice.vibe/data/case_6.conf");
-				InputStream reader = uri.toURL().openStream();
-				FileOutputStream outStream = new FileOutputStream(temp);
+		IFile inputFile = project.getFile(name);
 
-				// Write out the default file from the plugin to the temp location
-				int fileByte;
-				while ((fileByte = reader.read()) != -1) {
-					outStream.write(fileByte);
-				}
-				outStream.close();
-				project.refreshLocal(IResource.DEPTH_INFINITE, null);
-				inputFile = project.getFile("case_6.conf");
-
-			} catch (URISyntaxException e) {
-				logger.error(getClass().getName() + " Exception!",e);
-				System.err.println("VibeModel Message: Error!  Could not load the default"
-								+ " VIBE case data!");
-			} catch (MalformedURLException e) {
-				logger.error(getClass().getName() + " Exception!",e);
-				System.err.println("VibeModel Message: Error!  Could not load the default"
-						+ " VIBE case data!");
-			} catch (IOException e) {
-				logger.error(getClass().getName() + " Exception!",e);
-				System.err.println("VibeModel Message: Error!  Could not load the default"
-						+ " VIBE case data!");
-			} catch (CoreException e) {
-				logger.error(getClass().getName() + " Exception!",e);
-				System.err.println("VibeModel Message: Error!  Could not load the default"
-						+ " VIBE case data!");
-			}
-		} else {
-			// Get the file
-			inputFile = project.getFile(name);
-		}
-		
 		// Load the components from the file and setup the form
-		logger.info("VibeModel Message: Loading " + inputFile.getName());		
-		IReader reader = (IReader) ioService.getReader("IPSReader"); //new IPSReader();
+		logger.info("VibeModel Message: Loading " + inputFile.getName());
+		IReader reader = (IReader) ioService.getReader("IPS");
 		form = reader.read(inputFile);
 		form.setName(getName());
 		form.setDescription(getDescription());
 		form.setId(getId());
 		form.setItemID(getId());
 		form.setActionList(actionItems);
+	}
+
+	/**
+	 * Provides functionality to load a file embedded in the plugin.  This can be used
+	 * when the VibeModel is created via the new item button in the ICE perspective.
+	 * 
+	 * @return the form loaded from the file embedded in the plugin
+	 */
+	public void loadDefault() {
+		File temp = null;
+		String defaultFileName = "case_6.conf";
+		String defaultFilePath = project.getLocation().toOSString() + System.getProperty("file.separator")
+				+ defaultFileName;
+		try {
+			// Create a temporary location to load the default file
+			temp = new File(defaultFilePath);
+			if (!temp.exists()) {
+				temp.createNewFile();
+			}
+
+			// Pull the default file from inside the plugin
+			URI uri = new URI("platform:/plugin/org.eclipse.ice.vibe/data/" + defaultFileName);
+			InputStream reader = uri.toURL().openStream();
+			FileOutputStream outStream = new FileOutputStream(temp);
+
+			// Write out the default file from the plugin to the temp location
+			int fileByte;
+			while ((fileByte = reader.read()) != -1) {
+				outStream.write(fileByte);
+			}
+			outStream.close();
+			project.refreshLocal(IResource.DEPTH_INFINITE, null);
+			
+			// Load the components from the file and setup the form
+			IFile inputFile = project.getFile("case_6.conf");
+			IReader ipsReader = (IReader) ioService.getReader("IPS");
+			form = ipsReader.read(inputFile);
+			form.setName(getName());
+			form.setDescription(getDescription());
+			form.setId(getId());
+			form.setItemID(getId());
+			form.setActionList(actionItems);
+			
+		} catch (URISyntaxException e) {
+			logger.error(getClass().getName() + " Exception!", e);
+			logger.error("VibeModel Message: Error!  Could not load the default VIBE case data!");
+		} catch (MalformedURLException e) {
+			logger.error(getClass().getName() + " Exception!", e);
+			logger.error("VibeModel Message: Error!  Could not load the default VIBE case data!");
+		} catch (IOException e) {
+			logger.error(getClass().getName() + " Exception!", e);
+			logger.error("VibeModel Message: Error!  Could not load the default VIBE case data!");
+		} catch (CoreException e) {
+			logger.error(getClass().getName() + " Exception!", e);
+			logger.error("VibeModel Message: Error!  Could not load the default VIBE case data!");
+		}
+		
+
+
 		
 		// Delete default file if it was copied into the workspace
 		if (temp != null) {

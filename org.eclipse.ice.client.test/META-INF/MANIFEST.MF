@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.eclipse.ice.client.test
 Bundle-Version: 2.1.8.qualifier
 Fragment-Host: org.eclipse.ice.client;bundle-version="2.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.eclipse.ice.client.internal,
+Import-Package: org.eclipse.core.runtime.jobs,
+ org.eclipse.ice.client.internal,
  org.eclipse.ice.client.widgets,
  org.eclipse.ice.datastructures.ICEObject,
  org.eclipse.ice.iclient,

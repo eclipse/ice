@@ -11,34 +11,17 @@
  *******************************************************************************/
 package org.eclipse.ice.developer.actions;
 
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
-import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.egit.core.internal.util.ProjectUtil;
 import org.eclipse.egit.core.op.CloneOperation.PostCloneTask;
-import org.eclipse.egit.ui.Activator;
-import org.eclipse.egit.ui.internal.UIText;
-import org.eclipse.egit.ui.internal.clone.ProjectRecord;
-import org.eclipse.egit.ui.internal.clone.ProjectUtils;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.m2e.core.MavenPlugin;
-import org.eclipse.ui.IWorkingSet;
 
 /**
  * The ICECloneHandler clones the ICE repository and adds PostCloneTasks that
@@ -62,21 +45,8 @@ public class ICECloneHandler extends GitCloneHandler {
 		cloneOperation.addPostCloneTask(new PostCloneTask() {
 			@Override
 			public void execute(Repository repository, IProgressMonitor monitor) throws CoreException {
-				// This is a fix for the errors that occur with the new ICE Build for 
-				// certain maven goals.
-				String file = MavenPlugin.getMavenConfiguration().getWorkspaceLifecycleMappingMetadataFile();
-				try {
-					Path path = Paths.get(file);
-					if (Files.exists(path)) {
-						Files.write(Paths.get(file), lifecycleXML.getBytes());
-					} else {
-						Files.write(Paths.get(file), lifecycleXML.getBytes(), StandardOpenOption.CREATE_NEW);
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				fixMavenLifecycleFile();
 			}
-
 		});
 		
 		// Import all projects
@@ -84,9 +54,28 @@ public class ICECloneHandler extends GitCloneHandler {
 	}
 
 	/**
+	 * 
+	 */
+	protected void fixMavenLifecycleFile() {
+		// This is a fix for the errors that occur with the new ICE Build for 
+		// certain maven goals.
+		String file = MavenPlugin.getMavenConfiguration().getWorkspaceLifecycleMappingMetadataFile();
+		try {
+			Path path = Paths.get(file);
+			if (Files.exists(path)) {
+				Files.write(Paths.get(file), lifecycleXML.getBytes());
+			} else {
+				Files.write(Paths.get(file), lifecycleXML.getBytes(), StandardOpenOption.CREATE_NEW);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * Reference to the XML file contents we need for life cycle management M2e file. 
 	 */
-	private String lifecycleXML = 
+	protected String lifecycleXML = 
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<lifecycleMappingMetadata>\n"
 			+ "	  <pluginExecutions>\n"
 			+ "	    <pluginExecution>\n"

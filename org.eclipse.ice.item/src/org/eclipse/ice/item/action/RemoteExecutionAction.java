@@ -30,9 +30,7 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteConnectionHostService;
 import org.eclipse.remote.core.IRemoteConnectionType;
-import org.eclipse.remote.core.IRemoteConnectionWorkingCopy;
 import org.eclipse.remote.core.IRemoteFileService;
-import org.eclipse.remote.core.IRemotePortForwardingService;
 import org.eclipse.remote.core.IRemoteProcess;
 import org.eclipse.remote.core.IRemoteProcessBuilder;
 import org.eclipse.remote.core.IRemoteProcessService;
@@ -308,8 +306,9 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 			if (connectionName == null) {
 				connection = getRemoteConnection(hostName);
 			} else {
-				IRemoteConnectionType connectionType = getService(IRemoteServicesManager.class)
-						.getRemoteConnectionTypes().get(0);
+				IRemoteConnectionType connectionType = getService(
+						IRemoteServicesManager.class).getRemoteConnectionTypes()
+								.get(0);
 				for (IRemoteConnection c : connectionType.getConnections()) {
 					if (connectionName.equals(c.getName())) {
 						connection = c;
@@ -317,7 +316,9 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 				}
 			}
 			if (connection == null) {
-				return actionError("Remote Execution Action could not get a valid connection to " + hostName + ".",
+				return actionError(
+						"Remote Execution Action could not get a valid connection to "
+								+ hostName + ".",
 						null);
 			}
 
@@ -326,7 +327,9 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 
 			return status;
 		} else {
-			return actionError("Remote Execution Error - the input data map was not valid.", null);
+			return actionError(
+					"Remote Execution Error - the input data map was not valid.",
+					null);
 		}
 	}
 
@@ -406,7 +409,9 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 			stdErr.write(helper.createOutputHeader("standard error", fullCMD));
 		} catch (IOException e) {
 			// Complain
-			actionError("Remote Execution Action could not write headers to std out and err.", e);
+			actionError(
+					"Remote Execution Action could not write headers to std out and err.",
+					e);
 			return;
 		}
 
@@ -419,7 +424,9 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 			stdErr.close();
 		} catch (IOException e) {
 			// Complain
-			actionError("Remote Execution Action could not close stdout or stderr!", e);
+			actionError(
+					"Remote Execution Action could not close stdout or stderr!",
+					e);
 			return;
 		}
 
@@ -449,7 +456,8 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 			}
 
 			if (cancelled.get()) {
-				logger.info("Remote Execution Action cancelled while waiting for form to be submitted.");
+				logger.info(
+						"Remote Execution Action cancelled while waiting for form to be submitted.");
 				status = FormStatus.ReadyToProcess;
 				return;
 			}
@@ -460,7 +468,9 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 			launchCMDFileName = helper.writeRemoteCommandFile();
 		} catch (Exception e) {
 			// Complain
-			actionError("Remote Execution Action error in writing remote command file!", e);
+			actionError(
+					"Remote Execution Action error in writing remote command file!",
+					e);
 			return;
 		}
 
@@ -476,7 +486,8 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 		// otherwise keep it as 22.
 		if (helper.getParameter("port") != null) {
 			int port = Integer.valueOf(helper.getParameter("port"));
-			connection.getService(IRemoteConnectionHostService.class).setPort(port);
+			connection.getService(IRemoteConnectionHostService.class)
+					.setPort(port);
 		}
 
 		// Try to open the connection and fail if it will not open
@@ -485,7 +496,9 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 				connection.open(null);
 			} catch (RemoteConnectionException e) {
 				// Print diagnostic information and fail
-				actionError("Remote Execution Action could not open the connection.!", e);
+				actionError(
+						"Remote Execution Action could not open the connection.!",
+						e);
 				return;
 			}
 		}
@@ -497,45 +510,58 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 			processService = connection.getService(IRemoteProcessService.class);
 
 			// Set the new working directory
-			String remoteSeparator = connection.getProperty(IRemoteConnection.FILE_SEPARATOR_PROPERTY);
-			String userHome = connection.getProperty(IRemoteConnection.USER_HOME_PROPERTY);
-			processService.setWorkingDirectory(userHome + remoteSeparator + "ICEJobs" + remoteSeparator
-					+ helper.getParameter("localJobLaunchDirectory"));
+			String remoteSeparator = connection
+					.getProperty(IRemoteConnection.FILE_SEPARATOR_PROPERTY);
+			String userHome = connection
+					.getProperty(IRemoteConnection.USER_HOME_PROPERTY);
+			processService.setWorkingDirectory(
+					userHome + remoteSeparator + "ICEJobs" + remoteSeparator
+							+ helper.getParameter("localJobLaunchDirectory"));
 
 			// Move the Launch Script to the Remote Directory!!
 			try {
-				File launchScript = localLaunchFolder.getFile(launchCMDFileName).getLocation().toFile();
-				IRemoteFileService fileManager = connection.getService(IRemoteFileService.class);
-				IFileStore remoteDirectory = EFS.getStore(fileManager.toURI(processService.getWorkingDirectory()));
+				File launchScript = localLaunchFolder.getFile(launchCMDFileName)
+						.getLocation().toFile();
+				IRemoteFileService fileManager = connection
+						.getService(IRemoteFileService.class);
+				IFileStore remoteDirectory = EFS.getStore(fileManager
+						.toURI(processService.getWorkingDirectory()));
 				remoteDirectory.mkdir(EFS.NONE, null);
-				IFileStore remoteFileStore = remoteDirectory.getChild(launchScript.getName());
-				IFileStore localFileStore = EFS.getLocalFileSystem().fromLocalFile(launchScript);
+				IFileStore remoteFileStore = remoteDirectory
+						.getChild(launchScript.getName());
+				IFileStore localFileStore = EFS.getLocalFileSystem()
+						.fromLocalFile(launchScript);
 				localFileStore.copy(remoteFileStore, EFS.OVERWRITE, null);
-				logger.info("RemoteExecutionAction Message: " + "Uploaded file " + launchScript.getName());
+				logger.info("RemoteExecutionAction Message: " + "Uploaded file "
+						+ launchScript.getName());
 			} catch (CoreException e) {
 				// Print diagnostic information and fail
-				actionError(
-						getClass().getName() + " Exception! Could not move " + launchCMDFileName + " to remote host.",
-						e);
+				actionError(getClass().getName() + " Exception! Could not move "
+						+ launchCMDFileName + " to remote host.", e);
 				return;
 
 			}
 
 			// Dump the new working directory
-			logger.info("Remote Execution Action Message: " + "PTP working directory set to "
+			logger.info("Remote Execution Action Message: "
+					+ "PTP working directory set to "
 					+ processService.getWorkingDirectory());
 
 			// Create the process builder for the remote job
-			IRemoteProcessBuilder processBuilder = processService.getProcessBuilder("sh", launchCMD);
+			IRemoteProcessBuilder processBuilder = processService
+					.getProcessBuilder("sh", launchCMD);
 
 			// Do not redirect the streams
 			processBuilder.redirectErrorStream(false);
 
 			try {
-				logger.info("Remote Execution Action Message: " + "Attempting to launch with PTP...");
-				logger.info(
-						"Remote Execution Action Message: " + "Command sent to PTP = " + "sh ./" + launchCMDFileName);
-				remoteJob = processBuilder.start(IRemoteProcessBuilder.FORWARD_X11);
+				logger.info("Remote Execution Action Message: "
+						+ "Attempting to launch with PTP...");
+				logger.info("Remote Execution Action Message: "
+						+ "Command sent to PTP = " + "sh ./"
+						+ launchCMDFileName);
+				remoteJob = processBuilder
+						.start(IRemoteProcessBuilder.FORWARD_X11);
 			} catch (IOException e) {
 				// Print diagnostic information and fail
 				actionError("Error in executing the remote command.", e);
@@ -545,9 +571,11 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 			// Log the ouput
 			InputStream stdOutStream = remoteJob.getInputStream();
 			InputStream stdErrStream = remoteJob.getErrorStream();
-			if (logOutput(stdOutStream, stdErrStream).equals(FormStatus.InfoError)) {
+			if (logOutput(stdOutStream, stdErrStream)
+					.equals(FormStatus.InfoError)) {
 				// Throw an error if the streaming fails
-				actionError("Remote Execution Error in logging the output.", null);
+				actionError("Remote Execution Error in logging the output.",
+						null);
 				return;
 			}
 
@@ -604,7 +632,8 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 				break;
 			}
 		}
-		logger.info("Remote Execution Action Message: Exit value = " + exitValue);
+		logger.info(
+				"Remote Execution Action Message: Exit value = " + exitValue);
 
 		return;
 	}
