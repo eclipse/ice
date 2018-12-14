@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns="https://www.eclipse.org/ice#"
+	xmlns:adms="http://www.w3.org/ns/adms#"
+	xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+
+<rdf:Description rdf:about="https://www.eclipse.org/ice">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+	<owl:imports rdf:resource="http://www.w3.org/2004/02/skos/core"/>
+	<owl:imports rdf:resource="http://www.w3.org/ns/adms"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="https://www.eclipse.org/ice#Identifiable">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<rdfs:comment xml:lang="en">This class describes objects that are identifiable to ICE.</rdfs:comment>
+	<rdfs:label xml:lang="en">Identifiable</rdfs:label>
+	<rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="https://www.eclipse.org/ice#context">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+	<rdfs:comment xml:lang="en">The context can be thought of as an additional clue that can be provided with the object to allow clients to interpret its contents in a slightly different way.</rdfs:comment>
+	<rdfs:domain rdf:resource="https://www.eclipse.org/ice#Identifiable"/>
+	<rdfs:label xml:lang="en">context</rdfs:label>
+	<rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="https://www.eclipse.org/ice#identifier">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+	<rdfs:comment xml:lang="en">A unique identifier for the object.</rdfs:comment>
+	<rdfs:domain rdf:resource="https://www.eclipse.org/ice#Identifiable"/>
+	<rdfs:label xml:lang="en">id</rdfs:label>
+	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+	<rdfs:range rdf:resource="http://www.w3.org/ns/adms#identifier"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="https://www.eclipse.org/ice#name">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+	<rdfs:comment xml:lang="en">The name that should be given to the Identifiable entity.</rdfs:comment>
+	<rdfs:domain rdf:resource="https://www.eclipse.org/ice#Identifiable"/>
+	<rdfs:label xml:lang="en">name</rdfs:label>
+	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="https://www.eclipse.org/ice#desc">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+	<rdfs:comment xml:lang="en">The description that should be given to the Identifiable entity.</rdfs:comment>
+	<rdfs:domain rdf:resource="https://www.eclipse.org/ice#Identifiable"/>
+	<rdfs:label xml:lang="en">description</rdfs:label>
+	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</rdf:Description>
+
+</rdf:RDF>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<rdf:RDF
+        xmlns:ice="https://www.eclipse.org/ice#"
+        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+
+<rdf:Description
+rdf:about="https://www.eclipse.org/ice/test1">
+        <ice:Identifiable ice:identifier="test2"/>
+</rdf:Description>
+
