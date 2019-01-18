@@ -8,11 +8,15 @@
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
 	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
 
+<!-- ICE Ontology -->
+
 <rdf:Description rdf:about="https://www.eclipse.org/ice">
 	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
 	<owl:imports rdf:resource="http://www.w3.org/2004/02/skos/core"/>
 	<owl:imports rdf:resource="http://www.w3.org/ns/adms"/>
 </rdf:Description>
+
+<!-- Identifiable, base of data hierarchy -->
 
 <rdf:Description rdf:about="https://www.eclipse.org/ice#Identifiable">
 	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
@@ -34,8 +38,8 @@
 	<rdfs:comment xml:lang="en">A unique identifier for the object.</rdfs:comment>
 	<rdfs:domain rdf:resource="https://www.eclipse.org/ice#Identifiable"/>
 	<rdfs:label xml:lang="en">id</rdfs:label>
-	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
-	<rdfs:range rdf:resource="http://www.w3.org/ns/adms#identifier"/>
+	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#long"/>
+<!--	<rdfs:range rdf:resource="http://www.w3.org/ns/adms#identifier"/> -->
 </rdf:Description>
 
 <rdf:Description rdf:about="https://www.eclipse.org/ice#name">
@@ -53,5 +57,24 @@
 	<rdfs:label xml:lang="en">description</rdfs:label>
 	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
 </rdf:Description>
+
+<!-- Component - base of data-holding components such as data component, etc. in Form -->
+
+<rdf:Description rdf:about="https://www.eclipse.org/ice#Component">
+	<rdf:type rdf:resource="https://www.eclipse.org/owl#Class"/>
+	<rdfs:comment xml:lang="en">Components are special types of Identifiables that manage or share data, and which act as nodes in the Form (a tree).</rdfs:comment>
+	<rdfs:label xml:lang="en">Component</rdfs:label>
+	<rdfs:subClassOf rdf:resource="https://www.eclipse.org/ice#Identifiable"/>
+</rdf:Description>
+
+<!-- Composite - Root and parent nodes in Form (tree). -->
+
+<rdf:Description rdf:about="https://www.eclipse.org/ice#Composite">
+	<rdf:type rdf:resource="https://www.eclipse.org/owl#Class"/>
+	<rdfs:comment xml:lang="en">Composites hold collections of Components to store data and are the root and parent nodes in the Form data tree.</rdfs:comment>
+	<rdfs:label xml:lang="en">Composite</rdfs:label>
+	<rdfs:subClassOf rdf:resource="https://www.eclipse.org/ice#Component"/>
+</rdf:Description>
+
 
 </rdf:RDF>
