@@ -76,5 +76,12 @@
 	<rdfs:subClassOf rdf:resource="https://www.eclipse.org/ice#Component"/>
 </rdf:Description>
 
+<rdf:Description rdf:about="https://www.eclipse.org/ice#ComponentList">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+	<rdfs:comment xml:lang="en">The description that should be given to the Identifiable entity.</rdfs:comment>
+	<rdfs:domain rdf:resource="https://www.eclipse.org/ice#Composite"/>
+	<rdfs:label xml:lang="en">description</rdfs:label>
+	<rdfs:range rdf:resource="rdf:Bag">
+</rdf:Description>
 
 </rdf:RDF>
