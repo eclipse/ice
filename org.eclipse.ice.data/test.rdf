@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+   	<!ENTITY co "http://purl.org/co#" > 	
+]>
+
+<rdf:RDF xmlns:ice="https://www.eclipse.org/ice#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:test="http://www.example.org/test#"
+	xmlns:co="http://purl.org/co#" xmlns:ns0="https://www.eclipse.org/ice#"
+	xmlns:ns1="http://purl.org/co#">
+
+	<rdf:Description
+		rdf:about="https://www.example.org/testObject">
+		<rdf:type
+			rdf:resource="https://www.eclipse.org/ice#Identifiable" />
+		<ns0:name>Kitten</ns0:name>
+		<ns0:desc>Untameable ball of cuteness</ns0:desc>
+		<ns0:identifier
+			rdf:datatype="http://www.w3.org/2001/XMLSchema#long">42</ns0:identifier>
+		<ns0:context>Enduring cuteness</ns0:context>
+	</rdf:Description>
+	<ns0:Composite
+		rdf:about="https://www.example.org/testComposite">
+		<ns0:name>Puppy</ns0:name>
+		<ns0:desc>Fire on four legs</ns0:desc>
+		<ns0:identifier
+			rdf:datatype="http://www.w3.org/2001/XMLSchema#long">11</ns0:identifier>
+		<ns0:context>Sloppy wet doggy kisses</ns0:context>
+		<ns0:componentListProperty>
+			<rdf:Description>
+				<ns1:element>
+					<ns0:Component
+						rdf:about="http://njh.me/test#PuppyNose">
+						<ns0:name>Wet Nose</ns0:name>
+						<ns0:desc>Cold wet doggy nose!</ns0:desc>
+						<ns0:identifier
+							rdf:datatype="http://www.w3.org/2001/XMLSchema#long">12</ns0:identifier>
+						<ns0:context>Sniff sniff sniff</ns0:context>
+					</ns0:Component>
+				</ns1:element>
+				<ns1:element>
+					<ns0:Component
+						rdf:about="http://njh.me/test#PuppyTail">
+						<ns0:name>Wagging
+							Tail</ns0:name>
+						<ns0:desc>Flying everywhere!</ns0:desc>
+						<ns0:identifier
+							rdf:datatype="http://www.w3.org/2001/XMLSchema#long">12</ns0:identifier>
+						<ns0:context>Swing swing swing</ns0:context>
+					</ns0:Component>
+				</ns1:element>
+				<ns1:element
+					rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8</ns1:element>
+			</rdf:Description>
+		</ns0:componentListProperty>
+	</ns0:Composite>
+	<ns1:Set rdf:about="http://njh.me/VegetableSoup">
+		<ns1:element>&quot;99&quot;</ns1:element>
+		<ns1:element>&quot;5&quot;</ns1:element>
+	</ns1:Set>
+
+
+	<ice:Identifiable
+		rdf:about="https://www.example.org/testObject">
+		<ice:name>Kitten</ice:name>
+		<ice:desc>Untameable ball of cuteness</ice:desc>
+		<ice:identifier
+			rdf:datatype="http://www.w3.org/2001/XMLSchema#long">42</ice:identifier>
+		<ice:context>Enduring cuteness</ice:context>
+	</ice:Identifiable>
+
+	<ice:Composite
+		rdf:about="https://www.example.org/testComposite">
+		<ice:name>Puppy</ice:name>
+		<ice:desc>Fire on four legs</ice:desc>
+		<ice:identifier
+			rdf:datatype="http://www.w3.org/2001/XMLSchema#long">11</ice:identifier>
+		<ice:context>Sloppy wet doggy kisses</ice:context>
+		<ice:componentListProperty>
+			<rdf:Description>
+				<co:element>
+					<ice:Component
+						rdf:about="http://njh.me/test#PuppyNose">
+						<ice:name>Wet Nose</ice:name>
+						<ice:desc>Cold wet doggy nose!</ice:desc>
+						<ice:identifier
+							rdf:datatype="http://www.w3.org/2001/XMLSchema#long">12</ice:identifier>
+						<ice:context>Sniff sniff sniff</ice:context>
+					</ice:Component>
+				</co:element>
+				<co:element
+					rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7</co:element>
+			</rdf:Description>
+		</ice:componentListProperty>
+	</ice:Composite>
+
+	<co:Set rdf:about="VegetableSoup">
+		<co:element>"99"</co:element>
+		<co:element>"5"</co:element>
+	</co:Set>
+
+	<ice:Component rdf:about="test#PuppyNose" />
+	<ice:Component rdf:about="test#PuppyTail" />
+
+</rdf:RDF>
+
