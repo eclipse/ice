@@ -1,0 +1,53 @@
+@prefix ns0: <https://www.eclipse.org/ice#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ns1: <http://purl.org/co#> .
+@prefix ex: <http://example.com/ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://www.example.org/testObject>
+  a <https://www.eclipse.org/ice#Identifiable> ;
+  ns0:name "Kitten" ;
+  ns0:desc "Untameable ball of cuteness" ;
+  ns0:identifier "42"^^xsd:long ;
+  ns0:context "Enduring cuteness" .
+
+<https://www.example.org/testComposite>
+  a ns0:Composite ;
+  ns0:name "Puppy" ;
+  ns0:desc "Fire on four legs" ;
+  ns0:identifier "11"^^xsd:long ;
+  ns0:context "Sloppy wet doggy kisses" ;
+  ns0:componentListProperty [ns1:element <http://njh.me/test#PuppyNose>, <http://njh.me/test#PuppyTail>, 8] .
+
+<http://njh.me/VegetableSoup>
+  a <http://purl.org/co#Set> ;
+  ns1:element "\"99\"", "\"5\"" .
+
+<http://njh.me/test#PuppyNose> 
+  a ns0:Component ;
+  ns0:name "Wet Nose" ;
+  ns0:desc "Cold wet doggy nose!" ;
+  ns0:identifier "12"^^xsd:long ;
+  ns0:context "Sniff sniff sniff" .
+  
+<http://njh.me/test#PuppyTail>
+  a ns0:Component ;
+  ns0:name "Wagging Tail" ;
+  ns0:desc "Flying everywhere!" ;
+  ns0:identifier "12"^^xsd:long ;
+  ns0:context "Swing swing swing" .
+  
+ex:Alice
+  a ex:Person ;
+  ex:ssn "987-65-432A" .
+ex:Bob
+  a ex:Person ;
+  ex:ssn "123-45-6789" ;
+  ex:ssn "124-35-6789" .
+ex:Calvin
+  a ex:Person ;
+  ex:birthDate "1971-07-07"^^xsd:date ;
+  ex:worksFor ex:UntypedCompany .

@@ -1,0 +1,119 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix co: <http://purl.org/co> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ex: <http://example.com/ns#> .
+
+<https://www.eclipse.org/ice#Identifiable>
+  a owl:Class ;
+  rdfs:comment """This class describes objects that
+			are identifiable to ICE."""@en ;
+  rdfs:label "Identifiable"@en ;
+  rdfs:subClassOf owl:Thing .
+
+<https://www.eclipse.org/ice#context>
+  a owl:ObjectProperty ;
+  rdfs:comment """The context can be thought of as
+			an additional clue that can be provided with the object to allow
+			clients to interpret its contents in a slightly different way."""@en ;
+  rdfs:domain <https://www.eclipse.org/ice#Identifiable> ;
+  rdfs:label "context"@en ;
+  rdfs:range owl:AnnotationProperty .
+
+<https://www.eclipse.org/ice#identifier>
+  a owl:ObjectProperty ;
+  rdfs:comment """A unique identifier for the
+			object."""@en ;
+  rdfs:domain <https://www.eclipse.org/ice#Identifiable> ;
+  rdfs:label "id"@en ;
+  rdfs:range xsd:long .
+
+<https://www.eclipse.org/ice#name>
+  a owl:ObjectProperty ;
+  rdfs:comment """The name that should be given to
+			the Identifiable entity."""@en ;
+  rdfs:domain <https://www.eclipse.org/ice#Identifiable> ;
+  rdfs:label "name"@en ;
+  rdfs:range xsd:string .
+
+<https://www.eclipse.org/ice#desc>
+  a owl:ObjectProperty ;
+  rdfs:comment """The description that should be
+			given to the Identifiable entity."""@en ;
+  rdfs:domain <https://www.eclipse.org/ice#Identifiable> ;
+  rdfs:label "description"@en ;
+  rdfs:range xsd:string .
+
+<https://www.eclipse.org/ice#Component>
+  a owl:Class ;
+  rdfs:comment """Components are special types of
+			Identifiables that manage or share data, and which act as nodes in
+			the Form (a tree)."""@en ;
+  rdfs:label "Component"@en ;
+  rdfs:subClassOf <https://www.eclipse.org/ice#Identifiable> .
+
+<https://www.eclipse.org/ice#Composite>
+  a owl:Class ;
+  rdfs:comment """Composites hold collections of
+			Components to store data and are the root and parent nodes in the
+			Form data tree."""@en ;
+  rdfs:label "Composite"@en ;
+  rdfs:subClassOf <https://www.eclipse.org/ice#Component> .
+
+<https://www.eclipse.org/ice#ComponentList>
+  a owl:Class ;
+  rdfs:comment """The list of components associated
+			with the composite."""@en ;
+  rdfs:label "ComponentList"@en ;
+  rdfs:subClassOf <http://purl.org/co#Set>.
+  
+<https://www.eclipse.org/ice#ComponentListShape>
+  a sh:NodeShape ;
+  sh:targetClass <https://www.eclipse.org/ice#ComponentList> ; 
+  sh:property [
+	sh:path co:element ;
+	sh:class <https://www.eclipse.org/ice#Component> ;
+	sh:nodeKind sh:IRI ;
+  ] ;
+  sh:closed true ;
+  sh:ignoredProperties (rdf:type) .
+
+<https://www.eclipse.org/ice#componentListProperty>
+  a owl:ObjectProperty ;
+  rdfs:comment """The link between the Composite and
+			ComponentList."""@en ;
+  rdfs:domain <https://www.eclipse.org/ice#Composite> ;
+  rdfs:label "componentListProperty"@en ;
+  rdfs:range <https://www.eclipse.org/ice#ComponentList> .
+
+[]
+  a owl:Ontology ;
+  owl:versionInfo "1.0"^^xsd:string ;
+  dc11:date "January 19, 2019"^^xsd:string ;
+  dc11:contributor "Jay Jay Billings"^^xsd:string ;
+  dc11:format "application/rdf+xml"^^xsd:string ;
+  dc11:language "en" ;
+  dc11:title """The Eclipse Integrated Environment Data
+			Ontology"""@en ;
+  dc11:creator <https://www.eclipse.org/ice> ;
+  owl:imports <http://www.w3.org/2004/02/skos/core>, <http://purl.org/co> .
+  
+ex:PersonShape
+  a sh:NodeShape ;
+  sh:targetClass ex:Person ;    # Applies to all persons
+  sh:property [                 # _:b1
+    sh:path ex:ssn ;           # constrains the values of ex:ssn
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:pattern "^\\d{3}-\\d{2}-\\d{4}$" ;
+  ] ;
+  sh:property [                 # _:b2
+    sh:path ex:worksFor ;
+    sh:class ex:Company ;
+    sh:nodeKind sh:IRI ;
+  ] ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) .
