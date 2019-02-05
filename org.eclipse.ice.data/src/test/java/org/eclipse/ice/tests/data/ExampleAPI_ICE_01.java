@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.eclipse.ice.tests.data.owl;
+package org.eclipse.ice.tests.data;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;

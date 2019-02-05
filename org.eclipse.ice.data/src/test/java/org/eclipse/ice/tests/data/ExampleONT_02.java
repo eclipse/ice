@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.eclipse.ice.tests.data.owl;
+package org.eclipse.ice.tests.data;
 
 import java.util.Iterator;
 
