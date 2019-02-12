@@ -38,7 +38,7 @@ public class ExampleAPI_ICE_01 {
 
     public static void main(String[] args) {
         FileManager.get().addLocatorClassLoader(ExampleAPI_ICE_01.class.getClassLoader());
-        Model model = FileManager.get().loadModel("/home/bkj/ICEIII/ice/org.eclipse.ice.data.owl/test.rdf", null, "RDF/XML");
+        Model model = FileManager.get().loadModel("/home/bkj/ICEIII/ice/org.eclipse.ice.data/src/main/resources/data/test.rdf", null, "RDF/XML");
 
 //        String queryString = "PREFIX example: <http://example.org/>" +
 //            "PREFIX foaf: <h 	ttp://xmlns.com/foaf/0.1/>" +
