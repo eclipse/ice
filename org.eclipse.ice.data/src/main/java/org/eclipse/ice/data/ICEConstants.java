@@ -16,11 +16,11 @@ package org.eclipse.ice.data;
  * @author Jay Jay Billings
  *
  */
-public class ICEDataConstants {
+public class ICEConstants {
 
 	/**
 	 * Root Namespace of the ICE ontology
 	 */
-	private static String namespace = "https://www.eclipse.org/ice";
+	public static String NAMESPACE = "https://www.eclipse.org/ice";
 	
 }

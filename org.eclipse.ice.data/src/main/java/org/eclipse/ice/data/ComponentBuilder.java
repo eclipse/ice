@@ -11,21 +11,12 @@
  *****************************************************************************/
 package org.eclipse.ice.data;
 
-import java.util.Iterator;
-
-import org.apache.http.client.cache.ResourceFactory;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.ObjectProperty;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.NodeIterator;
-import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.StmtIterator;
-import org.apache.jena.util.iterator.ExtendedIterator;
-import org.apache.jena.vocabulary.VCARD;
-import org.apache.jena.vocabulary.XSD;
 
 /**
  * This is a builder class for constructing Components
@@ -41,14 +32,12 @@ public class ComponentBuilder {
 	private OntModel ontModel;
 
 	/**
-	 * The base model namespace
+	 * Constructor
+	 * 
+	 * @param ICEOntModel The ICE ontology model.
 	 */
-	private static String namespace;
-
 	public ComponentBuilder(final OntModel ICEOntModel) {
 		ontModel = ICEOntModel;
-		namespace = ontModel.getNsPrefixURI("ice");
-
 	}
 
 	/**
@@ -57,12 +46,13 @@ public class ComponentBuilder {
 	 * @return the fully initialized component based on the build parameters
 	 */
 	public Resource build(Model dataModel) {
-		OntClass compClass = ontModel.getOntClass(namespace + "Component");
+		OntClass compClass = ontModel.getOntClass(ICEConstants.NAMESPACE + "Component");
 		Individual compIndividual = ontModel.createIndividual(compClass);
 
-		ObjectProperty prop = ontModel.getObjectProperty(namespace + "name");
+		ObjectProperty prop = ontModel.getObjectProperty(ICEConstants.NAMESPACE + "name");
 
-		dataModel.createResource("https://www.galactic-empire.gov/data#Comp1", compClass).addProperty(prop, "Tk-421");
+		dataModel.createResource("https://www.galactic-empire.gov/data#Comp1", compClass)
+				.addProperty(prop, "Tk-421");
 
 		return compIndividual;
 	}
