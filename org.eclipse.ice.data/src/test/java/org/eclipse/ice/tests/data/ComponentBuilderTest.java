@@ -41,7 +41,7 @@ public class ComponentBuilderTest {
 	protected static Model dataModel;
 
 	// Ontology namespace
-	protected String namespace = "https://www.eclipse.org/ice#";
+	protected String namespace = "https://www.galactic-empire.gov/data#";
 
 	/**
 	 * @throws java.lang.Exception
@@ -65,8 +65,9 @@ public class ComponentBuilderTest {
 	 */
 	@Test
 	public void testBuild() {
-		Resource comp = null;
-		comp = builder.build(dataModel);
+		// Create the IRI
+		String iri = namespace + "Comp1";
+		Resource comp = builder.build(dataModel,iri);
 		// Make sure the component exists
 		assertNotNull(comp);
 		// Check the namespace

@@ -11,7 +11,6 @@
  *****************************************************************************/
 package org.eclipse.ice.data;
 
-import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.ObjectProperty;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
@@ -19,7 +18,17 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 
 /**
- * This is a builder class for constructing Components
+ * This is a builder class for constructing Components. It uses a standard
+ * builder API to dynamically build and construct a new Component based on the
+ * way the functions are called.
+ * 
+ * All components should be constructed by using the with* star operations to
+ * configure data members before the build function (build()) is called.
+ * 
+ * The builder will configure default values for the field variables of the
+ * components that it constructs. These are reasonable defaults such as
+ * "NO_NAME" and "NO_DESCRIPTION" for classes that have neither a name nor a
+ * description, for example.
  * 
  * @author Jay Jay Billings
  *
@@ -32,29 +41,133 @@ public class ComponentBuilder {
 	private OntModel ontModel;
 
 	/**
+	 * The name of the component that should be built.
+	 */
+	private String name = "NO_NAME";
+
+	/**
+	 * The identifier of the component that should be built.
+	 */
+	private long id = 0;
+
+	/**
+	 * The unique context in which the Component exists
+	 */
+	private String context = "DEFAULT";
+
+	/**
+	 * A description of the component.
+	 */
+	private String description = "NO_DESCRIPTION";
+
+	/**
+	 * And OWL class, managed by the RDF framework, for the root component class in
+	 * the ontology.
+	 */
+	private OntClass compClass;
+
+	/**
+	 * An OWL property for the name
+	 */
+	private ObjectProperty nameProp;
+
+	/**
+	 * An OWL property for the description
+	 */
+	private ObjectProperty descProp;
+
+	/**
+	 * An OWL property for the context
+	 */
+	private ObjectProperty contextProp;
+
+	/**
+	 * An OWL property for the id
+	 */
+	private ObjectProperty idProp;
+
+	/**
 	 * Constructor
 	 * 
 	 * @param ICEOntModel The ICE ontology model.
 	 */
 	public ComponentBuilder(final OntModel ICEOntModel) {
 		ontModel = ICEOntModel;
+		// Grab all the properties for fast references
+		compClass = ontModel.getOntClass(ICEConstants.COMPONENT);
+		nameProp = ontModel.getObjectProperty(ICEConstants.NAME);
+		descProp = ontModel.getObjectProperty(ICEConstants.DESCRIPTION);
+		contextProp = ontModel.getObjectProperty(ICEConstants.CONTEXT);
+		idProp = ontModel.getObjectProperty(ICEConstants.ID);
 	}
 
 	/**
-	 * This operation executes the construction process for the Component.
+	 * This operation sets the name of the component. It should be called before the
+	 * build operation.
 	 * 
+	 * @param compName the name of the component
+	 * @return the updated component builder
+	 */
+	public ComponentBuilder withName(final String compName) {
+		name = compName;
+		return this;
+	}
+
+	/**
+	 * This operation sets the id of the component. It should be called before the
+	 * build operation.
+	 * 
+	 * @param compId the component's id
+	 * @return the updated component builder
+	 */
+	public ComponentBuilder withId(final long compId) {
+		id = compId;
+		return this;
+	}
+
+	/**
+	 * This operation sets the description of the component. It should be called
+	 * before the build operation.
+	 * 
+	 * @param compDesc the description of the component
+	 * @return the updated component builder
+	 */
+	public ComponentBuilder withDescription(final String compDesc) {
+		description = compDesc;
+		return this;
+	}
+
+	/**
+	 * This operation sets the context tag of the component. It should be called
+	 * before the build operation. The context is a special property that identifies
+	 * the environment in which the component exists and can be used for
+	 * specialization purposes when environments change.
+	 * 
+	 * @param compDesc the context of the component
+	 * @return the updated component builder
+	 */
+	public ComponentBuilder withContext(final String compContext) {
+		context = compContext;
+		return this;
+	}
+
+	/**
+	 * This operation executes the construction process for the Component and builds
+	 * the ontological entity.
+	 * 
+	 * @param the data model to which the newly created resource should be attached.
+	 * @param the IRI of the new component
 	 * @return the fully initialized component based on the build parameters
 	 */
-	public Resource build(Model dataModel) {
-		OntClass compClass = ontModel.getOntClass(ICEConstants.NAMESPACE + "Component");
-		Individual compIndividual = ontModel.createIndividual(compClass);
+	public Resource build(Model dataModel, final String iri) {
 
-		ObjectProperty prop = ontModel.getObjectProperty(ICEConstants.NAMESPACE + "name");
+		Resource resource = dataModel.createResource(iri, compClass)
+				.addProperty(nameProp, name)
+				.addProperty(idProp, String.valueOf(id))
+				.addProperty(contextProp, context)
+				.addProperty(descProp, description);
 
-		dataModel.createResource("https://www.galactic-empire.gov/data#Comp1", compClass)
-				.addProperty(prop, "Tk-421");
-
-		return compIndividual;
+		return resource;
 	}
 
 }
