@@ -22,7 +22,7 @@ import org.apache.jena.rdf.model.Resource;
  * builder API to dynamically build and construct a new Component based on the
  * way the functions are called.
  * 
- * All components should be constructed by using the with* star operations to
+ * All components should be constructed by using the with* operations to
  * configure data members before the build function (build()) is called.
  * 
  * The builder will configure default values for the field variables of the
@@ -106,7 +106,7 @@ public class ComponentBuilder {
 		descProp = ontModel.getObjectProperty(ICEConstants.DESCRIPTION);
 		contextProp = ontModel.getObjectProperty(ICEConstants.CONTEXT);
 		idProp = ontModel.getObjectProperty(ICEConstants.ID);
-		
+
 		// Set the default values.
 		clear();
 	}
@@ -190,7 +190,7 @@ public class ComponentBuilder {
 
 		// Clear the state
 		clear();
-		
+
 		return resource;
 	}
 
