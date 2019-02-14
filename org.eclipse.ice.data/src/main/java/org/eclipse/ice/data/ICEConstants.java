@@ -11,6 +11,10 @@
  *****************************************************************************/
 package org.eclipse.ice.data;
 
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+
 /**
  * This class stores ICE Data Model constants used throughout the code base.
  * 
@@ -18,6 +22,11 @@ package org.eclipse.ice.data;
  *
  */
 public class ICEConstants {
+
+	/**
+	 * A private model used for creating property and resource references.
+	 */
+	private static final Model refModel = ModelFactory.createDefaultModel();
 
 	/**
 	 * Root Namespace of the ICE ontology
@@ -35,9 +44,19 @@ public class ICEConstants {
 	public static String NAME = NAMESPACE + "name";
 
 	/**
+	 * A property reference for the ICE Identifiable name property
+	 */
+	public static final Property NAME_PROPERTY = refModel.createProperty(NAME);
+
+	/**
 	 * Fully qualified type name of ICE Identifiable descriptions
 	 */
 	public static String DESCRIPTION = NAMESPACE + "desc";
+
+	/**
+	 * A property reference for the ICE Identifiable description property
+	 */
+	public static final Property DESC_PROPERTY = refModel.createProperty(DESCRIPTION);
 
 	/**
 	 * Fully qualified type name of ICE Identifiable context
@@ -45,8 +64,18 @@ public class ICEConstants {
 	public static String CONTEXT = NAMESPACE + "context";
 
 	/**
+	 * A property reference for the ICE Identifiable context property
+	 */
+	public static final Property CONTEXT_PROPERTY = refModel.createProperty(CONTEXT);
+	
+	/**
 	 * Fully qualified type name of ICE Identifiable identifier numbers
 	 */
 	public static String ID = NAMESPACE + "identifier";
 
+	/**
+	 * A property reference for the ICE Identifiable identifier numbers
+	 */
+	public static final Property ID_PROPERTY = refModel.createProperty(ID);
+	
 }

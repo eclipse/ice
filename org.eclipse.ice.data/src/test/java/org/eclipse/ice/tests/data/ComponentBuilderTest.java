@@ -18,9 +18,9 @@ import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.util.FileManager;
 import org.eclipse.ice.data.ComponentBuilder;
+import org.eclipse.ice.data.ICEConstants;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -61,25 +61,135 @@ public class ComponentBuilderTest {
 	}
 
 	/**
+	 * This operation insures that the build() operation works in its default
+	 * configuration.
+	 */
+	@Test
+	public void testDefaultBuild() {
+		String name = "NO_NAME", context = "DEFAULT", desc = "NO_DESCRIPTION";
+		long id = 0;
+		// Create the IRI
+		String iri = namespace + "Comp1";
+
+		// Build the component
+		Resource comp = builder.build(dataModel, iri);
+		// Make sure the component exists
+		assertNotNull(comp);
+		// Check the deets, namespace first
+		assertEquals(namespace, comp.getNameSpace());
+		// name
+		assertEquals(name, comp.getProperty(ICEConstants.NAME_PROPERTY).getObject().toString());
+		// context
+		assertEquals(context,
+				comp.getProperty(ICEConstants.CONTEXT_PROPERTY).getObject().toString());
+		// description
+		assertEquals(desc, comp.getProperty(ICEConstants.DESC_PROPERTY).getObject().toString());
+		// id
+		assertEquals(id,
+				comp.getProperty(ICEConstants.ID_PROPERTY).getObject().asLiteral().getLong());
+
+		// Have a look at it
+		dataModel.write(System.out, "TURTLE");
+
+		// Clear the data model before using it again to avoid test errors
+		dataModel.removeAll();
+		
+		return;
+	}
+
+	/**
 	 * This operation insures that the build() operation works.
 	 */
 	@Test
 	public void testBuild() {
+		String name = "Tk-421", context = "bay-gaurd",
+				desc = "Presently guarding a YT-1300 freighter suspected of being the same one that "
+						+ "blasted out of the Mos Eisley spaceport.";
+		long id = 421;
 		// Create the IRI
-		String iri = namespace + "Comp1";
-		Resource comp = builder.build(dataModel,iri);
+		String iri = namespace + "Trooper421";
+
+		// Build the component
+		Resource comp = builder.withName(name).withContext(context).withDescription(desc).withId(id)
+				.build(dataModel, iri);
 		// Make sure the component exists
 		assertNotNull(comp);
-		// Check the namespace
+		// Check the deets, namespace first
 		assertEquals(namespace, comp.getNameSpace());
+		// name
+		assertEquals(name, comp.getProperty(ICEConstants.NAME_PROPERTY).getObject().toString());
+		// context
+		assertEquals(context,
+				comp.getProperty(ICEConstants.CONTEXT_PROPERTY).getObject().toString());
+		// description
+		assertEquals(desc, comp.getProperty(ICEConstants.DESC_PROPERTY).getObject().toString());
+		// id
+		assertEquals(id,
+				comp.getProperty(ICEConstants.ID_PROPERTY).getObject().asLiteral().getLong());
 
-		// I don't know if namespaces make sense as
+		// Have a look at it
+		dataModel.write(System.out, "TURTLE");
 
-		// Print the properties to examine them
-		System.out.println("-----");
-		for (StmtIterator foo = comp.listProperties(); foo.hasNext();) {
-			System.out.println(foo.next().toString());
-		}
+		// Clear the data model before using it again to avoid test errors
+		dataModel.removeAll();
+		
+		return;
+	}
+	
+	/**
+	 * This operation insures that the build() operation works.
+	 */
+	@Test
+	public void testClearBuild() {
+		String name = "Tk-422", context = "bay-gaurd",
+				desc = "Presently guarding a YT-1300 freighter suspected of being the same one that "
+						+ "blasted out of the Mos Eisley spaceport.";
+		String defaultName = "NO_NAME", defaultContext = "DEFAULT", defaultDesc = "NO_DESCRIPTION";
+		long defaultId = 0, id = 422;
+		// Create the IRI
+		String iri = namespace + "Trooper422";
+
+		// Build the component
+		Resource comp = builder.withName(name).withContext(context).withDescription(desc).withId(id)
+				.build(dataModel, iri);
+		// Make sure the component exists
+		assertNotNull(comp);
+		// Check the deets, namespace first
+		assertEquals(namespace, comp.getNameSpace());
+		// name
+		assertEquals(name, comp.getProperty(ICEConstants.NAME_PROPERTY).getObject().toString());
+		// context
+		assertEquals(context,
+				comp.getProperty(ICEConstants.CONTEXT_PROPERTY).getObject().toString());
+		// description
+		assertEquals(desc, comp.getProperty(ICEConstants.DESC_PROPERTY).getObject().toString());
+		// id
+		assertEquals(id,
+				comp.getProperty(ICEConstants.ID_PROPERTY).getObject().asLiteral().getLong());
+
+		// Build the component
+		iri = namespace + "Comp2";
+		Resource resetComp = builder.build(dataModel, iri);
+		// Make sure the component exists
+		assertNotNull(resetComp);
+		// Check the deets, namespace first
+		assertEquals(namespace, resetComp.getNameSpace());
+		// name
+		assertEquals(defaultName, resetComp.getProperty(ICEConstants.NAME_PROPERTY).getObject().toString());
+		// context
+		assertEquals(defaultContext,
+				resetComp.getProperty(ICEConstants.CONTEXT_PROPERTY).getObject().toString());
+		// description
+		assertEquals(defaultDesc, resetComp.getProperty(ICEConstants.DESC_PROPERTY).getObject().toString());
+		// id
+		assertEquals(defaultId,
+				resetComp.getProperty(ICEConstants.ID_PROPERTY).getObject().asLiteral().getLong());
+		
+		// Have a look at it
+		dataModel.write(System.out, "TURTLE");
+		
+		// Clear the data model before using it again to avoid test errors
+		dataModel.removeAll();
 
 		return;
 	}
