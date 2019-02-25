@@ -13,7 +13,7 @@ package org.eclipse.ice.tests.data;
 
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.ResultSetFormatter;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdfconnection.RDFConnectionFuseki;
 import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
@@ -30,19 +30,38 @@ public class FusekiTest {
 
 	public static void main(String args[]) {
 
-		// Create a connection builder for connecting to the Fuseki triple store.
-		String fusekiConnURI = "http://localhost:3030/dataset.html#query";
-		RDFConnectionRemoteBuilder connBuilder = RDFConnectionFuseki.create()
-				.destination(fusekiConnURI);
-		
-		Query query = QueryFactory.create("SELECT * { BIND('Hello'as ?text) }");
+		// Create connection builders for connecting to the Fuseki triple store
+		String fusekiURI = "http://localhost:3030/bats-dataset";
+		String fusekiUploadURI = fusekiURI + "/data";
+		String fusekiGetURI = fusekiURI + "/get";
+		RDFConnectionRemoteBuilder uploadConnBuilder = RDFConnectionFuseki.create()
+				.destination(fusekiUploadURI);
+		RDFConnectionRemoteBuilder getConnBuilder = RDFConnectionFuseki.create()
+				.destination(fusekiGetURI);
 
-		// In this variation, a connection is built each time.
-		try (RDFConnectionFuseki conn = (RDFConnectionFuseki) connBuilder.build()) {
+		// Open a connection to upload the ICE ontology.
+		try (RDFConnectionFuseki uploadConn = (RDFConnectionFuseki) uploadConnBuilder.build()) {
+			// Grab the file with the Jena FileManager.
 			Model model = FileManager.get().loadModel("data/ice-owl.ttl", null, "TURTLE");
-			conn.load(model);
-			
-//			conn.queryResultSet(query, ResultSetFormatter::out);
+			// Note that transactions must proceed with begin(), some operation(), and
+			// commit().
+			uploadConn.begin(ReadWrite.WRITE);
+			uploadConn.load(model);
+			uploadConn.commit();
+		} catch (Exception e) {
+			System.err.println("Unable to upload ICE ontology.");
+			e.printStackTrace();
+		}
+
+		// Pull down the full model and write it to System out. This should, in
+		// principle, only pull back the ICE model it uploaded. However, it is pulling
+		// back the entire 836 triple default RDF graph, because I am calling
+		// fetch(null).
+		try (RDFConnectionFuseki getConn = (RDFConnectionFuseki) getConnBuilder.build()) {
+			getConn.begin(ReadWrite.READ);
+			Model model = getConn.fetch(null);
+			getConn.commit();
+			model.write(System.out);
 		}
 
 	}
