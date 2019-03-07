@@ -22,6 +22,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdfconnection.RDFConnectionFuseki;
 import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
@@ -66,9 +67,9 @@ public class FusekiTest {
 					"https://www.eclipse.org/ice", "TURTLE");
 			// Note that transactions must proceed with begin(), some operation(), and
 			// commit().
-//			uploadConn.begin(ReadWrite.WRITE);
-//			uploadConn.load("ice-owl", model);
-//			uploadConn.commit();
+			uploadConn.begin(ReadWrite.WRITE);
+			uploadConn.load("ice-owl", model);
+			uploadConn.commit();
 		} catch (Exception e) {
 			System.err.println("Unable to upload ICE ontology.");
 			e.printStackTrace();
@@ -78,15 +79,15 @@ public class FusekiTest {
 		// principle, only pull back the ICE model it uploaded. However, it is pulling
 		// back the entire 836 triple default RDF graph, because I am calling
 		// fetch(null).
-//		try (RDFConnectionFuseki getConn = (RDFConnectionFuseki) getConnBuilder.build()) {
-//			getConn.begin(ReadWrite.READ);
-//			Model model = getConn.fetch(null);
-//			getConn.commit();
-//			model.write(System.out);
-//		} catch (Exception e) {
-//			System.err.println("Unable to download ICE ontology.");
-//			e.printStackTrace();
-//		}
+		try (RDFConnectionFuseki getConn = (RDFConnectionFuseki) getConnBuilder.build()) {
+			getConn.begin(ReadWrite.READ);
+			Model model = getConn.fetch(null);
+			getConn.commit();
+			model.write(System.out);
+		} catch (Exception e) {
+			System.err.println("Unable to download ICE ontology.");
+			e.printStackTrace();
+		}
 
 	}
 
