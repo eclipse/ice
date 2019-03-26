@@ -49,7 +49,7 @@ public class ComponentBuilderTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		// Load the ontology
-		Model baseModel = FileManager.get().loadModel("data/ice-owl.ttl", null, "TURTLE");
+		Model baseModel = FileManager.get().loadModel("data/org.eclipse.ice.data.owl.ttl", null, "TURTLE");
 		// No need for a complicated inferencer
 		ICEOntModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
 		// Setup the builder that is used for *all* the tests. Note that the ontology is

@@ -37,7 +37,7 @@ public class ICEModelFactory {
 	 * factory.
 	 */
 	public ICEModelFactory() {
-		Model baseModel = FileManager.get().loadModel("data/ice-owl.ttl", null, "TURTLE");
+		Model baseModel = FileManager.get().loadModel("data/org.eclipse.ice.data.owl.ttl", null, "TURTLE");
 		// No need for an inferencer... yet.
 		iceOntModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
 	}
