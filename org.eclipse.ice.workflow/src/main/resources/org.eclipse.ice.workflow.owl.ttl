@@ -5,8 +5,14 @@
 @prefix co: <http://purl.org/co> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix ex: <http://example.com/ns#> .
 @prefix ice: <https://www.eclipse.org/ice#> .
+
+Workflow:
+links to data
+> as resources - file, stream, URL, etc. Use dctype:Dataset
+task list
+
+
 
 <https://www.eclipse.org/ice#Identifiable>
   a owl:Class ;
