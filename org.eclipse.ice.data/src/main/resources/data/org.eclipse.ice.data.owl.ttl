@@ -5,16 +5,16 @@
 @prefix co: <http://purl.org/co> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix ice: <https://www.eclipse.org/ice#> .
+@prefix ice-data: <https://www.eclipse.org/ice/data#> .
 
-<https://www.eclipse.org/ice#Identifiable>
+<https://www.eclipse.org/ice/data#Identifiable>
   a owl:Class ;
   rdfs:comment """This class describes objects that
 			are identifiable to ICE."""@en ;
   rdfs:label "Identifiable"@en ;
   rdfs:subClassOf owl:Thing .
 
-<https://www.eclipse.org/ice#context>
+<https://www.eclipse.org/ice/data#context>
   a owl:ObjectProperty ;
   rdfs:comment """The context can be thought of as
 			an additional clue that can be provided with the object to allow
@@ -23,7 +23,7 @@
   rdfs:label "context"@en ;
   rdfs:range owl:AnnotationProperty .
 
-<https://www.eclipse.org/ice#identifier>
+<https://www.eclipse.org/ice/data#identifier>
   a owl:ObjectProperty ;
   rdfs:comment """A unique identifier for the
 			object."""@en ;
@@ -31,7 +31,7 @@
   rdfs:label "id"@en ;
   rdfs:range xsd:long .
 
-<https://www.eclipse.org/ice#name>
+<https://www.eclipse.org/ice/data#name>
   a owl:ObjectProperty ;
   rdfs:comment """The name that should be given to
 			the Identifiable entity."""@en ;
@@ -39,7 +39,7 @@
   rdfs:label "name"@en ;
   rdfs:range xsd:string .
 
-<https://www.eclipse.org/ice#desc>
+<https://www.eclipse.org/ice/data#desc>
   a owl:ObjectProperty ;
   rdfs:comment """The description that should be
 			given to the Identifiable entity."""@en ;
@@ -47,7 +47,7 @@
   rdfs:label "description"@en ;
   rdfs:range xsd:string .
 
-<https://www.eclipse.org/ice#Component>
+<https://www.eclipse.org/ice/data#Component>
   a owl:Class ;
   rdfs:comment """Components are special types of
 			Identifiables that manage or share data, and which act as nodes in
@@ -55,7 +55,7 @@
   rdfs:label "Component"@en ;
   rdfs:subClassOf <https://www.eclipse.org/ice#Identifiable> .
 
-<https://www.eclipse.org/ice#Composite>
+<https://www.eclipse.org/ice/data#Composite>
   a owl:Class ;
   rdfs:comment """Composites hold collections of
 			Components to store data and are the root and parent nodes in the
@@ -63,14 +63,14 @@
   rdfs:label "Composite"@en ;
   rdfs:subClassOf <https://www.eclipse.org/ice#Component> .
 
-<https://www.eclipse.org/ice#ComponentList>
+<https://www.eclipse.org/ice/data#ComponentList>
   a owl:Class ;
   rdfs:comment """The list of components associated
 			with the composite."""@en ;
   rdfs:label "ComponentList"@en ;
   rdfs:subClassOf <http://purl.org/co#Set>.
   
-<https://www.eclipse.org/ice#ComponentListShape>
+<https://www.eclipse.org/ice/data#ComponentListShape>
   a sh:NodeShape ;
   sh:targetClass <https://www.eclipse.org/ice#ComponentList> ; 
   sh:property [
@@ -81,7 +81,7 @@
   sh:closed true ;
   sh:ignoredProperties (rdf:type) .
 
-<https://www.eclipse.org/ice#componentListProperty>
+<https://www.eclipse.org/ice/data#componentListProperty>
   a owl:ObjectProperty ;
   rdfs:comment """The link between the Composite and
 			ComponentList."""@en ;

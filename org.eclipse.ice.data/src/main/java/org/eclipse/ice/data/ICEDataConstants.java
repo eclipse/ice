@@ -21,7 +21,7 @@ import org.apache.jena.rdf.model.Property;
  * @author Jay Jay Billings
  *
  */
-public class ICEConstants {
+public class ICEDataConstants {
 
 	/**
 	 * A private model used for creating property and resource references.
@@ -31,7 +31,7 @@ public class ICEConstants {
 	/**
 	 * Root Namespace of the ICE ontology
 	 */
-	public static String NAMESPACE = "https://www.eclipse.org/ice#";
+	public static String NAMESPACE = "https://www.eclipse.org/ice/data#";
 
 	/**
 	 * Fully qualified type name of ICE Components

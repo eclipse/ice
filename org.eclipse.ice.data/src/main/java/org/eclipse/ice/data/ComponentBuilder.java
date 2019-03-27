@@ -101,11 +101,11 @@ public class ComponentBuilder {
 	public ComponentBuilder(final OntModel ICEOntModel) {
 		ontModel = ICEOntModel;
 		// Grab all the properties for fast references
-		compClass = ontModel.getOntClass(ICEConstants.COMPONENT);
-		nameProp = ontModel.getObjectProperty(ICEConstants.NAME);
-		descProp = ontModel.getObjectProperty(ICEConstants.DESCRIPTION);
-		contextProp = ontModel.getObjectProperty(ICEConstants.CONTEXT);
-		idProp = ontModel.getObjectProperty(ICEConstants.ID);
+		compClass = ontModel.getOntClass(ICEDataConstants.COMPONENT);
+		nameProp = ontModel.getObjectProperty(ICEDataConstants.NAME);
+		descProp = ontModel.getObjectProperty(ICEDataConstants.DESCRIPTION);
+		contextProp = ontModel.getObjectProperty(ICEDataConstants.CONTEXT);
+		idProp = ontModel.getObjectProperty(ICEDataConstants.ID);
 
 		// Set the default values.
 		clear();

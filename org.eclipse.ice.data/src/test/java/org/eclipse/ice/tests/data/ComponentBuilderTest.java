@@ -20,7 +20,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.util.FileManager;
 import org.eclipse.ice.data.ComponentBuilder;
-import org.eclipse.ice.data.ICEConstants;
+import org.eclipse.ice.data.ICEDataConstants;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -78,15 +78,15 @@ public class ComponentBuilderTest {
 		// Check the deets, namespace first
 		assertEquals(namespace, comp.getNameSpace());
 		// name
-		assertEquals(name, comp.getProperty(ICEConstants.NAME_PROPERTY).getObject().toString());
+		assertEquals(name, comp.getProperty(ICEDataConstants.NAME_PROPERTY).getObject().toString());
 		// context
 		assertEquals(context,
-				comp.getProperty(ICEConstants.CONTEXT_PROPERTY).getObject().toString());
+				comp.getProperty(ICEDataConstants.CONTEXT_PROPERTY).getObject().toString());
 		// description
-		assertEquals(desc, comp.getProperty(ICEConstants.DESC_PROPERTY).getObject().toString());
+		assertEquals(desc, comp.getProperty(ICEDataConstants.DESC_PROPERTY).getObject().toString());
 		// id
 		assertEquals(id,
-				comp.getProperty(ICEConstants.ID_PROPERTY).getObject().asLiteral().getLong());
+				comp.getProperty(ICEDataConstants.ID_PROPERTY).getObject().asLiteral().getLong());
 
 		// Have a look at it
 		dataModel.write(System.out, "TURTLE");
@@ -117,15 +117,15 @@ public class ComponentBuilderTest {
 		// Check the deets, namespace first
 		assertEquals(namespace, comp.getNameSpace());
 		// name
-		assertEquals(name, comp.getProperty(ICEConstants.NAME_PROPERTY).getObject().toString());
+		assertEquals(name, comp.getProperty(ICEDataConstants.NAME_PROPERTY).getObject().toString());
 		// context
 		assertEquals(context,
-				comp.getProperty(ICEConstants.CONTEXT_PROPERTY).getObject().toString());
+				comp.getProperty(ICEDataConstants.CONTEXT_PROPERTY).getObject().toString());
 		// description
-		assertEquals(desc, comp.getProperty(ICEConstants.DESC_PROPERTY).getObject().toString());
+		assertEquals(desc, comp.getProperty(ICEDataConstants.DESC_PROPERTY).getObject().toString());
 		// id
 		assertEquals(id,
-				comp.getProperty(ICEConstants.ID_PROPERTY).getObject().asLiteral().getLong());
+				comp.getProperty(ICEDataConstants.ID_PROPERTY).getObject().asLiteral().getLong());
 
 		// Have a look at it
 		dataModel.write(System.out, "TURTLE");
@@ -157,15 +157,15 @@ public class ComponentBuilderTest {
 		// Check the deets, namespace first
 		assertEquals(namespace, comp.getNameSpace());
 		// name
-		assertEquals(name, comp.getProperty(ICEConstants.NAME_PROPERTY).getObject().toString());
+		assertEquals(name, comp.getProperty(ICEDataConstants.NAME_PROPERTY).getObject().toString());
 		// context
 		assertEquals(context,
-				comp.getProperty(ICEConstants.CONTEXT_PROPERTY).getObject().toString());
+				comp.getProperty(ICEDataConstants.CONTEXT_PROPERTY).getObject().toString());
 		// description
-		assertEquals(desc, comp.getProperty(ICEConstants.DESC_PROPERTY).getObject().toString());
+		assertEquals(desc, comp.getProperty(ICEDataConstants.DESC_PROPERTY).getObject().toString());
 		// id
 		assertEquals(id,
-				comp.getProperty(ICEConstants.ID_PROPERTY).getObject().asLiteral().getLong());
+				comp.getProperty(ICEDataConstants.ID_PROPERTY).getObject().asLiteral().getLong());
 
 		// Build the component
 		iri = namespace + "Comp2";
@@ -175,15 +175,15 @@ public class ComponentBuilderTest {
 		// Check the deets, namespace first
 		assertEquals(namespace, resetComp.getNameSpace());
 		// name
-		assertEquals(defaultName, resetComp.getProperty(ICEConstants.NAME_PROPERTY).getObject().toString());
+		assertEquals(defaultName, resetComp.getProperty(ICEDataConstants.NAME_PROPERTY).getObject().toString());
 		// context
 		assertEquals(defaultContext,
-				resetComp.getProperty(ICEConstants.CONTEXT_PROPERTY).getObject().toString());
+				resetComp.getProperty(ICEDataConstants.CONTEXT_PROPERTY).getObject().toString());
 		// description
-		assertEquals(defaultDesc, resetComp.getProperty(ICEConstants.DESC_PROPERTY).getObject().toString());
+		assertEquals(defaultDesc, resetComp.getProperty(ICEDataConstants.DESC_PROPERTY).getObject().toString());
 		// id
 		assertEquals(defaultId,
-				resetComp.getProperty(ICEConstants.ID_PROPERTY).getObject().asLiteral().getLong());
+				resetComp.getProperty(ICEDataConstants.ID_PROPERTY).getObject().asLiteral().getLong());
 		
 		// Have a look at it
 		dataModel.write(System.out, "TURTLE");
