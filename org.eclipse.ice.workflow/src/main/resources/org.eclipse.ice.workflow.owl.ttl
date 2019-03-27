@@ -5,12 +5,37 @@
 @prefix co: <http://purl.org/co> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix ice: <https://www.eclipse.org/ice#> .
+@prefix ice-data: <https://www.eclipse.org/ice/data#> .
+@prefix ice-wf: <https://www.eclipse.org/ice/workflows#> .
 
-Workflow:
+Workflow Description:
 links to data
 > as resources - file, stream, URL, etc. Use dctype:Dataset
 task list
+
+What forms can data sets take? 
+>Input data: sources, databases, etc.
+>Output data: scratch, provenance, results, etc.
+>Diagnostic data: logs
+
+What's in a task?
+>It's action (specified as a resource)
+>Task-specific Parameters (specified as a resource)
+>Where it runs
+>When it runs
+>Input data
+>Output data
+
+<https://www.eclipse.org/ice/workflows#WorkflowDescription>
+  a owl:Class ;
+  rdfs:comment """This class provides a description of the data and tasks that make up a workflow."""@en ;
+  rdfs:label "Workflow Description"@en ;
+  rdfs:subClassOf ice-data:Identifiable .
+  
+<https://www.eclipse.org/ice/workflows#TaskList>
+  a co:List ;
+  rdfs:comment """This is a list of tasks that should be executed in the workflow."""@en ;
+  rdfs:label "Task list"@en .
 
 
 
