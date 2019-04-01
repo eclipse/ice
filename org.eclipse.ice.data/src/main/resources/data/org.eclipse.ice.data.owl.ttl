@@ -27,7 +27,7 @@
   a owl:ObjectProperty ;
   rdfs:comment """A unique identifier for the
 			object."""@en ;
-  rdfs:domain <https://www.eclipse.org/ice#Identifiable> ;
+  rdfs:domain <https://www.eclipse.org/ice/data#Identifiable> ;
   rdfs:label "id"@en ;
   rdfs:range xsd:long .
 
@@ -35,7 +35,7 @@
   a owl:ObjectProperty ;
   rdfs:comment """The name that should be given to
 			the Identifiable entity."""@en ;
-  rdfs:domain <https://www.eclipse.org/ice#Identifiable> ;
+  rdfs:domain <https://www.eclipse.org/ice/data#Identifiable> ;
   rdfs:label "name"@en ;
   rdfs:range xsd:string .
 
@@ -43,7 +43,7 @@
   a owl:ObjectProperty ;
   rdfs:comment """The description that should be
 			given to the Identifiable entity."""@en ;
-  rdfs:domain <https://www.eclipse.org/ice#Identifiable> ;
+  rdfs:domain <https://www.eclipse.org/ice/data#Identifiable> ;
   rdfs:label "description"@en ;
   rdfs:range xsd:string .
 
@@ -53,7 +53,7 @@
 			Identifiables that manage or share data, and which act as nodes in
 			the Form (a tree)."""@en ;
   rdfs:label "Component"@en ;
-  rdfs:subClassOf <https://www.eclipse.org/ice#Identifiable> .
+  rdfs:subClassOf <https://www.eclipse.org/ice/data#Identifiable> .
 
 <https://www.eclipse.org/ice/data#Composite>
   a owl:Class ;
@@ -61,7 +61,7 @@
 			Components to store data and are the root and parent nodes in the
 			Form data tree."""@en ;
   rdfs:label "Composite"@en ;
-  rdfs:subClassOf <https://www.eclipse.org/ice#Component> .
+  rdfs:subClassOf <https://www.eclipse.org/ice/data#Component> .
 
 <https://www.eclipse.org/ice/data#ComponentList>
   a owl:Class ;
@@ -72,10 +72,10 @@
   
 <https://www.eclipse.org/ice/data#ComponentListShape>
   a sh:NodeShape ;
-  sh:targetClass <https://www.eclipse.org/ice#ComponentList> ; 
+  sh:targetClass <https://www.eclipse.org/ice/data#ComponentList> ; 
   sh:property [
 	sh:path co:element ;
-	sh:class <https://www.eclipse.org/ice#Component> ;
+	sh:class <https://www.eclipse.org/ice/data#Component> ;
 	sh:nodeKind sh:IRI ;
   ] ;
   sh:closed true ;
@@ -85,9 +85,9 @@
   a owl:ObjectProperty ;
   rdfs:comment """The link between the Composite and
 			ComponentList."""@en ;
-  rdfs:domain <https://www.eclipse.org/ice#Composite> ;
+  rdfs:domain <https://www.eclipse.org/ice/data#Composite> ;
   rdfs:label "componentListProperty"@en ;
-  rdfs:range <https://www.eclipse.org/ice#ComponentList> .
+  rdfs:range <https://www.eclipse.org/ice/data#ComponentList> .
 
 []
   a owl:Ontology ;
