@@ -1,72 +1,156 @@
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix dc11: <http://purl.org/dc/elements/1.1/> .
 @prefix co: <http://purl.org/co> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix ice-data: <https://www.eclipse.org/ice/data#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix ice-wf: <https://www.eclipse.org/ice/workflows#> .
+@prefix ice-data: <https://www.eclipse.org/ice/data#> .
+@base <http://www.w3.org/2002/07/owl#> .
 
-Workflow Description:
-links to data
-> as resources - file, stream, URL, etc. Use dctype:Dataset
-task list
-
-What forms can data sets take? 
->Input data: sources, databases, etc.
->Output data: scratch, provenance, results, etc.
->Diagnostic data: logs
-
-What's in a task?
->It's action (specified as a resource)
->Task-specific Parameters (specified as a resource)
->Where it runs
->When it runs
->Input data
->Output data
-
-# ----- Basic workflow description and associated classes.
-
-<https://www.eclipse.org/ice/workflows#WorkflowDescription>
-  a owl:Class ;
-  rdfs:comment """This class provides a description of the data and tasks that make up a workflow."""@en ;
-  rdfs:label "Workflow Description"@en ;
-  rdfs:subClassOf ice-data:Identifiable .
-  
-<https://www.eclipse.org/ice/workflows#TaskList>
-  a co:List ;
-  rdfs:comment """This is a list of tasks that should be executed in the workflow."""@en ;
-  rdfs:label "Task list"@en ;
-  rdfs:domain <https://www.eclipse.org/ice/workflows#WorkflowDescription> .
-
-# ----- Actions that can be executed as part of tasks
-
-<https://www.eclipse.org/ice/workflows#Action>
-  rdfs:comment """This is an action that can be executed in a task of the workflow."""@en ;
-  rdfs:label "Action"@en .
-
-<https://www.eclipse.org/ice/workflows#ActionTarget>
-  rdfs:comment """This tag describes the target (program, function, web service, etc.) that the action should execute."""@en ;
-  rdfs:label "Action Target"@en ;
-  rdfs:domain <https://www.eclipse.org/ice/workflows#Action> ;
-
-<https://www.eclipse.org/ice/workflows#ActionType>
-  rdfs:comment """This is a tag that describes the type of the action. This is generally specific to underlying workflow engines."""@en ;
-  rdfs:label "Action Type"@en ;
-  rdfs:domain <https://www.eclipse.org/ice/workflows#Action> ;
-  rdfs:range xsd:string .
-
-# ----- Ontology info
-
-[]
-  a owl:Ontology ;
-  owl:versionInfo "1.0"^^xsd:string ;
-  dc11:date "March 31, 2019"^^xsd:string ;
-  dc11:contributor "Jay Jay Billings"^^xsd:string ;
-  dc11:format "application/rdf+xml"^^xsd:string ;
-  dc11:language "en" ;
-  dc11:title """The Eclipse Integrated Environment Workflow
+[ rdf:type owl:Ontology ;
+   owl:imports <http://purl.org/co> ,
+               <http://www.w3.org/2004/02/skos/core> ;
+   dc11:contributor "Jay Jay Billings"^^xsd:string ;
+   dc11:creator <https://www.eclipse.org/ice> ;
+   dc11:date "March 31, 2019"^^xsd:string ;
+   dc11:format "application/rdf+xml"^^xsd:string ;
+   dc11:language "en" ;
+   dc11:title """The Eclipse Integrated Environment Workflow
 			Ontology"""@en ;
-  dc11:creator <https://www.eclipse.org/ice> ;
-  owl:imports <http://www.w3.org/2004/02/skos/core>, <http://purl.org/co> .
+   owl:versionInfo "1.0"^^xsd:string
+ ] .
+
+#################################################################
+#    Annotation properties
+#################################################################
+
+###  http://www.w3.org/ns/shacl#class
+sh:class rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/ns/shacl#closed
+sh:closed rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/ns/shacl#ignoredProperties
+sh:ignoredProperties rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/ns/shacl#nodeKind
+sh:nodeKind rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/ns/shacl#path
+sh:path rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/ns/shacl#property
+sh:property rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/ns/shacl#targetClass
+sh:targetClass rdf:type owl:AnnotationProperty .
+
+
+###  https://www.eclipse.org/ice/workflows#TaskList
+ice-wf:TaskList rdf:type owl:AnnotationProperty ;
+                rdfs:domain ice-wf:WorkflowDescription .
+
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  https://www.eclipse.org/ice/workflows#ActionTarget
+ice-wf:ActionTarget rdf:type owl:ObjectProperty ;
+                    rdfs:domain ice-wf:Action ;
+                    rdfs:comment "This tag describes the target (program, function, web service, etc.) that the action should execute."@en ;
+                    rdfs:label "Action Target"@en .
+
+
+###  https://www.eclipse.org/ice/workflows#ActionType
+ice-wf:ActionType rdf:type owl:ObjectProperty ;
+                  rdfs:domain ice-wf:Action .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  https://www.eclipse.org/ice/workflows#ActionType
+ice-wf:ActionType rdf:type owl:DatatypeProperty ;
+                  rdfs:range xsd:string .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://purl.org/co#List
+<http://purl.org/co#List> rdf:type owl:Class .
+
+
+###  http://www.w3.org/ns/shacl#NodeShape
+sh:NodeShape rdf:type owl:Class .
+
+
+###  https://www.eclipse.org/ice/data#Identifiable
+ice-data:Identifiable rdf:type owl:Class .
+
+
+###  https://www.eclipse.org/ice/workflows#Action
+ice-wf:Action rdf:type owl:Class ;
+              rdfs:comment "This is an action that can be executed in a task of the workflow."@en ;
+              rdfs:label "Action"@en .
+
+
+###  https://www.eclipse.org/ice/workflows#Task
+ice-wf:Task rdf:type owl:Class ;
+            rdfs:comment "This class represents actions that are executed as part of a workflow." ;
+            rdfs:label "Task" .
+
+
+###  https://www.eclipse.org/ice/workflows#TaskList
+ice-wf:TaskList rdf:type owl:Class ;
+                rdfs:subClassOf <http://purl.org/co#List> .
+
+
+###  https://www.eclipse.org/ice/workflows#WorkflowDescription
+ice-wf:WorkflowDescription rdf:type owl:Class ;
+                           rdfs:subClassOf ice-data:Identifiable ;
+                           rdfs:comment "This class provides a description of the data and tasks that make up a workflow."@en ;
+                           rdfs:label "Workflow Description"@en .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  https://www.eclipse.org/ice/workflows#TaskListShape
+ice-wf:TaskListShape rdf:type owl:NamedIndividual ,
+                              sh:NodeShape ;
+                     sh:closed "true"^^xsd:boolean ;
+                     sh:ignoredProperties [ ] ;
+sh:property [ sh:class ice-wf:Task ;
+              sh:nodeKind sh:IRI ;
+              sh:path co:item
+            ] ;
+sh:targetClass ice-wf:TaskList .
+
+
+#################################################################
+#    Annotations
+#################################################################
+
+ice-wf:ActionType rdfs:comment "This is a tag that describes the type of the action. This is generally specific to underlying workflow engines."@en ;
+                  rdfs:label "Action Type"@en .
+
+
+ice-wf:TaskList rdfs:label "TaskList"@en ;
+                rdfs:comment "This is a list of tasks that should be executed in the workflow."@en .
+
+
+###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi
