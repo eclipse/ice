@@ -1,0 +1,21 @@
+@prefix : <#> .
+@prefix ice-wf: <https://www.eclipse.org/ice/workflows#> .
+@prefix ice-data: <https://www.eclipse.org/ice/data#> .
+@prefix co: <http://purl.org/co> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+# How do I set an action target?
+
+# Create the action. Just declare an instance not based on a pre-defined Action.
+:testAction
+	rdf:Type ice-wf:Action;
+	.
+
+# Create Task Properties
+
+# Fill the Task Property List
+
+# Wire up the task
+:testTask
+	rdf:type ice-wf:Task;
+	rdf:label "Test Task".

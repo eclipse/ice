@@ -1,3 +1,4 @@
+@prefix : <#> .
 @prefix co: <http://purl.org/co> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -76,6 +77,15 @@ ice-wf:ActionType rdf:type owl:ObjectProperty ;
                   rdfs:domain ice-wf:Action .
 
 
+###  https://www.eclipse.org/ice/workflows#TaskPropertySet
+ice-wf:TaskPropertySet rdf:type owl:ObjectProperty ;
+                        rdfs:subPropertyOf owl:topObjectProperty ;
+                        rdfs:domain ice-wf:Task ;
+                        rdfs:range <http://purl.org/co#Set> ;
+                        rdfs:comment "This set contains all the properties needed to execute the task to which is is assigned. The content of the set may be of any type, but the set must be a Collection:Set." ;
+                        rdfs:label "Task Property Set" .
+
+
 #################################################################
 #    Data properties
 #################################################################
@@ -91,6 +101,10 @@ ice-wf:ActionType rdf:type owl:DatatypeProperty ;
 
 ###  http://purl.org/co#List
 <http://purl.org/co#List> rdf:type owl:Class .
+
+
+###  http://purl.org/co#Set
+<http://purl.org/co#Set> rdf:type owl:Class .
 
 
 ###  http://www.w3.org/ns/shacl#NodeShape
