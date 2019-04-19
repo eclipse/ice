@@ -6,10 +6,13 @@
 
 # Create a basic action target with no actual implementation details.
 :testActionTarget rdf:type ice-wf:ActionTarget ;
-	rdf:label "Test Action Target".
+	rdf:label "Test Action Target" .
+
+:testActionType rdf:type ice-wf:ActionType ;
+	rdf:label "Test Action Type" .
 
 # Create the action.
 :testAction
 	rdf:type ice-wf:Action ;
-	ice-wf:ActionType "Job Launch" ;
+	ice-wf:ActionType :testActionType ;
 	ice-wf:ActionTarget :testActionTarget.
