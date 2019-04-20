@@ -121,13 +121,6 @@ ice-wf:ActionType rdf:type owl:Class ;
                   rdfs:label "Action Type" .
 
 
-###  https://www.eclipse.org/ice/workflows#BashScript
-ice-wf:BashScript rdf:type owl:Class ;
-                  rdfs:subClassOf ice-wf:ActionType ;
-                  rdfs:label "Bash Script" ,
-                             "The Bash Script action type is for actions that require executing Bash scripts in the Bash shell on Linux, Unix, and other systems that support Bash." .
-
-
 ###  https://www.eclipse.org/ice/workflows#BasicActionType
 ice-wf:BasicActionType rdf:type owl:Class ;
                        rdfs:subClassOf ice-wf:ActionType ;
@@ -161,6 +154,13 @@ ice-wf:PythonScript rdf:type owl:Class ;
                     rdfs:subClassOf ice-wf:ActionType ;
                     rdfs:comment "The Python Script Action Type is the base class for actions that require executing a script in the Python programming language." ;
                     rdfs:label "Python Script" .
+
+
+###  https://www.eclipse.org/ice/workflows#ShellScript
+ice-wf:ShellScript rdf:type owl:Class ;
+                   rdfs:subClassOf ice-wf:ActionType ;
+                   rdfs:comment "The Shell Script action type is for actions that require executing shell scripts on systems that support shells." ;
+                   rdfs:label "Shell Script" .
 
 
 ###  https://www.eclipse.org/ice/workflows#Task
@@ -217,12 +217,12 @@ ice-wf:TaskList rdfs:label "TaskList"@en ;
 #################################################################
 
 [ rdf:type owl:AllDisjointClasses ;
-  owl:members ( ice-wf:BashScript
-                ice-wf:BasicActionType
+  owl:members ( ice-wf:BasicActionType
                 ice-wf:Executable
                 ice-wf:FortranFunction
                 ice-wf:JavaClass
                 ice-wf:PythonScript
+                ice-wf:ShellScript
                 ice-wf:WebService
               )
 ] .
