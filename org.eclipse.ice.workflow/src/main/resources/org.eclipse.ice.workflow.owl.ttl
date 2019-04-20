@@ -139,28 +139,49 @@ ice-wf:CWLTool rdf:type owl:Class ;
 ice-wf:Executable rdf:type owl:Class ;
                   rdfs:subClassOf ice-wf:ActionType ;
                   rdfs:comment "The Executable Action Type is the base class for actions that require executing generic programs on the system." ;
-                  rdfs:label "Executable" .
+                  rdfs:label "Generic Executable" .
 
 
 ###  https://www.eclipse.org/ice/workflows#FortranFunction
 ice-wf:FortranFunction rdf:type owl:Class ;
-                       rdfs:subClassOf ice-wf:ActionType ;
+                       rdfs:subClassOf ice-wf:LanguageInvocation ;
                        rdfs:comment "The Fortran Function Action Type is the base class for actions that require executing a function in the Fortran programming language." ;
                        rdfs:label "Fortran Function" .
 
 
 ###  https://www.eclipse.org/ice/workflows#JavaClass
 ice-wf:JavaClass rdf:type owl:Class ;
-                 rdfs:subClassOf ice-wf:ActionType ;
+                 rdfs:subClassOf ice-wf:LanguageInvocation ;
                  rdfs:comment "The Java Class Action Type is the base class for actions that require executing a class in the Java programming language. Action Targets for this type should point to a single method in the class that will create all necessary state and configure the system before executing. Thus, to execute a class Car, it may make sense to call a builder class such as \"CarBuilder.runCar\" instead." ;
                  rdfs:label "Java Class" .
 
 
+###  https://www.eclipse.org/ice/workflows#LanguageInvocation
+ice-wf:LanguageInvocation rdf:type owl:Class ;
+                          rdfs:subClassOf ice-wf:ActionType ;
+                          rdfs:comment "This action type represents actions to invocation language-specific calls or executions as part of the workflow. This could include, for example, executing a method on a native Java class, or a Fortran function or subroutine, or an R function." ;
+                          rdfs:label "Language Invocation" .
+
+
 ###  https://www.eclipse.org/ice/workflows#PythonScript
 ice-wf:PythonScript rdf:type owl:Class ;
-                    rdfs:subClassOf ice-wf:ActionType ;
+                    rdfs:subClassOf ice-wf:LanguageInvocation ;
                     rdfs:comment "The Python Script Action Type is the base class for actions that require executing a script in the Python programming language." ;
                     rdfs:label "Python Script" .
+
+
+###  https://www.eclipse.org/ice/workflows#RESTfulService
+ice-wf:RESTfulService rdf:type owl:Class ;
+                      rdfs:subClassOf ice-wf:WebService ;
+                      rdfs:comment "This action types describes Representational State Transfer (RESTful) web services." ;
+                      rdfs:label "RESTful Web Service" .
+
+
+###  https://www.eclipse.org/ice/workflows#SOAPService
+ice-wf:SOAPService rdf:type owl:Class ;
+                   rdfs:subClassOf ice-wf:WebService ;
+                   rdfs:comment "This action types describes Simple Object Access Protocol (SOAP) web services." ;
+                   rdfs:label "SOAP Web Service" .
 
 
 ###  https://www.eclipse.org/ice/workflows#ShellScript
@@ -179,6 +200,13 @@ ice-wf:Task rdf:type owl:Class ;
 ###  https://www.eclipse.org/ice/workflows#TaskList
 ice-wf:TaskList rdf:type owl:Class ;
                 rdfs:subClassOf <http://purl.org/co#List> .
+
+
+###  https://www.eclipse.org/ice/workflows#WSDLService
+ice-wf:WSDLService rdf:type owl:Class ;
+                   rdfs:subClassOf ice-wf:WebService ;
+                   rdfs:comment "This action types describes Web Service Description Language (WSDL) web services." ;
+                   rdfs:label "WSDL Web Service" .
 
 
 ###  https://www.eclipse.org/ice/workflows#WebService
@@ -226,11 +254,25 @@ ice-wf:TaskList rdfs:label "TaskList"@en ;
 [ rdf:type owl:AllDisjointClasses ;
   owl:members ( ice-wf:BasicActionType
                 ice-wf:Executable
-                ice-wf:FortranFunction
-                ice-wf:JavaClass
-                ice-wf:PythonScript
+                ice-wf:LanguageInvocation
                 ice-wf:ShellScript
                 ice-wf:WebService
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( ice-wf:FortranFunction
+                ice-wf:JavaClass
+                ice-wf:PythonScript
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( ice-wf:RESTfulService
+                ice-wf:SOAPService
+                ice-wf:WSDLService
               )
 ] .
 
