@@ -56,29 +56,9 @@ sh:property rdf:type owl:AnnotationProperty .
 sh:targetClass rdf:type owl:AnnotationProperty .
 
 
-###  https://www.eclipse.org/ice/workflows#TaskList
-ice-wf:TaskList rdf:type owl:AnnotationProperty ;
-                rdfs:domain ice-wf:WorkflowDescription .
-
-
 #################################################################
 #    Object Properties
 #################################################################
-
-###  https://www.eclipse.org/ice/workflows#ActionTarget
-ice-wf:ActionTarget rdf:type owl:ObjectProperty ;
-                    rdfs:domain ice-wf:Action ;
-                    rdfs:comment "This tag describes the target (program, function, web service, etc.) that the action should execute. Its domain is tied to Action, but its range is open to accommodate what ever the type of the target is."@en ;
-                    rdfs:label "Action Target"@en .
-
-
-###  https://www.eclipse.org/ice/workflows#ActionTypeProp
-ice-wf:ActionTypeProp rdf:type owl:ObjectProperty ;
-                      rdfs:domain ice-wf:Action ;
-                      rdfs:range ice-wf:ActionType ;
-                      rdfs:comment "This property links a concrete action type to the subject, which must be an action instance." ;
-                      rdfs:label "Action Type Property" .
-
 
 ###  https://www.eclipse.org/ice/workflows#TaskPropertySet
 ice-wf:TaskPropertySet rdf:type owl:ObjectProperty ;
@@ -87,6 +67,29 @@ ice-wf:TaskPropertySet rdf:type owl:ObjectProperty ;
                        rdfs:range <http://purl.org/co#Set> ;
                        rdfs:comment "This set contains all the properties needed to execute the task to which is is assigned. The content of the set may be of any type, but the set must be a Collection:Set." ;
                        rdfs:label "Task Property Set" .
+
+
+###  https://www.eclipse.org/ice/workflows#hasActionTarget
+ice-wf:hasActionTarget rdf:type owl:ObjectProperty ;
+                       rdfs:domain ice-wf:Action ;
+                       rdfs:comment "This tag describes the target (program, function, web service, etc.) that the action should execute. Its domain is tied to Action, but its range is open to accommodate what ever the type of the target is."@en ;
+                       rdfs:label "has Action Target"@en .
+
+
+###  https://www.eclipse.org/ice/workflows#hasActionType
+ice-wf:hasActionType rdf:type owl:ObjectProperty ;
+                     rdfs:domain ice-wf:Action ;
+                     rdfs:range ice-wf:ActionType ;
+                     rdfs:comment "This property links a concrete action type to the subject, which must be an action instance." ;
+                     rdfs:label "has Action Type" .
+
+
+###  https://www.eclipse.org/ice/workflows#hasTaskList
+ice-wf:hasTaskList rdf:type owl:ObjectProperty ;
+                   rdfs:domain ice-wf:WorkflowDescription ;
+                   rdfs:range ice-wf:TaskList ;
+                   rdfs:comment "This property links a workflow description to the task list that defines the workflow." ;
+                   rdfs:label "has Task List" .
 
 
 #################################################################
@@ -199,7 +202,9 @@ ice-wf:Task rdf:type owl:Class ;
 
 ###  https://www.eclipse.org/ice/workflows#TaskList
 ice-wf:TaskList rdf:type owl:Class ;
-                rdfs:subClassOf <http://purl.org/co#List> .
+                rdfs:subClassOf <http://purl.org/co#List> ;
+                rdfs:comment "This class is a container that holds a list of Tasks." ;
+                rdfs:label "Task List" .
 
 
 ###  https://www.eclipse.org/ice/workflows#WSDLService
@@ -235,16 +240,7 @@ ice-wf:TaskListShape rdf:type owl:NamedIndividual ,
 sh:property [ sh:class ice-wf:Task ;
               sh:nodeKind sh:IRI ;
               sh:path co:item
-            ] ;
-sh:targetClass ice-wf:TaskList .
-
-
-#################################################################
-#    Annotations
-#################################################################
-
-ice-wf:TaskList rdfs:label "TaskList"@en ;
-                rdfs:comment "This is a list of tasks that should be executed in the workflow."@en .
+            ] .
 
 
 #################################################################
