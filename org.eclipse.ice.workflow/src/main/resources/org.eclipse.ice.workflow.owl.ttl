@@ -1,4 +1,4 @@
-@prefix : <#> .
+@prefix : <file:/home/jayjaybillings/research/ICE/workspace/ice/org.eclipse.ice.workflow/src/main/resources/#> .
 @prefix co: <http://purl.org/co> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -56,43 +56,40 @@ sh:property rdf:type owl:AnnotationProperty .
 sh:targetClass rdf:type owl:AnnotationProperty .
 
 
-###  https://www.eclipse.org/ice/workflows#TaskList
-ice-wf:TaskList rdf:type owl:AnnotationProperty ;
-                rdfs:domain ice-wf:WorkflowDescription .
-
-
 #################################################################
 #    Object Properties
 #################################################################
 
-###  https://www.eclipse.org/ice/workflows#ActionTarget
-ice-wf:ActionTarget rdf:type owl:ObjectProperty ;
-                    rdfs:domain ice-wf:Action ;
-                    rdfs:comment "This tag describes the target (program, function, web service, etc.) that the action should execute."@en ;
-                    rdfs:label "Action Target"@en .
-
-
-###  https://www.eclipse.org/ice/workflows#ActionType
-ice-wf:ActionType rdf:type owl:ObjectProperty ;
-                  rdfs:domain ice-wf:Action .
-
-
 ###  https://www.eclipse.org/ice/workflows#TaskPropertySet
 ice-wf:TaskPropertySet rdf:type owl:ObjectProperty ;
-                        rdfs:subPropertyOf owl:topObjectProperty ;
-                        rdfs:domain ice-wf:Task ;
-                        rdfs:range <http://purl.org/co#Set> ;
-                        rdfs:comment "This set contains all the properties needed to execute the task to which is is assigned. The content of the set may be of any type, but the set must be a Collection:Set." ;
-                        rdfs:label "Task Property Set" .
+                       rdfs:subPropertyOf owl:topObjectProperty ;
+                       rdfs:domain ice-wf:Task ;
+                       rdfs:range <http://purl.org/co#Set> ;
+                       rdfs:comment "This set contains all the properties needed to execute the task to which is is assigned. The content of the set may be of any type, but the set must be a Collection:Set." ;
+                       rdfs:label "Task Property Set" .
 
 
-#################################################################
-#    Data properties
-#################################################################
+###  https://www.eclipse.org/ice/workflows#hasActionTarget
+ice-wf:hasActionTarget rdf:type owl:ObjectProperty ;
+                       rdfs:domain ice-wf:Action ;
+                       rdfs:comment "This tag describes the target (program, function, web service, etc.) that the action should execute. Its domain is tied to Action, but its range is open to accommodate what ever the type of the target is."@en ;
+                       rdfs:label "has Action Target"@en .
 
-###  https://www.eclipse.org/ice/workflows#ActionType
-ice-wf:ActionType rdf:type owl:DatatypeProperty ;
-                  rdfs:range xsd:string .
+
+###  https://www.eclipse.org/ice/workflows#hasActionType
+ice-wf:hasActionType rdf:type owl:ObjectProperty ;
+                     rdfs:domain ice-wf:Action ;
+                     rdfs:range ice-wf:ActionType ;
+                     rdfs:comment "This property links a concrete action type to the subject, which must be an action instance." ;
+                     rdfs:label "has Action Type" .
+
+
+###  https://www.eclipse.org/ice/workflows#hasTaskList
+ice-wf:hasTaskList rdf:type owl:ObjectProperty ;
+                   rdfs:domain ice-wf:WorkflowDescription ;
+                   rdfs:range ice-wf:TaskList ;
+                   rdfs:comment "This property links a workflow description to the task list that defines the workflow." ;
+                   rdfs:label "has Task List" .
 
 
 #################################################################
@@ -121,6 +118,82 @@ ice-wf:Action rdf:type owl:Class ;
               rdfs:label "Action"@en .
 
 
+###  https://www.eclipse.org/ice/workflows#ActionType
+ice-wf:ActionType rdf:type owl:Class ;
+                  rdfs:comment "This resource defines the type of the action that will be executed. It distinguishes between types of actions such as shell functions, user input, waiting, etc." ;
+                  rdfs:label "Action Type" .
+
+
+###  https://www.eclipse.org/ice/workflows#BasicActionType
+ice-wf:BasicActionType rdf:type owl:Class ;
+                       rdfs:subClassOf ice-wf:ActionType ;
+                       rdfs:comment "The Basic Action Type is the base class for basic actions that are typically considered native actions of workflow engines that execute workflows. This includes actions such as moving files or doing simple reductions." ;
+                       rdfs:label "Basic Action Type" .
+
+
+###  https://www.eclipse.org/ice/workflows#CWLTool
+ice-wf:CWLTool rdf:type owl:Class ;
+               rdfs:subClassOf ice-wf:ShellScript ;
+               rdfs:comment "This node represents a Common Workflow Language (CWL) Tool, which is a description of a command line tool used in CWL workflows." ;
+               rdfs:label "Common Workflow Language Tool" .
+
+
+###  https://www.eclipse.org/ice/workflows#Executable
+ice-wf:Executable rdf:type owl:Class ;
+                  rdfs:subClassOf ice-wf:ActionType ;
+                  rdfs:comment "The Executable Action Type is the base class for actions that require executing generic programs on the system." ;
+                  rdfs:label "Generic Executable" .
+
+
+###  https://www.eclipse.org/ice/workflows#FortranFunction
+ice-wf:FortranFunction rdf:type owl:Class ;
+                       rdfs:subClassOf ice-wf:LanguageInvocation ;
+                       rdfs:comment "The Fortran Function Action Type is the base class for actions that require executing a function in the Fortran programming language." ;
+                       rdfs:label "Fortran Function" .
+
+
+###  https://www.eclipse.org/ice/workflows#JavaClass
+ice-wf:JavaClass rdf:type owl:Class ;
+                 rdfs:subClassOf ice-wf:LanguageInvocation ;
+                 rdfs:comment "The Java Class Action Type is the base class for actions that require executing a class in the Java programming language. Action Targets for this type should point to a single method in the class that will create all necessary state and configure the system before executing. Thus, to execute a class Car, it may make sense to call a builder class such as \"CarBuilder.runCar\" instead." ;
+                 rdfs:label "Java Class" .
+
+
+###  https://www.eclipse.org/ice/workflows#LanguageInvocation
+ice-wf:LanguageInvocation rdf:type owl:Class ;
+                          rdfs:subClassOf ice-wf:ActionType ;
+                          rdfs:comment "This action type represents actions to invocation language-specific calls or executions as part of the workflow. This could include, for example, executing a method on a native Java class, or a Fortran function or subroutine, or an R function." ;
+                          rdfs:label "Language Invocation" .
+
+
+###  https://www.eclipse.org/ice/workflows#PythonScript
+ice-wf:PythonScript rdf:type owl:Class ;
+                    rdfs:subClassOf ice-wf:LanguageInvocation ;
+                    rdfs:comment "The Python Script Action Type is the base class for actions that require executing a script in the Python programming language." ;
+                    rdfs:label "Python Script" .
+
+
+###  https://www.eclipse.org/ice/workflows#RESTfulService
+ice-wf:RESTfulService rdf:type owl:Class ;
+                      rdfs:subClassOf ice-wf:WebService ;
+                      rdfs:comment "This action types describes Representational State Transfer (RESTful) web services." ;
+                      rdfs:label "RESTful Web Service" .
+
+
+###  https://www.eclipse.org/ice/workflows#SOAPService
+ice-wf:SOAPService rdf:type owl:Class ;
+                   rdfs:subClassOf ice-wf:WebService ;
+                   rdfs:comment "This action types describes Simple Object Access Protocol (SOAP) web services." ;
+                   rdfs:label "SOAP Web Service" .
+
+
+###  https://www.eclipse.org/ice/workflows#ShellScript
+ice-wf:ShellScript rdf:type owl:Class ;
+                   rdfs:subClassOf ice-wf:ActionType ;
+                   rdfs:comment "The Shell Script action type is for actions that require executing shell scripts on systems that support shells." ;
+                   rdfs:label "Shell Script" .
+
+
 ###  https://www.eclipse.org/ice/workflows#Task
 ice-wf:Task rdf:type owl:Class ;
             rdfs:comment "This class represents actions that are executed as part of a workflow." ;
@@ -129,7 +202,23 @@ ice-wf:Task rdf:type owl:Class ;
 
 ###  https://www.eclipse.org/ice/workflows#TaskList
 ice-wf:TaskList rdf:type owl:Class ;
-                rdfs:subClassOf <http://purl.org/co#List> .
+                rdfs:subClassOf <http://purl.org/co#List> ;
+                rdfs:comment "This class is a container that holds a list of Tasks." ;
+                rdfs:label "Task List" .
+
+
+###  https://www.eclipse.org/ice/workflows#WSDLService
+ice-wf:WSDLService rdf:type owl:Class ;
+                   rdfs:subClassOf ice-wf:WebService ;
+                   rdfs:comment "This action types describes Web Service Description Language (WSDL) web services." ;
+                   rdfs:label "WSDL Web Service" .
+
+
+###  https://www.eclipse.org/ice/workflows#WebService
+ice-wf:WebService rdf:type owl:Class ;
+                  rdfs:subClassOf ice-wf:ActionType ;
+                  rdfs:comment "The Web Service Action Type is the base class for actions that require executing remote web services." ;
+                  rdfs:label "Web Service" .
 
 
 ###  https://www.eclipse.org/ice/workflows#WorkflowDescription
@@ -151,20 +240,37 @@ ice-wf:TaskListShape rdf:type owl:NamedIndividual ,
 sh:property [ sh:class ice-wf:Task ;
               sh:nodeKind sh:IRI ;
               sh:path co:item
-            ] ;
-sh:targetClass ice-wf:TaskList .
+            ] .
 
 
 #################################################################
-#    Annotations
+#    General axioms
 #################################################################
 
-ice-wf:ActionType rdfs:comment "This is a tag that describes the type of the action. This is generally specific to underlying workflow engines."@en ;
-                  rdfs:label "Action Type"@en .
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( ice-wf:BasicActionType
+                ice-wf:Executable
+                ice-wf:LanguageInvocation
+                ice-wf:ShellScript
+                ice-wf:WebService
+              )
+] .
 
 
-ice-wf:TaskList rdfs:label "TaskList"@en ;
-                rdfs:comment "This is a list of tasks that should be executed in the workflow."@en .
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( ice-wf:FortranFunction
+                ice-wf:JavaClass
+                ice-wf:PythonScript
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( ice-wf:RESTfulService
+                ice-wf:SOAPService
+                ice-wf:WSDLService
+              )
+] .
 
 
 ###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi
