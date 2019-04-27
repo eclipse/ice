@@ -1,7 +1,6 @@
 @prefix : <file:/home/jayjaybillings/research/ICE/workspace/ice/org.eclipse.ice.workflow/src/main/resources/#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix dc11: <http://purl.org/dc/elements/1.1/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -10,7 +9,6 @@
 @base <http://www.w3.org/2002/07/owl#> .
 
 [ rdf:type owl:Ontology ;
-   owl:imports <http://www.w3.org/2004/02/skos/core> ;
    dc11:contributor "Jay Jay Billings"^^xsd:string ;
    dc11:creator <https://www.eclipse.org/ice> ;
    dc11:format "application/rdf+xml"^^xsd:string ;
@@ -51,8 +49,10 @@ dc11:title rdf:type owl:AnnotationProperty .
 ###  https://www.eclipse.org/ice/workflows#dependsOn
 ice-wf:dependsOn rdf:type owl:ObjectProperty ;
                  rdfs:subPropertyOf owl:topObjectProperty ;
-                 rdfs:domain ice-wf:Task ;
-                 rdfs:range ice-wf:Task ;
+                 rdfs:domain ice-wf:Task ,
+                             ice-wf:WorkflowDescription ;
+                 rdfs:range ice-wf:Task ,
+                            ice-wf:WorkflowDescription ;
                  rdfs:comment """This property indicates that the task (domain) depends on the successful execution of the range, which is another task or set of tasks.
 
 It is possible to declare multiple instances of this object property such that one task will depend on the successful execution of multiple tasks.""" ;
@@ -86,16 +86,17 @@ ice-wf:hasActionType rdf:type owl:ObjectProperty ;
 ###  https://www.eclipse.org/ice/workflows#hasProperties
 ice-wf:hasProperties rdf:type owl:ObjectProperty ;
                      rdfs:subPropertyOf owl:topObjectProperty ;
+                     rdfs:domain ice-wf:Task ;
                      rdfs:comment "This property indicates that the task (domain) has the properties described by the range. The range is open because the type of the properties may be undefined." ;
                      rdfs:label "has Properties" .
 
 
-###  https://www.eclipse.org/ice/workflows#hasTaskList
-ice-wf:hasTaskList rdf:type owl:ObjectProperty ;
-                   rdfs:domain ice-wf:WorkflowDescription ;
-                   rdfs:range ice-wf:TaskList ;
-                   rdfs:comment "This property links a workflow description to the task list that defines the workflow." ;
-                   rdfs:label "has Task List" .
+###  https://www.eclipse.org/ice/workflows#hasTask
+ice-wf:hasTask rdf:type owl:ObjectProperty ;
+               rdfs:domain ice-wf:WorkflowDescription ;
+               rdfs:range ice-wf:Task ;
+               rdfs:comment "This property links a workflow description to the task list that defines the workflow." ;
+               rdfs:label "has Task" .
 
 
 #################################################################
@@ -194,10 +195,6 @@ ice-wf:Task rdf:type owl:Class ;
             rdfs:label "Task" .
 
 
-###  https://www.eclipse.org/ice/workflows#TaskList
-ice-wf:TaskList rdf:type owl:Class .
-
-
 ###  https://www.eclipse.org/ice/workflows#WSDLService
 ice-wf:WSDLService rdf:type owl:Class ;
                    rdfs:subClassOf ice-wf:WebService ;
@@ -215,7 +212,7 @@ ice-wf:WebService rdf:type owl:Class ;
 ###  https://www.eclipse.org/ice/workflows#WorkflowDescription
 ice-wf:WorkflowDescription rdf:type owl:Class ;
                            rdfs:subClassOf ice-data:Identifiable ;
-                           rdfs:comment "This class provides a description of the data and tasks that make up a workflow."@en ;
+                           rdfs:comment "This class provides a description of the data and tasks that make up a workflow. It describes a collections of tasks that are executed to accomplish an activity with certain goals according to various properties and possibly using some data."@en ;
                            rdfs:label "Workflow Description"@en .
 
 
