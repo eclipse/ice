@@ -1,6 +1,7 @@
 @prefix : <file:/home/jayjaybillings/research/ICE/workspace/ice/org.eclipse.ice.workflow/src/main/resources/#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix dc11: <http://purl.org/dc/elements/1.1/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -59,10 +60,19 @@ It is possible to declare multiple instances of this object property such that o
                  rdfs:label "depends On" .
 
 
+###  https://www.eclipse.org/ice/workflows#executes
+ice-wf:executes rdf:type owl:ObjectProperty ;
+                rdfs:domain ice-wf:WorkflowDescription ;
+                rdfs:range ice-wf:Task ;
+                rdfs:comment "This property links a workflow description to a task that it should execute." ;
+                rdfs:label "executes" .
+
+
 ###  https://www.eclipse.org/ice/workflows#hasAction
 ice-wf:hasAction rdf:type owl:ObjectProperty ;
                  rdfs:subPropertyOf owl:topObjectProperty ;
-                 rdfs:domain ice-wf:Task ;
+                 rdfs:domain ice-wf:ConditionalAction ,
+                             ice-wf:Task ;
                  rdfs:range ice-wf:Action ;
                  rdfs:comment "This object property denotes that the task (domain) uses the action (range) to which it points." ;
                  rdfs:label "has Action" .
@@ -83,6 +93,14 @@ ice-wf:hasActionType rdf:type owl:ObjectProperty ;
                      rdfs:label "has Action Type" .
 
 
+###  https://www.eclipse.org/ice/workflows#hasCondition
+ice-wf:hasCondition rdf:type owl:ObjectProperty ;
+                    rdfs:domain ice-wf:Task ;
+                    rdfs:range ice-wf:ConditionalAction ;
+                    rdfs:comment "This property indicates that the conditional task (domain) is subject to the completion only if the conditional action (range) executes successfully." ;
+                    rdfs:label "has Condition" .
+
+
 ###  https://www.eclipse.org/ice/workflows#hasProperties
 ice-wf:hasProperties rdf:type owl:ObjectProperty ;
                      rdfs:subPropertyOf owl:topObjectProperty ;
@@ -91,12 +109,61 @@ ice-wf:hasProperties rdf:type owl:ObjectProperty ;
                      rdfs:label "has Properties" .
 
 
-###  https://www.eclipse.org/ice/workflows#hasTask
-ice-wf:hasTask rdf:type owl:ObjectProperty ;
-               rdfs:domain ice-wf:WorkflowDescription ;
-               rdfs:range ice-wf:Task ;
-               rdfs:comment "This property links a workflow description to the task list that defines the workflow." ;
-               rdfs:label "has Task" .
+###  https://www.eclipse.org/ice/workflows#onStateChange
+ice-wf:onStateChange rdf:type owl:ObjectProperty ;
+                     rdfs:domain ice-wf:Task ;
+                     rdfs:range ice-wf:StateChangeAction ;
+                     rdfs:comment "This property links a task (domain) to a state change action (range) that it should execute when its state changes." ;
+                     rdfs:label "on State Change" .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  https://www.eclipse.org/ice/workflows#hasHost
+ice-wf:hasHost rdf:type owl:DatatypeProperty ;
+               rdfs:subPropertyOf owl:topDataProperty ;
+               rdfs:domain ice-wf:Task ,
+                           ice-wf:WorkflowDescription ;
+               rdfs:range xsd:anyURI ;
+               rdfs:comment "This property describes the host on which a task or workflow should be executed." ;
+               rdfs:label "has Host" .
+
+
+###  https://www.eclipse.org/ice/workflows#hasState
+ice-wf:hasState rdf:type owl:DatatypeProperty ;
+                rdfs:domain ice-wf:Task ,
+                            ice-wf:WorkflowDescription ;
+                rdfs:range [ rdf:type rdfs:Datatype ;
+                             owl:oneOf [ rdf:type rdf:List ;
+                                         rdf:first "done" ;
+                                         rdf:rest [ rdf:type rdf:List ;
+                                                    rdf:first "executing" ;
+                                                    rdf:rest [ rdf:type rdf:List ;
+                                                               rdf:first "failed" ;
+                                                               rdf:rest [ rdf:type rdf:List ;
+                                                                          rdf:first "finishing" ;
+                                                                          rdf:rest [ rdf:type rdf:List ;
+                                                                                     rdf:first "needsInfo" ;
+                                                                                     rdf:rest [ rdf:type rdf:List ;
+                                                                                                rdf:first "ready" ;
+                                                                                                rdf:rest [ rdf:type rdf:List ;
+                                                                                                           rdf:first "starting" ;
+                                                                                                           rdf:rest [ rdf:type rdf:List ;
+                                                                                                                      rdf:first "waiting" ;
+                                                                                                                      rdf:rest rdf:nil
+                                                                                                                    ]
+                                                                                                         ]
+                                                                                              ]
+                                                                                   ]
+                                                                        ]
+                                                             ]
+                                                  ]
+                                       ]
+                           ] ;
+                rdfs:comment "This data property describes the present state of the task or workflow." ;
+                rdfs:label "has State" .
 
 
 #################################################################
@@ -126,6 +193,13 @@ ice-wf:BasicActionType rdf:type owl:Class ;
                        rdfs:label "Basic Action Type" .
 
 
+###  https://www.eclipse.org/ice/workflows#BooleanCondition
+ice-wf:BooleanCondition rdf:type owl:Class ;
+                        rdfs:subClassOf ice-wf:Condition ;
+                        rdfs:comment "Boolean Conditions evaluate boolean statements, such as \"if\" statements." ;
+                        rdfs:label "Boolean Condition" .
+
+
 ###  https://www.eclipse.org/ice/workflows#CWLTool
 ice-wf:CWLTool rdf:type owl:Class ;
                rdfs:subClassOf ice-wf:ShellScript ;
@@ -133,11 +207,41 @@ ice-wf:CWLTool rdf:type owl:Class ;
                rdfs:label "Common Workflow Language Tool" .
 
 
+###  https://www.eclipse.org/ice/workflows#Condition
+ice-wf:Condition rdf:type owl:Class ;
+                 rdfs:subClassOf ice-wf:ActionType ;
+                 rdfs:comment "Conditional Actions Types indicate that the action described by this type executes for the purpose of evaluating some logical condition, such as a boolean statement, a loop, a cycle, or waiting (polling, checking) for feedback from an external agent." ;
+                 rdfs:label "Condition" .
+
+
+###  https://www.eclipse.org/ice/workflows#ConditionalAction
+ice-wf:ConditionalAction rdf:type owl:Class ;
+                         rdfs:subClassOf ice-wf:Action ;
+                         rdfs:comment """Conditional Actions are actions that execute conditionally for either conditional tasks (i.e. - as part of the workflow) or as alternative execution flows when the task enters a different state.
+
+Conditional actions assigned to tasks indicate that the primary action of the task should be executed according to the conditional action type until the condition action evaluates to true.""" ;
+                         rdfs:label "Conditional Action" .
+
+
+###  https://www.eclipse.org/ice/workflows#Cycle
+ice-wf:Cycle rdf:type owl:Class ;
+             rdfs:subClassOf ice-wf:Condition ;
+             rdfs:comment "A Cycle describes an action that exits when a condition describing the end of a cycle has been met. Where a loop action type describes execution over a range, a cyclic action type checks for the completion of a task cycle." ;
+             rdfs:label "Cycle" .
+
+
 ###  https://www.eclipse.org/ice/workflows#Executable
 ice-wf:Executable rdf:type owl:Class ;
                   rdfs:subClassOf ice-wf:ActionType ;
                   rdfs:comment "The Executable Action Type is the base class for actions that require executing generic programs on the system." ;
                   rdfs:label "Generic Executable" .
+
+
+###  https://www.eclipse.org/ice/workflows#ExternalAgent
+ice-wf:ExternalAgent rdf:type owl:Class ;
+                     rdfs:subClassOf ice-wf:Condition ;
+                     rdfs:comment "The External Agent Condition describes an action that waits conditionally on feedback from an external agent, including a human or an external service. Tasks can block themselves to wait on feedback, but in some cases an explicit task may exist for a user can that can be described and explicitly executed in the workflow." ;
+                     rdfs:label "External Agent Condition" .
 
 
 ###  https://www.eclipse.org/ice/workflows#FortranFunction
@@ -159,6 +263,20 @@ ice-wf:LanguageInvocation rdf:type owl:Class ;
                           rdfs:subClassOf ice-wf:ActionType ;
                           rdfs:comment "This action type represents actions to invocation language-specific calls or executions as part of the workflow. This could include, for example, executing a method on a native Java class, or a Fortran function or subroutine, or an R function." ;
                           rdfs:label "Language Invocation" .
+
+
+###  https://www.eclipse.org/ice/workflows#Loop
+ice-wf:Loop rdf:type owl:Class ;
+            rdfs:subClassOf ice-wf:Condition ;
+            rdfs:comment "The Loop describes an action that exits when a condition describing the end of a loop has been met. The loop executes over a range, and differs from a cyclic action type because the latter checks for the completion of a task cycle." ;
+            rdfs:label "Loop" .
+
+
+###  https://www.eclipse.org/ice/workflows#ParallelLoop
+ice-wf:ParallelLoop rdf:type owl:Class ;
+                    rdfs:subClassOf ice-wf:Loop ;
+                    rdfs:comment "A Parallel Loop Condition indicates that the loop may be executed in parallel (i.e. - that the iterations of the loop are independent)." ;
+                    rdfs:label "Parallel Loop" .
 
 
 ###  https://www.eclipse.org/ice/workflows#PythonScript
@@ -189,9 +307,18 @@ ice-wf:ShellScript rdf:type owl:Class ;
                    rdfs:label "Shell Script" .
 
 
+###  https://www.eclipse.org/ice/workflows#StateChangeAction
+ice-wf:StateChangeAction rdf:type owl:Class ;
+                         rdfs:subClassOf ice-wf:ConditionalAction ;
+                         rdfs:comment "A State Change is executed under the condition that a task experiences a state change." ;
+                         rdfs:label "State Change" .
+
+
 ###  https://www.eclipse.org/ice/workflows#Task
 ice-wf:Task rdf:type owl:Class ;
-            rdfs:comment "Tasks are executed by workflows. They are modeled as the combination of an action and properties defining the way that action should be executed." ;
+            rdfs:comment """Tasks are executed by workflows. They are modeled as the combination of an action and properties defining the way that action should be executed.
+
+Tasks may also be assigned conditional actions that evaluate when a certain condition has been met based on the execution of the primary action with its properties.""" ;
             rdfs:label "Task" .
 
 
@@ -222,10 +349,30 @@ ice-wf:WorkflowDescription rdf:type owl:Class ;
 
 [ rdf:type owl:AllDisjointClasses ;
   owl:members ( ice-wf:BasicActionType
+                ice-wf:Condition
                 ice-wf:Executable
                 ice-wf:LanguageInvocation
                 ice-wf:ShellScript
                 ice-wf:WebService
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( ice-wf:BasicActionType
+                ice-wf:Executable
+                ice-wf:LanguageInvocation
+                ice-wf:ShellScript
+                ice-wf:WebService
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( ice-wf:BooleanCondition
+                ice-wf:Cycle
+                ice-wf:ExternalAgent
+                ice-wf:Loop
               )
 ] .
 
