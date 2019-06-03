@@ -1,4 +1,4 @@
-@prefix : <file:/home/jayjaybillings/research/ICE/workspace/ice/org.eclipse.ice.workflow/src/main/resources/#> .
+@prefix : <#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
@@ -137,21 +137,21 @@ ice-wf:hasState rdf:type owl:DatatypeProperty ;
                             ice-wf:WorkflowDescription ;
                 rdfs:range [ rdf:type rdfs:Datatype ;
                              owl:oneOf [ rdf:type rdf:List ;
-                                         rdf:first "done" ;
+                                         rdf:first "Executing" ;
                                          rdf:rest [ rdf:type rdf:List ;
-                                                    rdf:first "executing" ;
+                                                    rdf:first "Failed" ;
                                                     rdf:rest [ rdf:type rdf:List ;
-                                                               rdf:first "failed" ;
+                                                               rdf:first "Finished" ;
                                                                rdf:rest [ rdf:type rdf:List ;
-                                                                          rdf:first "finishing" ;
+                                                                          rdf:first "Initialized" ;
                                                                           rdf:rest [ rdf:type rdf:List ;
-                                                                                     rdf:first "needsInfo" ;
+                                                                                     rdf:first "Ready" ;
                                                                                      rdf:rest [ rdf:type rdf:List ;
-                                                                                                rdf:first "ready" ;
+                                                                                                rdf:first "Reviewing" ;
                                                                                                 rdf:rest [ rdf:type rdf:List ;
-                                                                                                           rdf:first "starting" ;
+                                                                                                           rdf:first "Waiting" ;
                                                                                                            rdf:rest [ rdf:type rdf:List ;
-                                                                                                                      rdf:first "waiting" ;
+                                                                                                                      rdf:first "WaitingForInfo" ;
                                                                                                                       rdf:rest rdf:nil
                                                                                                                     ]
                                                                                                          ]
@@ -162,7 +162,39 @@ ice-wf:hasState rdf:type owl:DatatypeProperty ;
                                                   ]
                                        ]
                            ] ;
-                rdfs:comment "This data property describes the present state of the task or workflow." ;
+                rdfs:comment """This data property describes the present state of the task or workflow.
+
+Initialized
+
+This pseudostate indicates that the state machine has fully initialized. In practice, full and successful initialization results in an immediate local transition to Ready.
+
+Failed
+
+This state indicates that an unexpected failure happened while executing the task.
+
+Reviewing
+
+The Reviewing state is entered when a task needs to spend a large amount of time to review information received for pre-, post-, or in-situ processing that is required to execute the task. Once the review is complete, the task will transition into the Executing state in the ideal primary flow.
+
+Waiting
+
+Tasks in the waiting state are waiting on resources to be properly allocated, including either compute or data resources.
+
+WaitingForInfo
+
+Tasks in the WaitingForInfo state are waiting on information from an external agent.
+
+Finished
+
+This is the terminal state for the task and indicates that it has been completely executed.
+
+Executing
+
+This state indicates that the task is presently executing the work assigned to it.
+
+Ready
+
+The ready state indicates that the task can be executed and that all initialization has completed, or that execution has finished and the task is ready to be executed again.""" ;
                 rdfs:label "has State" .
 
 
