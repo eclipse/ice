@@ -117,6 +117,14 @@ ice-wf:onStateChange rdf:type owl:ObjectProperty ;
                      rdfs:label "on State Change" .
 
 
+###  https://www.eclipse.org/ice/workflows#targetMethod
+ice-wf:targetMethod rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf owl:topObjectProperty ;
+                    rdfs:domain ice-wf:JavaClass ;
+                    rdfs:comment "This property identifies the target method that should be used to launch the action." ;
+                    rdfs:label "target method" .
+
+
 #################################################################
 #    Data properties
 #################################################################
@@ -286,7 +294,7 @@ ice-wf:FortranFunction rdf:type owl:Class ;
 ###  https://www.eclipse.org/ice/workflows#JavaClass
 ice-wf:JavaClass rdf:type owl:Class ;
                  rdfs:subClassOf ice-wf:LanguageInvocation ;
-                 rdfs:comment "The Java Class Action Type is the base class for actions that require executing a class in the Java programming language. Action Targets for this type should point to a single method in the class that will create all necessary state and configure the system before executing. Thus, to execute a class Car, it may make sense to call a builder class such as \"CarBuilder.runCar\" instead." ;
+                 rdfs:comment "The Java Class Action Type is the base class for actions that require executing a class in the Java programming language. Action Targets for this type should point to a single target method in the class that will create all necessary state and configure the system before executing. Thus, to execute a class Car, it may make sense to call a builder class such as \"CarBuilder.runCar\" instead." ;
                  rdfs:label "Java Class" .
 
 

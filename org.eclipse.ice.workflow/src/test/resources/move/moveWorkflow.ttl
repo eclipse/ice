@@ -1,0 +1,45 @@
+@prefix : <#> .
+@prefix ice-wf:<https://www.eclipse.org/ice/workflows#> .
+@prefix ice-data:<https://www.eclipse.org/ice/data#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@base <http://www.example.org> .
+
+# Set the move action type and target method 
+:moveActionType a ice-wf:JavaClass;
+	rdfs:label "Move File Action";
+	ice-wf:targetMethod "org.eclipse.ice.actions.targets.MoveActionTarget.move"^^xsd:string .
+
+# Create the action
+:moveAction a ice-wf:Action;
+	ice-wf:ActionType :moveActionType .
+
+# File location property
+:location a owl:ObjectProperty ;
+	rdfs:label "File Location" ;
+	rdfs:comment "The location of a file on the file system" ;
+	rdfs:subPropertyOf owl:topObjectProperty ;
+	rdfs:range xsd:string .
+
+:inputLocation a :location.
+:outputLocation a :location.
+
+# Create the action properties
+:moveActionProperties a owl:Class ;
+	rdfs:comment "Collection of properties for moving a file." ;
+	rdfs:label "Move Action Properties" ;
+	:inputLocation "test-in.txt"^^xsd:string ;
+	:outputLocation "test-out.txt"^^xsd:string .
+
+# Wire up the task
+:moveTask a ice-wf:Task;
+	rdfs:label "Test Task";
+	rdfs:comment "Test Task that will move a file"; 
+	ice-wf:hasAction :moveAction;
+	ice-wf:hasProperties :moveActionProperties .
+
+# Wire up the workflow
+:moveWFD a ice-wf:WorkflowDescription ;
+	ice-wf:executes :moveTask.
