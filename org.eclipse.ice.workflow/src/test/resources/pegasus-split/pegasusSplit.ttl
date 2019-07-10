@@ -90,7 +90,8 @@
 	rdfs:label "Split Task";
 	rdfs:comment "This task will call the split utility to split files"; 
 	ice-wf:hasAction :splitAction;
-	ice-wf:hasProperties :splitActionProperties .
+	ice-wf:hasProperties :splitActionProperties;
+	ice-wf:dependsOn :curlTask .
 
 #####
 # wc
@@ -150,42 +151,35 @@
 	rdfs:label "wc Task A";
 	rdfs:comment "This task will call wc -l on part.a"; 
 	ice-wf:hasAction :wcAction;
-	ice-wf:hasProperties :partAWCActionProperties .
+	ice-wf:hasProperties :partAWCActionProperties;
+	ice-wf:dependsOn :splitTask .
 
 :wcTaskB a ice-wf:Task;
 	rdfs:label "wc Task B";
 	rdfs:comment "This task will call wc -l on part.b"; 
 	ice-wf:hasAction :wcAction;
-	ice-wf:hasProperties :partBWCActionProperties .
+	ice-wf:hasProperties :partBWCActionProperties ;
+	ice-wf:dependsOn :splitTask .
 
 :wcTaskC a ice-wf:Task;
 	rdfs:label "wc Task C";
 	rdfs:comment "This task will call wc -l on part.c"; 
 	ice-wf:hasAction :wcAction;
-	ice-wf:hasProperties :partCWCActionProperties .
+	ice-wf:hasProperties :partCWCActionProperties ;
+	ice-wf:dependsOn :splitTask .
 
 :wcTaskD a ice-wf:Task;
 	rdfs:label "wc Task D";
 	rdfs:comment "This task will call wc -l on part.d"; 
 	ice-wf:hasAction :wcAction;
-	ice-wf:hasProperties :partDWCActionProperties .
-
-<child ref="ID0000002">
-<parent ref="ID0000001"/>
-</child>
-<child ref="ID0000003">
-<parent ref="ID0000002"/>
-</child>
-<child ref="ID0000004">
-<parent ref="ID0000002"/>
-</child>
-<child ref="ID0000005">
-<parent ref="ID0000002"/>
-</child>
-<child ref="ID0000006">
-<parent ref="ID0000002"/>
-</child>
+	ice-wf:hasProperties :partDWCActionProperties ;
+	ice-wf:dependsOn :splitTask .
 
 # Wire up the workflow
-:moveWFD a ice-wf:WorkflowDescription ;
-	ice-wf:executes :moveTask.
+:splitWFD a ice-wf:WorkflowDescription ;
+	ice-wf:executes :curlTask;
+	ice-wf:executes :splitTask;
+	ice-wf:executes :wcTaskA;
+	ice-wf:executes :wcTaskB;
+	ice-wf:executes :wcTaskC;
+	ice-wf:executes :wcTaskD.
