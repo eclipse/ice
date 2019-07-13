@@ -1,0 +1,145 @@
+@prefix : <#> .
+@prefix ice-wf:<https://www.eclipse.org/ice/workflows#> .
+@prefix ice-data:<https://www.eclipse.org/ice/data#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@base <http://www.example.org> .
+
+#####
+# The form and item are the workflow description
+#####
+:iceItem a ice-wf:Description ;
+	ice-wf:executes :setupFormTask.
+
+#####
+# Describe normal item tasks, including state changes: setup form, update form, etc
+#####
+
+# setupForm() Task
+:setupFormTask a ice-wf:Task;
+	rdfs:label "Setup Form Task";
+	rdfs:comment "Task for setting up the ICE Form."; 
+	ice-wf:hasAction :setupFormAction;
+	ice-wf:onStateChange :stateChangeAction;
+	ice-wf:hasProperties :workflowProperties .
+
+# loadInput()
+:loadInputTask a ice-wf:Task;
+	rdfs:label "Input Load Task";
+	rdfs:comment "Task for loading input from file."; 
+	ice-wf:hasAction :loadInputAction;
+	ice-wf:hasProperties :workflowProperties;
+	ice-wf:onStateChange :stateChangeAction;
+	ice-wf:dependsOn :setupFormTask .
+
+# submitForm()
+:submitFormTask a ice-wf:Task;
+	rdfs:label "Form Submission Task";
+	rdfs:comment "This task accepts submission of the form."; 
+	ice-wf:hasAction :submitFormAction;
+	ice-wf:onStateChange :stateChangeAction;
+	ice-wf:hasCondition :waitOnUserFeedbackAction;
+	ice-wf:hasProperties :workflowProperties .
+
+# reviewEntries()
+:reviewEntriesTask a ice-wf:Task;
+	rdfs:label "Review Task";
+	rdfs:comment "This task reviews the entries for dependencies, etc."; 
+	ice-wf:hasAction :reviewEntriesAction;
+	ice-wf:hasProperties :workflowProperties;
+	ice-wf:onStateChange :stateChangeAction;
+	ice-wf:dependsOn :submitFormTask .
+
+# process()
+:processTask a ice-wf:Task;
+	rdfs:label "Workflow Process Task";
+	rdfs:comment "This task processes the form and workflow."; 
+	ice-wf:hasAction :processAction;
+	ice-wf:onStateChange :stateChangeAction;
+	ice-wf:dependsOn :reviewEntriesTask ;
+	ice-wf:hasProperties :workflowProperties .
+
+# throwErrorMessage() ---- Should this just be an action?
+#:throwErrorTask a ice-wf:Task;
+#	rdfs:label "Error Task";
+#	rdfs:comment "This task throws an exception when an error occurs"; 
+#	ice-wf:hasAction :moveAction;
+#	ice-wf:hasProperties :moveActionProperties .
+
+#####
+# State change action & action type
+#####
+:stateChangeActionType a ice-wf:JavaClass;
+	rdfs:label "State Change Processor";
+	ice-wf:targetMethod "org.eclipse.ice.actions.targets.StateChangeProcessor.stateChanged"^^xsd:string .
+
+:stateChangeAction a ice-wf:Action;
+	rdfs:label "State Change";
+	rdfs:comment "This action processes state changes for the task.";
+	ice-wf:ActionType :stateChangeActionType .
+
+#####
+# Basic actions & properties
+#####
+
+# Root properties
+:workflowProperties a ice-data:Composite.
+
+# Action types mapped to Java functions
+:setupFormActionType a ice-wf:JavaClass;
+	rdfs:label "Setup Form Action";
+	ice-wf:targetMethod "org.eclipse.ice.actions.targets.SetupFormActionTarget.setup"^^xsd:string .
+
+:loadInputActionType a ice-wf:JavaClass;
+	rdfs:label "Load Input Action";
+	ice-wf:targetMethod "org.eclipse.ice.actions.targets.LoadInputActionTarget.load"^^xsd:string .
+
+:submitFormActionType a ice-wf:JavaClass;
+	rdfs:label "Submit Form Action";
+	ice-wf:targetMethod "org.eclipse.ice.actions.targets.SubmitFormActionTarget.submit"^^xsd:string .
+
+:reviewEntriesActionType a ice-wf:JavaClass;
+	rdfs:label "Review Entries Action";
+	ice-wf:targetMethod "org.eclipse.ice.actions.targets.ReviewEntriesActionTarget.review"^^xsd:string .
+
+:processActionType a ice-wf:JavaClass;
+	rdfs:label "Process Action";
+	ice-wf:targetMethod "org.eclipse.ice.actions.targets.ProcessActionTarget.process"^^xsd:string .
+
+# Create actions mapped to the action types and tasks
+:setupFormAction a ice-wf:Action;
+	rdfs:label "Setup Form";
+	rdfs:comment "This action setups up the form in the task.";
+	ice-wf:ActionType :setupFormActionType .
+
+:loadInputAction a ice-wf:Action;
+	rdfs:label "Load Input";
+	rdfs:comment "This action loads relevant input.";
+	ice-wf:ActionType :loadInputActionType .
+
+:waitOnUserFeedbackAction a ice-wf:ConditionalAction;
+	rdfs:label "Human Input Condition";
+	rdfs:comment "This action waits on human input and the validation tools before allowing the workflow to continue.";
+	ice-wf:ActionType :userWaitCondition.
+
+:submitFormAction a ice-wf:Action;
+	rdfs:label "Submit Form";
+	rdfs:comment "This action submits the form to the task for processing.";
+	ice-wf:ActionType :submitFormActionType.
+
+:reviewEntriesAction a ice-wf:Action;
+	rdfs:label "Review Entries";
+	rdfs:comment "This action reviews the data in the form before processing.";
+	ice-wf:ActionType :submitFormActionType .
+
+:processAction a ice-wf:Action;
+	rdfs:label "Process";
+	rdfs:comment "This action processes (executes) the task.";
+	ice-wf:ActionType :processActionType .
+
+# Wait condition
+:userWaitCondition a ice-wf:ExternalAgent;
+	rdfs:label "Wait on User";
+	rdfs:comment "This conditions waits on external user feedback".

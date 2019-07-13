@@ -1,0 +1,78 @@
+@prefix : <#> .
+@prefix ice-wf:<https://www.eclipse.org/ice/workflows#> .
+@prefix ice-data:<https://www.eclipse.org/ice/data#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@base <http://www.example.org> .
+
+#####
+# Workflow description root node
+#####
+:neutronWorkflow a ice-wf:Description ;
+	ice-wf:executes :designOfExperimentTask.
+
+#####
+# Describe normal item tasks, including state changes: setup form, update form, etc
+#####
+
+# Design of experiment
+:designOfExperimentTask a ice-wf:Task;
+	rdfs:label "Design of Experiment";
+	rdfs:comment "Task for designing experiments.";
+	ice-wf:dependsOn :hpcModelingTask.
+
+# Experiment
+:experimentTask a ice-wf:Task;
+	rdfs:label "User Experiment";
+	rdfs:comment "Task for conducting neutron scattering experiment."; 
+	ice-wf:dependsOn :hpcModelingTask;
+	ice-wf:dependsOn :vizTask;
+	ice-wf:dependsOn :designOfExperimentTask .
+
+# Data Acquisition
+:dataAcquisitionTask a ice-wf:Task;
+	rdfs:label "Data Acquisition";
+	rdfs:comment "This task acquires data."; 
+	ice-wf:dependsOn :experimentTask.
+
+# Data Reduction
+:dataReductionTask a ice-wf:Task;
+	rdfs:label "Data Reduction";
+	rdfs:comment "This task reduces data from instrument to physical units."; 
+	ice-wf:dependsOn :hpcModelingTask;
+	ice-wf:dependsOn :dataAcquisitionTask .
+
+# Data Analysis
+:dataAnalysisTask a ice-wf:Task;
+	rdfs:label "Data Analysis";
+	rdfs:comment "This task analyzes data."; 
+	ice-wf:dependsOn :dataReductionTask;
+	ice-wf:dependsOn :hpcModelingTask.
+
+# Data Curation
+:dataCurationTask a ice-wf:Task;
+	rdfs:label "Data Curation";
+	rdfs:comment "This task curates and archives data.";
+	ice-wf:dependsOn :dataAcquisitionTask; 
+	ice-wf:dependsOn :dataReductionTask;
+	ice-wf:dependsOn :dataAnalysisTask.
+
+# HPC Modeling
+:hpcModelingTask a ice-wf:Task;
+	rdfs:label "HPC Modeling";
+	rdfs:comment "This task performs HPC modeling and simulation.";
+	ice-wf:dependsOn :dataAcquisitionTask ;
+	ice-wf:dependsOn :dataReductionTask ;
+	ice-wf:dependsOn :dataAnalysisTask ; 
+	ice-wf:dependsOn :dataCurationTask .
+
+# Visualization
+:vizTask a ice-wf:Task;
+	rdfs:label "Visualization";
+	rdfs:comment "This task performs visualization.";
+	ice-wf:dependsOn :dataAcquisitionTask ;
+	ice-wf:dependsOn :dataReductionTask ;
+	ice-wf:dependsOn :dataAnalysisTask ; 
+	ice-wf:dependsOn :hpcModelingTask .
