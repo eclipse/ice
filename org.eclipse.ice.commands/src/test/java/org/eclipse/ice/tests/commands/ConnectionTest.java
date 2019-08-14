@@ -11,17 +11,18 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * This class tests {@link org.eclipse.ice.commands.FileHandler}.
+ * This class tests {@link org.eclipse.ice.commands.Connection}.
+ * 
  * @author Jay Jay Billings
  *
  */
-public class FileHandlerTest {
+public class ConnectionTest {
 
 	/**
 	 * @throws java.lang.Exception
@@ -31,34 +32,10 @@ public class FileHandlerTest {
 	}
 
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.FileHandler#FileHandler()}.
+	 * Test method for {@link org.eclipse.ice.commands.Connection#Connection()}.
 	 */
 	@Test
-	public void testFileHandler() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link org.eclipse.ice.commands.FileHandler#move(java.lang.String, java.lang.String)}.
-	 */
-	@Test
-	public void testMove() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link org.eclipse.ice.commands.FileHandler#copy(java.lang.String, java.lang.String)}.
-	 */
-	@Test
-	public void testCopy() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link org.eclipse.ice.commands.FileHandler#exists(java.lang.String)}.
-	 */
-	@Test
-	public void testExists() {
+	public void testConnection() {
 		fail("Not yet implemented");
 	}
 
