@@ -206,6 +206,28 @@ The ready state indicates that the task can be executed and that all initializat
                 rdfs:label "has State" .
 
 
+###  https://www.eclipse.org/ice/workflows#lowerBound
+ice-wf:lowerBound rdf:type owl:DatatypeProperty ;
+                  rdfs:range xsd:integer ;
+                  rdfs:comment "An upper bound on a range between this bound and a minimum, lower bound, with a set of discrete steps of finite size between the two bounds." ;
+                  rdfs:label "Lower Bound" .
+
+
+###  https://www.eclipse.org/ice/workflows#stepSize
+ice-wf:stepSize rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:range xsd:integer ;
+                rdfs:comment "The step size between upper and lower bounds for any such configuration." ;
+                rdfs:label "Step Size" .
+
+
+###  https://www.eclipse.org/ice/workflows#upperBound
+ice-wf:upperBound rdf:type owl:DatatypeProperty ;
+                  rdfs:range xsd:integer ;
+                  rdfs:comment "A lower bound on a range between this bound and a maximum, upper bound, with a set of discrete steps of finite size between the two bounds." ;
+                  rdfs:label "Upper bound" .
+
+
 #################################################################
 #    Classes
 #################################################################
@@ -250,7 +272,9 @@ ice-wf:CWLTool rdf:type owl:Class ;
 ###  https://www.eclipse.org/ice/workflows#Condition
 ice-wf:Condition rdf:type owl:Class ;
                  rdfs:subClassOf ice-wf:ActionType ;
-                 rdfs:comment "Conditional Actions Types indicate that the action described by this type executes for the purpose of evaluating some logical condition, such as a boolean statement, a loop, a cycle, or waiting (polling, checking) for feedback from an external agent." ;
+                 rdfs:comment """Conditional Actions Types indicate that the action described by this type executes for the purpose of evaluating some logical condition, such as a boolean statement, a loop, a cycle, or waiting (polling, checking) for feedback from an external agent.
+
+The targetMethod object property of a Condition must always point to one of the functional (i.e. - non-conditional) action types.""" ;
                  rdfs:label "Condition" .
 
 

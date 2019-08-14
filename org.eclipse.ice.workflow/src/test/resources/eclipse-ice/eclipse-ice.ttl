@@ -61,13 +61,6 @@
 	ice-wf:dependsOn :reviewEntriesTask ;
 	ice-wf:hasProperties :workflowProperties .
 
-# throwErrorMessage() ---- Should this just be an action?
-#:throwErrorTask a ice-wf:Task;
-#	rdfs:label "Error Task";
-#	rdfs:comment "This task throws an exception when an error occurs"; 
-#	ice-wf:hasAction :moveAction;
-#	ice-wf:hasProperties :moveActionProperties .
-
 #####
 # State change action & action type
 #####
@@ -106,7 +99,7 @@
 
 :processActionType a ice-wf:JavaClass;
 	rdfs:label "Process Action";
-	ice-wf:targetMethod "org.eclipse.ice.actions.targets.ProcessActionTarget.process"^^xsd:string .
+	ice-wf:targetMethod  "org.eclipse.ice.actions.targets.ProcessActionTarget.process"^^xsd:string .
 
 # Create actions mapped to the action types and tasks
 :setupFormAction a ice-wf:Action;
