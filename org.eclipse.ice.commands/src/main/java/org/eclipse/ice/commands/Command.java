@@ -32,7 +32,7 @@ public class Command{
 	 * @param command - Command to be executed
 	 * @return CommandStatus - indicating whether or not the Command was properly executed
 	 */
-	public CommandStatus execute(String command) {
+	public CommandStatus Execute(String command) {
 		return null;
 	}
 	

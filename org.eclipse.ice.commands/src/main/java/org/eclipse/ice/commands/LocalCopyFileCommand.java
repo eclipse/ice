@@ -11,6 +11,7 @@
  *   Joe Osborn
  *******************************************************************************/
 
+package org.eclipse.ice.commands;
 /**
  * Child class for locally copying a file without a remote connection
  * @author Joe Osborn

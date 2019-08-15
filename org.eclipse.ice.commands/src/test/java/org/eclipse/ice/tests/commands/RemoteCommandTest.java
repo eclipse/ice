@@ -1,5 +1,4 @@
-/**
- * /*******************************************************************************
+/*******************************************************************************
  * Copyright (c) 2019- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Joe Osborn
+ *   Initial API and implementation and/or initial documentation - 
+ *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
@@ -21,11 +20,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test for class {@link org.eclipse.ice.commands.Command}.
+ * Test for class {@link org.eclipse.ice.commands.RemoteCommand}.
  * @author Joe Osborn
  *
  */
-public class CommandTest {
+public class RemoteCommandTest {
 
 	/**
 	 * @throws java.lang.Exception
@@ -54,34 +53,30 @@ public class CommandTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-
+	
 	@Test
 	public void test() {
 		fail("Not yet implemented");
 	}
 	
-	
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.Command#Command()}
+	 * Test for method {@link org.eclipse.ice.commands.RemoteCommand()}
 	 */
-	public void testCommand() {
+	public void testRemoteCommand() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link org.eclipse.ice.commands.RemoteCommand#SetConnection(String)}
+	 */
+	public void testSetConnection() {
 		fail("Not yet implemented");
 	}
 	
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.Command#execute(String)}
+	 * Test method for {@link org.eclipse.ice.commans.RemoteCommand#GetConnection(String)}
 	 */
-	public void testExecute() {
+	public void testGetConnection() {
 		fail("Not yet implemented");
 	}
-	
-	/**
-	 * Test method for {@link org.eclipse.ice.commands.Command#GetStatus()}
-	 */
-	public void testGetStatus() {
-		fail("Not yet implemented");
-	}
-	
-	
-	
 }

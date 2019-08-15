@@ -21,10 +21,10 @@ package org.eclipse.ice.commands;
 public class ConnectionConfiguration {
 
 	/**
-	 * 
+	 * Default constructor
 	 */
 	public ConnectionConfiguration() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 }

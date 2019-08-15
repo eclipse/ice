@@ -12,7 +12,7 @@
 package org.eclipse.ice.commands;
 
 /**
- * This class manages remote connections, and as such interfaces with all classes
+ * This factory class manages remote connections, and as such interfaces with all classes
  * that are associated with remote connections.
  * @author Joe Osborn
  *
@@ -31,7 +31,7 @@ public class ConnectionManager {
 	 * @param connection - connection to be opened
 	 * @return Connection - returns connection
 	 */
-	public Connection OpenConnection(String connection) {
+	public static Connection OpenConnection(String connection) {
 		return null;
 	}
 

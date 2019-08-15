@@ -22,7 +22,7 @@ package org.eclipse.ice.commands;
 
 /**
  * 
- * Enumeration indicating what the status of the particular command was
+ * Enumeration indicating what the status of the particular command was.
  */
 enum Status{
 	SUCCESS, WORKING, FAILED;

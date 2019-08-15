@@ -10,9 +10,10 @@
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
  *   Joe Osborn
  *******************************************************************************/
-
+package org.eclipse.ice.commands;
 /**
- * Parent class for remote and local copy file commands
+ * Parent class for remote and local copy file commands. Inherits
+ * from FileHandler and is responsible for executing copy file commands.
  * @author Joe Osborn
  *
  */

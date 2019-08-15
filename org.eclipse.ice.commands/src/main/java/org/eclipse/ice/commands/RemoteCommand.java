@@ -13,7 +13,8 @@
 package org.eclipse.ice.commands;
 
 /**
- * This class inherits from Command and gives available functionality for remote (ssh) commands.
+ * This class inherits from Command and gives available functionality for remote commands.
+ * These could be ssh connections or a remote process.
  * @author Joe Osborn
  *
  */

@@ -11,8 +11,9 @@
  *   Joe Osborn
  *******************************************************************************/
 
+package org.eclipse.ice.commands;
 /**
- * Parent class for remote and local move file commands
+ * Parent class for remote and local move file commands. 
  * @author Joe Osborn
  *
  */

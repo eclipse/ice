@@ -11,6 +11,7 @@
  *   Joe Osborn
  *******************************************************************************/
 
+package org.eclipse.ice.commands;
 /**
  * Child class for remotely moving a file over some connection
  * @author Joe Osborn

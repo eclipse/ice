@@ -1,5 +1,4 @@
-/**
- * /*******************************************************************************
+/*******************************************************************************
  * Copyright (c) 2019- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Joe Osborn
+ *   Initial API and implementation and/or initial documentation - 
+ *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
@@ -21,11 +20,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test for class {@link org.eclipse.ice.commands.Command}.
+ * Test for class {@link org.eclipse.ice.commands.ConnectionManager}.
  * @author Joe Osborn
  *
  */
-public class CommandTest {
+public class ConnectionManagerTest {
 
 	/**
 	 * @throws java.lang.Exception
@@ -59,29 +58,41 @@ public class CommandTest {
 	public void test() {
 		fail("Not yet implemented");
 	}
-	
-	
+
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.Command#Command()}
+	 * Test method for {@link org.eclipse.ice.commands.ConnectionManager#ConnectionManager()}
 	 */
-	public void testCommand() {
+	public void testConnectionManager() {
 		fail("Not yet implemented");
 	}
 	
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.Command#execute(String)}
+	 * Test method for {@link org.eclipse.ice.commands.ConnectionManager#OpenConnection(String)}
 	 */
-	public void testExecute() {
+	public void testOpenConnection() {
+		fail("Not yet implemented");
+	}
+	
+	
+	/**
+	 * Test method for {@link org.eclipse.ice.commands.ConnectionManager#GetConnection(String)}
+	 */
+	public void testGetConnection() {
+		fail("Not yet implemented");
+	}
+	
+	
+	/**
+	 * Test method for {@link org.eclipse.ice.commands.ConnectionManager#CloseConnection(String)}
+	 */
+	public void testCloseConnection() {
 		fail("Not yet implemented");
 	}
 	
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.Command#GetStatus()}
+	 * Test method for {@link org.eclipse.ice.commands.ConnectionManager#CloseAllConnections()}
 	 */
-	public void testGetStatus() {
+	public void testCloseAllConnection() {
 		fail("Not yet implemented");
 	}
-	
-	
-	
 }

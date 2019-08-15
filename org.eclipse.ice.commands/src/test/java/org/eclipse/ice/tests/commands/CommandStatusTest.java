@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -21,7 +21,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * This class tests {@link org.eclipse.ice.commands.CommandStatusTest}.
+ * This class tests {@link org.eclipse.ice.commands.CommandStatus}.
  * @author Joe Osborn
  *
  */
