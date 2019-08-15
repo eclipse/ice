@@ -12,32 +12,20 @@
 package org.eclipse.ice.commands;
 
 /**
- * The command factory simplifies the creation of Commands without revealing how
- * they are constructed. It is primarily used for creating generic commands,
- * whereas other factories are use for creating specific commands such as file
- * transfer commands.
+ * This class represents a connection to a remote system. This could be a system
+ * that is physically remote or remote in a process sense.
  * 
  * @author Jay Jay Billings
+ *
  */
-public class CommandFactory {
+public class Connection {
 
 	/**
-	 * Constructor
+	 * 
 	 */
-	public CommandFactory() {
+	
+	public Connection() {
 		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * Method which gets a command and subsequently executes it on a host
-	 * See also Command class {@link org.eclipse.ice.commands.Command}.
-	 * @param command - command to execute
-	 * @param host - host on which to execute command
-	 * @return Command
-	 */
-	public static Command GetCommand(String command, String host) {
-
-		return null;
 	}
 
 }
