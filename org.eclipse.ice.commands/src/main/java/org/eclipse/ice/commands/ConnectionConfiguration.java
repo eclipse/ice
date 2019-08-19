@@ -35,7 +35,7 @@ public class ConnectionConfiguration {
 	 * Default constructor
 	 */
 	public ConnectionConfiguration() {
-		
+
 	}
 
 }
