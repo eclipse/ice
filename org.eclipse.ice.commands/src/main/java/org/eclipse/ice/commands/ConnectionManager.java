@@ -10,6 +10,7 @@
  *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
 package org.eclipse.ice.commands;
+import java.util.ArrayList;
 
 /**
  * This factory class manages remote connections, and as such interfaces with all classes
@@ -19,6 +20,14 @@ package org.eclipse.ice.commands;
  */
 public class ConnectionManager {
 
+	
+	/**
+	 * An ArrayList of available Connections to the ConnectionManager
+	 */
+	protected ArrayList<Connection> connectionList = new ArrayList<Connection>();
+	
+	
+	
 	/**
 	 * Default Constructor
 	 */

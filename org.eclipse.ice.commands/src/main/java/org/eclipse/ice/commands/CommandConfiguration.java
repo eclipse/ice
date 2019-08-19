@@ -13,6 +13,10 @@
  
 package org.eclipse.ice.commands;
 
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * 
  * This class configures particular commands to be executed and depends on the Command class.
@@ -21,6 +25,36 @@ package org.eclipse.ice.commands;
  */
 public class CommandConfiguration {
 
+	/**
+	 * An integer ID to associate with a job
+	 */
+	private int commandId;
+	
+	/**
+	 * An AtomicBoolean that is true if the job is to be launched locally and false otherwise.
+	 */
+	private AtomicBoolean isLocal;
+	
+	/**
+	 * The dictionary that contains the command properties.
+	 */
+	private Dictionary<String,String> execDictionary;
+	
+	/**
+	 * A flag to mark whether or not the input file name should be appended to the executable command.
+	 * Marked as true by default so that the user (by default) specifies the input file name.
+	 */
+	private boolean appendInput = true;
+	
+	
+	/**
+	 * The full command string of all stages that will be executed.
+	 */
+	private String fullCommand = "";
+	
+	private ArrayList<String> splitCommand = new ArrayList<String>();
+	
+	
 	/**
 	 * Default constructor
 	 */
