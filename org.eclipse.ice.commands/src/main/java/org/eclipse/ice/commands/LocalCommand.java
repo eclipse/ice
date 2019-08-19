@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
+import java.util.Dictionary;
+
 /**
  * This class inherits from Command and gives available functionality for local commands.
  * @author Joe Osborn
@@ -19,12 +21,31 @@ package org.eclipse.ice.commands;
  */
 public class LocalCommand extends Command{
 
+	
+	
+	
+	@Override
+	/**
+	 * Method that overrides Commmand:Execute and actually implements
+	 * the particular LocalCommand to be executed.
+	 */
+	public CommandStatus Execute(Dictionary<String, String> dictionary) {
+		return null;
+	}
+	
+	
+	@Override
+	/**
+	 * Method that overrides Commmand:Cancel and actually implements
+	 * the particular LocalCommand to be cancelled.
+	 */
+	public CommandStatus Cancel() {
+		return null;
+	}
 	/**
 	 * Default constructor
 	 */
-	public LocalCommand() {
-		
-	}
+	public LocalCommand() {}
 
 	
 }
