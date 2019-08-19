@@ -20,6 +20,14 @@ package org.eclipse.ice.commands;
  */
 public class RemoteCommand extends Command{
 
+	
+	/**
+	 * The particular connection associated to a particular RemoteCommand.
+	 * Declare this up front since by definition a RemoteCommand must have a connection.
+	 */
+	Connection connection = new Connection();
+	
+	
 	/**
 	 * Default constructor
 	 */
@@ -27,13 +35,21 @@ public class RemoteCommand extends Command{
 		
 	}
 	
+	/**
+	 * Set a particular connection for a particular RemoteCommand
+	 * @param connection - the connection for this command
+	 */
 	public void SetConnection(String connection) {
 		
 	}
 	
-	public String GetConnection() {
+	/**
+	 * Return the connection associated to this RemoteCommand
+	 * @return - the connection for this command
+	 */
+	public Connection GetConnection() {
 		
-		return null;
+		return connection;
 	}
 
 }

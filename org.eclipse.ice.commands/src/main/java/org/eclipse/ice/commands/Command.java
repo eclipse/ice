@@ -11,6 +11,9 @@
  *   Joe Osborn
  *******************************************************************************/
 package org.eclipse.ice.commands;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+
 
 /**
  * This class is the instantiation class of the CommandFactory class and thus
@@ -18,14 +21,29 @@ package org.eclipse.ice.commands;
  * @author Joe Osborn
  *
  */
-public class Command{
+public abstract class Command{
 
+	/**
+	 * An atomic boolean for notifying the thread that it should proceed launching
+	 * the job since the form has been submitted.
+	 */
+	private AtomicBoolean formSubmitted;
+	
+	/**
+	 * The current status of the command
+	 */
+	protected CommandStatus status;
+	
+	/**
+	 * The configuration parameters of the command - should contain some information about
+	 * what the command is actually intended to do.
+	 */
+	protected CommandConfiguration configuration;
+	
 	/**
 	 * Default constructor
 	 */
-	public Command() {
-		
-	}
+	public Command() {}
 	
 	/**
 	 * 
