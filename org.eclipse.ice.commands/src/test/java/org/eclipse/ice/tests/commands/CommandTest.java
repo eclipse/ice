@@ -68,12 +68,7 @@ public class CommandTest {
 		fail("Not yet implemented");
 	}
 	
-	/**
-	 * Test method for {@link org.eclipse.ice.commands.Command#execute(String)}
-	 */
-	public void testExecute() {
-		fail("Not yet implemented");
-	}
+
 	
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.Command#GetStatus()}
@@ -82,6 +77,7 @@ public class CommandTest {
 		fail("Not yet implemented");
 	}
 	
+
 	
 	
 }

@@ -13,6 +13,8 @@ package org.eclipse.ice.tests.commands;
 
 import static org.junit.Assert.fail;
 
+import java.util.Dictionary;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -66,5 +68,24 @@ public class LocalCommandTest {
 		fail("Not yet implemented");
 	}
 	
-
+	/**
+	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#Execute(Dictionary)}
+	 */
+	public void testExecute() {
+		fail("Not yet implemented");
+	}
+	/**
+	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#Launch()}
+	 */
+	public void testLaunch() {
+		fail("Not yet implemented");
+	}
+	
+	/**
+	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#Run()}
+	 */
+	public void testRun() {
+		fail("Not yet implemented");
+	}
+	
 }

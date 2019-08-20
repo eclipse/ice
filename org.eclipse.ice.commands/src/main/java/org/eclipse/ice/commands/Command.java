@@ -199,7 +199,15 @@ public abstract class Command{
 		return header;
 	}
 	
-	
+	/**
+	 * This function is a simple helper function to check and make sure that the 
+	 * command status is not set to a flagged error, e.g. failed.
+	 * @param current_status
+	 */
+	protected void CheckStatus(CommandStatus current_status) {
+		assert current_status != CommandStatus.FAILED;
+		assert current_status != CommandStatus.INFOERROR;
+	}
 	
 	
 }

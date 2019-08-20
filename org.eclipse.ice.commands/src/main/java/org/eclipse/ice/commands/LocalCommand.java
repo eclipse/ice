@@ -25,7 +25,11 @@ import java.util.Dictionary;
 public class LocalCommand extends Command{
 
 	
-	
+	/**
+	 * Default constructor
+	 */
+	public LocalCommand() {}
+
 	
 	@Override
 	/**
@@ -34,9 +38,8 @@ public class LocalCommand extends Command{
 	 */
 	public CommandStatus Execute(Dictionary<String, String> dictionary) {
 		
-		// Local Declarations
-
-		// Set the default value of the status to processing
+	
+		// Set the default start value of the status to processing
 		status = CommandStatus.PROCESSING;
 
 		// Set the dictionary reference
@@ -44,6 +47,13 @@ public class LocalCommand extends Command{
 		
 		status = CommandStatus.LAUNCHING;
 		status = Launch();
+		
+		// Check that the status of the job is okay
+		// See CheckStatus function in {@link org.eclipse.ice.commands.Command}
+		CheckStatus(status); 
+		
+		// Now that all of the prerequisites have been set, start the job running
+		status = Run();
 		
 		
 		return status;
@@ -105,10 +115,8 @@ public class LocalCommand extends Command{
 			e.printStackTrace();
 		}
 		
-		// Now that all of the prerequisites have been set, start the job running
-		status = Run();
 		
-		return status;
+		return CommandStatus.RUNNING;
 	}
 	
 	/**
@@ -194,12 +202,8 @@ public class LocalCommand extends Command{
 	 * the particular LocalCommand to be cancelled.
 	 */
 	public CommandStatus Cancel() {
-		return null;
+		return CommandStatus.CANCELED;
 	}
-	/**
-	 * Default constructor
-	 */
-	public LocalCommand() {}
 
 	
 }
