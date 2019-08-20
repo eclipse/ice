@@ -29,6 +29,13 @@ public class RemoteCommand extends Command{
 	 */
 	Connection connection = new Connection();
 	
+	/**
+	 * Default constructor
+	 */
+	public RemoteCommand() {
+		
+	}
+	
 	@Override
 	/**
 	 * Method that overrides Commmand:Execute and actually implements
@@ -49,12 +56,30 @@ public class RemoteCommand extends Command{
 	}
 	
 	/**
-	 * Default constructor
+	 * See {@link org.eclipse.ice.commands.Command#Launch()}
 	 */
-	public RemoteCommand() {
-		
+	@Override
+	public CommandStatus Launch() {
+		return null;
 	}
 	
+	/**
+	 * See {@link org.eclipse.ice.commands.Command#Run()}
+	 */
+	@Override
+	public CommandStatus Run() {
+		
+		
+		return status;
+	}
+	
+	/**
+	 * See @{link {@link org.eclipse.ice.commands.Command#FixExecutableName()}
+	 */
+	@Override
+	protected String FixExecutableName() {
+		return null;
+	}
 	/**
 	 * Set a particular connection for a particular RemoteCommand
 	 * @param connection - the connection for this command

@@ -33,11 +33,8 @@ public class Connection {
 	/**
 	 *  Default constructor
 	 */
-	
+
 	public Connection() {
-		
-
-
 	}
 
 }

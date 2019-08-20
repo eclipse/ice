@@ -28,43 +28,43 @@ public class CommandConfiguration {
 	/**
 	 * An integer ID to associate with a job
 	 */
-	private int commandId;
+	protected int commandId;
 	
 	/**
 	 * An AtomicBoolean that is true if the job is to be launched locally and false otherwise.
 	 */
-	private AtomicBoolean isLocal;
+	protected AtomicBoolean isLocal;
 	
 	
 	/**
 	 * The dictionary that contains the command properties.
 	 */
-	private Dictionary<String,String> execDictionary;
+	protected Dictionary<String,String> execDictionary;
 	
 	/**
 	 * A flag to mark whether or not the input file name should be appended to the executable command.
 	 * Marked as true by default so that the user (by default) specifies the input file name.
 	 */
-	private boolean appendInput = true;
+	protected boolean appendInput = true;
 	
 	
 	/**
 	 * The full command string of all stages that will be executed.
 	 */
-	private String fullCommand = "";
+	protected String fullCommand = "";
 	
 	/**
 	 * The set of commands in the fullCommand string split into stages. Each command is then executed separately.
 	 * If the command is single stage, then splitCommand is identical to fullCommand.
 	 */
-	private ArrayList<String> splitCommand = new ArrayList<String>();
+	protected ArrayList<String> splitCommand = new ArrayList<String>();
 	
 	
 	/**
 	 * The name of the working directory in which the job will be launched. The
 	 * default value is the prefix.
 	 */
-	private String workingDirectoryName = "niceLaunch_";
+	protected String workingDirectoryName = "Launch_";
 	
 	
 	/**

@@ -19,25 +19,8 @@ package org.eclipse.ice.commands;
  *
  */
 
-
-/**
- * 
- * Enumeration indicating what the status of the particular command was.
- */
-enum Status{
-	SUCCESS, WORKING, FAILED;
+enum CommandStatus{
+	SUCCESS, PROCESSING, LAUNCHING, INFOERROR, FAILED;
 }
 
-public class CommandStatus{
 
-	/**
-	 * Default constructor
-	 */
-	
-	public CommandStatus() {
-		
-	}
-	 
-	
-
-}
