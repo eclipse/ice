@@ -28,8 +28,16 @@ public class CommandFactory {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void get() {
+	/**
+	 * Method which gets a command and subsequently executes it on a host
+	 * See also Command class {@link org.eclipse.ice.commands.Command}.
+	 * @param command - command to execute
+	 * @param host - host on which to execute command
+	 * @return Command
+	 */
+	public static Command GetCommand(String command, String host) {
 
+		return null;
 	}
 
 }

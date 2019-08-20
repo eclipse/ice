@@ -21,7 +21,18 @@ package org.eclipse.ice.commands;
 public class ConnectionConfiguration {
 
 	/**
-	 * 
+	 * Username to configure a particular connection
+	 */
+	private String username;
+	
+	/**
+	 * Password to configure a particular connection
+	 */
+	private String password;
+	
+	
+	/**
+	 * Default constructor
 	 */
 	public ConnectionConfiguration() {
 		// TODO Auto-generated constructor stub
