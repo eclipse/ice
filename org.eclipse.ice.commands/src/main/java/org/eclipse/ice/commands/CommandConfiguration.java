@@ -109,6 +109,17 @@ public class CommandConfiguration {
 	public int GetCommandId() {
 		return commandId;
 	}
-	
-	
+	public void SetExecDictionary(Dictionary<String, String> _dictionary) {
+		execDictionary = _dictionary;
+	}
+	public Dictionary<String, String> GetExecDictionary() {
+		return execDictionary;
+	}
+	/** 
+	 * Don't want a setter function for FullCommand since this is determined in
+	 * {@link org.eclipse.ice.commands.LocalCommand#FixExecutableName()}
+	 */
+	public String GetFullCommand() {
+		return fullCommand;
+	}
 }

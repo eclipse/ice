@@ -18,7 +18,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Dictionary;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -64,7 +63,7 @@ public abstract class Command{
 	 * @param dictionary - Command to be executed
 	 * @return CommandStatus - indicating whether or not the Command was properly executed
 	 */
-	public abstract CommandStatus Execute(Dictionary<String, String> dictionary);
+	public abstract CommandStatus Execute();
 	
 	/**
 	 * This function sets up the necessary prequisites to actually run the particular command.
@@ -163,7 +162,7 @@ public abstract class Command{
 	 * @param logName - the particular log name
 	 * @return - A string with the corresponding header text
 	 */
-	protected String CreateOutputHeader(String logName) {
+	public String CreateOutputHeader(String logName) {
 		String header = null, localHostname = null;
 
 		// Get the machine identity since the local machine launches the job
@@ -177,7 +176,7 @@ public abstract class Command{
 		}
 		
 		// Add the header file name so that it can be identified
-		header = "Logfile type : " + logName + "/n";
+		header = "# Logfile type : " + logName + "\n";
 
 		// Add the date and time
 		header += "# Job launch date: ";
@@ -208,8 +207,17 @@ public abstract class Command{
 	 * @param current_status
 	 */
 	protected void CheckStatus(CommandStatus current_status) {
-		assert current_status != CommandStatus.FAILED;
-		assert current_status != CommandStatus.INFOERROR;
+		try {
+			if ( current_status == CommandStatus.FAILED ) 
+				throw new Exception("The Command has failed");
+			if ( current_status == CommandStatus.INFOERROR )
+				throw new Exception("Not enough info for Command, throwing CommandStatus.INFOERROR");
+			if ( current_status == CommandStatus.CANCELED )
+				throw new Exception("Command was Canceled, aborting Command processing");
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
 	}
 	
 	

@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
-import java.util.Dictionary;
-
 /**
  * This class inherits from Command and gives available functionality for remote commands.
  * These could be ssh connections or a remote process.
@@ -41,7 +39,7 @@ public class RemoteCommand extends Command{
 	 * Method that overrides Commmand:Execute and actually implements
 	 * the particular RemoteCommand to be executed.
 	 */
-	public CommandStatus Execute(Dictionary<String, String> dictionary) {
+	public CommandStatus Execute() {
 		return null;
 	}
 	

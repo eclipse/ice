@@ -55,10 +55,6 @@ public class CommandTest {
 	public void tearDown() throws Exception {
 	}
 
-	@Test
-	public void test() {
-		fail("Not yet implemented");
-	}
 	
 	
 	/**
@@ -70,13 +66,6 @@ public class CommandTest {
 	}
 	
 
-	
-	/**
-	 * Test method for {@link org.eclipse.ice.commands.Command#GetStatus()}
-	 */
-	public void testGetStatus() {
-		fail("Not yet implemented");
-	}
 	
 
 	

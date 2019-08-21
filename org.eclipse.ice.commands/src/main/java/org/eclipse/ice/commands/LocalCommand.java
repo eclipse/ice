@@ -15,7 +15,6 @@ package org.eclipse.ice.commands;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Dictionary;
 
 /**
  * This class inherits from Command and gives available functionality for local commands.
@@ -39,6 +38,7 @@ public class LocalCommand extends Command{
 	 */
 	public LocalCommand(CommandConfiguration _configuration) {
 		configuration = _configuration;
+		status = CommandStatus.PROCESSING;
 	}
 	
 	@Override
@@ -46,14 +46,7 @@ public class LocalCommand extends Command{
 	 * Method that overrides Commmand:Execute and actually implements
 	 * the particular LocalCommand to be executed.
 	 */
-	public CommandStatus Execute(Dictionary<String, String> dictionary) {
-		
-	
-		// Set the default start value of the status to processing
-		status = CommandStatus.PROCESSING;
-
-		// Set the dictionary reference
-		configuration.execDictionary = dictionary;
+	public CommandStatus Execute() {
 		
 		status = CommandStatus.LAUNCHING;
 		status = Launch();
@@ -61,6 +54,7 @@ public class LocalCommand extends Command{
 		// Check that the status of the job is okay
 		// See CheckStatus function in {@link org.eclipse.ice.commands.Command}
 		CheckStatus(status); 
+		
 		
 		// Now that all of the prerequisites have been set, start the job running
 		status = Run();
@@ -78,6 +72,7 @@ public class LocalCommand extends Command{
 		String executable = null, inputFile = null;
 		String stdOutFileName = null, stdErrFileName = null;
 		String stdOutHeader = null, stdErrHeader = null;
+		String numProcs = null, installDir = null;
 
 		// Make sure the dictionary was actually set
 		if (configuration.execDictionary != null) {
@@ -87,13 +82,15 @@ public class LocalCommand extends Command{
 			inputFile = configuration.execDictionary.get("inputFile");
 			stdOutFileName = configuration.execDictionary.get("stdOutFileName");
 			stdErrFileName = configuration.execDictionary.get("stdErrFileName");
+			numProcs = configuration.execDictionary.get("numProcs");
+			installDir = configuration.execDictionary.get("installDir");
 		}
 		else
 			return CommandStatus.INFOERROR;
 		
 		// Check the info and return failure if something was not set correctly
 		if (executable == null || inputFile == null || stdOutFileName == null
-					|| stdErrFileName == null) {
+					|| stdErrFileName == null || numProcs == null || installDir == null) {
 				status = CommandStatus.INFOERROR;
 				return status;
 		}
@@ -146,7 +143,7 @@ public class LocalCommand extends Command{
 	 * See {@link org.eclipse.ice.commands.Command#FixExecutableName()}
 	 */
 	@Override
-	protected String FixExecutableName() {
+	public String FixExecutableName() {
 		
 		Date currentDate = new Date();
 		int numProcs = Math.max(1,
@@ -200,7 +197,7 @@ public class LocalCommand extends Command{
 		// Print launch stages so that user can confirm
 		for (int i = 0; i < configuration.splitCommand.size(); i++) {
 			String cmd = configuration.splitCommand.get(i);
-			System.out.println("JobLaunchAction Message: Launch stage " + i
+			System.out.println("LocalCommand Message: Launch stage " + i
 					+ " = " + cmd);
 		}
 
