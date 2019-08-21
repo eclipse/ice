@@ -14,7 +14,10 @@ package org.eclipse.ice.tests.commands;
 import static org.junit.Assert.fail;
 
 import java.util.Dictionary;
+import java.util.Hashtable;
 
+import org.eclipse.ice.commands.CommandStatus;
+import org.eclipse.ice.commands.LocalCommand;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -28,6 +31,11 @@ import org.junit.Test;
  */
 public class LocalCommandTest {
 
+	// Create some class instances of a LocalCommand example
+	// and dictionary with executable information to go along with it
+	LocalCommand testCommand = new LocalCommand();
+	Dictionary<String, String> testDictionary = new Hashtable<String, String>();
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -55,30 +63,55 @@ public class LocalCommandTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-
+	
+	
+	/**
+	 * Test the various methods as defined in this LocalCommandTest class
+	 */
 	@Test
 	public void test() {
-		fail("Not yet implemented");
+		testLaunch();
 	}
 	
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.LocalCommand()}
 	 */
+	
 	public void testLocalCommand() {
-		fail("Not yet implemented");
+		
+		// Test the default constructor
+		LocalCommand defaultLocalCommand = new LocalCommand();
+		
+		System.out.println(defaultLocalCommand.GetConfiguration().GetCommandId());
+		
 	}
 	
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#Execute(Dictionary)}
 	 */
+	/*
+	@Test
 	public void testExecute() {
 		fail("Not yet implemented");
 	}
+	*/
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#Launch()}
 	 */
+	@Test
 	public void testLaunch() {
-		fail("Not yet implemented");
+	
+		
+		// Test that, in the lack of dictionary setting, Launch returns a 
+		// CommandStatus error
+		CommandStatus testStatus = testCommand.Launch();
+		assert(testStatus == CommandStatus.INFOERROR);
+		
+		
+		
+		
+		
+		
 	}
 	
 	/**

@@ -175,9 +175,12 @@ public abstract class Command{
 		catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
+		
+		// Add the header file name so that it can be identified
+		header = "Logfile type : " + logName + "/n";
 
 		// Add the date and time
-		header = "# Job launch date: ";
+		header += "# Job launch date: ";
 		header += new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar
 				.getInstance().getTime()) + "\n";
 		

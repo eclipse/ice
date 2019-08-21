@@ -64,7 +64,8 @@ public class CommandTest {
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.Command#Command()}
 	 */
-	public void testCommand() {
+	@Test
+	void testCommand() {
 		fail("Not yet implemented");
 	}
 	
@@ -78,6 +79,8 @@ public class CommandTest {
 	}
 	
 
+	
+	
 	
 	
 }

@@ -28,8 +28,18 @@ public class LocalCommand extends Command{
 	/**
 	 * Default constructor
 	 */
-	public LocalCommand() {}
+	public LocalCommand() {
+		configuration = new CommandConfiguration();
+		status = CommandStatus.PROCESSING;
+	}
 
+	/**
+	 * Constructor which specifies a particular command configuration
+	 * @param _configuration
+	 */
+	public LocalCommand(CommandConfiguration _configuration) {
+		configuration = _configuration;
+	}
 	
 	@Override
 	/**
@@ -78,6 +88,8 @@ public class LocalCommand extends Command{
 			stdOutFileName = configuration.execDictionary.get("stdOutFileName");
 			stdErrFileName = configuration.execDictionary.get("stdErrFileName");
 		}
+		else
+			return CommandStatus.INFOERROR;
 		
 		// Check the info and return failure if something was not set correctly
 		if (executable == null || inputFile == null || stdOutFileName == null

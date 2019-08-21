@@ -15,6 +15,7 @@ package org.eclipse.ice.commands;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -33,7 +34,7 @@ public class CommandConfiguration {
 	/**
 	 * An AtomicBoolean that is true if the job is to be launched locally and false otherwise.
 	 */
-	protected AtomicBoolean isLocal;
+	protected AtomicBoolean isLocal = new AtomicBoolean();
 	
 	
 	/**
@@ -71,9 +72,43 @@ public class CommandConfiguration {
 	 * Default constructor
 	 */
 	public CommandConfiguration() {
+		// Assume some default variables
+		commandId = -999;
+		isLocal.set(true);
+		execDictionary = new Hashtable<String, String>();
+				
 	}
 
+	/**
+	 * Constructor which initializes several of the member variables
+	 * See member variables in class CommandConfiguration for descriptions of variables
+	 * @param _commandId
+	 * @param _isLocal
+	 * @param _execDictionary
+	 * @param _appendInput
+	 */
+	public CommandConfiguration(int _commandId, AtomicBoolean _isLocal, 
+			Dictionary<String,String> _execDictionary, boolean _appendInput) {
+		commandId = _commandId;
+		isLocal = _isLocal;
+		execDictionary = _execDictionary;
+		appendInput = _appendInput;
+		
+	}
 	
+	
+	
+	/**
+	 * Make some getter and setter functions to access the CommandConfigurations
+	 * protected variables
+	 */
+	
+	public void SetCommandId(int _commandId) {
+		commandId = _commandId;
+	}
+	public int GetCommandId() {
+		return commandId;
+	}
 	
 	
 }
