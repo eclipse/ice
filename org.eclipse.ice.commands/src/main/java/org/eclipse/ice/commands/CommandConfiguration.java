@@ -115,6 +115,9 @@ public class CommandConfiguration {
 	public Dictionary<String, String> GetExecDictionary() {
 		return execDictionary;
 	}
+	public void SetAppendInput(boolean _appendInput) {
+		appendInput = _appendInput;
+	}
 	/** 
 	 * Don't want a setter function for FullCommand since this is determined in
 	 * {@link org.eclipse.ice.commands.LocalCommand#FixExecutableName()}

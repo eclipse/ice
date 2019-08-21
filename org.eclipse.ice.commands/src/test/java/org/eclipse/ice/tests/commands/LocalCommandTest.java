@@ -59,7 +59,7 @@ public class LocalCommandTest {
 		// Set up some default instance variables
 		localjob.set( true );
 		executableDictionary = new Hashtable<String, String>();
-		executableDictionary.put( "executable" , "someExecutable.sh" );
+		executableDictionary.put( "executable" , "someExecutable.sh ${installDir}" );
 		executableDictionary.put( "inputFile" , "someInputFile.txt" );
 		executableDictionary.put( "stdOutFileName",  "someOutFile.txt" );
 		executableDictionary.put( "stdErrFileName",  "someErrFile.txt" );
@@ -88,7 +88,7 @@ public class LocalCommandTest {
 		System.out.println( "Some default LocalCommand constructor test values" );
 		System.out.println( defaultLocalCommand.GetConfiguration().GetCommandId() );
 		System.out.println( defaultLocalCommand.GetConfiguration().GetFullCommand() );
-		System.out.println( defaultLocalCommand.GetStatus()+"\n" );
+		System.out.println( defaultLocalCommand.GetStatus() + "\n" );
 		
 		// Test a constructor with a particular CommandConfiguration
 		CommandConfiguration interestingCommandConfig = new CommandConfiguration(
@@ -124,15 +124,36 @@ public class LocalCommandTest {
 	 */
 	@Test
 	public void testFixExecutableName() {
-				
+		System.out.println("Starting testFixExecutableName\n");
+		
+		//Make a dictionary to test a few features with
+		Dictionary<String, String> dict = new Hashtable<String, String>();
+		dict.put( "executable", "fixexecutableTest.sh");
+		dict.put( "inputFile" , "fixexecutableInputTest.txt" );
+		dict.put( "stdOutFileName",  "someOutFile.txt" );
+		dict.put( "stdErrFileName",  "someErrFile.txt" );
+		dict.put( "numProcs",  "1");
+		
 		CommandConfiguration commandConfig = new CommandConfiguration(
-						4, localjob, executableDictionary, true );
+						1, localjob, dict, true );
 		
 		//Make a dummy test command
 		LocalCommand testCommand = new LocalCommand(commandConfig);
-				
 		String executableName = testCommand.FixExecutableName();
 		
+		
+		Dictionary<String, String> dict2 = new Hashtable<String, String>();
+		dict2.put( "executable", "fixexecutableTest.sh ${installDir} ${inputFile}");
+		dict2.put( "inputFile" , "fixexecutableInputTest.txt" );
+		dict2.put( "installDir" , "~/testinstall");
+		dict2.put( "numProcs", "2");
+		
+		commandConfig = new CommandConfiguration(2, localjob, dict2, false);
+		LocalCommand testCommand2 = new LocalCommand(commandConfig);
+		executableName = testCommand2.FixExecutableName();
+		
+		
+		System.out.println("Finished testFixExecutableName\n");
 	}
 	
 	/**
@@ -140,9 +161,13 @@ public class LocalCommandTest {
 	 */
 	@Test
 	public void testExecute() {
-		LocalCommand testCommand = new LocalCommand();
-		CommandStatus testStatus = testCommand.Execute();
+		System.out.println("Starting testExecute\n");
 		
+		LocalCommand testCommand = new LocalCommand(new CommandConfiguration(2, localjob,
+				executableDictionary, true));
+		CommandStatus testStatus = testCommand.execute();
+		
+		System.out.println("Finished testExecute\n");
 	}
 	
 	/**
@@ -150,6 +175,7 @@ public class LocalCommandTest {
 	 */
 	@Test
 	public void testLaunch() {
+		System.out.println("Starting testLaunch");
 		// Test that, in the lack of dictionary setting, Launch returns a 
 		// CommandStatus error
 		LocalCommand testCommand = new LocalCommand();
@@ -157,14 +183,14 @@ public class LocalCommandTest {
 		assert( testStatus == CommandStatus.INFOERROR );
 		
 		CommandConfiguration commandConfig = new CommandConfiguration(
-				4, localjob, executableDictionary, true );
+				3, localjob, executableDictionary, true );
 		
 		testCommand.SetConfiguration(commandConfig);
 		
 		testStatus = testCommand.Launch();
 		
 		assert( testStatus == CommandStatus.RUNNING );
-		
+		System.out.println("Finished testLaunch\n");	
 	}
 	
 	/**

@@ -41,17 +41,18 @@ public class LocalCommand extends Command{
 		status = CommandStatus.PROCESSING;
 	}
 	
-	@Override
+	
 	/**
 	 * Method that overrides Commmand:Execute and actually implements
 	 * the particular LocalCommand to be executed.
 	 */
-	public CommandStatus Execute() {
+	@Override
+	public CommandStatus execute() {
 		
 		status = CommandStatus.LAUNCHING;
 		status = Launch();
 		
-		// Check that the status of the job is okay
+		// Check that the status of the job is good
 		// See CheckStatus function in {@link org.eclipse.ice.commands.Command}
 		CheckStatus(status); 
 		
@@ -159,7 +160,7 @@ public class LocalCommand extends Command{
 		
 		// If the input file should be appended, append it
 		if(configuration.appendInput)
-			fixedExecutableName += " " + configuration.execDictionary.get("inputFile");
+			fixedExecutableName += " " + inputFile;
 		
 		configuration.fullCommand = fixedExecutableName;
 		
@@ -172,7 +173,7 @@ public class LocalCommand extends Command{
 			installDirectory = installDirectory + separator;
 		
 		// Search for and replace the ${inputFile} to properly configure the input file
-		if (fixedExecutableName.contains("${inputFile}"))
+		if (fixedExecutableName.contains("${inputFile}") && !configuration.appendInput)
 			fixedExecutableName = fixedExecutableName.replace("${inputFile}", inputFile);
 		
 		if (fixedExecutableName.contains("${installDir}") && installDirectory != null) 

@@ -39,7 +39,7 @@ public class RemoteCommand extends Command{
 	 * Method that overrides Commmand:Execute and actually implements
 	 * the particular RemoteCommand to be executed.
 	 */
-	public CommandStatus Execute() {
+	public CommandStatus execute() {
 		return null;
 	}
 	

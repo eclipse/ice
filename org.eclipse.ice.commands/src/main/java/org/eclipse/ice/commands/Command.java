@@ -63,7 +63,7 @@ public abstract class Command{
 	 * @param dictionary - Command to be executed
 	 * @return CommandStatus - indicating whether or not the Command was properly executed
 	 */
-	public abstract CommandStatus Execute();
+	public abstract CommandStatus execute();
 	
 	/**
 	 * This function sets up the necessary prequisites to actually run the particular command.
@@ -217,6 +217,7 @@ public abstract class Command{
 		}
 		catch(Exception e) {
 			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 	
