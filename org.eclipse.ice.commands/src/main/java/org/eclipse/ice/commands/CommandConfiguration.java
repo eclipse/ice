@@ -103,26 +103,26 @@ public class CommandConfiguration {
 	 * protected variables
 	 */
 	
-	public void SetCommandId(int _commandId) {
+	public void setCommandId(int _commandId) {
 		commandId = _commandId;
 	}
-	public int GetCommandId() {
+	public int getCommandId() {
 		return commandId;
 	}
-	public void SetExecDictionary(Dictionary<String, String> _dictionary) {
+	public void setExecDictionary(Dictionary<String, String> _dictionary) {
 		execDictionary = _dictionary;
 	}
-	public Dictionary<String, String> GetExecDictionary() {
+	public Dictionary<String, String> getExecDictionary() {
 		return execDictionary;
 	}
-	public void SetAppendInput(boolean _appendInput) {
+	public void setAppendInput(boolean _appendInput) {
 		appendInput = _appendInput;
 	}
 	/** 
 	 * Don't want a setter function for FullCommand since this is determined in
-	 * {@link org.eclipse.ice.commands.LocalCommand#FixExecutableName()}
+	 * {@link org.eclipse.ice.commands.LocalCommand#fixExecutableName()}
 	 */
-	public String GetFullCommand() {
+	public String getFullCommand() {
 		return fullCommand;
 	}
 }

@@ -49,40 +49,40 @@ public class RemoteCommand extends Command{
 	 * Method that overrides Commmand:Cancel and actually implements
 	 * the particular RemoteCommand to be cancelled.
 	 */
-	public CommandStatus Cancel() {
+	public CommandStatus cancel() {
 		return null;
 	}
 	
 	/**
-	 * See {@link org.eclipse.ice.commands.Command#Launch()}
+	 * See {@link org.eclipse.ice.commands.Command#launch()}
 	 */
 	@Override
-	public CommandStatus Launch() {
+	public CommandStatus launch() {
 		return null;
 	}
 	
 	/**
-	 * See {@link org.eclipse.ice.commands.Command#Run()}
+	 * See {@link org.eclipse.ice.commands.Command#run()}
 	 */
 	@Override
-	public CommandStatus Run() {
+	public CommandStatus run() {
 		
 		
 		return status;
 	}
 	
 	/**
-	 * See @{link {@link org.eclipse.ice.commands.Command#FixExecutableName()}
+	 * See @{link {@link org.eclipse.ice.commands.Command#fixExecutableName()}
 	 */
 	@Override
-	protected String FixExecutableName() {
+	protected String fixExecutableName() {
 		return null;
 	}
 	/**
 	 * Set a particular connection for a particular RemoteCommand
 	 * @param connection - the connection for this command
 	 */
-	public void SetConnection(String connection) {
+	public void setConnection(String connection) {
 		
 	}
 	
@@ -90,7 +90,7 @@ public class RemoteCommand extends Command{
 	 * Return the connection associated to this RemoteCommand
 	 * @return - the connection for this command
 	 */
-	public Connection GetConnection() {
+	public Connection getConnection() {
 		
 		return connection;
 	}

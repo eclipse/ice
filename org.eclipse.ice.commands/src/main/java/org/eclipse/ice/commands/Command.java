@@ -69,20 +69,20 @@ public abstract class Command{
 	 * This function sets up the necessary prequisites to actually run the particular command.
 	 * @return - CommandStatus indicating the result of the function
 	 */
-	public abstract CommandStatus Launch();
+	public abstract CommandStatus launch();
 	
 	/**
 	 * This function actually runs the particular command in question. It is called in Launch
 	 * after all of the setup for the job execution is finished.
 	 * @return - CommandStatus indicating the result of the function.
 	 */
-	public abstract CommandStatus Run();
+	public abstract CommandStatus run();
 	
 	/**
 	 * This function cancels the already submitted command, if possible.
 	 * @return CommandStatus - indicates whether or not the Command was properly cancelled.
 	 */
-	public abstract CommandStatus Cancel();
+	public abstract CommandStatus cancel();
 	
 	
 	/**
@@ -92,7 +92,7 @@ public abstract class Command{
 	 * since the remote target file system is not necessarily the same as the local.
 	 * @return - String that is the executable to be run
 	 */
-	protected abstract String FixExecutableName();
+	protected abstract String fixExecutableName();
 	
 	
 	/**
@@ -100,7 +100,7 @@ public abstract class Command{
 	 * in the operation of the command.
 	 * @return - return current status for a particular command
 	 */
-	public CommandStatus GetStatus() {
+	public CommandStatus getStatus() {
 		return status;
 	}
 	
@@ -108,7 +108,7 @@ public abstract class Command{
 	 * This function sets the status for a particular command to be stat
 	 * @param stat - new CommandStatus to be set
 	 */
-	public void SetStatus(CommandStatus stat) {
+	public void setStatus(CommandStatus stat) {
 		status = stat;
 	}
 	
@@ -116,7 +116,7 @@ public abstract class Command{
 	 * This function sets the CommandConfiguration for a particular command.
 	 * @param config - the configuration to be used for a particular command.
 	 */
-	public void SetConfiguration(CommandConfiguration config) {
+	public void setConfiguration(CommandConfiguration config) {
 		configuration = config;
 	}
 	
@@ -125,7 +125,7 @@ public abstract class Command{
 	 * to create a particular command. 
 	 * @return - the particular configuration for this command
 	 */
-	public CommandConfiguration GetConfiguration() {
+	public CommandConfiguration getConfiguration() {
 		return configuration;
 	}
 	
@@ -135,7 +135,7 @@ public abstract class Command{
 	 * @param filename - file to append to
 	 * @return - buffered writer for appending
 	 */
-	protected BufferedWriter GetBufferedWriter(String filename) {
+	protected BufferedWriter getBufferedWriter(String filename) {
 		
 		FileWriter writer = null;
 		BufferedWriter bufferedWriter = null;
@@ -162,7 +162,7 @@ public abstract class Command{
 	 * @param logName - the particular log name
 	 * @return - A string with the corresponding header text
 	 */
-	public String CreateOutputHeader(String logName) {
+	public String createOutputHeader(String logName) {
 		String header = null, localHostname = null;
 
 		// Get the machine identity since the local machine launches the job
@@ -206,7 +206,7 @@ public abstract class Command{
 	 * command status is not set to a flagged error, e.g. failed.
 	 * @param current_status
 	 */
-	protected void CheckStatus(CommandStatus current_status) {
+	protected void checkStatus(CommandStatus current_status) {
 		try {
 			if ( current_status == CommandStatus.FAILED ) 
 				throw new Exception("The Command has failed");

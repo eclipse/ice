@@ -86,9 +86,9 @@ public class LocalCommandTest {
 		LocalCommand defaultLocalCommand = new LocalCommand();
 		
 		System.out.println( "Some default LocalCommand constructor test values" );
-		System.out.println( defaultLocalCommand.GetConfiguration().GetCommandId() );
-		System.out.println( defaultLocalCommand.GetConfiguration().GetFullCommand() );
-		System.out.println( defaultLocalCommand.GetStatus() + "\n" );
+		System.out.println( defaultLocalCommand.getConfiguration().getCommandId() );
+		System.out.println( defaultLocalCommand.getConfiguration().getFullCommand() );
+		System.out.println( defaultLocalCommand.getStatus() + "\n" );
 		
 		// Test a constructor with a particular CommandConfiguration
 		CommandConfiguration interestingCommandConfig = new CommandConfiguration(
@@ -96,10 +96,10 @@ public class LocalCommandTest {
 		LocalCommand interestingLocalCommand = new LocalCommand( interestingCommandConfig );
 		
 		System.out.println( "The non-default LocalCommand constructor test" );
-		System.out.println( interestingLocalCommand.GetConfiguration().GetCommandId() );
-		System.out.println( interestingLocalCommand.GetConfiguration().GetFullCommand() );
-		System.out.println( interestingLocalCommand.GetStatus() );
-		System.out.println( interestingLocalCommand.GetConfiguration().GetExecDictionary().get("executable") );
+		System.out.println( interestingLocalCommand.getConfiguration().getCommandId() );
+		System.out.println( interestingLocalCommand.getConfiguration().getFullCommand() );
+		System.out.println( interestingLocalCommand.getStatus() );
+		System.out.println( interestingLocalCommand.getConfiguration().getExecDictionary().get("executable") );
 		
 	
 	}
@@ -112,7 +112,7 @@ public class LocalCommandTest {
 		String logName = "some LogFile";
 		LocalCommand defaultLocalCommand = new LocalCommand();
 		
-		String header = defaultLocalCommand.CreateOutputHeader(logName);
+		String header = defaultLocalCommand.createOutputHeader(logName);
 		System.out.println("\n The header string is: \n");
 		System.out.println(header);
 	
@@ -120,7 +120,7 @@ public class LocalCommandTest {
 	
 	
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#FixExecutableName()}
+	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#fixExecutableName()}
 	 */
 	@Test
 	public void testFixExecutableName() {
@@ -139,7 +139,7 @@ public class LocalCommandTest {
 		
 		//Make a dummy test command
 		LocalCommand testCommand = new LocalCommand(commandConfig);
-		String executableName = testCommand.FixExecutableName();
+		String executableName = testCommand.fixExecutableName();
 		
 		
 		Dictionary<String, String> dict2 = new Hashtable<String, String>();
@@ -150,7 +150,7 @@ public class LocalCommandTest {
 		
 		commandConfig = new CommandConfiguration(2, localjob, dict2, false);
 		LocalCommand testCommand2 = new LocalCommand(commandConfig);
-		executableName = testCommand2.FixExecutableName();
+		executableName = testCommand2.fixExecutableName();
 		
 		
 		System.out.println("Finished testFixExecutableName\n");
@@ -171,7 +171,7 @@ public class LocalCommandTest {
 	}
 	
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#Launch()}
+	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#launch()}
 	 */
 	@Test
 	public void testLaunch() {
@@ -179,22 +179,22 @@ public class LocalCommandTest {
 		// Test that, in the lack of dictionary setting, Launch returns a 
 		// CommandStatus error
 		LocalCommand testCommand = new LocalCommand();
-		CommandStatus testStatus = testCommand.Launch();
+		CommandStatus testStatus = testCommand.launch();
 		assert( testStatus == CommandStatus.INFOERROR );
 		
 		CommandConfiguration commandConfig = new CommandConfiguration(
 				3, localjob, executableDictionary, true );
 		
-		testCommand.SetConfiguration(commandConfig);
+		testCommand.setConfiguration(commandConfig);
 		
-		testStatus = testCommand.Launch();
+		testStatus = testCommand.launch();
 		
 		assert( testStatus == CommandStatus.RUNNING );
 		System.out.println("Finished testLaunch\n");	
 	}
 	
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#Run()}
+	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#run()}
 	 */
 	public void testRun() {
 		fail("Not yet implemented");

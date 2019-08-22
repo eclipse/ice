@@ -50,25 +50,25 @@ public class LocalCommand extends Command{
 	public CommandStatus execute() {
 		
 		status = CommandStatus.LAUNCHING;
-		status = Launch();
+		status = launch();
 		
 		// Check that the status of the job is good
 		// See CheckStatus function in {@link org.eclipse.ice.commands.Command}
-		CheckStatus(status); 
+		checkStatus(status); 
 		
 		
 		// Now that all of the prerequisites have been set, start the job running
-		status = Run();
+		status = run();
 		
 		
 		return status;
 	}
 	
 	/**
-	 * See {@link org.eclipse.ice.commands.Command#Launch()}
+	 * See {@link org.eclipse.ice.commands.Command#launch()}
 	 */
 	@Override
-	public CommandStatus Launch() {
+	public CommandStatus launch() {
 		
 		String executable = null, inputFile = null;
 		String stdOutFileName = null, stdErrFileName = null;
@@ -102,17 +102,17 @@ public class LocalCommand extends Command{
 			configuration.appendInput = false;
 		
 		// Set the command to actually run and execute
-		configuration.fullCommand = FixExecutableName();
+		configuration.fullCommand = fixExecutableName();
 		
 		//Set the output and error buffer writers
 		stdOutFileName = configuration.execDictionary.get("stdOutFileName");
-		stdOut = GetBufferedWriter(stdOutFileName);
+		stdOut = getBufferedWriter(stdOutFileName);
 		stdErrFileName = configuration.execDictionary.get("stdErrFileName");
-		stdErr = GetBufferedWriter(stdErrFileName);
+		stdErr = getBufferedWriter(stdErrFileName);
 
 		// Create unique headers for the output files which include useful information
-		stdOutHeader = CreateOutputHeader("standard output");
-		stdErrHeader = CreateOutputHeader("standard error");
+		stdOutHeader = createOutputHeader("standard output");
+		stdErrHeader = createOutputHeader("standard error");
 		
 		// Now write them out
 		try { 
@@ -130,10 +130,10 @@ public class LocalCommand extends Command{
 	}
 	
 	/**
-	 * See {@link org.eclipse.ice.commands.Command#Run()}
+	 * See {@link org.eclipse.ice.commands.Command#run()}
 	 */
 	@Override
-	public CommandStatus Run() {
+	public CommandStatus run() {
 		
 		
 		return status;
@@ -141,10 +141,10 @@ public class LocalCommand extends Command{
 	
 	
 	/**
-	 * See {@link org.eclipse.ice.commands.Command#FixExecutableName()}
+	 * See {@link org.eclipse.ice.commands.Command#fixExecutableName()}
 	 */
 	@Override
-	public String FixExecutableName() {
+	public String fixExecutableName() {
 		
 		Date currentDate = new Date();
 		int numProcs = Math.max(1,
@@ -211,7 +211,7 @@ public class LocalCommand extends Command{
 	 * Method that overrides Commmand:Cancel and actually implements
 	 * the particular LocalCommand to be cancelled.
 	 */
-	public CommandStatus Cancel() {
+	public CommandStatus cancel() {
 		return CommandStatus.CANCELED;
 	}
 

@@ -35,7 +35,7 @@ public class CommandFactory {
 	 * @param host - host on which to execute command
 	 * @return Command
 	 */
-	public static Command GetCommand(String command, String host) {
+	public static Command getCommand(String command, String host) {
 
 		return null;
 	}
