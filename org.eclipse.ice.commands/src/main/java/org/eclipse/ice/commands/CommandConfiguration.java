@@ -39,7 +39,11 @@ public class CommandConfiguration {
 	/**
 	 * The dictionary that contains the command properties.
 	 */
+<<<<<<< Upstream, based on 5a34beb9d4d4f90c07ae1b10cec99ff9706580db
 	private Dictionary<String,String> execDictionary;
+=======
+	protected HashMap<String,String> execDictionary = new HashMap<String, String>();
+>>>>>>> b891e8e Merged Launch and setConfiguration methods
 	
 	/**
 	 * A flag to mark whether or not the input file name should be appended to the executable command.
@@ -71,6 +75,12 @@ public class CommandConfiguration {
 	 * Default constructor
 	 */
 	public CommandConfiguration() {
+<<<<<<< Upstream, based on 5a34beb9d4d4f90c07ae1b10cec99ff9706580db
+=======
+		// Assume some default variables
+		commandId = -999;
+		isLocal.set(true);
+>>>>>>> b891e8e Merged Launch and setConfiguration methods
 	}
 
 	

@@ -51,7 +51,20 @@ public class RemoteCommand extends Command{
 	/**
 	 * Default constructor
 	 */
+<<<<<<< Upstream, based on 5a34beb9d4d4f90c07ae1b10cec99ff9706580db
 	public RemoteCommand() {
+=======
+	@Override
+	protected CommandStatus setConfiguration(CommandConfiguration config) {
+		return null;
+	}
+	
+	/**
+	 * See {@link org.eclipse.ice.commands.Command#run()}
+	 */
+	@Override
+	protected CommandStatus run() {
+>>>>>>> b891e8e Merged Launch and setConfiguration methods
 		
 	}
 	

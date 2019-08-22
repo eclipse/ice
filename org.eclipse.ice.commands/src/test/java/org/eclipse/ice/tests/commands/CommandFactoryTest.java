@@ -11,8 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import static org.junit.Assert.fail;
-
+import org.eclipse.ice.commands.CommandFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -37,7 +36,7 @@ public class CommandFactoryTest {
 	 */
 	@Test
 	public void testCommandFactory() {
-		fail("Not yet implemented");
+		CommandFactory factory = new CommandFactory();
 	}
 
 	/**
@@ -45,7 +44,9 @@ public class CommandFactoryTest {
 	 */
 	@Test
 	public void testGetCommand() {
-		fail("Not yet implemented");
+		CommandFactory factory = new CommandFactory();
+		
+		//Command theCommand = factory.getCommand(command, host)
 	}
 
 }

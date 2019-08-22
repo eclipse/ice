@@ -54,6 +54,24 @@ public abstract class Command{
 	 */
 	public abstract CommandStatus Execute(Dictionary<String, String> dictionary);
 	
+<<<<<<< Upstream, based on 5a34beb9d4d4f90c07ae1b10cec99ff9706580db
+=======
+
+	/**
+	 * This function sets the CommandConfiguration for a particular command.
+	 * It also prepares various files for job launch (e.g. logfiles)
+	 * @param config - the configuration to be used for a particular command.
+	 * @return CommandStatus - status indicating whether the configuration was properly set
+	 */
+	protected abstract CommandStatus setConfiguration(CommandConfiguration config);
+
+	/**
+	 * This function actually runs the particular command in question. It is called in Launch
+	 * after all of the setup for the job execution is finished.
+	 * @return - CommandStatus indicating the result of the function.
+	 */
+	protected abstract CommandStatus run();
+>>>>>>> b891e8e Merged Launch and setConfiguration methods
 	
 	/**
 	 * This function cancels the already submitted command, if possible.
@@ -79,6 +97,7 @@ public abstract class Command{
 		status = stat;
 	}
 	
+<<<<<<< Upstream, based on 5a34beb9d4d4f90c07ae1b10cec99ff9706580db
 	/**
 	 * This function sets the CommandConfiguration for a particular command.
 	 * @param config - the configuration to be used for a particular command.
@@ -86,6 +105,9 @@ public abstract class Command{
 	public void SetConfiguration(CommandConfiguration config) {
 		configuration = config;
 	}
+=======
+
+>>>>>>> b891e8e Merged Launch and setConfiguration methods
 	
 	/**
 	 * This function returns to the user the configuration that was used 
