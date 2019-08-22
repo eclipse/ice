@@ -29,7 +29,9 @@ public class LocalCommand extends Command{
 	 */
 	public LocalCommand() {
 		configuration = new CommandConfiguration();
-		status = CommandStatus.PROCESSING;
+		status = CommandStatus.LAUNCHING;
+		status = setConfiguration(configuration);
+		
 	}
 
 	/**
@@ -37,22 +39,21 @@ public class LocalCommand extends Command{
 	 * @param _configuration
 	 */
 	public LocalCommand(CommandConfiguration _configuration) {
-		configuration = _configuration;
-		status = CommandStatus.PROCESSING;
+		status = CommandStatus.LAUNCHING;
+		status = setConfiguration(_configuration);
+		
 	}
 	
 	
 	/**
-	 * Method that overrides Commmand:Execute and actually implements
+	 * Method that overrides {@link org.eclipse.ice.commands.Command#execute()} and actually implements
 	 * the particular LocalCommand to be executed.
 	 */
 	@Override
 	public CommandStatus execute() {
 		
-		status = CommandStatus.LAUNCHING;
-		status = launch();
-		
-		// Check that the status of the job is good
+		// Check that the status of the job is good after setting up the configuration
+		// in the constructor
 		// See CheckStatus function in {@link org.eclipse.ice.commands.Command}
 		checkStatus(status); 
 		
@@ -65,11 +66,15 @@ public class LocalCommand extends Command{
 	}
 	
 	/**
-	 * See {@link org.eclipse.ice.commands.Command#launch()}
+	 * See {@link org.eclipse.ice.commands.Command#setConfiguration(CommandConfiguration)}
 	 */
 	@Override
-	public CommandStatus launch() {
+	protected CommandStatus setConfiguration(CommandConfiguration config) {
 		
+		// Set the configuration for the command
+		configuration = config;
+		
+		// Now extract the information from the command dictionary
 		String executable = null, inputFile = null;
 		String stdOutFileName = null, stdErrFileName = null;
 		String stdOutHeader = null, stdErrHeader = null;
@@ -91,10 +96,10 @@ public class LocalCommand extends Command{
 		
 		// Check the info and return failure if something was not set correctly
 		if (executable == null || inputFile == null || stdOutFileName == null
-					|| stdErrFileName == null || numProcs == null || installDir == null) {
-				status = CommandStatus.INFOERROR;
-				return status;
-		}
+					|| stdErrFileName == null || numProcs == null || installDir == null) 
+				return CommandStatus.INFOERROR;
+				
+		
 		
 		// If the input file name should not be appended to the executable, set it
 		if ( configuration.execDictionary.get("noAppendInput") != null 
@@ -125,7 +130,7 @@ public class LocalCommand extends Command{
 			e.printStackTrace();
 		}
 		
-		
+		// All setup completed, return that the job will now run
 		return CommandStatus.RUNNING;
 	}
 	
@@ -133,7 +138,7 @@ public class LocalCommand extends Command{
 	 * See {@link org.eclipse.ice.commands.Command#run()}
 	 */
 	@Override
-	public CommandStatus run() {
+	protected CommandStatus run() {
 		
 		
 		return status;
@@ -144,7 +149,7 @@ public class LocalCommand extends Command{
 	 * See {@link org.eclipse.ice.commands.Command#fixExecutableName()}
 	 */
 	@Override
-	public String fixExecutableName() {
+	protected String fixExecutableName() {
 		
 		Date currentDate = new Date();
 		int numProcs = Math.max(1,

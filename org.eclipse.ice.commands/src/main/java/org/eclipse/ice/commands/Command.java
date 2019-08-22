@@ -65,18 +65,21 @@ public abstract class Command{
 	 */
 	public abstract CommandStatus execute();
 	
+
 	/**
-	 * This function sets up the necessary prequisites to actually run the particular command.
-	 * @return - CommandStatus indicating the result of the function
+	 * This function sets the CommandConfiguration for a particular command.
+	 * It also prepares various files for job launch (e.g. logfiles)
+	 * @param config - the configuration to be used for a particular command.
+	 * @return CommandStatus - status indicating whether the configuration was properly set
 	 */
-	public abstract CommandStatus launch();
-	
+	protected abstract CommandStatus setConfiguration(CommandConfiguration config);
+
 	/**
 	 * This function actually runs the particular command in question. It is called in Launch
 	 * after all of the setup for the job execution is finished.
 	 * @return - CommandStatus indicating the result of the function.
 	 */
-	public abstract CommandStatus run();
+	protected abstract CommandStatus run();
 	
 	/**
 	 * This function cancels the already submitted command, if possible.
@@ -112,13 +115,7 @@ public abstract class Command{
 		status = stat;
 	}
 	
-	/**
-	 * This function sets the CommandConfiguration for a particular command.
-	 * @param config - the configuration to be used for a particular command.
-	 */
-	public void setConfiguration(CommandConfiguration config) {
-		configuration = config;
-	}
+
 	
 	/**
 	 * This function returns to the user the configuration that was used 

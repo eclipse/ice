@@ -57,7 +57,7 @@ public class RemoteCommand extends Command{
 	 * See {@link org.eclipse.ice.commands.Command#launch()}
 	 */
 	@Override
-	public CommandStatus launch() {
+	protected CommandStatus setConfiguration(CommandConfiguration config) {
 		return null;
 	}
 	
@@ -65,7 +65,7 @@ public class RemoteCommand extends Command{
 	 * See {@link org.eclipse.ice.commands.Command#run()}
 	 */
 	@Override
-	public CommandStatus run() {
+	protected CommandStatus run() {
 		
 		
 		return status;
