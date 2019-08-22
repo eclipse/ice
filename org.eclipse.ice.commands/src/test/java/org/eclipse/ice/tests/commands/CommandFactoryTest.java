@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -39,9 +40,19 @@ public class CommandFactoryTest {
 
 
 	/**
+	 * Test method for
+	 * {@link org.eclipse.ice.commands.CommandFactory#CommandFactory()}.
+	 */
+	@Test
+	public void testCommandFactory() {
+		CommandFactory factory = new CommandFactory();
+	}
+
+	/**
 	 * Test method for {@link org.eclipse.ice.commands.CommandFactory#getCommand()}.
 	 */
 	@Test
+
 	public void testGetLocalCommand() {
 		CommandFactory factory = new CommandFactory();
 		
