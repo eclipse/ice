@@ -34,6 +34,15 @@ public class RemoteCommand extends Command{
 		
 	}
 	
+	/**
+	 * Constructor to instantiate the remote command with a particular 
+	 * CommandConfiguration
+	 * @param - CommandConfiguration which corresponds to the particular command
+	 */
+	public RemoteCommand(CommandConfiguration config) {
+		configuration = config;
+	}
+	
 	@Override
 	/**
 	 * Method that overrides Commmand:Execute and actually implements

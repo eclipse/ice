@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 /**
  * The command factory simplifies the creation of Commands without revealing how
  * they are constructed. It is primarily used for creating generic commands,
@@ -35,9 +38,45 @@ public class CommandFactory {
 	 * @param host - host on which to execute command
 	 * @return Command
 	 */
-	public static Command getCommand(String command, String host) {
+	public static Command getCommand(String host, CommandConfiguration configuration) {
 
-		return null;
+		Command command = null;
+		
+		if(isLocal(host)) {
+			command = new LocalCommand(configuration);
+		}
+		else {
+			command = new RemoteCommand(configuration);
+		}
+	
+		return command;
+		
+	}
+	
+	/**
+	 * A small test function to check whether or not the provided hostname by the user
+	 * in CommandFactory is a local hostname or not
+	 * @param host - String of the hostname to be checked
+	 * @return boolean - returns true if the hostname matches that of the local hostname,
+	 * 					 false otherwise.
+	 */
+	private static boolean isLocal(String host) {
+		
+		InetAddress addr = null;
+		try {
+			addr = InetAddress.getLocalHost();
+		} 
+		catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		
+		String hostname = addr.getHostName();
+		
+		if(hostname == host)
+			return true;
+		else
+			return false;
+		
 	}
 
 }
