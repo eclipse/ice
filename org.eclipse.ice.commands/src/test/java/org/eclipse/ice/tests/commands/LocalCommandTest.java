@@ -15,7 +15,7 @@ import static org.junit.Assert.fail;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.commands.CommandConfiguration;
@@ -35,7 +35,7 @@ import org.junit.Test;
 public class LocalCommandTest {
 
 	AtomicBoolean localjob = new AtomicBoolean();
-	Dictionary<String, String> executableDictionary;
+	HashMap<String, String> executableDictionary;
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -58,7 +58,7 @@ public class LocalCommandTest {
 		
 		// Set up some default instance variables
 		localjob.set( true );
-		executableDictionary = new Hashtable<String, String>();
+		executableDictionary = new HashMap<String, String>();
 		executableDictionary.put( "executable" , "someExecutable.sh ${installDir}" );
 		executableDictionary.put( "inputFile" , "someInputFile.txt" );
 		executableDictionary.put( "stdOutFileName",  "someOutFile.txt" );
@@ -127,7 +127,7 @@ public class LocalCommandTest {
 		System.out.println("Starting testFixExecutableName\n");
 		
 		//Make a dictionary to test a few features with
-		Dictionary<String, String> dict = new Hashtable<String, String>();
+		HashMap<String, String> dict = new HashMap<String, String>();
 		dict.put( "executable", "fixexecutableTest.sh");
 		dict.put( "inputFile" , "fixexecutableInputTest.txt" );
 		dict.put( "stdOutFileName",  "someOutFile.txt" );
@@ -142,7 +142,7 @@ public class LocalCommandTest {
 		String executableName = testCommand.fixExecutableName();
 		
 		
-		Dictionary<String, String> dict2 = new Hashtable<String, String>();
+		HashMap<String, String> dict2 = new HashMap<String, String>();
 		dict2.put( "executable", "fixexecutableTest.sh ${installDir} ${inputFile}");
 		dict2.put( "inputFile" , "fixexecutableInputTest.txt" );
 		dict2.put( "installDir" , "~/testinstall");

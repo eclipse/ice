@@ -14,8 +14,7 @@
 package org.eclipse.ice.commands;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -40,7 +39,7 @@ public class CommandConfiguration {
 	/**
 	 * The dictionary that contains the command properties.
 	 */
-	protected Dictionary<String,String> execDictionary;
+	protected HashMap<String,String> execDictionary;
 	
 	/**
 	 * A flag to mark whether or not the input file name should be appended to the executable command.
@@ -75,7 +74,7 @@ public class CommandConfiguration {
 		// Assume some default variables
 		commandId = -999;
 		isLocal.set(true);
-		execDictionary = new Hashtable<String, String>();
+		execDictionary = new HashMap<String, String>();
 				
 	}
 
@@ -88,7 +87,7 @@ public class CommandConfiguration {
 	 * @param _appendInput
 	 */
 	public CommandConfiguration(int _commandId, AtomicBoolean _isLocal, 
-			Dictionary<String,String> _execDictionary, boolean _appendInput) {
+			HashMap<String,String> _execDictionary, boolean _appendInput) {
 		commandId = _commandId;
 		isLocal = _isLocal;
 		execDictionary = _execDictionary;
@@ -109,10 +108,10 @@ public class CommandConfiguration {
 	public int getCommandId() {
 		return commandId;
 	}
-	public void setExecDictionary(Dictionary<String, String> _dictionary) {
+	public void setExecDictionary(HashMap<String, String> _dictionary) {
 		execDictionary = _dictionary;
 	}
-	public Dictionary<String, String> getExecDictionary() {
+	public HashMap<String, String> getExecDictionary() {
 		return execDictionary;
 	}
 	public void setAppendInput(boolean _appendInput) {
