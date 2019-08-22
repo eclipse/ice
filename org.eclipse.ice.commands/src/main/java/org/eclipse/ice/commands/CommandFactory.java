@@ -17,7 +17,7 @@ package org.eclipse.ice.commands;
  * whereas other factories are use for creating specific commands such as file
  * transfer commands.
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Joe Osborn
  */
 public class CommandFactory {
 
@@ -25,7 +25,7 @@ public class CommandFactory {
 	 * Constructor
 	 */
 	public CommandFactory() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	/**

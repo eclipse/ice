@@ -39,7 +39,7 @@ public class CommandConfiguration {
 	/**
 	 * The dictionary that contains the command properties.
 	 */
-	protected HashMap<String,String> execDictionary;
+	protected HashMap<String,String> execDictionary = new HashMap<String, String>();
 	
 	/**
 	 * A flag to mark whether or not the input file name should be appended to the executable command.
@@ -74,8 +74,6 @@ public class CommandConfiguration {
 		// Assume some default variables
 		commandId = -999;
 		isLocal.set(true);
-		execDictionary = new HashMap<String, String>();
-				
 	}
 
 	/**

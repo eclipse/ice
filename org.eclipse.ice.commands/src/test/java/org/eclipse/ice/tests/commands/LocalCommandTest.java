@@ -11,10 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import static org.junit.Assert.fail;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -22,9 +18,7 @@ import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.LocalCommand;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -36,19 +30,8 @@ public class LocalCommandTest {
 
 	AtomicBoolean localjob = new AtomicBoolean();
 	HashMap<String, String> executableDictionary;
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
+	
+	
 
 	/**
 	 * @throws java.lang.Exception
@@ -82,82 +65,29 @@ public class LocalCommandTest {
 	@Test
 	public void testLocalCommand() {
 		
-		// Test the default constructor
-		LocalCommand defaultLocalCommand = new LocalCommand();
+		System.out.println("Starting testLocalCommand");
 		
-		System.out.println( "Some default LocalCommand constructor test values" );
-		System.out.println( defaultLocalCommand.getConfiguration().getCommandId() );
-		System.out.println( defaultLocalCommand.getConfiguration().getFullCommand() );
-		System.out.println( defaultLocalCommand.getStatus() + "\n" );
+		// Test that, in the lack of dictionary setting, the default constructor returns a 
+		// CommandStatus error
+		LocalCommand testCommand = new LocalCommand();
+		CommandStatus testStatus = testCommand.getStatus();
+		assert( testStatus == CommandStatus.INFOERROR );
 		
-		// Test a constructor with a particular CommandConfiguration
-		CommandConfiguration interestingCommandConfig = new CommandConfiguration(
-				4, localjob, executableDictionary, true );
-		LocalCommand interestingLocalCommand = new LocalCommand( interestingCommandConfig );
-		
-		System.out.println( "The non-default LocalCommand constructor test" );
-		System.out.println( interestingLocalCommand.getConfiguration().getCommandId() );
-		System.out.println( interestingLocalCommand.getConfiguration().getFullCommand() );
-		System.out.println( interestingLocalCommand.getStatus() );
-		System.out.println( interestingLocalCommand.getConfiguration().getExecDictionary().get("executable") );
-		
-	
-	}
-	
-	/**
-	 * Test method for {@link org.eclipse.ice.commands.Command#CreateOutputHeader()}
-	 */
-	@Test
-	public void testCreateOutputHeader() throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		String logName = "some LogFile";
-		LocalCommand defaultLocalCommand = new LocalCommand();
-		
-		String header = defaultLocalCommand.createOutputHeader(logName);
-		System.out.println("\n The header string is: \n");
-		System.out.println(header);
-	
-	}
-	
-	
-	/**
-	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#fixExecutableName()}
-	 */
-	@Test
-	public void testFixExecutableName() {
-		System.out.println("Starting testFixExecutableName\n");
-		
-		//Make a dictionary to test a few features with
-		HashMap<String, String> dict = new HashMap<String, String>();
-		dict.put( "executable", "fixexecutableTest.sh");
-		dict.put( "inputFile" , "fixexecutableInputTest.txt" );
-		dict.put( "stdOutFileName",  "someOutFile.txt" );
-		dict.put( "stdErrFileName",  "someErrFile.txt" );
-		dict.put( "numProcs",  "1");
-		
+		// Now make a "real" command configuration to test
 		CommandConfiguration commandConfig = new CommandConfiguration(
-						1, localjob, dict, true );
+				3, localjob, executableDictionary, true );
 		
-		//Make a dummy test command
-		LocalCommand testCommand = new LocalCommand(commandConfig);
-		String executableName = testCommand.fixExecutableName();
+		LocalCommand realCommand = new LocalCommand(commandConfig);
+		testStatus = realCommand.getStatus();
 		
-		
-		HashMap<String, String> dict2 = new HashMap<String, String>();
-		dict2.put( "executable", "fixexecutableTest.sh ${installDir} ${inputFile}");
-		dict2.put( "inputFile" , "fixexecutableInputTest.txt" );
-		dict2.put( "installDir" , "~/testinstall");
-		dict2.put( "numProcs", "2");
-		
-		commandConfig = new CommandConfiguration(2, localjob, dict2, false);
-		LocalCommand testCommand2 = new LocalCommand(commandConfig);
-		executableName = testCommand2.fixExecutableName();
-		
-		
-		System.out.println("Finished testFixExecutableName\n");
+		assert( testStatus == CommandStatus.RUNNING );
+		System.out.println("Finished testConfiguration\n");	
+	
 	}
 	
+
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#Execute(Dictionary)}
+	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#Execute()}
 	 */
 	@Test
 	public void testExecute() {
@@ -165,39 +95,13 @@ public class LocalCommandTest {
 		
 		LocalCommand testCommand = new LocalCommand(new CommandConfiguration(2, localjob,
 				executableDictionary, true));
+		
 		CommandStatus testStatus = testCommand.execute();
 		
 		System.out.println("Finished testExecute\n");
 	}
 	
-	/**
-	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#launch()}
-	 */
-	@Test
-	public void testLaunch() {
-		System.out.println("Starting testLaunch");
-		// Test that, in the lack of dictionary setting, Launch returns a 
-		// CommandStatus error
-		LocalCommand testCommand = new LocalCommand();
-		CommandStatus testStatus = testCommand.launch();
-		assert( testStatus == CommandStatus.INFOERROR );
-		
-		CommandConfiguration commandConfig = new CommandConfiguration(
-				3, localjob, executableDictionary, true );
-		
-		testCommand.setConfiguration(commandConfig);
-		
-		testStatus = testCommand.launch();
-		
-		assert( testStatus == CommandStatus.RUNNING );
-		System.out.println("Finished testLaunch\n");	
-	}
 	
-	/**
-	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#run()}
-	 */
-	public void testRun() {
-		fail("Not yet implemented");
-	}
+	
 	
 }
