@@ -48,6 +48,7 @@ public class LocalCommandTest {
 		executableDictionary.put( "stdErrFileName",  "someErrFile.txt" );
 		executableDictionary.put( "installDir" ,  "~/install");
 		executableDictionary.put( "numProcs",  "1");
+		executableDictionary.put( "os",  "OSX");
 	}
 
 	/**

@@ -46,7 +46,8 @@ public class CommandFactory {
 			command = new LocalCommand(configuration);
 		}
 		else {
-			command = new RemoteCommand(configuration);
+			Connection connect = new Connection();
+			command = new RemoteCommand(connect, configuration);
 		}
 	
 		return command;

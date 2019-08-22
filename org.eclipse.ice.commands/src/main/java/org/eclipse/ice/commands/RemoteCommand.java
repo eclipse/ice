@@ -39,7 +39,7 @@ public class RemoteCommand extends Command{
 	 * CommandConfiguration
 	 * @param - CommandConfiguration which corresponds to the particular command
 	 */
-	public RemoteCommand(CommandConfiguration config) {
+	public RemoteCommand(Connection connect, CommandConfiguration config) {
 		configuration = config;
 	}
 	

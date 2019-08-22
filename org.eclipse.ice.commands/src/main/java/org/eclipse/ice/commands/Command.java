@@ -11,14 +11,19 @@
  *   Joe Osborn
  *******************************************************************************/
 package org.eclipse.ice.commands;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.List;
 
 
 
@@ -30,11 +35,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class Command{
 
-	/**
-	 * An atomic boolean for notifying the thread that it should proceed launching
-	 * the job since the form has been submitted.
-	 */
-	private AtomicBoolean formSubmitted;
 	
 	/**
 	 * The current status of the command
@@ -51,6 +51,16 @@ public abstract class Command{
 	 * Output streams for the job
 	 */
 	BufferedWriter stdOut = null, stdErr = null;
+	
+	/**
+	 * Reference to the Java process that is the job to be executed
+	 */
+	private Process job;
+	
+	/**
+	 * The variable that actually handles the job execution at the command line
+	 */
+	protected ProcessBuilder jobBuilder;
 	
 	/**
 	 * Default constructor
@@ -81,6 +91,7 @@ public abstract class Command{
 	 */
 	protected abstract CommandStatus run();
 	
+
 	/**
 	 * This function cancels the already submitted command, if possible.
 	 * @return CommandStatus - indicates whether or not the Command was properly cancelled.
@@ -198,6 +209,277 @@ public abstract class Command{
 		return header;
 	}
 	
+	
+	/**
+	 * This function sets up the ProcessBuilder member variable to prepare for 
+	 * actually submitting the job process to the command line from Java. The function
+	 * adjusts the command based on the OS on which it shall run, and then creates
+	 * the variables necessary for the command line execution.
+	 * @param command - Command to be prepared for shell execution
+	 */
+	protected CommandStatus setupProcessBuilder(String command) {
+		// Local declarations
+		String os = configuration.getExecDictionary().get("os");
+		ArrayList<String> commandList = new ArrayList<String>();
+		
+		
+		// If the OS is anything other than Windows, then the process builder
+		// needs to be configured to launch bash in command mode to avoid weird
+		// escape sequences.
+		if( !os.toLowerCase().contains("win")) {
+			commandList.add("/bin/bash");
+			commandList.add("-c");
+		}
+		
+		// Now add the actual command to be processed, prepended with /bin/bash-c if 
+		// the OS is not windows
+		commandList.add(command);
+		
+		jobBuilder = new ProcessBuilder(commandList);
+		
+		File directory = new File(configuration.getExecDictionary().get("workingDirectory"));
+		jobBuilder.directory(directory);
+		jobBuilder.redirectErrorStream(false);
+		
+		return CommandStatus.RUNNING;
+	}
+	
+	/**
+	 * This function is responsible for actually running the Process in the command line
+	 * It throws an IOException if the log files have not been properly created with BufferWriters,
+	 *  and thus can't be written to.
+	 * @throws IOException
+	 */
+	protected CommandStatus runProcessBuilder() {
+		
+		String os = configuration.getExecDictionary().get("os");
+		List<String> commandList = jobBuilder.command();
+		String errMsg = "";
+		
+		
+		// Check that the job hasn't been canceled and is ready to run
+		try {
+			if(status != CommandStatus.CANCELED)
+				job = jobBuilder.start();
+		}
+		catch (IOException e) {
+			
+			if(!os.toLowerCase().contains("win")) {
+				// If there is an error, add it to errMsg
+				errMsg += e.getMessage() + "\n";
+			}
+			else {
+				// If this is a windows machine, try to run in the command prompt
+				commandList.add(0, "CMD");
+				commandList.add(1, "/C");
+				
+				// Reset the ProcessBuilder and directory to reflect the changes
+				jobBuilder = new ProcessBuilder(commandList);
+				File directory = new File(configuration.getExecDictionary().get("workingDirectory"));
+				jobBuilder.directory(directory);
+				jobBuilder.redirectErrorStream(false);
+				
+				// Now try again to start the job
+				try {
+					if(status != CommandStatus.CANCELED)
+						job = jobBuilder.start();
+				}
+				catch (IOException e2) {
+					// If there is an error, add it to errMsg
+					errMsg += e2.getMessage() + "\n";
+				}
+				
+			}
+			
+			
+		}
+		
+		// Clean up and log the output of the job
+		status = cleanProcessBuilder(errMsg);
+		
+		
+		return status;
+		
+	}
+	
+	/**
+	 * This function cleans up the remaining tasks left after job processing. This is
+	 * mostly logging output files, and checking that the process actually finished
+	 * successfully according to the ProcessBuilder
+	 * @param errorMessage - A string of any potential errors that were thrown during
+	 * 						 job execution
+	 * @return - CommandStatus indicating whether or not the function processed correctly
+	 */
+	protected CommandStatus cleanProcessBuilder(String errorMessage) {
+		
+		InputStream stdOutStream = null, stdErrStream = null;
+		int exitValue = -1; //arbitrary value indicating not completed (yet)
+		
+		// If errMsg is not an empty String, then there were some errors and they
+		// should be written out to the log file
+		if( errorMessage != "" ) {
+			try {
+				stdErr.write(errorMessage);
+				stdOut.close();
+				stdErr.close();
+			}
+			catch (IOException e){
+				System.out.println("There were errors in the job running, but could not write to the error log file!");
+				return CommandStatus.FAILED;
+			}
+			
+			return CommandStatus.FAILED;
+		}
+		
+		// Log the output of the job execution
+		stdOutStream = job.getInputStream();
+		stdErrStream = job.getErrorStream();
+		
+		// Check that output was correctly logged. If not, return error
+		if( logOutput(stdOutStream, stdErrStream) == false ) {
+			return CommandStatus.FAILED;
+		}
+		
+		// Try to get the exit value of the job
+		try {
+			exitValue = job.exitValue();
+		} 
+		catch (IllegalThreadStateException e) {
+			// The job is still running, so it should be watched by someone
+			// else.
+			return CommandStatus.RUNNING;
+		}
+		// By convention exit values other than zero mean that the program
+		// failed. I follow that convention here.
+		if (exitValue == 0) {
+			return CommandStatus.SUCCESS;
+		} 
+		else {
+			return CommandStatus.FAILED;
+		}
+		
+		
+		
+	}
+	
+	
+	/**
+	 * This operation is responsible for monitoring the exit value of the
+	 * running job. It uses the Configuration.isLocal AtomicBoolean to determine 
+	 * whether it should check the local job or the remote job. 
+	 * @throws IOException 
+	 */
+	protected void monitorJob()  {
+
+		// Local Declarations
+		int exitValue = -32; // Totally arbitrary
+
+		// Wait until the job exits. By convention an exit code of
+		// zero means that the job has succeeded. Watch it until it
+		// finishes.
+		while (exitValue != 0) {
+			// Try to get the exit value of the job
+			try {
+				exitValue = job.exitValue();
+			} 
+			catch (IllegalThreadStateException e) {
+				// Complain, but keep watching
+				try {
+					stdErr.write(getClass().getName() + " Exception!: " + e);
+				} 
+				catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+			// Give it a second
+			try {
+				Thread.currentThread();
+				Thread.sleep(1000);
+			} 
+			catch (InterruptedException e) {
+				// Complain
+				try {
+					stdErr.write(getClass().getName() + " Exception!: " + e);
+				} 
+				catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+
+			// If for some reason the job has failed,
+			// it shouldn't be alive and we should break;
+			if (!job.isAlive()) {
+				break;
+			}
+		}
+		try {
+			stdOut.write("LocalExecutionAction Message: Exit value = " + exitValue);
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return;
+	}
+	
+	
+	
+	
+	/**
+	 * This function takes the given streams as parameters and logs them into an
+	 * output file. The function returns a boolean on whether or not the 
+	 * function completed successfully.
+	 * @param output
+	 * @param errors
+	 * @return - boolean - true if output was logged, false otherwise
+	 */
+	protected boolean logOutput(InputStream output, InputStream errors) {
+		
+		// Local Declarations
+		InputStreamReader stdOutStreamReader, stdErrStreamReader;
+		BufferedReader stdOutReader, stdErrReader;
+		String nextLine;
+
+		// Setup the BufferedReader that will get stdout from the process.
+		stdOutStreamReader = new InputStreamReader(output);
+		stdOutReader = new BufferedReader(stdOutStreamReader);
+		
+		// Setup the BufferedReader that will get stderr from the process.
+		stdErrStreamReader = new InputStreamReader(errors);
+		stdErrReader = new BufferedReader(stdErrStreamReader);
+
+		// Catch the stdout and stderr output
+		try {
+			// Write to the stdOut file
+			while ( ( nextLine = stdOutReader.readLine() ) != null ) {
+				
+				stdOut.write(nextLine);
+				// MUST put a new line for this type of writer. "\r\n" works on
+				// Windows and Unix-based systems.
+				stdOut.write("\r\n");
+				stdOut.flush();
+			}
+			// Write to the stdErr file
+			while ((nextLine = stdErrReader.readLine()) != null) {
+				stdErr.write(nextLine);
+				// MUST put a new line for this type of writer. "\r\n" works on
+				// Windows and Unix-based systems.
+				stdErr.write("\r\n");
+				stdErr.flush();
+			}
+		} catch (IOException e) {
+			// Or fail and complain about it.
+			System.out.println("Could not logOutput, returning error!");
+			return false;
+		}
+		
+		
+		// Completed successfully, return true
+		return true;
+	}
+	
+	
+	
 	/**
 	 * This function is a simple helper function to check and make sure that the 
 	 * command status is not set to a flagged error, e.g. failed.
@@ -209,13 +491,12 @@ public abstract class Command{
 				throw new Exception("The Command has failed");
 			if ( current_status == CommandStatus.INFOERROR )
 				throw new Exception("Not enough info for Command, throwing CommandStatus.INFOERROR");
-			if ( current_status == CommandStatus.CANCELED )
-				throw new Exception("Command was Canceled, aborting Command processing");
 		}
 		catch(Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
 		}
+		
 	}
 	
 	

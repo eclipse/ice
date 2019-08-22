@@ -39,14 +39,6 @@ public class CommandFactoryTest {
 	}
 
 
-	/**
-	 * Test method for
-	 * {@link org.eclipse.ice.commands.CommandFactory#CommandFactory()}.
-	 */
-	@Test
-	public void testCommandFactory() {
-		CommandFactory factory = new CommandFactory();
-	}
 
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.CommandFactory#getCommand()}.

@@ -78,7 +78,8 @@ public class LocalCommand extends Command{
 		String executable = null, inputFile = null;
 		String stdOutFileName = null, stdErrFileName = null;
 		String stdOutHeader = null, stdErrHeader = null;
-		String numProcs = null, installDir = null;
+		String numProcs = null, installDir = null, os = null;
+		String directory = null;
 
 		// Make sure the dictionary was actually set
 		if (configuration.execDictionary != null) {
@@ -90,13 +91,16 @@ public class LocalCommand extends Command{
 			stdErrFileName = configuration.execDictionary.get("stdErrFileName");
 			numProcs = configuration.execDictionary.get("numProcs");
 			installDir = configuration.execDictionary.get("installDir");
+			os = configuration.execDictionary.get("os");
+			directory = configuration.execDictionary.get("workingDirectory");
 		}
 		else
 			return CommandStatus.INFOERROR;
 		
 		// Check the info and return failure if something was not set correctly
 		if (executable == null || inputFile == null || stdOutFileName == null
-					|| stdErrFileName == null || numProcs == null || installDir == null) 
+					|| stdErrFileName == null || numProcs == null || os == null
+					|| directory == null) 
 				return CommandStatus.INFOERROR;
 				
 		
@@ -122,6 +126,7 @@ public class LocalCommand extends Command{
 		// Now write them out
 		try { 
 			stdOut.write(stdOutHeader);
+			stdOut.write("Executable to be run is: " + configuration.fullCommand +"\n");
 			stdOut.close();
 			stdErr.write(stdErrHeader);
 			stdErr.close();
@@ -140,6 +145,35 @@ public class LocalCommand extends Command{
 	@Override
 	protected CommandStatus run() {
 		
+		// Local declarations
+		
+		
+		// Loop over the stages and launch them so long as the status marks them
+		// as processed. This needs to be done sequentially, so use a regular,
+		// non-concurrent access loop
+		for ( int i = 0; i < configuration.splitCommand.size(); i++) {
+			
+			// Check the status to ensure job has not been canceled
+			if (status == CommandStatus.CANCELED) {
+				System.out.println("Job has been canceled, quitting now.");
+				break;
+			}
+			
+			// Set up the process builder
+			String thisCommand = configuration.splitCommand.get(i);
+
+			status = setupProcessBuilder(thisCommand);
+			status = runProcessBuilder();
+			monitorJob();
+			
+			// Check the status to ensure the job finished correctly
+			checkStatus(status);
+			
+			if(status != CommandStatus.SUCCESS) {
+				System.out.println("The status of job " + i + " at job finish is " + status);
+			}
+			
+		}
 		
 		return status;
 	}
