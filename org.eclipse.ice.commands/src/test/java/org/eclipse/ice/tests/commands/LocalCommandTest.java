@@ -49,6 +49,7 @@ public class LocalCommandTest {
 		executableDictionary.put( "installDir" ,  "~/install");
 		executableDictionary.put( "numProcs",  "1");
 		executableDictionary.put( "os",  "OSX");
+		executableDictionary.put( "workingDirectory", "/");
 	}
 
 	/**
@@ -62,24 +63,21 @@ public class LocalCommandTest {
 	
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.LocalCommand()}
+	 * Tests check for proper configuration and checking of the LocalCommand
+	 * member variables so that the Command can actually be run. 
 	 */
 	@Test
 	public void testLocalCommand() {
 		
 		System.out.println("Starting testLocalCommand");
-		
-		// Test that, in the lack of dictionary setting, the default constructor returns a 
-		// CommandStatus error
-		LocalCommand testCommand = new LocalCommand();
-		CommandStatus testStatus = testCommand.getStatus();
-		assert( testStatus == CommandStatus.INFOERROR );
-		
+	
 		// Now make a "real" command configuration to test
 		CommandConfiguration commandConfig = new CommandConfiguration(
 				3, localjob, executableDictionary, true );
 		
 		LocalCommand realCommand = new LocalCommand(commandConfig);
-		testStatus = realCommand.getStatus();
+		CommandStatus testStatus = realCommand.getStatus();
+		
 		
 		assert( testStatus == CommandStatus.RUNNING );
 		System.out.println("Finished testConfiguration\n");	
@@ -88,7 +86,11 @@ public class LocalCommandTest {
 	
 
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#Execute()}
+	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#Execute()}. This test should
+	 * "fail" by default since the CommandConfiguration executableDictionary does not point
+	 * to a real executable. This is a test of the API catching an incorrectly configured
+	 * command.
+	 * For a test of a fully functional command, see {@link org.eclipse.ice.commands.testCommandFactory()}
 	 */
 	@Test
 	public void testExecute() {
@@ -98,7 +100,7 @@ public class LocalCommandTest {
 				executableDictionary, true));
 		
 		CommandStatus testStatus = testCommand.execute();
-		
+		System.out.println(testStatus);
 		System.out.println("Finished testExecute\n");
 	}
 	

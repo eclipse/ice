@@ -19,7 +19,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 
- * This class configures particular commands to be executed and depends on the Command class.
+ * This class configures particular commands to be executed. It contains all of the 
+ * relevant information about configuring the command. The user should specify the
+ * details of the command in the declaration of a Command instance by providing a 
+ * CommandConfiguration.
  * @author Joe Osborn
  *
  */
@@ -108,9 +111,6 @@ public class CommandConfiguration {
 	}
 	public void setExecDictionary(HashMap<String, String> _dictionary) {
 		execDictionary = _dictionary;
-	}
-	public HashMap<String, String> getExecDictionary() {
-		return execDictionary;
 	}
 	public void setAppendInput(boolean _appendInput) {
 		appendInput = _appendInput;

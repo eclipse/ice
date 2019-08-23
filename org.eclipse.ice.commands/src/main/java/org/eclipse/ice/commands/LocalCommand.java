@@ -16,24 +16,19 @@ import java.io.IOException;
 
 /**
  * This class inherits from Command and gives available functionality for local commands.
+ * The processing and running of the LocalCommand is performed here.
  * @author Joe Osborn
  *
  */
 public class LocalCommand extends Command{
 
 	
-	/**
-	 * Default constructor
-	 */
-	public LocalCommand() {
-		configuration = new CommandConfiguration();
-		status = CommandStatus.LAUNCHING;
-		status = setConfiguration(configuration);
-		
-	}
 
 	/**
-	 * Constructor which specifies a particular command configuration
+	 * Constructor which specifies a particular command configuration. The command configuration
+	 * should contain all of the necessary details for a particular command to run. See in particular
+	 * the function {@link org.eclipse.ice.commands.LocalCommand#setConfiguration(CommandConfiguration)}
+	 * for details about what details are required.
 	 * @param _configuration
 	 */
 	public LocalCommand(CommandConfiguration _configuration) {
@@ -141,12 +136,8 @@ public class LocalCommand extends Command{
 	@Override
 	protected CommandStatus run() {
 		
-		// Local declarations
-		
-		
-		// Loop over the stages and launch them so long as the status marks them
-		// as processed. This needs to be done sequentially, so use a regular,
-		// non-concurrent access loop
+		// Loop over the stages and launch them. This needs to be done 
+		// sequentially, so use a regular, non-concurrent access loop
 		for ( int i = 0; i < configuration.splitCommand.size(); i++) {
 			
 			// Check the status to ensure job has not been canceled
@@ -155,9 +146,8 @@ public class LocalCommand extends Command{
 				break;
 			}
 			
-			
+			// Get the command
 			String thisCommand = configuration.splitCommand.get(i);
-			System.out.println("INFO: Command to process is: " + thisCommand);
 			
 			// Set up the process builder
 			status = setupProcessBuilder(thisCommand);
@@ -165,7 +155,7 @@ public class LocalCommand extends Command{
 			// Run the job
 			status = runProcessBuilder();
 			
-			// Check the status
+			// Check the status to ensure the job hasn't failed
 			checkStatus(status);
 				
 			
@@ -176,8 +166,8 @@ public class LocalCommand extends Command{
 			
 			if(status != CommandStatus.SUCCESS) {
 				System.out.println("FAILURE: The status of job " + i + " at job finish is " + status);
-				System.out.println("FAILURE: Something went wrong! Exiting now.");
-				break;
+				System.out.println("FAILURE: Something went wrong with job " + i + "! Moving to next job");
+				continue;
 			}
 			
 		}
@@ -189,6 +179,7 @@ public class LocalCommand extends Command{
 		}
 		catch (IOException e) {
 			status = CommandStatus.INFOERROR;
+			System.out.println("INFO: Could not close the output and/or error files, returning INFOERROR");
 			return status;
 		}
 		
@@ -205,6 +196,7 @@ public class LocalCommand extends Command{
 	@Override
 	protected String fixExecutableName() {
 		
+		// Get the information from the executable dictionary
 		int numProcs = Math.max(1,
 				Integer.parseInt(configuration.execDictionary.get("numProcs")));
 		String fixedExecutableName = configuration.execDictionary.get("executable");
@@ -269,7 +261,8 @@ public class LocalCommand extends Command{
 	 * the particular LocalCommand to be cancelled.
 	 */
 	public CommandStatus cancel() {
-		return CommandStatus.CANCELED;
+		status = CommandStatus.CANCELED;
+		return status;
 	}
 
 	

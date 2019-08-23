@@ -29,7 +29,8 @@ import java.util.List;
 
 /**
  * This class is the instantiation class of the CommandFactory class and thus
- * is responsible for executing particular commands.
+ * is responsible for executing particular commands. It delegates the creation of a 
+ * LocalCommand or RemoteCommand, depending on the hostname
  * @author Joe Osborn
  *
  */
@@ -42,7 +43,7 @@ public abstract class Command{
 	protected CommandStatus status;
 	
 	/**
-	 * The configuration parameters of the command - should contain some information about
+	 * The configuration parameters of the command - contains information about
 	 * what the command is actually intended to do.
 	 */
 	protected CommandConfiguration configuration;
@@ -78,14 +79,15 @@ public abstract class Command{
 
 	/**
 	 * This function sets the CommandConfiguration for a particular command.
-	 * It also prepares various files for job launch (e.g. logfiles)
+	 * It also prepares various files for job launch (e.g. logfiles) and is called
+	 * at construction time.
 	 * @param config - the configuration to be used for a particular command.
 	 * @return CommandStatus - status indicating whether the configuration was properly set
 	 */
 	protected abstract CommandStatus setConfiguration(CommandConfiguration config);
 
 	/**
-	 * This function actually runs the particular command in question. It is called in Launch
+	 * This function actually runs the particular command in question. It is called in execute()
 	 * after all of the setup for the job execution is finished.
 	 * @return - CommandStatus indicating the result of the function.
 	 */
@@ -126,11 +128,10 @@ public abstract class Command{
 		status = stat;
 	}
 	
-
-	
 	/**
 	 * This function returns to the user the configuration that was used 
-	 * to create a particular command. 
+	 * to create a particular command. Can be useful for accessing particular
+	 * details about the command.
 	 * @return - the particular configuration for this command
 	 */
 	public CommandConfiguration getConfiguration() {
@@ -219,7 +220,7 @@ public abstract class Command{
 	 */
 	protected CommandStatus setupProcessBuilder(String command) {
 		// Local declarations
-		String os = configuration.getExecDictionary().get("os");
+		String os = configuration.execDictionary.get("os");
 		ArrayList<String> commandList = new ArrayList<String>();
 		
 		
@@ -240,7 +241,7 @@ public abstract class Command{
 		jobBuilder = new ProcessBuilder(commandList);
 		
 		// Set the directory to execute the job in
-		File directory = new File(configuration.getExecDictionary().get("workingDirectory"));
+		File directory = new File(configuration.execDictionary.get("workingDirectory"));
 		jobBuilder.directory(directory);
 		jobBuilder.redirectErrorStream(false);
 		
@@ -254,7 +255,7 @@ public abstract class Command{
 	 */
 	protected CommandStatus runProcessBuilder() {
 		
-		String os = configuration.getExecDictionary().get("os");
+		String os = configuration.execDictionary.get("os");
 		List<String> commandList = jobBuilder.command();
 		String errMsg = "";
 		
@@ -277,7 +278,7 @@ public abstract class Command{
 				
 				// Reset the ProcessBuilder to reflect these changes
 				jobBuilder = new ProcessBuilder(commandList);
-				File directory = new File(configuration.getExecDictionary().get("workingDirectory"));
+				File directory = new File(configuration.execDictionary.get("workingDirectory"));
 				jobBuilder.directory(directory);
 				jobBuilder.redirectErrorStream(false);
 				
@@ -289,16 +290,12 @@ public abstract class Command{
 				catch (IOException e2) {
 					// If there is an error, add it to errMsg
 					errMsg += e2.getMessage() + "\n";
-				}
-				
-			}
-			
-			
+				}	
+			}	
 		}
 		
 		// Clean up and log the output of the job
 		status = cleanProcessBuilder(errMsg);
-		
 		
 		return status;
 		
@@ -318,8 +315,8 @@ public abstract class Command{
 		String stdErrFileName = null, stdOutFileName = null;
 		
 		// Get the output file names
-		stdErrFileName = configuration.getExecDictionary().get("stdErrFileName");
-		stdOutFileName = configuration.getExecDictionary().get("stdOutFileName");
+		stdErrFileName = configuration.execDictionary.get("stdErrFileName");
+		stdOutFileName = configuration.execDictionary.get("stdOutFileName");
 		
 		int exitValue = -1; //arbitrary value indicating not completed (yet)
 		
@@ -365,7 +362,7 @@ public abstract class Command{
 			return CommandStatus.RUNNING;
 		}
 		// By convention exit values other than zero mean that the program
-		// failed. I follow that convention here.
+		// failed. If it is not 0, mark the job as failed (since it finished).
 		if (exitValue == 0) {
 			return CommandStatus.SUCCESS;
 		} 
@@ -378,9 +375,12 @@ public abstract class Command{
 	
 	/**
 	 * This operation is responsible for monitoring the exit value of the
-	 * running job. It uses the Configuration.isLocal AtomicBoolean to determine 
-	 * whether it should check the local job or the remote job. 
-	 * @throws IOException 
+	 * running job. If it does not finish after some time then the function
+	 * will print an error message to the error output file. If the job has failed
+	 * then it stops monitoring and returns that the exit value of the job was 
+	 * unsuccessful. The function also writes to the output logfile what the actual
+	 * final job exit value is, so the user can always see if their job finished
+	 * successfully.
 	 */
 	protected void monitorJob()  {
 
@@ -426,6 +426,8 @@ public abstract class Command{
 				break;
 			}
 		}
+		
+		// Print the final exitValue of the job to the output log file
 		try {
 			stdOut.write("INFO: Command::monitorJob Message: Exit value = " + exitValue + "\n");
 		} 
@@ -442,17 +444,17 @@ public abstract class Command{
 	/**
 	 * This function takes the given streams as parameters and logs them into an
 	 * output file. The function returns a boolean on whether or not the 
-	 * function completed successfully.
-	 * @param output
-	 * @param errors
+	 * function completed successfully (and thus the streams were correctly 
+	 * written out).
+	 * @param output - Output stream from the job
+	 * @param errors - Error stream from the job
 	 * @return - boolean - true if output was logged, false otherwise
 	 */
 	protected boolean logOutput(InputStream output, InputStream errors) {
 		
-		// Local Declarations
-		InputStreamReader stdOutStreamReader, stdErrStreamReader;
-		BufferedReader stdOutReader, stdErrReader;
-		String nextLine;
+		InputStreamReader stdOutStreamReader = null, stdErrStreamReader = null;
+		BufferedReader stdOutReader = null, stdErrReader = null;
+		String nextLine = null;
 
 		// Setup the BufferedReader that will get stdout from the process.
 		stdOutStreamReader = new InputStreamReader(output);
@@ -461,8 +463,8 @@ public abstract class Command{
 		// Setup the BufferedReader that will get stderr from the process.
 		stdErrStreamReader = new InputStreamReader(errors);
 		stdErrReader = new BufferedReader(stdErrStreamReader);
-		stdErr = getBufferedWriter(configuration.getExecDictionary().get("stdErrFileName"));
-		stdOut = getBufferedWriter(configuration.getExecDictionary().get("stdOutFileName"));
+		stdErr = getBufferedWriter(configuration.execDictionary.get("stdErrFileName"));
+		stdOut = getBufferedWriter(configuration.execDictionary.get("stdOutFileName"));
 		
 		// Catch the stdout and stderr output
 		try {
@@ -507,7 +509,8 @@ public abstract class Command{
 			return;
 		}
 		else {
-			System.out.println("FAILURE: The job failed with status: " + current_status + ". Exiting now!");
+			System.out.println("FAILURE: The job failed with status: " + current_status);
+			System.out.println("Check your error logfile for more details! Exiting now!");
 			System.exit(1);
 		}
 		

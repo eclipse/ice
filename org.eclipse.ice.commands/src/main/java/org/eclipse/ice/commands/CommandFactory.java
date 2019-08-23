@@ -38,10 +38,22 @@ public class CommandFactory {
 	 * @param host - host on which to execute command
 	 * @return Command
 	 */
-	public static Command getCommand(String host, CommandConfiguration configuration) {
+	public static Command getCommand(CommandConfiguration configuration) {
 
 		Command command = null;
+		String host = null;
 		
+		// Check to make sure that a hostname was provided for this command
+		if( configuration.execDictionary != null) 
+			host = configuration.execDictionary.get("hostname");
+		
+		// If not, we don't know where to run the job
+		if (host == null) {
+			System.out.println("FAILURE: You didn't provide a hostname in the CommandConfiguration for the job to run on! Exiting.");
+			System.exit(1);
+		}
+		
+		// If it the host is local, get a LocalCommand. Otherwise, RemoteCommand
 		if(isLocal(host)) {
 			command = new LocalCommand(configuration);
 		}
@@ -55,14 +67,15 @@ public class CommandFactory {
 	}
 	
 	/**
-	 * A small test function to check whether or not the provided hostname by the user
-	 * in CommandFactory is a local hostname or not
+	 * A function to check whether or not the provided hostname by the user
+	 * in CommandFactory is a local hostname or remote hostname.
 	 * @param host - String of the hostname to be checked
 	 * @return boolean - returns true if the hostname matches that of the local hostname,
 	 * 					 false otherwise.
 	 */
 	private static boolean isLocal(String host) {
 		
+		// Get the local hostname address
 		InetAddress addr = null;
 		try {
 			addr = InetAddress.getLocalHost();
@@ -73,6 +86,7 @@ public class CommandFactory {
 		
 		String hostname = addr.getHostName();
 		
+		// If the local hostname is the same as the hostname provided, then it is local
 		if(hostname == host)
 			return true;
 		else

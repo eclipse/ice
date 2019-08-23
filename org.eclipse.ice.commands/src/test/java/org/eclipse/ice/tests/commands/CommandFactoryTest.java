@@ -50,6 +50,7 @@ public class CommandFactoryTest {
 	public void testFunctionalLocalCommand() {
 		AtomicBoolean localjob = new AtomicBoolean();
 		localjob.set( true );
+		String hostname = getLocalHostname();
 		
 		/**
 		 * Create a HashMap which holds the executable instructions
@@ -61,6 +62,7 @@ public class CommandFactoryTest {
 		 * numProcs - number of processes
 		 * os - operating system to execute command on
 		 * workingDirectory - directory in which to execute the job
+		 * hostname - the hostname on which the job is to be hosted
 		 */
 		/**
 		 * This is a test with non-existing files to test the exception catching
@@ -74,15 +76,15 @@ public class CommandFactoryTest {
 		executableDictionary.put( "numProcs",  "1");
 		executableDictionary.put( "os",  "osx");
 		executableDictionary.put( "workingDirectory",  "/Users/4jo/dummy_localcommand_test");
-		
+		executableDictionary.put( "hostname", hostname);
 		// Set the CommandConfiguration class
 		CommandConfiguration commandConfig = new CommandConfiguration(
 				1, localjob, executableDictionary, true );
 		
-		String hostname = getLocalHostname();
+		
 		
 		// Get the command
-		Command localCommand = CommandFactory.getCommand(hostname, commandConfig);
+		Command localCommand = CommandFactory.getCommand(commandConfig);
 		
 		// Run it
 		CommandStatus status = localCommand.execute();
@@ -115,7 +117,7 @@ public class CommandFactoryTest {
 				2, localjob, executableDictionary, true );
 		
 		// Get the command
-		Command localCommand = CommandFactory.getCommand(getLocalHostname(), commandConfig);
+		Command localCommand = CommandFactory.getCommand(commandConfig);
 						
 		// Run it
 		CommandStatus status = localCommand.execute();
