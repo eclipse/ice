@@ -13,8 +13,6 @@
 package org.eclipse.ice.commands;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * This class inherits from Command and gives available functionality for local commands.
@@ -53,14 +51,12 @@ public class LocalCommand extends Command{
 	public CommandStatus execute() {
 		
 		// Check that the status of the job is good after setting up the configuration
-		// in the constructor
+		// in the constructor. If not, exit 
 		// See CheckStatus function in {@link org.eclipse.ice.commands.Command}
-		checkStatus(status); 
-		
-		
+		checkStatus(status);
+			
 		// Now that all of the prerequisites have been set, start the job running
 		status = run();
-		
 		
 		return status;
 	}
@@ -126,7 +122,7 @@ public class LocalCommand extends Command{
 		// Now write them out
 		try { 
 			stdOut.write(stdOutHeader);
-			stdOut.write("Executable to be run is: " + configuration.fullCommand +"\n");
+			stdOut.write("# Executable to be run is: " + configuration.fullCommand +"\n");
 			stdOut.close();
 			stdErr.write(stdErrHeader);
 			stdErr.close();
@@ -155,28 +151,52 @@ public class LocalCommand extends Command{
 			
 			// Check the status to ensure job has not been canceled
 			if (status == CommandStatus.CANCELED) {
-				System.out.println("Job has been canceled, quitting now.");
+				System.out.println("INFO: Job has been canceled, quitting now.");
 				break;
 			}
 			
-			// Set up the process builder
+			
 			String thisCommand = configuration.splitCommand.get(i);
-
+			System.out.println("INFO: Command to process is: " + thisCommand);
+			
+			// Set up the process builder
 			status = setupProcessBuilder(thisCommand);
+			
+			// Run the job
 			status = runProcessBuilder();
+			
+			// Check the status
+			checkStatus(status);
+				
+			
+			// Monitor the job to ensure it finished successfully or to watch it
+			// if it is still running
+			System.out.println("INFO: Monitoring job");
 			monitorJob();
 			
-			// Check the status to ensure the job finished correctly
-			checkStatus(status);
-			
 			if(status != CommandStatus.SUCCESS) {
-				System.out.println("The status of job " + i + " at job finish is " + status);
+				System.out.println("FAILURE: The status of job " + i + " at job finish is " + status);
+				System.out.println("FAILURE: Something went wrong! Exiting now.");
+				break;
 			}
 			
 		}
 		
+		// Close up the output streams
+		try { 
+			stdOut.close();
+			stdErr.close();
+		}
+		catch (IOException e) {
+			status = CommandStatus.INFOERROR;
+			return status;
+		}
+		
+		
+		// Return the result
 		return status;
 	}
+	
 	
 	
 	/**
@@ -185,17 +205,15 @@ public class LocalCommand extends Command{
 	@Override
 	protected String fixExecutableName() {
 		
-		Date currentDate = new Date();
 		int numProcs = Math.max(1,
 				Integer.parseInt(configuration.execDictionary.get("numProcs")));
-		SimpleDateFormat shortDate = new SimpleDateFormat("yyyyMMddhhmmss");
 		String fixedExecutableName = configuration.execDictionary.get("executable");
 		String installDirectory = configuration.execDictionary.get("installDir");
 		String inputFile = configuration.execDictionary.get("inputFile");
 		String separator = "/";
 		
 		// Set the name of the working directory
-		configuration.workingDirectoryName = "Launch_" + shortDate.format(currentDate);
+		configuration.workingDirectoryName = configuration.execDictionary.get("workingDirectory");
 		
 		// If the input file should be appended, append it
 		if(configuration.appendInput)

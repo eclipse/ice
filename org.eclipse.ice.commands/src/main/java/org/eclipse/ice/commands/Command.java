@@ -231,12 +231,15 @@ public abstract class Command{
 			commandList.add("-c");
 		}
 		
-		// Now add the actual command to be processed, prepended with /bin/bash-c if 
+		// Now add the actual command to be processed, prepended with /bin/bash -c if 
 		// the OS is not windows
 		commandList.add(command);
 		
+		System.out.println("INFO: Full command going to ProcessBuilder is: " + commandList);
+		// Make the ProcessBuilder to execute the command
 		jobBuilder = new ProcessBuilder(commandList);
 		
+		// Set the directory to execute the job in
 		File directory = new File(configuration.getExecDictionary().get("workingDirectory"));
 		jobBuilder.directory(directory);
 		jobBuilder.redirectErrorStream(false);
@@ -245,10 +248,9 @@ public abstract class Command{
 	}
 	
 	/**
-	 * This function is responsible for actually running the Process in the command line
-	 * It throws an IOException if the log files have not been properly created with BufferWriters,
-	 *  and thus can't be written to.
-	 * @throws IOException
+	 * This function is responsible for actually running the Process in the command line.
+	 * It catches exceptions in the event that the job can't be started.
+	 * 
 	 */
 	protected CommandStatus runProcessBuilder() {
 		
@@ -273,7 +275,7 @@ public abstract class Command{
 				commandList.add(0, "CMD");
 				commandList.add(1, "/C");
 				
-				// Reset the ProcessBuilder and directory to reflect the changes
+				// Reset the ProcessBuilder to reflect these changes
 				jobBuilder = new ProcessBuilder(commandList);
 				File directory = new File(configuration.getExecDictionary().get("workingDirectory"));
 				jobBuilder.directory(directory);
@@ -313,18 +315,29 @@ public abstract class Command{
 	protected CommandStatus cleanProcessBuilder(String errorMessage) {
 		
 		InputStream stdOutStream = null, stdErrStream = null;
+		String stdErrFileName = null, stdOutFileName = null;
+		
+		// Get the output file names
+		stdErrFileName = configuration.getExecDictionary().get("stdErrFileName");
+		stdOutFileName = configuration.getExecDictionary().get("stdOutFileName");
+		
 		int exitValue = -1; //arbitrary value indicating not completed (yet)
 		
 		// If errMsg is not an empty String, then there were some errors and they
 		// should be written out to the log file
 		if( errorMessage != "" ) {
 			try {
+				// Get the filenames so that they can be written to
+				stdErr = getBufferedWriter(stdErrFileName);
+				stdOut = getBufferedWriter(stdOutFileName);
+				
+				// Write and close
 				stdErr.write(errorMessage);
 				stdOut.close();
 				stdErr.close();
 			}
 			catch (IOException e){
-				System.out.println("There were errors in the job running, but could not write to the error log file!");
+				System.out.println("FAILURE: There were errors in the job running, but they could not write to the error log file!");
 				return CommandStatus.FAILED;
 			}
 			
@@ -340,13 +353,15 @@ public abstract class Command{
 			return CommandStatus.FAILED;
 		}
 		
+		
 		// Try to get the exit value of the job
 		try {
 			exitValue = job.exitValue();
 		} 
 		catch (IllegalThreadStateException e) {
-			// The job is still running, so it should be watched by someone
-			// else.
+			// The job is still running, so it should be watched by the 
+			// {@link org.eclipse.ice.commands.Command.monitorJob()} function
+			System.out.println("Job didn't finish, going to monitorJob now");
 			return CommandStatus.RUNNING;
 		}
 		// By convention exit values other than zero mean that the program
@@ -357,9 +372,7 @@ public abstract class Command{
 		else {
 			return CommandStatus.FAILED;
 		}
-		
-		
-		
+			
 	}
 	
 	
@@ -371,21 +384,22 @@ public abstract class Command{
 	 */
 	protected void monitorJob()  {
 
+		
 		// Local Declarations
-		int exitValue = -32; // Totally arbitrary
-
+		int exitValue = -99; // Totally arbitrary
 		// Wait until the job exits. By convention an exit code of
 		// zero means that the job has succeeded. Watch it until it
 		// finishes.
 		while (exitValue != 0) {
 			// Try to get the exit value of the job
+			// If the job completed successfully this will be 0
 			try {
 				exitValue = job.exitValue();
 			} 
 			catch (IllegalThreadStateException e) {
 				// Complain, but keep watching
 				try {
-					stdErr.write(getClass().getName() + " Exception!: " + e);
+					stdErr.write(getClass().getName() + " IllegalThreadStateException!: " + e);
 				} 
 				catch (IOException e1) {
 					e1.printStackTrace();
@@ -399,7 +413,7 @@ public abstract class Command{
 			catch (InterruptedException e) {
 				// Complain
 				try {
-					stdErr.write(getClass().getName() + " Exception!: " + e);
+					stdErr.write(getClass().getName() + " InterruptedException!: " + e);
 				} 
 				catch (IOException e1) {
 					e1.printStackTrace();
@@ -413,7 +427,7 @@ public abstract class Command{
 			}
 		}
 		try {
-			stdOut.write("LocalExecutionAction Message: Exit value = " + exitValue);
+			stdOut.write("INFO: Command::monitorJob Message: Exit value = " + exitValue + "\n");
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
@@ -447,12 +461,13 @@ public abstract class Command{
 		// Setup the BufferedReader that will get stderr from the process.
 		stdErrStreamReader = new InputStreamReader(errors);
 		stdErrReader = new BufferedReader(stdErrStreamReader);
-
+		stdErr = getBufferedWriter(configuration.getExecDictionary().get("stdErrFileName"));
+		stdOut = getBufferedWriter(configuration.getExecDictionary().get("stdOutFileName"));
+		
 		// Catch the stdout and stderr output
 		try {
 			// Write to the stdOut file
 			while ( ( nextLine = stdOutReader.readLine() ) != null ) {
-				
 				stdOut.write(nextLine);
 				// MUST put a new line for this type of writer. "\r\n" works on
 				// Windows and Unix-based systems.
@@ -469,7 +484,7 @@ public abstract class Command{
 			}
 		} catch (IOException e) {
 			// Or fail and complain about it.
-			System.out.println("Could not logOutput, returning error!");
+			System.out.println("FAILURE: Could not logOutput, returning error!");
 			return false;
 		}
 		
@@ -486,15 +501,14 @@ public abstract class Command{
 	 * @param current_status
 	 */
 	protected void checkStatus(CommandStatus current_status) {
-		try {
-			if ( current_status == CommandStatus.FAILED ) 
-				throw new Exception("The Command has failed");
-			if ( current_status == CommandStatus.INFOERROR )
-				throw new Exception("Not enough info for Command, throwing CommandStatus.INFOERROR");
+		
+		if ( current_status != CommandStatus.FAILED && current_status != CommandStatus.INFOERROR) {
+			System.out.println("INFO: The current status is: " + current_status);
+			return;
 		}
-		catch(Exception e) {
-			System.out.println(e);
-			e.printStackTrace();
+		else {
+			System.out.println("FAILURE: The job failed with status: " + current_status + ". Exiting now!");
+			System.exit(1);
 		}
 		
 	}

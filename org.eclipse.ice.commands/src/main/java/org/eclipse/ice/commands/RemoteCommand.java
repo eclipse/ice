@@ -70,6 +70,8 @@ public class RemoteCommand extends Command{
 		return null;
 	}
 	
+
+	
 	/**
 	 * See {@link org.eclipse.ice.commands.Command#run()}
 	 */
