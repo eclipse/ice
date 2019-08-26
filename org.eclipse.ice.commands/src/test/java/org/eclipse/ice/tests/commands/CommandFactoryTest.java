@@ -39,8 +39,16 @@ public class CommandFactoryTest {
 	public static void setUpBeforeClass() throws Exception {
 	}
 
-
-
+	/**
+	 * The hostname for which the job should run on. Default to local host name for now
+	 */
+	String hostname = getLocalHostname();
+	
+	/**
+	 * An AtomicBoolean indicating whether or not the job should be local. Set in the 
+	 * various test functions below.
+	 */
+	AtomicBoolean localjob = new AtomicBoolean();
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.CommandFactory#getCommand()}
 	 * and for the whole {@link org.eclipse.ice.commands.LocalCommand#execute()} 
@@ -48,7 +56,7 @@ public class CommandFactoryTest {
 	 */
 	@Test
 	public void testFunctionalLocalCommand() {
-		AtomicBoolean localjob = new AtomicBoolean();
+		
 		localjob.set( true );
 		String hostname = getLocalHostname();
 		
@@ -65,18 +73,21 @@ public class CommandFactoryTest {
 		 * hostname - the hostname on which the job is to be hosted
 		 */
 		/**
-		 * This is a test with non-existing files to test the exception catching
+		 * This is a test with real files to test an actual job processing.
+		 * For this test to work, make sure you change the workingDirectory
+		 * to your actual workingDirectory where the Commands API lives
 		 */
+		
 		HashMap<String, String> executableDictionary = new HashMap<String, String>();
-		executableDictionary.put( "executable" , "./boring_executable.sh" );
+		executableDictionary.put( "executable" , "./test_code_execution.sh" );
 		executableDictionary.put( "inputFile" , "someInputFile.txt" );
 		executableDictionary.put( "stdOutFileName",  "someOutFile.txt" );
 		executableDictionary.put( "stdErrFileName",  "someErrFile.txt" );
-		executableDictionary.put( "installDir" ,  "/Users/4jo/install");
 		executableDictionary.put( "numProcs",  "1");
 		executableDictionary.put( "os",  "osx");
-		executableDictionary.put( "workingDirectory",  "/Users/4jo/dummy_localcommand_test");
+		executableDictionary.put( "workingDirectory",  "/Users/4jo/git/icefork2/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands");
 		executableDictionary.put( "hostname", hostname);
+		
 		// Set the CommandConfiguration class
 		CommandConfiguration commandConfig = new CommandConfiguration(
 				1, localjob, executableDictionary, true );
@@ -97,19 +108,21 @@ public class CommandFactoryTest {
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.CommandFactory#getCommand()}
 	 * and for the whole {@link org.eclipse.ice.commands.LocalCommand#execute()} 
-	 * execution chain with an uncompleted Command dictionary
+	 * execution chain with an uncompleted Command dictionary. This is function is 
+	 * intended to test some of the exception catching.
 	 */
-	@Test
+	//@Test
 	public void testNonFunctionalLocalCommand() {
 		
-		System.out.println("\nTesting a command where not enough command information was provided.");
-		AtomicBoolean localjob = new AtomicBoolean();
+		System.out.println("\nTesting some commands where not enough command information was provided.");
+	
 		localjob.set( true );
+		
 		
 		// Create a HashMap that doesn't have all of the necessary ingredients
 		// a good job should have
 		HashMap<String, String> executableDictionary = new HashMap<String, String>();
-		executableDictionary.put( "executable" , "./boring_executable.sh" );
+		executableDictionary.put( "executable" , "./test_code_execution.sh" );
 		
 		
 		// Set the CommandConfiguration class
@@ -119,12 +132,52 @@ public class CommandFactoryTest {
 		// Get the command
 		Command localCommand = CommandFactory.getCommand(commandConfig);
 						
-		// Run it
+		// Run it and expect that it fails
 		CommandStatus status = localCommand.execute();
 						
-		System.out.println("Status of non-functional command: " + status);
+		assert( status == CommandStatus.INFOERROR );
 				
-				
+		
+	}
+	
+	/**
+	 * Test method for {@link org.eclipse.ice.commands.CommandFactory#getCommand()}
+	 * and for the whole {@link org.eclipse.ice.commands.LocalCommand#execute()} 
+	 * execution chain with an uncompleted Command dictionary. This function is 
+	 * intended to test some of the exception catching.
+	 */
+	@Test
+	public void testIncorrectWorkingDirectory() {
+		/**
+		 * Run another non functional command, with a non existing working directory
+		 */
+		
+		System.out.println("\nTesting some commands where not enough command information was provided.");
+		
+		localjob.set(true);
+		
+		HashMap<String, String> executableDictionary = new HashMap<String, String>();
+		executableDictionary.put( "executable" , "./test_code_execution.sh" );
+		executableDictionary.put( "inputFile" , "someInputFile.txt" );
+		executableDictionary.put( "stdOutFileName",  "someOutFile.txt" );
+		executableDictionary.put( "stdErrFileName",  "someErrFile.txt" );
+		executableDictionary.put( "numProcs",  "1");
+		executableDictionary.put( "os",  "osx");
+		executableDictionary.put( "workingDirectory",  "~/some_nonexistant_directory");
+		executableDictionary.put( "hostname", hostname);
+		
+		// Set the CommandConfiguration class
+		CommandConfiguration commandConfiguration = new CommandConfiguration(
+				1, localjob, executableDictionary, true );
+		
+		
+		
+		// Get the command
+		Command localCommand2 = CommandFactory.getCommand(commandConfiguration);
+		
+		// Run it and expect that it fails
+		CommandStatus status2 = localCommand2.execute();
+	
 		
 	}
 	

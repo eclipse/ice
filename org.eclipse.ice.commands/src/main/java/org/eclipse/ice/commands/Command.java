@@ -51,7 +51,7 @@ public abstract class Command{
 	/**
 	 * Output streams for the job
 	 */
-	BufferedWriter stdOut = null, stdErr = null;
+	protected BufferedWriter stdOut = null, stdErr = null;
 	
 	/**
 	 * Reference to the Java process that is the job to be executed
@@ -62,6 +62,8 @@ public abstract class Command{
 	 * The variable that actually handles the job execution at the command line
 	 */
 	protected ProcessBuilder jobBuilder;
+	
+	
 	
 	/**
 	 * Default constructor
@@ -167,7 +169,7 @@ public abstract class Command{
 	
 	/**
 	 * This function creates a set of generic output header text useful for debugging
-	 * purposes, for example in log files.
+	 * or informational purposes, for example in log files.
 	 * @param logName - the particular log name
 	 * @return - A string with the corresponding header text
 	 */
