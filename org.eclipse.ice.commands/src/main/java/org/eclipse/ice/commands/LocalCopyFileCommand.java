@@ -17,6 +17,7 @@ package org.eclipse.ice.commands;
  * @author Joe Osborn
  *
  */
+
 public class LocalCopyFileCommand extends CopyFileCommand {
 
 	/**
