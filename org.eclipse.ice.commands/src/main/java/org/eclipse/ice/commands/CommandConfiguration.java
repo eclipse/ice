@@ -67,7 +67,7 @@ public class CommandConfiguration {
 	 * The name of the working directory in which the job will be launched. The
 	 * default value is the prefix.
 	 */
-	protected String workingDirectoryName = "Launch_";
+	protected String workingDirectoryName = "";
 	
 	
 	/**
@@ -105,16 +105,20 @@ public class CommandConfiguration {
 	
 	public void setCommandId(int _commandId) {
 		commandId = _commandId;
+		return;
 	}
 	public int getCommandId() {
 		return commandId;
 	}
 	public void setExecDictionary(HashMap<String, String> _dictionary) {
 		execDictionary = _dictionary;
+		return;
 	}
 	public void setAppendInput(boolean _appendInput) {
 		appendInput = _appendInput;
+		return;
 	}
+	
 	/** 
 	 * Don't want a setter function for FullCommand since this is determined in
 	 * {@link org.eclipse.ice.commands.LocalCommand#fixExecutableName()}

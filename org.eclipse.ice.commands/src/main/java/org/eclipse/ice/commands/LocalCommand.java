@@ -255,11 +255,12 @@ public class LocalCommand extends Command{
 		
 	}
 	
-	@Override
+	
 	/**
 	 * Method that overrides Commmand:Cancel and actually implements
 	 * the particular LocalCommand to be cancelled.
 	 */
+	@Override
 	public CommandStatus cancel() {
 		status = CommandStatus.CANCELED;
 		return status;

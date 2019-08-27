@@ -17,13 +17,29 @@ package org.eclipse.ice.commands;
  * @author Joe Osborn
  *
  */
-public class MoveFileCommand extends FileHandler {
+public abstract class MoveFileCommand extends FileHandler {
 
+	/**
+	 * The path to the source file which is to be moved
+	 */
+	String source = "";
+	
+	/**
+	 * The path of the destination for which the source file will be moved to
+	 */
+	String destination = "";
+	
 	/**
 	 * Default constructor
 	 */
 	public MoveFileCommand() {
-		
 	}
+	
+	/**
+	 * This class does the actual handling of executing the move command and is
+	 * called at constructor time. The class is abstract so that remote and local
+	 * moves can be handled individually.
+	 */
+	protected abstract void move();
 	
 }

@@ -34,8 +34,8 @@ public class CommandFactory {
 	/**
 	 * Method which gets a command and subsequently executes it on a host
 	 * See also Command class {@link org.eclipse.ice.commands.Command}.
-	 * @param command - command to execute
-	 * @param host - host on which to execute command
+	 * @param CommandConfiguration - the CommandConfiguration which holds the 
+	 * particular details of a given command.
 	 * @return Command
 	 */
 	public static Command getCommand(CommandConfiguration configuration) {
@@ -44,10 +44,15 @@ public class CommandFactory {
 		String host = null;
 		
 		// Check to make sure that a hostname was provided for this command
-		if( configuration.execDictionary != null) 
+		if( configuration.execDictionary != null) {
 			host = configuration.execDictionary.get("hostname");
+		}
+		else {
+			System.out.println("FAILURE: You didn't provide a Dictionary with the Command information to run! Exiting.");
+			System.exit(1);
+		}
 		
-		// If not, we don't know where to run the job
+		// If no host was provided, we don't know where to run the job
 		if (host == null) {
 			System.out.println("FAILURE: You didn't provide a hostname in the CommandConfiguration for the job to run on! Exiting.");
 			System.exit(1);

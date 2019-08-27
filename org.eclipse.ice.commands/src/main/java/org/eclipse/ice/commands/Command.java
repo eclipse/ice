@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * This class is the instantiation class of the CommandFactory class and thus
  * is responsible for executing particular commands. It delegates the creation of a 
- * LocalCommand or RemoteCommand, depending on the hostname
+ * LocalCommand or RemoteCommand, depending on the hostname.
  * @author Joe Osborn
  *
  */
@@ -44,7 +44,7 @@ public abstract class Command{
 	
 	/**
 	 * The configuration parameters of the command - contains information about
-	 * what the command is actually intended to do.
+	 * what the command is actually intended to do (e.g. the executable filename).
 	 */
 	protected CommandConfiguration configuration;
 	
@@ -72,8 +72,7 @@ public abstract class Command{
 	
 	/**
 	 * This function executes the command based on the information provided in the dictionary
-	 * 
-	 * @param dictionary - Command to be executed
+	 * which is stored in the CommandConfiguration.
 	 * @return CommandStatus - indicating whether or not the Command was properly executed
 	 */
 	public abstract CommandStatus execute();
@@ -128,11 +127,12 @@ public abstract class Command{
 	 */
 	public void setStatus(CommandStatus stat) {
 		status = stat;
+		return;
 	}
 	
 	/**
 	 * This function returns to the user the configuration that was used 
-	 * to create a particular command. Can be useful for accessing particular
+	 * to create a particular command. Could be useful for accessing particular
 	 * details about the command.
 	 * @return - the particular configuration for this command
 	 */
@@ -378,7 +378,7 @@ public abstract class Command{
 	/**
 	 * This operation is responsible for monitoring the exit value of the
 	 * running job. If it does not finish after some time then the function
-	 * will print an error message to the error output file. If the job has failed
+	 * will print a message to the error output file. If the job has failed
 	 * then it stops monitoring and returns that the exit value of the job was 
 	 * unsuccessful. The function also writes to the output logfile what the actual
 	 * final job exit value is, so the user can always see if their job finished
@@ -389,6 +389,7 @@ public abstract class Command{
 		
 		// Local Declarations
 		int exitValue = -99; // Totally arbitrary
+		
 		// Wait until the job exits. By convention an exit code of
 		// zero means that the job has succeeded. Watch it until it
 		// finishes.

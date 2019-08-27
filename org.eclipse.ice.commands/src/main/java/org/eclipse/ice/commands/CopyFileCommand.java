@@ -11,19 +11,41 @@
  *   Joe Osborn
  *******************************************************************************/
 package org.eclipse.ice.commands;
+
+import java.nio.file.Path;
+
 /**
  * Parent class for remote and local copy file commands. Inherits
  * from FileHandler and is responsible for executing copy file commands.
  * @author Joe Osborn
  *
  */
-public class CopyFileCommand extends FileHandler {
+public abstract class CopyFileCommand extends FileHandler {
 
+	
+	/**
+	 * The path to the source file which is to be copied
+	 */
+	Path source;
+	
+	/**
+	 * The path of the destination for which the source file will be copied to
+	 */
+	Path destination;
+	
+	
 	/**
 	 * Default constructor
 	 */
 	public CopyFileCommand() {
 		
 	}
+	
+	/**
+	 * This abstract function is called at constructor time for the respective
+	 * children classes. It handles the execution of the copying of the file
+	 * from the source to the destination.
+	 */
+	protected abstract void copy();
 	
 }

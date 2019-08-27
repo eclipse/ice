@@ -12,6 +12,7 @@
  *******************************************************************************/
 
 package org.eclipse.ice.commands;
+
 /**
  * Child class for moving a file locally without a remote connection
  * @author Joe Osborn
@@ -24,6 +25,32 @@ public class LocalMoveFileCommand extends MoveFileCommand {
 	 */
 	public LocalMoveFileCommand() {
 		
+	}
+	
+	/**
+	 * Constructor which sets the two paths, source and destination,
+	 * to those given by the arguments of the constructor. See 
+	 * {@link org.eclipse.ice.tests.commands.CopyFileCommand} for member
+	 * variable descriptions.
+	 * @param src 
+	 * @param dest
+	 */
+	public LocalMoveFileCommand(String src, String dest) {
+		source = src;
+		destination = dest;
+		move();
+	}
+	
+	
+	
+	@Override
+	protected void move() {
+		
+		//Files.move(source, destination, REPLACE_EXISTING);
+		
+		
+		
+		return;
 	}
 	
 }

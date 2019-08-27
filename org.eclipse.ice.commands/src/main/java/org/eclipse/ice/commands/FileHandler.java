@@ -12,6 +12,9 @@
 package org.eclipse.ice.commands;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * The FileHandler class is a utility class for using commands that move files.
@@ -19,16 +22,15 @@ import java.io.IOException;
  * should be handled, and it can handle both local and remote files as sources
  * and destinations. Files can be moved, copied or checked for existence.
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Joe Osborn
  *
  */
 public class FileHandler {
 
 	/**
-	 * Constructor
+	 * Default constructor
 	 */
 	public FileHandler() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -37,10 +39,33 @@ public class FileHandler {
 	 * 
 	 * @param src
 	 * @param dest
+	 * @param hostname
+	 * @return CommandStatus - status indicating move was successfully completed
 	 * @throws IOException
 	 */
-	public void move(final String src, final String dest) throws IOException {
-
+	public static void move(final String src, final String dest) throws IOException {
+		
+		MoveFileCommand command = null;
+		
+		// Just test local moving for now. 
+		//TODO need to determine how to differentiate local vs. remote moves with just
+		// the strings and not a hostname
+		boolean isLocal = true;
+		
+		// Check to make sure the paths exist
+		boolean sourceExists = exists(src);
+		boolean destExists = exists(dest);
+				
+		if(sourceExists && destExists) {
+			if(isLocal) {
+				command = new LocalMoveFileCommand(src, dest);
+			}
+			else {
+				command = new RemoteMoveFileCommand(src, dest);
+			}
+		}
+		
+		return;
 	}
 
 	/**
@@ -49,10 +74,35 @@ public class FileHandler {
 	 * 
 	 * @param src
 	 * @param dest
+	 * @return CommandStatus - status indicating copy was successfully completed
 	 * @throws IOException
 	 */
-	public void copy(final String src, final String dest) throws IOException {
-
+	public static void copy(final String src, final String dest) throws IOException {
+		
+		CopyFileCommand command = null;
+	
+		//TODO need to determine how to differentiate local vs. remote moves with just
+		// the strings and not a hostname
+		boolean isLocal = true;
+		
+		
+		// Check to make sure the paths exist
+		boolean sourceExists = exists(src);
+		boolean destExists = exists(dest);
+		
+		if(sourceExists && destExists) {
+			if(isLocal) {
+				command = new LocalCopyFileCommand(src, dest);
+			}
+			else {
+				command = new RemoteCopyFileCommand(src, dest);
+			}
+		}
+		else {
+			System.out.println("The source or destination file does not exist! Doing nothing.");
+		}
+			
+		return;
 	}
 
 	/**
@@ -62,8 +112,17 @@ public class FileHandler {
 	 * @return true if the file exists, false if not
 	 * @throws IOException
 	 */
-	public boolean exists(final String file) throws IOException {
-		return false;
+	public static boolean exists(final String file) throws IOException {
+
+		// Get the path from the passed string
+		Path path = Paths.get(file);
+		
+		// Check if the path exists or not. Symbolic links are followed
+		// by default, see {@link java.nio.file.Files#exists}
+		return Files.exists(path);
 	}
 
+	
+
+	
 }

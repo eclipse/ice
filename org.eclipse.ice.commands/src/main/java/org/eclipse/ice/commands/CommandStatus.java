@@ -16,7 +16,7 @@ package org.eclipse.ice.commands;
  * This enumerator provides a status for Commands, in particular in relation to whether 
  * or not a particular command executed properly (or not). Several member functions 
  * throughout this Commands API use CommandStatus to check whether or not a particular
- * Command was executed correctly.
+ * step in executing a command was correctly completed.
  * @author Joe Osborn
  *
  */
