@@ -28,3 +28,4 @@ public class LocalCopyFileCommand extends CopyFileCommand {
 	}
 	
 }
+
