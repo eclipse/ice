@@ -32,12 +32,6 @@ import org.junit.Test;
  */
 public class CommandFactoryTest {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
 
 	/**
 	 * The hostname for which the job should run on. Default to local host name for now
@@ -54,6 +48,18 @@ public class CommandFactoryTest {
 	 * and for the whole {@link org.eclipse.ice.commands.LocalCommand#execute()} 
 	 * execution chain with a fully functional command dictionary
 	 */
+	
+	public CommandFactoryTest() {}
+	
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+	}
+	
+	
 	@Test
 	public void testFunctionalLocalCommand() {
 		
@@ -100,6 +106,7 @@ public class CommandFactoryTest {
 		// Run it
 		CommandStatus status = localCommand.execute();
 		
+		assert( status == CommandStatus.SUCCESS );
 		System.out.println("Status of functional command: " + status);
 		
 	}
@@ -146,7 +153,7 @@ public class CommandFactoryTest {
 	 * execution chain with an uncompleted Command dictionary. This function is 
 	 * intended to test some of the exception catching.
 	 */
-	@Test
+	//@Test
 	public void testIncorrectWorkingDirectory() {
 		/**
 		 * Run another non functional command, with a non existing working directory

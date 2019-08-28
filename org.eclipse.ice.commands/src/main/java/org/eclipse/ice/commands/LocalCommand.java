@@ -22,6 +22,10 @@ import java.io.IOException;
  */
 public class LocalCommand extends Command{
 
+	/**
+	 * Default constructor
+	 */
+	public LocalCommand() {}
 	
 
 	/**
@@ -48,7 +52,12 @@ public class LocalCommand extends Command{
 		// Check that the status of the job is good after setting up the configuration
 		// in the constructor. If not, exit 
 		// See CheckStatus function in {@link org.eclipse.ice.commands.Command}
-		checkStatus(status);
+		try {
+			checkStatus(status);
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 			
 		// Now that all of the prerequisites have been set, start the job running
 		status = run();
@@ -156,18 +165,27 @@ public class LocalCommand extends Command{
 			status = runProcessBuilder();
 			
 			// Check the status to ensure the job hasn't failed
-			checkStatus(status);
+			try {
+				checkStatus(status);
+			} 
+			catch (IOException e) {
+				e.printStackTrace();
+			}
 				
 			
 			// Monitor the job to ensure it finished successfully or to watch it
 			// if it is still running
-			System.out.println("INFO: Monitoring job");
-			monitorJob();
-			
 			if(status != CommandStatus.SUCCESS) {
-				System.out.println("FAILURE: The status of job " + i + " at job finish is " + status);
-				System.out.println("FAILURE: Something went wrong with job " + i + "! Moving to next job");
-				continue;
+				System.out.println("INFO: Monitoring job");
+				status = monitorJob();
+			}
+			
+			// Now check again to see if the job succeeded
+			try {
+				checkStatus(status);
+			}
+			catch (IOException e){
+				e.printStackTrace();
 			}
 			
 		}
