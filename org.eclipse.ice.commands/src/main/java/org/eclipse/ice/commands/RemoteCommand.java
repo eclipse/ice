@@ -28,7 +28,7 @@ public class RemoteCommand extends Command{
 	 * Declare this up front since by definition a RemoteCommand must have a connection.
 	 */
 	Connection connection = new Connection();
-	
+
 	@Override
 	/**
 	 * Method that overrides Commmand:Execute and actually implements
