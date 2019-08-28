@@ -55,32 +55,20 @@ public class CommandTest {
 	public void tearDown() throws Exception {
 	}
 
-	@Test
-	public void test() {
-		fail("Not yet implemented");
-	}
 	
 	
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.Command#Command()}
 	 */
-	public void testCommand() {
+	@Test
+	void testCommand() {
 		fail("Not yet implemented");
 	}
 	
-	/**
-	 * Test method for {@link org.eclipse.ice.commands.Command#execute(String)}
-	 */
-	public void testExecute() {
-		fail("Not yet implemented");
-	}
+
 	
-	/**
-	 * Test method for {@link org.eclipse.ice.commands.Command#GetStatus()}
-	 */
-	public void testGetStatus() {
-		fail("Not yet implemented");
-	}
+
+	
 	
 	
 	

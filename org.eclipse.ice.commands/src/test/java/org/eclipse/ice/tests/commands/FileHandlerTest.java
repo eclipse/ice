@@ -13,7 +13,9 @@ package org.eclipse.ice.tests.commands;
 
 import static org.junit.Assert.*;
 
-import org.junit.BeforeClass;
+import java.io.IOException;
+
+import org.eclipse.ice.commands.FileHandler;
 import org.junit.Test;
 
 /**
@@ -23,43 +25,79 @@ import org.junit.Test;
  */
 public class FileHandlerTest {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
+
 
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.FileHandler#FileHandler()}.
 	 */
-	@Test
+	//@Test
 	public void testFileHandler() {
 		fail("Not yet implemented");
 	}
-
-	/**
-	 * Test method for {@link org.eclipse.ice.commands.FileHandler#move(java.lang.String, java.lang.String)}.
-	 */
-	@Test
-	public void testMove() {
-		fail("Not yet implemented");
-	}
-
+	
+	
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.FileHandler#copy(java.lang.String, java.lang.String)}.
 	 */
 	@Test
 	public void testCopy() {
-		fail("Not yet implemented");
+		System.out.println("Testing testCopy() function.");
+		try {
+			FileHandler.copy("/Users/4jo/testfile.txt", "/Users/4jo/dummy_dir2");
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		System.out.println("Finished testing testCopy() function.");
 	}
+
+	/**
+	 * Test method for {@link org.eclipse.ice.commands.FileHandler#move(java.lang.String, java.lang.String)}.
+	 */
+	//@Test
+	public void testMove() {
+		try {
+			FileHandler.move("/Users/4jo/dummy_dir/testfile.txt", "/Users/4jo/testfile_mv.txt");
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+
 
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.FileHandler#exists(java.lang.String)}.
 	 */
 	@Test
 	public void testExists() {
-		fail("Not yet implemented");
+		System.out.println("Testing testExists() function.");
+		
+		/**
+		 * Test a file that everyone should have existing
+		 */
+		try {
+			assert(FileHandler.exists("/usr/lib/python2.7"));
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("Testing testExists() with a non existing file");
+		try {
+			assert(!FileHandler.exists("/usr/file_that_doesnot_exist.txt"));
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("Finished testing testExists()");
 	}
 
+	
+	
+	
 }

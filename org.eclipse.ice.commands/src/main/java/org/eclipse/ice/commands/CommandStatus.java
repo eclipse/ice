@@ -13,31 +13,16 @@
 package org.eclipse.ice.commands;
 
 /**
- * This class provides a status for commands, in particular in relation to whether 
- * or not a particular command executed properly (or not).
+ * This enumerator provides a status for Commands, in particular in relation to whether 
+ * or not a particular command executed properly (or not). Several member functions 
+ * throughout this Commands API use CommandStatus to check whether or not a particular
+ * step in executing a command was correctly completed.
  * @author Joe Osborn
  *
  */
 
-
-/**
- * 
- * Enumeration indicating what the status of the particular command was.
- */
-enum Status{
-	SUCCESS, WORKING, FAILED;
+public enum CommandStatus{
+	SUCCESS, PROCESSING, LAUNCHING, RUNNING, INFOERROR, FAILED, CANCELED;
 }
 
-public class CommandStatus{
 
-	/**
-	 * Default constructor
-	 */
-	
-	public CommandStatus() {
-		
-	}
-	 
-	
-
-}

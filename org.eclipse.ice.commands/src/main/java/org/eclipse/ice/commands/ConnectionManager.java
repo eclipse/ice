@@ -40,7 +40,7 @@ public class ConnectionManager {
 	 * @param connection - connection to be opened
 	 * @return Connection - returns connection
 	 */
-	public static Connection OpenConnection(String connection) {
+	public static Connection openConnection(String connection) {
 		return null;
 	}
 
@@ -49,7 +49,7 @@ public class ConnectionManager {
 	 * @param connection - connection to be returned having already been instantiated
 	 * @return Connection - returns connection asked for
 	 */
-	public static Connection GetConnection(String connection) {
+	public static Connection getConnection(String connection) {
 		return null;
 	}
 	
@@ -58,7 +58,7 @@ public class ConnectionManager {
 	 * @param connection - Connection to be closed
 	 * @return boolean - returns true if connection was successfully closed, otherwise false
 	 */
-	public boolean CloseConnection(Connection connection) {
+	public boolean closeConnection(Connection connection) {
 		
 		return false;
 	}
@@ -67,7 +67,7 @@ public class ConnectionManager {
 	 * Closes all connections that remain open.
 	 * @return - true if successfully closed all connections, otherwise false
 	 */
-	public boolean CloseAllConnections() {
+	public boolean closeAllConnections() {
 		return false;
 	}
 	

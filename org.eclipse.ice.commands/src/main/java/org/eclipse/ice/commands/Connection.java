@@ -30,16 +30,12 @@ public class Connection {
 	 */
 	private String name;
 	
-	/**
-	 *  Default constructor
-	 * The configuration for a particular connection
-	 */
-	ConnectionConfiguration configuration;
 	
 	/**
 	 *  Default constructor
 	 */
 	public Connection() {
+
 		// TODO Auto-generated constructor stub
 	}
 
