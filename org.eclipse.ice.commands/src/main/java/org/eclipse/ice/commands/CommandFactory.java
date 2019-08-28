@@ -38,7 +38,7 @@ public class CommandFactory {
 	 * particular details of a given command.
 	 * @return Command
 	 */
-	public static Command getCommand(CommandConfiguration configuration) {
+	public static Command getCommand(final CommandConfiguration configuration) {
 
 		Command command = null;
 		String host = null;

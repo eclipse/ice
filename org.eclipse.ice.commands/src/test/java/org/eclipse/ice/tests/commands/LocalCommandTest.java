@@ -12,12 +12,10 @@
 package org.eclipse.ice.tests.commands;
 
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.LocalCommand;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,7 +26,6 @@ import org.junit.Test;
  */
 public class LocalCommandTest {
 
-	AtomicBoolean localjob = new AtomicBoolean();
 	HashMap<String, String> executableDictionary;
 	
 	
@@ -40,7 +37,6 @@ public class LocalCommandTest {
 	public void setUp() throws Exception {
 		
 		// Set up some default instance variables
-		localjob.set( true );
 		executableDictionary = new HashMap<String, String>();
 		executableDictionary.put( "executable" , "someExecutable.sh ${installDir}" );
 		executableDictionary.put( "inputFile" , "someInputFile.txt" );
@@ -52,12 +48,7 @@ public class LocalCommandTest {
 		executableDictionary.put( "workingDirectory", "/");
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
+
 	
 	
 	
@@ -73,7 +64,7 @@ public class LocalCommandTest {
 	
 		// Now make a "real" command configuration to test
 		CommandConfiguration commandConfig = new CommandConfiguration(
-				3, localjob, executableDictionary, true );
+				3, executableDictionary, true );
 		
 		LocalCommand realCommand = new LocalCommand(commandConfig);
 		CommandStatus testStatus = realCommand.getStatus();
@@ -96,11 +87,13 @@ public class LocalCommandTest {
 	public void testExecute() {
 		System.out.println("Starting testExecute\n");
 		
-		LocalCommand testCommand = new LocalCommand(new CommandConfiguration(2, localjob,
+		LocalCommand testCommand = new LocalCommand(new CommandConfiguration(2,
 				executableDictionary, true));
 		
 		CommandStatus testStatus = testCommand.execute();
-		System.out.println(testStatus);
+
+		assert ( testStatus == CommandStatus.FAILED );
+		System.out.println("Example incorrect executable status should be FAILED and is: " + testStatus);
 		System.out.println("Finished testExecute\n");
 	}
 	

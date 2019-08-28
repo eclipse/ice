@@ -12,12 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import static org.junit.Assert.fail;
+import java.io.IOException;
+import java.util.HashMap;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.eclipse.ice.commands.Command;
+import org.eclipse.ice.commands.CommandConfiguration;
+import org.eclipse.ice.commands.CommandStatus;
+import org.eclipse.ice.commands.LocalCommand;
 import org.junit.Test;
 
 /**
@@ -27,49 +28,60 @@ import org.junit.Test;
  */
 public class CommandTest {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	
 	
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.Command#Command()}
 	 */
 	@Test
-	void testCommand() {
-		fail("Not yet implemented");
+	public void testLocalCommand() {
+	
+		// Use the already defined function in CommandFactoryTest to get the
+		// local hostname
+		CommandFactoryTest commandFactory = new CommandFactoryTest();
+		String hostname = commandFactory.getLocalHostname();
+		
+		HashMap<String, String> executableDictionary = new HashMap<String, String>();
+		executableDictionary.put( "executable" , "./test_code_execution.sh" );
+		executableDictionary.put( "inputFile" , "someInputFile.txt" );
+		executableDictionary.put( "stdOutFileName",  "someOutFile.txt" );
+		executableDictionary.put( "stdErrFileName",  "someErrFile.txt" );
+		executableDictionary.put( "numProcs",  "1");
+		executableDictionary.put( "os",  "osx");
+		executableDictionary.put( "workingDirectory", "/Users/4jo/git/icefork2/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands");
+		executableDictionary.put( "hostname", hostname);
+		
+		// Set the CommandConfiguration class
+		CommandConfiguration commandConfig = new CommandConfiguration(
+				1, executableDictionary, true );
+		
+		Command localCommand = new LocalCommand(commandConfig);
+		CommandStatus status = localCommand.execute();
+		
+		System.out.println("Command finished with: " + status);
+		assert( status == CommandStatus.SUCCESS );
+		
 	}
 	
-
-	
-
-	
-	
+	/**
+	 * Test method for {@link org.eclipse.ice.commands.Command#checkStatus(CommandStatus)}
+	 */
+	//@Test
+	public void testCheckStatus() {
+		
+		System.out.println("\nTesting that Command::CheckStatus throws an exception for a bad status");
+		// Create instances of a command and associated status
+		CommandStatus status = CommandStatus.INFOERROR;
+		Command command = new LocalCommand();
+		
+		// Check to make sure that an exception is thrown for a bad status
+		try {
+			command.checkStatus(status);
+		} 
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	
 }

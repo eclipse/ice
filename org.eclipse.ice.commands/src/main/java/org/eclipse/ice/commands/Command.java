@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 
@@ -81,11 +82,14 @@ public abstract class Command{
 	/**
 	 * This function sets the CommandConfiguration for a particular command.
 	 * It also prepares various files for job launch (e.g. logfiles) and is called
-	 * at construction time.
+	 * at construction time. It is overriden by LocalCommand and RemoteCommand
 	 * @param config - the configuration to be used for a particular command.
 	 * @return CommandStatus - status indicating whether the configuration was properly set
 	 */
-	protected abstract CommandStatus setConfiguration(CommandConfiguration config);
+	protected CommandStatus setConfiguration(CommandConfiguration config) {
+		configuration = config;
+		return CommandStatus.PROCESSING;
+	}
 
 	/**
 	 * This function actually runs the particular command in question. It is called in execute()
@@ -106,10 +110,13 @@ public abstract class Command{
 	 * This function actually assembles and fixes the name of the executable to be launched.
 	 * It replaces ${inputFile}, ${installDir} and other keys from the dictionary. The function
 	 * is abstract so that Local and Remote executable names can be handled individually,
-	 * since the remote target file system is not necessarily the same as the local.
+	 * since the remote target file system is not necessarily the same as the local. 
+	 * It is overridden by the subclasses that require executables.
 	 * @return - String that is the executable to be run
 	 */
-	protected abstract String fixExecutableName();
+	protected String fixExecutableName() {
+		return configuration.execDictionary.get("executable");
+	}
 	
 	
 	/**
@@ -269,6 +276,7 @@ public abstract class Command{
 		}
 		catch (IOException e) {
 			
+			// If not a windows machine, there was an error
 			if(!os.toLowerCase().contains("win")) {
 				// If there is an error, add it to errMsg
 				errMsg += e.getMessage() + "\n";
@@ -351,8 +359,7 @@ public abstract class Command{
 		if( logOutput(stdOutStream, stdErrStream) == false ) {
 			return CommandStatus.FAILED;
 		}
-		
-		
+			
 		// Try to get the exit value of the job
 		try {
 			exitValue = job.exitValue();
@@ -360,6 +367,7 @@ public abstract class Command{
 		catch (IllegalThreadStateException e) {
 			// The job is still running, so it should be watched by the 
 			// {@link org.eclipse.ice.commands.Command.monitorJob()} function
+		
 			System.out.println("Job didn't finish, going to monitorJob now");
 			return CommandStatus.RUNNING;
 		}
@@ -384,11 +392,11 @@ public abstract class Command{
 	 * final job exit value is, so the user can always see if their job finished
 	 * successfully.
 	 */
-	protected void monitorJob()  {
+	protected CommandStatus monitorJob()  {
 
 		
 		// Local Declarations
-		int exitValue = -99; // Totally arbitrary
+		int exitValue = -1; // Totally arbitrary
 		
 		// Wait until the job exits. By convention an exit code of
 		// zero means that the job has succeeded. Watch it until it
@@ -400,9 +408,9 @@ public abstract class Command{
 				exitValue = job.exitValue();
 			} 
 			catch (IllegalThreadStateException e) {
-				// Complain, but keep watching
+				// Complain, but keep watching			
 				try {
-					stdErr.write(getClass().getName() + " IllegalThreadStateException!: " + e);
+					stdErr.write(getClass().getName() + "IllegalThreadStateException!: " + e);	
 				} 
 				catch (IOException e1) {
 					e1.printStackTrace();
@@ -410,8 +418,9 @@ public abstract class Command{
 			}
 			// Give it a second
 			try {
-				Thread.currentThread();
-				Thread.sleep(1000);
+				job.waitFor(1000, TimeUnit.MILLISECONDS);
+				// Try again
+				exitValue = job.exitValue();
 			} 
 			catch (InterruptedException e) {
 				// Complain
@@ -422,7 +431,7 @@ public abstract class Command{
 					e1.printStackTrace();
 				}
 			}
-
+			
 			// If for some reason the job has failed,
 			// it shouldn't be alive and we should break;
 			if (!job.isAlive()) {
@@ -438,7 +447,10 @@ public abstract class Command{
 			e.printStackTrace();
 		}
 
-		return;
+		if(exitValue == 0)
+			return CommandStatus.SUCCESS;
+		else
+			return CommandStatus.FAILED;
 	}
 	
 	
@@ -453,7 +465,7 @@ public abstract class Command{
 	 * @param errors - Error stream from the job
 	 * @return - boolean - true if output was logged, false otherwise
 	 */
-	protected boolean logOutput(InputStream output, InputStream errors) {
+	protected boolean logOutput(final InputStream output, final InputStream errors) {
 		
 		InputStreamReader stdOutStreamReader = null, stdErrStreamReader = null;
 		BufferedReader stdOutReader = null, stdErrReader = null;
@@ -505,7 +517,7 @@ public abstract class Command{
 	 * command status is not set to a flagged error, e.g. failed.
 	 * @param current_status
 	 */
-	protected void checkStatus(CommandStatus current_status) {
+	public void checkStatus(CommandStatus current_status) throws IOException{
 		
 		if ( current_status != CommandStatus.FAILED && current_status != CommandStatus.INFOERROR) {
 			System.out.println("INFO: The current status is: " + current_status);
@@ -514,7 +526,7 @@ public abstract class Command{
 		else {
 			System.out.println("FAILURE: The job failed with status: " + current_status);
 			System.out.println("Check your error logfile for more details! Exiting now!");
-			System.exit(1);
+			throw new IOException();
 		}
 		
 	}

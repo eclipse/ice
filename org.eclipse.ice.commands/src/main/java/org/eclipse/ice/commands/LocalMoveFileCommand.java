@@ -39,26 +39,68 @@ public class LocalMoveFileCommand extends MoveFileCommand {
 	 * @param src 
 	 * @param dest
 	 */
-	public LocalMoveFileCommand(String src, String dest) {
+	public LocalMoveFileCommand(final String src, final String dest) {
 		source = Paths.get(src);
 		destination = Paths.get(dest);
 		
 		boolean destExists = false;
 		try {
-			destExists = exists(dest);
+			destExists = FileHandler.exists(dest);
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		move();
+		// If destination doesn't exist, create it
+		if(!destExists) {
+			try {
+				Files.createDirectories(destination);
+			}
+			catch(IOException e) {
+				System.out.println("Couldn't create directory for local move! Failed.");
+				e.printStackTrace();
+			}
+		}
+		
+		// Do the moving
+		status = execute();
 	}
 	
 	
 	
+	/**
+	 * This function actually executes the move file command. It checks that
+	 * the move command was completed successfully. It returns a 
+	 * CommandStatus indicating whether or not the move was successful.
+	 * @return CommandStatus
+	 */
 	@Override
-	protected void move() {
+	public CommandStatus execute() {
+		status = run();
 		
+		boolean check = false;
+		try {
+			check = FileHandler.exists(source.toString());
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		if( check )
+			return CommandStatus.SUCCESS;
+		else
+			return CommandStatus.FAILED;
+	}
+
+	
+	/**
+	 * This function contains the command to actually move the file. Returns
+	 * a CommandStatus indicating that the command is currently running and
+	 * needs to be checked that it completed correctly.
+	 * @return CommandStatus
+	 */
+	@Override
+	protected CommandStatus run() {
 		try {
 			Files.move(source, destination.resolve(source.getFileName()));
 		} 
@@ -66,9 +108,20 @@ public class LocalMoveFileCommand extends MoveFileCommand {
 			e.printStackTrace();
 		}
 		
-		
-		
-		return;
+		return CommandStatus.RUNNING;
 	}
+
+	/**
+	 * This function cancels the command when called. See also
+	 * {@link org.eclipse.ice.commands.Command#cancel()}
+	 */
+	@Override
+	public CommandStatus cancel() {
+		status = CommandStatus.CANCELED;
+		return CommandStatus.CANCELED;
+	}
+
+
+
 	
 }

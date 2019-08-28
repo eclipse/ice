@@ -109,7 +109,7 @@ public class FileHandler {
 
 	/**
 	 * This operations determines whether or not the file argument exists.
-	 * 
+	 * TODO - this only works for local files at the moment.
 	 * @param file the file for which to search
 	 * @return true if the file exists, false if not
 	 * @throws IOException

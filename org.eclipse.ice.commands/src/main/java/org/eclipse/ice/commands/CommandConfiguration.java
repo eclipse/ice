@@ -15,7 +15,6 @@ package org.eclipse.ice.commands;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 
@@ -32,11 +31,6 @@ public class CommandConfiguration {
 	 * An integer ID to associate with a job
 	 */
 	protected int commandId;
-	
-	/**
-	 * An AtomicBoolean that is true if the job is to be launched locally and false otherwise.
-	 */
-	protected AtomicBoolean isLocal = new AtomicBoolean();
 	
 	/**
 	 * The dictionary that contains the command properties.
@@ -75,7 +69,6 @@ public class CommandConfiguration {
 	public CommandConfiguration() {
 		// Assume some default variables
 		commandId = -999;
-		isLocal.set(true);
 	}
 
 	/**
@@ -86,10 +79,9 @@ public class CommandConfiguration {
 	 * @param _execDictionary
 	 * @param _appendInput
 	 */
-	public CommandConfiguration(int _commandId, AtomicBoolean _isLocal, 
+	public CommandConfiguration(int _commandId, 
 			HashMap<String,String> _execDictionary, boolean _appendInput) {
 		commandId = _commandId;
-		isLocal = _isLocal;
 		execDictionary = _execDictionary;
 		appendInput = _appendInput;
 		

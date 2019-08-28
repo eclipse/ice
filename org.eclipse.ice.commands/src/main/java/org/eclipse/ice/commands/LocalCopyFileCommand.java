@@ -40,14 +40,14 @@ public class LocalCopyFileCommand extends CopyFileCommand {
 	 * @param src 
 	 * @param dest
 	 */
-	public LocalCopyFileCommand(String src, String dest) {
+	public LocalCopyFileCommand(final String src, final String dest) {
 		source = Paths.get(src);
 		destination = Paths.get(dest);
 		
 		boolean destExists = false;
 		// Check if the destination exists
 		try {
-			destExists = exists(dest);
+			destExists = FileHandler.exists(dest);
 		} 
 		catch (IOException e1) {
 			e1.printStackTrace();
@@ -59,23 +59,50 @@ public class LocalCopyFileCommand extends CopyFileCommand {
 				Files.createDirectories(destination);
 			}
 			catch(IOException e) {
-				System.out.println("Couldn't create directory! Failed.");
+				System.out.println("Couldn't create directory for local copy! Failed.");
 				e.printStackTrace();
 			}
 		}
 		
 		// Do the copying
-		copy();
+		status = execute();
 	}
 	
-	
 	/**
-	 * See {@link org.eclipse.ice.commands.CopyFileCommand#copy()}
-	 * 
+	 * This function actually executes the copy file command. It checks that
+	 * the copy was completed successfully. It returns a 
+	 * CommandStatus indicating whether or not the move was successful.
+	 * @return CommandStatus
 	 */
 	@Override
-	protected void copy() {
+	public CommandStatus execute() {
 		
+		// Run the copying
+		status = run();
+				
+		// Check that the copy succeeded
+		boolean check = false;
+		try {
+			check = FileHandler.exists(source.toString());
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		if( check )
+			return CommandStatus.SUCCESS;
+		else
+			return CommandStatus.FAILED;
+	}
+
+
+	/**
+	 * This function contains the command to actually copy the file. Returns
+	 * a CommandStatus indicating that the command is currently running and
+	 * needs to be checked that it completed correctly.
+	 * @return CommandStatus
+	 */
+	@Override
+	protected CommandStatus run() {
 		// Try to copy from source to destination, overwriting if the file already
 		// exists at the destination. If it can't, complain.
 		try {
@@ -84,7 +111,18 @@ public class LocalCopyFileCommand extends CopyFileCommand {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		return;
+		return CommandStatus.RUNNING;
 	}
+
+	/**
+	 * This function cancels the command when called. See also
+	 * {@link org.eclipse.ice.commands.Command#cancel()}
+	 */
+	@Override
+	public CommandStatus cancel() {
+		status = CommandStatus.CANCELED;
+		return CommandStatus.CANCELED;
+	}
+
+	
 }

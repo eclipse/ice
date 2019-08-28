@@ -11,12 +11,13 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import static org.junit.Assert.fail;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import org.junit.After;
-import org.junit.AfterClass;
+import org.eclipse.ice.commands.LocalMoveFileCommand;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -27,43 +28,67 @@ import org.junit.Test;
 public class LocalMoveFileCommandTest {
 
 	/**
-	 * @throws java.lang.Exception
+	 * A source file that is created for testing
 	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
+	String source;
+	
 	/**
-	 * @throws java.lang.Exception
+	 * A destination path that is created for testing 
 	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
+	String dest;
+	
 	/**
+	 * This function sets up and creates a dummy test file for 
+	 * the testing of the class {@link org.eclipse.ice.commands.LocalMoveFileCommand#LocalMoveFileCommand(String, String)}
+	 * 
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-	}
+		// Set a dummy source and destination to copy
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	@Test
-	public void test() {
-		fail("Not yet implemented");
+		// First create a dummy text file to test 
+		source = "dummyfile.txt";
+		Path sourcePath = null;
+		try {
+			sourcePath = Files.createTempFile(null, source);
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+				
+		// Turn the path into a string to pass to the command
+		source = sourcePath.toString();
+				
+		// Do the same for the destination
+		Path destinationPath = null;
+		dest = "testCopyDirectory";
+		try {
+			destinationPath = Files.createTempDirectory(dest);
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+				
+		// Turn the path into a string to give to the command
+		dest = destinationPath.toString();
 	}
 	
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.LocalMoveFileCommand()}
 	 */
+	@Test
 	public void testLocalMoveFileCommand() {
-		fail("Not yet implemented");
+	
+		System.out.println("Moving: " + source + " to destination: " + dest);
+		// Make the command
+		LocalMoveFileCommand command = 
+				new LocalMoveFileCommand(source, dest);
+				
+		// Check if the path exists now
+		Path path = Paths.get(dest);
+		assert(Files.exists(path));
+				
 	}
 
 }
