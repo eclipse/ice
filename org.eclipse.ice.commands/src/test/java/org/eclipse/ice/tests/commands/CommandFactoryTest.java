@@ -15,7 +15,6 @@ package org.eclipse.ice.tests.commands;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.commands.Command;
 import org.eclipse.ice.commands.CommandConfiguration;
@@ -38,11 +37,7 @@ public class CommandFactoryTest {
 	 */
 	String hostname = getLocalHostname();
 	
-	/**
-	 * An AtomicBoolean indicating whether or not the job should be local. Set in the 
-	 * various test functions below.
-	 */
-	AtomicBoolean localjob = new AtomicBoolean();
+
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.CommandFactory#getCommand()}
 	 * and for the whole {@link org.eclipse.ice.commands.LocalCommand#execute()} 
@@ -63,7 +58,7 @@ public class CommandFactoryTest {
 	@Test
 	public void testFunctionalLocalCommand() {
 		
-		localjob.set( true );
+		
 		String hostname = getLocalHostname();
 		
 		/**
@@ -96,7 +91,7 @@ public class CommandFactoryTest {
 		
 		// Set the CommandConfiguration class
 		CommandConfiguration commandConfig = new CommandConfiguration(
-				1, localjob, executableDictionary, true );
+				1, executableDictionary, true );
 		
 		
 		
@@ -123,7 +118,6 @@ public class CommandFactoryTest {
 		
 		System.out.println("\nTesting some commands where not enough command information was provided.");
 	
-		localjob.set( true );
 		
 		
 		// Create a HashMap that doesn't have all of the necessary ingredients
@@ -134,7 +128,7 @@ public class CommandFactoryTest {
 		
 		// Set the CommandConfiguration class
 		CommandConfiguration commandConfig = new CommandConfiguration(
-				2, localjob, executableDictionary, true );
+				2, executableDictionary, true );
 		
 		// Get the command
 		Command localCommand = CommandFactory.getCommand(commandConfig);
@@ -161,8 +155,6 @@ public class CommandFactoryTest {
 		
 		System.out.println("\nTesting some commands where not enough command information was provided.");
 		
-		localjob.set(true);
-		
 		HashMap<String, String> executableDictionary = new HashMap<String, String>();
 		executableDictionary.put( "executable" , "./test_code_execution.sh" );
 		executableDictionary.put( "inputFile" , "someInputFile.txt" );
@@ -175,7 +167,7 @@ public class CommandFactoryTest {
 		
 		// Set the CommandConfiguration class
 		CommandConfiguration commandConfiguration = new CommandConfiguration(
-				1, localjob, executableDictionary, true );
+				1, executableDictionary, true );
 		
 		
 		

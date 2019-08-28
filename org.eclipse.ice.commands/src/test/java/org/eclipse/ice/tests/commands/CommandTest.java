@@ -14,7 +14,6 @@ package org.eclipse.ice.tests.commands;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.commands.Command;
 import org.eclipse.ice.commands.CommandConfiguration;
@@ -31,20 +30,11 @@ public class CommandTest {
 
 	
 	/**
-	 * An AtomicBoolean indicating whether or not the job should be local. Set in the 
-	 * various test functions below.
-	 */
-	AtomicBoolean localjob = new AtomicBoolean();
-	
-	
-	/**
 	 * Test method for {@link org.eclipse.ice.commands.Command#Command()}
 	 */
 	@Test
 	public void testLocalCommand() {
-		
-		localjob.set( true );
-		
+	
 		// Use the already defined function in CommandFactoryTest to get the
 		// local hostname
 		CommandFactoryTest commandFactory = new CommandFactoryTest();
@@ -62,7 +52,7 @@ public class CommandTest {
 		
 		// Set the CommandConfiguration class
 		CommandConfiguration commandConfig = new CommandConfiguration(
-				1, localjob, executableDictionary, true );
+				1, executableDictionary, true );
 		
 		Command localCommand = new LocalCommand(commandConfig);
 		CommandStatus status = localCommand.execute();
