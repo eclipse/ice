@@ -35,6 +35,8 @@ public class ConnectionConfiguration {
 	 * Default constructor
 	 */
 	public ConnectionConfiguration() {
+
+		// TODO Auto-generated constructor stub
 	}
 
 }

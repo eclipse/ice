@@ -38,7 +38,6 @@ public class CommandConfiguration {
 	 */
 	protected AtomicBoolean isLocal = new AtomicBoolean();
 	
-	
 	/**
 	 * The dictionary that contains the command properties.
 	 */

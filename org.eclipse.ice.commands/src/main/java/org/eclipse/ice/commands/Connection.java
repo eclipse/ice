@@ -30,11 +30,13 @@ public class Connection {
 	 */
 	private String name;
 	
+	
 	/**
 	 *  Default constructor
 	 */
-
 	public Connection() {
+
+		// TODO Auto-generated constructor stub
 	}
 
 }
