@@ -12,6 +12,9 @@
  *******************************************************************************/
 
 package org.eclipse.ice.commands;
+
+import java.nio.file.Paths;
+
 /**
  * Child class for remotely moving a file over some connection
  * @author Joe Osborn
@@ -24,6 +27,25 @@ public class RemoteMoveFileCommand extends MoveFileCommand {
 	 */
 	public RemoteMoveFileCommand() {
 		
+	}
+	
+	
+	/**
+	 * Constructor which sets the two paths, source and destination,
+	 * to those given by the arguments of the constructor. See 
+	 * {@link org.eclipse.ice.tests.commands.MoveFileCommand} for member
+	 * variable descriptions.
+	 * @param src 
+	 * @param dest
+	 */
+	public RemoteMoveFileCommand(String src, String dest) {
+		source = Paths.get(src);
+		destination = Paths.get(dest);
+	}
+	
+	@Override
+	protected void move() {
+		return;
 	}
 	
 }

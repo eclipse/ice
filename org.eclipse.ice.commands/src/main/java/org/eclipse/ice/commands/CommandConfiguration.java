@@ -14,12 +14,15 @@
 package org.eclipse.ice.commands;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 
- * This class configures particular commands to be executed and depends on the Command class.
+ * This class configures particular commands to be executed. It contains all of the 
+ * relevant information about configuring the command. The user should specify the
+ * details of the command in the declaration of a Command instance by providing a 
+ * CommandConfiguration.
  * @author Joe Osborn
  *
  */
@@ -28,52 +31,99 @@ public class CommandConfiguration {
 	/**
 	 * An integer ID to associate with a job
 	 */
-	private int commandId;
+	protected int commandId;
 	
 	/**
 	 * An AtomicBoolean that is true if the job is to be launched locally and false otherwise.
 	 */
-	private AtomicBoolean isLocal;
+	protected AtomicBoolean isLocal = new AtomicBoolean();
 	
 	
 	/**
 	 * The dictionary that contains the command properties.
 	 */
-	private Dictionary<String,String> execDictionary;
+	protected HashMap<String,String> execDictionary = new HashMap<String, String>();
 	
 	/**
 	 * A flag to mark whether or not the input file name should be appended to the executable command.
 	 * Marked as true by default so that the user (by default) specifies the input file name.
 	 */
-	private boolean appendInput = true;
+	protected boolean appendInput = true;
 	
 	
 	/**
 	 * The full command string of all stages that will be executed.
 	 */
-	private String fullCommand = "";
+	protected String fullCommand = "";
 	
 	/**
 	 * The set of commands in the fullCommand string split into stages. Each command is then executed separately.
 	 * If the command is single stage, then splitCommand is identical to fullCommand.
 	 */
-	private ArrayList<String> splitCommand = new ArrayList<String>();
+	protected ArrayList<String> splitCommand = new ArrayList<String>();
 	
 	
 	/**
 	 * The name of the working directory in which the job will be launched. The
 	 * default value is the prefix.
 	 */
-	private String workingDirectoryName = "niceLaunch_";
+	protected String workingDirectoryName = "";
 	
 	
 	/**
 	 * Default constructor
 	 */
 	public CommandConfiguration() {
+		// Assume some default variables
+		commandId = -999;
+		isLocal.set(true);
 	}
 
+	/**
+	 * Constructor which initializes several of the member variables
+	 * See member variables in class CommandConfiguration for descriptions of variables
+	 * @param _commandId
+	 * @param _isLocal
+	 * @param _execDictionary
+	 * @param _appendInput
+	 */
+	public CommandConfiguration(int _commandId, AtomicBoolean _isLocal, 
+			HashMap<String,String> _execDictionary, boolean _appendInput) {
+		commandId = _commandId;
+		isLocal = _isLocal;
+		execDictionary = _execDictionary;
+		appendInput = _appendInput;
+		
+	}
 	
 	
 	
+	/**
+	 * Make some getter and setter functions to access the CommandConfigurations
+	 * protected variables
+	 */
+	
+	public void setCommandId(int _commandId) {
+		commandId = _commandId;
+		return;
+	}
+	public int getCommandId() {
+		return commandId;
+	}
+	public void setExecDictionary(HashMap<String, String> _dictionary) {
+		execDictionary = _dictionary;
+		return;
+	}
+	public void setAppendInput(boolean _appendInput) {
+		appendInput = _appendInput;
+		return;
+	}
+	
+	/** 
+	 * Don't want a setter function for FullCommand since this is determined in
+	 * {@link org.eclipse.ice.commands.LocalCommand#fixExecutableName()}
+	 */
+	public String getFullCommand() {
+		return fullCommand;
+	}
 }

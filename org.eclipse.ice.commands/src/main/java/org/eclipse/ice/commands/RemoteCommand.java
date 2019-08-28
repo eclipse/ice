@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
-import java.util.Dictionary;
-
 /**
  * This class inherits from Command and gives available functionality for remote commands.
  * These could be ssh connections or a remote process.
@@ -29,12 +27,28 @@ public class RemoteCommand extends Command{
 	 */
 	Connection connection = new Connection();
 	
+	/**
+	 * Default constructor
+	 */
+	public RemoteCommand() {
+		
+	}
+	
+	/**
+	 * Constructor to instantiate the remote command with a particular 
+	 * CommandConfiguration
+	 * @param - CommandConfiguration which corresponds to the particular command
+	 */
+	public RemoteCommand(Connection connect, CommandConfiguration config) {
+		configuration = config;
+	}
+	
 	@Override
 	/**
 	 * Method that overrides Commmand:Execute and actually implements
 	 * the particular RemoteCommand to be executed.
 	 */
-	public CommandStatus Execute(Dictionary<String, String> dictionary) {
+	public CommandStatus execute() {
 		return null;
 	}
 	
@@ -44,22 +58,42 @@ public class RemoteCommand extends Command{
 	 * Method that overrides Commmand:Cancel and actually implements
 	 * the particular RemoteCommand to be cancelled.
 	 */
-	public CommandStatus Cancel() {
+	public CommandStatus cancel() {
 		return null;
 	}
 	
 	/**
-	 * Default constructor
+	 * See {@link org.eclipse.ice.commands.Command#launch()}
 	 */
-	public RemoteCommand() {
-		
+	@Override
+	protected CommandStatus setConfiguration(CommandConfiguration config) {
+		return null;
 	}
 	
+
+	
+	/**
+	 * See {@link org.eclipse.ice.commands.Command#run()}
+	 */
+	@Override
+	protected CommandStatus run() {
+		
+		
+		return status;
+	}
+	
+	/**
+	 * See @{link {@link org.eclipse.ice.commands.Command#fixExecutableName()}
+	 */
+	@Override
+	protected String fixExecutableName() {
+		return null;
+	}
 	/**
 	 * Set a particular connection for a particular RemoteCommand
 	 * @param connection - the connection for this command
 	 */
-	public void SetConnection(String connection) {
+	public void setConnection(String connection) {
 		
 	}
 	
@@ -67,7 +101,7 @@ public class RemoteCommand extends Command{
 	 * Return the connection associated to this RemoteCommand
 	 * @return - the connection for this command
 	 */
-	public Connection GetConnection() {
+	public Connection getConnection() {
 		
 		return connection;
 	}

@@ -11,12 +11,14 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import static org.junit.Assert.fail;
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.ice.commands.CommandConfiguration;
+import org.eclipse.ice.commands.CommandStatus;
+import org.eclipse.ice.commands.LocalCommand;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -26,25 +28,28 @@ import org.junit.Test;
  */
 public class LocalCommandTest {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
+	AtomicBoolean localjob = new AtomicBoolean();
+	HashMap<String, String> executableDictionary;
+	
+	
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
+		
+		// Set up some default instance variables
+		localjob.set( true );
+		executableDictionary = new HashMap<String, String>();
+		executableDictionary.put( "executable" , "someExecutable.sh ${installDir}" );
+		executableDictionary.put( "inputFile" , "someInputFile.txt" );
+		executableDictionary.put( "stdOutFileName",  "someOutFile.txt" );
+		executableDictionary.put( "stdErrFileName",  "someErrFile.txt" );
+		executableDictionary.put( "installDir" ,  "~/install");
+		executableDictionary.put( "numProcs",  "1");
+		executableDictionary.put( "os",  "OSX");
+		executableDictionary.put( "workingDirectory", "/");
 	}
 
 	/**
@@ -53,18 +58,53 @@ public class LocalCommandTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-
-	@Test
-	public void test() {
-		fail("Not yet implemented");
-	}
+	
+	
 	
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.LocalCommand()}
+	 * Tests check for proper configuration and checking of the LocalCommand
+	 * member variables so that the Command can actually be run. 
 	 */
+	@Test
 	public void testLocalCommand() {
-		fail("Not yet implemented");
+		
+		System.out.println("Starting testLocalCommand");
+	
+		// Now make a "real" command configuration to test
+		CommandConfiguration commandConfig = new CommandConfiguration(
+				3, localjob, executableDictionary, true );
+		
+		LocalCommand realCommand = new LocalCommand(commandConfig);
+		CommandStatus testStatus = realCommand.getStatus();
+		
+		
+		assert( testStatus == CommandStatus.RUNNING );
+		System.out.println("Finished testConfiguration\n");	
+	
 	}
 	
 
+	/**
+	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#Execute()}. This test should
+	 * "fail" by default since the CommandConfiguration executableDictionary does not point
+	 * to a real executable. This is a test of the API catching an incorrectly configured
+	 * command.
+	 * For a test of a fully functional command, see {@link org.eclipse.ice.commands.testCommandFactory()}
+	 */
+	@Test
+	public void testExecute() {
+		System.out.println("Starting testExecute\n");
+		
+		LocalCommand testCommand = new LocalCommand(new CommandConfiguration(2, localjob,
+				executableDictionary, true));
+		
+		CommandStatus testStatus = testCommand.execute();
+		System.out.println(testStatus);
+		System.out.println("Finished testExecute\n");
+	}
+	
+	
+	
+	
 }
