@@ -59,7 +59,7 @@ public class LocalCopyFileCommand extends CopyFileCommand {
 				Files.createDirectories(destination);
 			}
 			catch(IOException e) {
-				System.out.println("Couldn't create directory! Failed.");
+				System.out.println("Couldn't create directory for local copy! Failed.");
 				e.printStackTrace();
 			}
 		}

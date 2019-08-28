@@ -11,11 +11,14 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.eclipse.ice.commands.FileHandler;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -25,7 +28,43 @@ import org.junit.Test;
  */
 public class FileHandlerTest {
 
-
+	String localSource = null;
+	String localDestination = null;
+	
+	/**
+	 * Set up some dummy local files to work with
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		
+		// First create a dummy text file to test 
+		String source = "dummyfile.txt";
+		Path sourcePath = null;
+		try {
+			sourcePath = Files.createTempFile(null, source);
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+				
+		// Turn the path into a string to pass to the command
+		localSource = sourcePath.toString();
+				
+		// Do the same for the destination
+		Path destinationPath = null;
+		String dest = "testCopyDirectory";
+		try {
+			destinationPath = Files.createTempDirectory(dest);
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+				
+		// Turn the path into a string to give to the command
+		localDestination = destinationPath.toString();
+		
+	}
 
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.FileHandler#FileHandler()}.
@@ -40,10 +79,10 @@ public class FileHandlerTest {
 	 * Test method for {@link org.eclipse.ice.commands.FileHandler#copy(java.lang.String, java.lang.String)}.
 	 */
 	@Test
-	public void testCopy() {
+	public void testLocalCopy() {
 		System.out.println("Testing testCopy() function.");
 		try {
-			FileHandler.copy("/Users/4jo/testfile.txt", "/Users/4jo/dummy_dir2");
+			FileHandler.copy(localSource, localDestination);
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
@@ -57,9 +96,9 @@ public class FileHandlerTest {
 	 * Test method for {@link org.eclipse.ice.commands.FileHandler#move(java.lang.String, java.lang.String)}.
 	 */
 	//@Test
-	public void testMove() {
+	public void testLocalMove() {
 		try {
-			FileHandler.move("/Users/4jo/dummy_dir/testfile.txt", "/Users/4jo/testfile_mv.txt");
+			FileHandler.move(localSource, localDestination);
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
