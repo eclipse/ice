@@ -20,7 +20,7 @@ import java.nio.file.Path;
  * @author Joe Osborn
  *
  */
-public abstract class CopyFileCommand extends FileHandler {
+public abstract class CopyFileCommand extends Command {
 
 	
 	/**
@@ -37,17 +37,7 @@ public abstract class CopyFileCommand extends FileHandler {
 	/**
 	 * Default constructor
 	 */
-	public CopyFileCommand() {
-		
-	}
+	public CopyFileCommand() {}
 	
-	/**
-	 * This abstract function is called at constructor time for the respective
-	 * children classes. It handles the execution of the copying of the file
-	 * from the source to the destination. The function defaults to overwriting
-	 * the destination if a file at the destination already exists with the same
-	 * name, exactly like the unix cp command.
-	 */
-	protected abstract void copy();
 	
 }

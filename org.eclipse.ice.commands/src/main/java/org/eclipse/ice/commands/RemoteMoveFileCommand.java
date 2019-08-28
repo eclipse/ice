@@ -41,11 +41,35 @@ public class RemoteMoveFileCommand extends MoveFileCommand {
 	public RemoteMoveFileCommand(String src, String dest) {
 		source = Paths.get(src);
 		destination = Paths.get(dest);
+		status = execute();
 	}
 	
+
+
 	@Override
-	protected void move() {
-		return;
+	public CommandStatus execute() {
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+
+	
+
+
+	@Override
+	protected CommandStatus run() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public CommandStatus cancel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	
 	
 }

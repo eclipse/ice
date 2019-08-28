@@ -82,11 +82,14 @@ public abstract class Command{
 	/**
 	 * This function sets the CommandConfiguration for a particular command.
 	 * It also prepares various files for job launch (e.g. logfiles) and is called
-	 * at construction time.
+	 * at construction time. It is overriden by LocalCommand and RemoteCommand
 	 * @param config - the configuration to be used for a particular command.
 	 * @return CommandStatus - status indicating whether the configuration was properly set
 	 */
-	protected abstract CommandStatus setConfiguration(CommandConfiguration config);
+	protected CommandStatus setConfiguration(CommandConfiguration config) {
+		configuration = config;
+		return CommandStatus.PROCESSING;
+	}
 
 	/**
 	 * This function actually runs the particular command in question. It is called in execute()
@@ -107,10 +110,13 @@ public abstract class Command{
 	 * This function actually assembles and fixes the name of the executable to be launched.
 	 * It replaces ${inputFile}, ${installDir} and other keys from the dictionary. The function
 	 * is abstract so that Local and Remote executable names can be handled individually,
-	 * since the remote target file system is not necessarily the same as the local.
+	 * since the remote target file system is not necessarily the same as the local. 
+	 * It should be overridden by the subclasses that require executables.
 	 * @return - String that is the executable to be run
 	 */
-	protected abstract String fixExecutableName();
+	protected String fixExecutableName() {
+		return configuration.execDictionary.get("executable");
+	}
 	
 	
 	/**

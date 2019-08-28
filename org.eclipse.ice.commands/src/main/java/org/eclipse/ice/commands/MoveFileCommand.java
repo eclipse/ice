@@ -20,7 +20,7 @@ import java.nio.file.Path;
  * @author Joe Osborn
  *
  */
-public abstract class MoveFileCommand extends FileHandler {
+public abstract class MoveFileCommand extends Command {
 
 	/**
 	 * The path to the source file which is to be moved
@@ -35,14 +35,8 @@ public abstract class MoveFileCommand extends FileHandler {
 	/**
 	 * Default constructor
 	 */
-	public MoveFileCommand() {
-	}
+	public MoveFileCommand() {}
 	
-	/**
-	 * This class does the actual handling of executing the move command and is
-	 * called at constructor time. The class is abstract so that remote and local
-	 * moves can be handled individually.
-	 */
-	protected abstract void move();
+	
 	
 }

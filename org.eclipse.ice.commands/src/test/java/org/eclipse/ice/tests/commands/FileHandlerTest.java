@@ -23,7 +23,7 @@ import org.junit.Test;
 
 /**
  * This class tests {@link org.eclipse.ice.commands.FileHandler}.
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Joe Osborn
  *
  */
 public class FileHandlerTest {
@@ -80,29 +80,46 @@ public class FileHandlerTest {
 	 */
 	@Test
 	public void testLocalCopy() {
-		System.out.println("Testing testCopy() function.");
+		System.out.println("Testing testLocalCopy() function.");
 		try {
-			FileHandler.copy(localSource, localDestination);
+			FileHandler.copy(localSource, localDestination+"copy");
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		
-		System.out.println("Finished testing testCopy() function.");
+		// Check that it exists
+		try {
+			FileHandler.exists(localDestination);
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Finished testing testLocalCopy() function.");
 	}
 
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.FileHandler#move(java.lang.String, java.lang.String)}.
 	 */
-	//@Test
+	@Test
 	public void testLocalMove() {
+		System.out.println("Testing testLocalMove() function.");
 		try {
 			FileHandler.move(localSource, localDestination);
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		// Check that it exists
+		try { 
+			FileHandler.exists(localDestination);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("Finished testing testLocalMove() function.");
 		
 	}
 

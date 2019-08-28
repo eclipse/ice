@@ -41,12 +41,34 @@ public class RemoteCopyFileCommand extends CopyFileCommand {
 	public RemoteCopyFileCommand(String src, String dest) {
 		source = Paths.get(src);
 		destination = Paths.get(dest);
-		copy();
+		status = execute();
 	}
 	
+	
+
+
 	@Override
-	protected void copy() {
-		return;
+	public CommandStatus execute() {
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+
+
+
+	@Override
+	protected CommandStatus run() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public CommandStatus cancel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 	
 }
