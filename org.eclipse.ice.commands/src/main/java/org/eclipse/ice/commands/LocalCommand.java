@@ -69,7 +69,7 @@ public class LocalCommand extends Command{
 	 * See {@link org.eclipse.ice.commands.Command#setConfiguration(CommandConfiguration)}
 	 */
 	@Override
-	protected CommandStatus setConfiguration(CommandConfiguration config) {
+	protected CommandStatus setConfiguration(final CommandConfiguration config) {
 		
 		// Set the configuration for the command
 		configuration = config;

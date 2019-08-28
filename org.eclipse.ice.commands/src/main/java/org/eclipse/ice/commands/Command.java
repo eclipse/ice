@@ -111,7 +111,7 @@ public abstract class Command{
 	 * It replaces ${inputFile}, ${installDir} and other keys from the dictionary. The function
 	 * is abstract so that Local and Remote executable names can be handled individually,
 	 * since the remote target file system is not necessarily the same as the local. 
-	 * It should be overridden by the subclasses that require executables.
+	 * It is overridden by the subclasses that require executables.
 	 * @return - String that is the executable to be run
 	 */
 	protected String fixExecutableName() {
@@ -368,7 +368,6 @@ public abstract class Command{
 			// The job is still running, so it should be watched by the 
 			// {@link org.eclipse.ice.commands.Command.monitorJob()} function
 		
-			System.out.println("First exit value was: " + exitValue);
 			System.out.println("Job didn't finish, going to monitorJob now");
 			return CommandStatus.RUNNING;
 		}
@@ -466,7 +465,7 @@ public abstract class Command{
 	 * @param errors - Error stream from the job
 	 * @return - boolean - true if output was logged, false otherwise
 	 */
-	protected boolean logOutput(InputStream output, InputStream errors) {
+	protected boolean logOutput(final InputStream output, final InputStream errors) {
 		
 		InputStreamReader stdOutStreamReader = null, stdErrStreamReader = null;
 		BufferedReader stdOutReader = null, stdErrReader = null;

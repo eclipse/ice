@@ -39,7 +39,7 @@ public class LocalMoveFileCommand extends MoveFileCommand {
 	 * @param src 
 	 * @param dest
 	 */
-	public LocalMoveFileCommand(String src, String dest) {
+	public LocalMoveFileCommand(final String src, final String dest) {
 		source = Paths.get(src);
 		destination = Paths.get(dest);
 		

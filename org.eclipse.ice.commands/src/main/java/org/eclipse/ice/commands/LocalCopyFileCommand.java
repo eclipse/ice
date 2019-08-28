@@ -40,7 +40,7 @@ public class LocalCopyFileCommand extends CopyFileCommand {
 	 * @param src 
 	 * @param dest
 	 */
-	public LocalCopyFileCommand(String src, String dest) {
+	public LocalCopyFileCommand(final String src, final String dest) {
 		source = Paths.get(src);
 		destination = Paths.get(dest);
 		
