@@ -21,6 +21,17 @@ package org.eclipse.ice.commands;
 public class Connection {
 
 	/**
+	 * The particular configuration for a particular connection
+	 */
+	ConnectionConfiguration configuration;
+
+	/**
+	 * A name identifier for a particular connection.
+	 */
+	private String name;
+	
+	/**
+	 *  Default constructor
 	 * The configuration for a particular connection
 	 */
 	ConnectionConfiguration configuration;
