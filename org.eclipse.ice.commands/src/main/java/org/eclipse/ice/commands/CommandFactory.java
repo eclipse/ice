@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The command factory simplifies the creation of Commands without revealing how
  * they are constructed. It is primarily used for creating generic commands,
@@ -25,12 +28,18 @@ import java.net.UnknownHostException;
  */
 public class CommandFactory {
 
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	protected static final Logger logger = LoggerFactory.getLogger(Command.class);
+	
+	
+	
 	/**
 	 * Constructor
 	 */
-	public CommandFactory() {
-		
-	}
+	public CommandFactory() {}
 
 	/**
 	 * Method which gets a command and subsequently executes it on a host
@@ -40,7 +49,10 @@ public class CommandFactory {
 	 * @return Command
 	 */
 	public static Command getCommand(final CommandConfiguration configuration) throws IOException {
-
+		// Necessary for logger to print to console correctly
+		//BasicConfigurator.configure();
+		
+	
 		Command command = null;
 		String host = null;
 		
@@ -49,13 +61,13 @@ public class CommandFactory {
 			host = configuration.execDictionary.get("hostname");
 		}
 		else {
-			System.out.println("FAILURE: You didn't provide a Dictionary with the Command information to run! Exiting.");
+			logger.error("You didn't provide a Dictionary with the Command information to run! Exiting.");
 			throw new IOException();
 		}
 		
 		// If no host was provided, we don't know where to run the job
 		if (host == null) {
-			System.out.println("FAILURE: You didn't provide a hostname in the CommandConfiguration for the job to run on! Exiting.");
+			logger.error("You didn't provide a hostname in the CommandConfiguration for the job to run on! Exiting.");
 			throw new IOException();
 		}
 		

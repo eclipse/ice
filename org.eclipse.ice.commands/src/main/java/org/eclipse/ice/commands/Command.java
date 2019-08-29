@@ -26,6 +26,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -54,6 +56,12 @@ public abstract class Command{
 	 */
 	protected BufferedWriter stdOut = null, stdErr = null;
 	
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	protected static final Logger logger = LoggerFactory.getLogger(Command.class);
+	
 	/**
 	 * Reference to the Java process that is the job to be executed
 	 */
@@ -63,7 +71,6 @@ public abstract class Command{
 	 * The variable that actually handles the job execution at the command line
 	 */
 	protected ProcessBuilder jobBuilder;
-	
 	
 	
 	/**
@@ -228,6 +235,7 @@ public abstract class Command{
 	 * @param command - Command to be prepared for shell execution
 	 */
 	protected CommandStatus setupProcessBuilder(String command) {
+		
 		// Local declarations
 		String os = configuration.execDictionary.get("os");
 		ArrayList<String> commandList = new ArrayList<String>();
@@ -245,7 +253,7 @@ public abstract class Command{
 		// the OS is not windows
 		commandList.add(command);
 		
-		System.out.println("INFO: Full command going to ProcessBuilder is: " + commandList);
+		logger.info("Full command going to ProcessBuilder is: " + commandList);
 		// Make the ProcessBuilder to execute the command
 		jobBuilder = new ProcessBuilder(commandList);
 		
@@ -344,7 +352,7 @@ public abstract class Command{
 				stdErr.close();
 			}
 			catch (IOException e){
-				System.out.println("FAILURE: There were errors in the job running, but they could not write to the error log file!");
+				logger.error("There were errors in the job running, but they could not write to the error log file!");
 				return CommandStatus.FAILED;
 			}
 			
@@ -368,7 +376,7 @@ public abstract class Command{
 			// The job is still running, so it should be watched by the 
 			// {@link org.eclipse.ice.commands.Command.monitorJob()} function
 		
-			System.out.println("Job didn't finish, going to monitorJob now");
+			logger.info("Job didn't finish, going to monitorJob now");
 			return CommandStatus.RUNNING;
 		}
 		// By convention exit values other than zero mean that the program
@@ -501,7 +509,7 @@ public abstract class Command{
 			}
 		} catch (IOException e) {
 			// Or fail and complain about it.
-			System.out.println("FAILURE: Could not logOutput, returning error!");
+			logger.error("Could not logOutput, returning error!");
 			return false;
 		}
 		
@@ -520,12 +528,12 @@ public abstract class Command{
 	public void checkStatus(CommandStatus current_status) throws IOException{
 		
 		if ( current_status != CommandStatus.FAILED && current_status != CommandStatus.INFOERROR) {
-			System.out.println("INFO: The current status is: " + current_status);
+			logger.info("The current status is: " + current_status);
 			return;
 		}
 		else {
-			System.out.println("FAILURE: The job failed with status: " + current_status);
-			System.out.println("Check your error logfile for more details! Exiting now!");
+			logger.error("The job failed with status: " + current_status);
+			logger.error("Check your error logfile for more details! Exiting now!");
 			throw new IOException();
 		}
 		

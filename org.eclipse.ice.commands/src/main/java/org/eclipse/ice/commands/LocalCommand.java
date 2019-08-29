@@ -36,9 +36,9 @@ public class LocalCommand extends Command{
 	 * @param _configuration
 	 */
 	public LocalCommand(CommandConfiguration _configuration) {
+	
 		status = CommandStatus.LAUNCHING;
-		status = setConfiguration(_configuration);
-		
+		status = setConfiguration(_configuration);	
 	}
 	
 	
@@ -62,6 +62,7 @@ public class LocalCommand extends Command{
 		// Now that all of the prerequisites have been set, start the job running
 		status = run();
 		
+		logger.info("The job finished with status: " + status);
 		return status;
 	}
 	
@@ -151,7 +152,7 @@ public class LocalCommand extends Command{
 			
 			// Check the status to ensure job has not been canceled
 			if (status == CommandStatus.CANCELED) {
-				System.out.println("INFO: Job has been canceled, quitting now.");
+				logger.info("Job has been canceled, quitting now.");
 				break;
 			}
 			
@@ -176,7 +177,7 @@ public class LocalCommand extends Command{
 			// Monitor the job to ensure it finished successfully or to watch it
 			// if it is still running
 			if(status != CommandStatus.SUCCESS) {
-				System.out.println("INFO: Monitoring job");
+				logger.info("Monitoring job");
 				status = monitorJob();
 			}
 			
@@ -197,7 +198,7 @@ public class LocalCommand extends Command{
 		}
 		catch (IOException e) {
 			status = CommandStatus.INFOERROR;
-			System.out.println("INFO: Could not close the output and/or error files, returning INFOERROR");
+			logger.error("Could not close the output and/or error files, returning INFOERROR");
 			return status;
 		}
 		
@@ -265,7 +266,7 @@ public class LocalCommand extends Command{
 		// Print launch stages so that user can confirm
 		for (int i = 0; i < configuration.splitCommand.size(); i++) {
 			String cmd = configuration.splitCommand.get(i);
-			System.out.println("LocalCommand Message: Launch stage " + i
+			logger.info("LocalCommand Message: Launch stage " + i
 					+ " = " + cmd);
 		}
 
