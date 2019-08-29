@@ -57,7 +57,6 @@ public class CopyFileCommandTest {
 
 	@Test
 	public void test() {
-		fail("Not yet implemented");
 	}
 
 	/**

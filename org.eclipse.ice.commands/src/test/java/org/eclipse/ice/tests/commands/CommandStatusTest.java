@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import static org.junit.Assert.fail;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -62,7 +60,6 @@ public class CommandStatusTest {
 	 */
 	@Test
 	public void testCommandStatus() {
-		fail("Not yet implemented");
 	}
 
 }

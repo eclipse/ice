@@ -4,6 +4,10 @@
   <artifactId>org.eclipse.ice.commands</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>Eclipse ICE Commands API</name>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
   <description>This project provides a simple set of utilities for executing commands such as job launches and file transfers.</description>
 	<dependencies>
 		<dependency>

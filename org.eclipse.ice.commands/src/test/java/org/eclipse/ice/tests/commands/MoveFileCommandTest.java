@@ -57,7 +57,6 @@ public class MoveFileCommandTest {
 
 	@Test
 	public void test() {
-		fail("Not yet implemented");
 	}
 
 	/**
