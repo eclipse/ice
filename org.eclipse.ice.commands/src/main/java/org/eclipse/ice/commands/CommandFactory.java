@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -38,7 +39,7 @@ public class CommandFactory {
 	 * particular details of a given command.
 	 * @return Command
 	 */
-	public static Command getCommand(final CommandConfiguration configuration) {
+	public static Command getCommand(final CommandConfiguration configuration) throws IOException {
 
 		Command command = null;
 		String host = null;
@@ -49,13 +50,13 @@ public class CommandFactory {
 		}
 		else {
 			System.out.println("FAILURE: You didn't provide a Dictionary with the Command information to run! Exiting.");
-			System.exit(1);
+			throw new IOException();
 		}
 		
 		// If no host was provided, we don't know where to run the job
 		if (host == null) {
 			System.out.println("FAILURE: You didn't provide a hostname in the CommandConfiguration for the job to run on! Exiting.");
-			System.exit(1);
+			throw new IOException();
 		}
 		
 		// If it the host is local, get a LocalCommand. Otherwise, RemoteCommand

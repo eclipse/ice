@@ -12,6 +12,7 @@
 package org.eclipse.ice.tests.commands;
 
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -96,14 +97,19 @@ public class CommandFactoryTest {
 		
 		
 		// Get the command
-		Command localCommand = CommandFactory.getCommand(commandConfig);
+		Command localCommand = null;
+		try {
+			localCommand = CommandFactory.getCommand(commandConfig);
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		// Run it
 		CommandStatus status = localCommand.execute();
 		
 		assert( status == CommandStatus.SUCCESS );
-		System.out.println("Status of functional command: " + status);
-		
+	
 	}
 	
 	
@@ -131,7 +137,13 @@ public class CommandFactoryTest {
 				2, executableDictionary, true );
 		
 		// Get the command
-		Command localCommand = CommandFactory.getCommand(commandConfig);
+		Command localCommand = null;
+		try {
+			localCommand = CommandFactory.getCommand(commandConfig);
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 						
 		// Run it and expect that it fails
 		CommandStatus status = localCommand.execute();
@@ -172,11 +184,15 @@ public class CommandFactoryTest {
 		
 		
 		// Get the command
-		Command localCommand2 = CommandFactory.getCommand(commandConfiguration);
+		Command localCommand2 = null;
+		try {
+			localCommand2 = CommandFactory.getCommand(commandConfiguration);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		// Run it and expect that it fails
 		CommandStatus status2 = localCommand2.execute();
-	
 		
 	}
 	
