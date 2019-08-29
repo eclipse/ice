@@ -37,7 +37,7 @@ public class LocalCommand extends Command{
 	 */
 	public LocalCommand(CommandConfiguration _configuration) {
 	
-		status = CommandStatus.LAUNCHING;
+		status = CommandStatus.PROCESSING;
 		status = setConfiguration(_configuration);	
 	}
 	
@@ -176,7 +176,7 @@ public class LocalCommand extends Command{
 			
 			// Monitor the job to ensure it finished successfully or to watch it
 			// if it is still running
-			if(status != CommandStatus.SUCCESS) {
+			if(status != CommandStatus.SUCCESS && status != CommandStatus.FAILED) {
 				logger.info("Monitoring job");
 				status = monitorJob();
 			}

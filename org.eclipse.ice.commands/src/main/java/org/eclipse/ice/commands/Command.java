@@ -401,7 +401,6 @@ public abstract class Command{
 	 * successfully.
 	 */
 	protected CommandStatus monitorJob()  {
-
 		
 		// Local Declarations
 		int exitValue = -1; // Totally arbitrary
@@ -443,10 +442,11 @@ public abstract class Command{
 			// If for some reason the job has failed,
 			// it shouldn't be alive and we should break;
 			if (!job.isAlive()) {
+				logger.info("Job is no longer alive, no longer monitoring it's status");
 				break;
 			}
 		}
-		
+	
 		// Print the final exitValue of the job to the output log file
 		try {
 			stdOut.write("INFO: Command::monitorJob Message: Exit value = " + exitValue + "\n");
@@ -454,7 +454,8 @@ public abstract class Command{
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		
+		logger.info("Finished monitoring job with exit value: " + exitValue);
 		if(exitValue == 0)
 			return CommandStatus.SUCCESS;
 		else

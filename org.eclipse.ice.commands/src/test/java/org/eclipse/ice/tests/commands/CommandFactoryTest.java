@@ -161,7 +161,7 @@ public class CommandFactoryTest {
 	 * execution chain with an uncompleted Command dictionary. This function is 
 	 * intended to test some of the exception catching, thus it is expected to "fail."
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testIncorrectWorkingDirectory() {
 		/**
 		 * Run another non functional command, with a non existing working directory
