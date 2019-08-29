@@ -43,25 +43,6 @@ public class LocalMoveFileCommand extends MoveFileCommand {
 		source = Paths.get(src);
 		destination = Paths.get(dest);
 		
-		boolean destExists = false;
-		try {
-			destExists = FileHandler.exists(dest);
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		// If destination doesn't exist, create it
-		if(!destExists) {
-			try {
-				Files.createDirectories(destination);
-			}
-			catch(IOException e) {
-				System.out.println("Couldn't create directory for local move! Failed.");
-				e.printStackTrace();
-			}
-		}
-		
 		// Do the moving
 		status = execute();
 	}

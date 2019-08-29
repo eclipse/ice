@@ -12,11 +12,14 @@
 package org.eclipse.ice.tests.commands;
 
 import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.eclipse.ice.commands.LocalCopyFileCommand;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,12 +34,12 @@ public class LocalCopyFileCommandTest {
 	/**
 	 * A source file that is created for testing
 	 */
-	String source;
+	String source = null;
 	
 	/**
 	 * A destination path that is created for testing 
 	 */
-	String dest;
+	String dest = null;
 	
 	/**
 	 * This function sets up and creates a dummy test file for 
@@ -75,6 +78,76 @@ public class LocalCopyFileCommandTest {
 		dest = destinationPath.toString();
 	}
 
+	/**
+	 * Deletes the temporarily made files since they are not useful
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+		
+		// Get the individual directories
+		String delims = "[/]";
+		String[] tokens = source.split(delims);
+		String filename = tokens[tokens.length-1];
+		
+		// Make the destination path + the filename
+		String fullDestination = dest + "/" + filename;
+		
+		// Get the paths
+		Path sourcePath = Paths.get(source);
+		Path destPath = Paths.get(fullDestination);
+		Path destDirectory = Paths.get(dest);
+		
+		// Delete the files
+		try {
+			Files.deleteIfExists(sourcePath);
+		}
+		catch (NoSuchFileException e) {
+		    System.err.format("%s: no such" + " file or directory%n", sourcePath);
+		    e.printStackTrace();
+		} 
+		catch (DirectoryNotEmptyException e) {
+		    System.err.format("%s not empty%n", sourcePath);
+		    e.printStackTrace();
+		} 
+		catch (IOException e) {
+		    System.err.println(e);
+		    e.printStackTrace();
+		}
+		try {
+			Files.deleteIfExists(destPath);
+		}
+		catch (NoSuchFileException e) {
+		    System.err.format("%s: no such" + " file or directory%n", destPath);
+		    e.printStackTrace();
+		} 
+		catch (DirectoryNotEmptyException e) {
+		    System.err.format("%s not empty%n", destPath);
+		    e.printStackTrace();
+		} 
+		catch (IOException e) {
+		    System.err.println(e);
+		    e.printStackTrace();
+		}
+		try {
+			Files.deleteIfExists(destDirectory);
+		}
+		catch (NoSuchFileException e) {
+		    System.err.format("%s: no such" + " file or directory%n", destDirectory);
+		    e.printStackTrace();
+		} 
+		catch (DirectoryNotEmptyException e) {
+		    System.err.format("%s not empty%n", destDirectory);
+		    e.printStackTrace();
+		} 
+		catch (IOException e) {
+		    System.err.println(e);
+		    e.printStackTrace();
+		}
+		
+	}
+	
+	
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.LocalCopyFileCommand#LocalCopyFileCommand(String, String)}
 	 * 

@@ -44,26 +44,6 @@ public class LocalCopyFileCommand extends CopyFileCommand {
 		source = Paths.get(src);
 		destination = Paths.get(dest);
 		
-		boolean destExists = false;
-		// Check if the destination exists
-		try {
-			destExists = FileHandler.exists(dest);
-		} 
-		catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		// If destination doesn't exist, create it
-		if(!destExists) {
-			try {
-				Files.createDirectories(destination);
-			}
-			catch(IOException e) {
-				System.out.println("Couldn't create directory for local copy! Failed.");
-				e.printStackTrace();
-			}
-		}
-		
 		// Do the copying
 		status = execute();
 	}

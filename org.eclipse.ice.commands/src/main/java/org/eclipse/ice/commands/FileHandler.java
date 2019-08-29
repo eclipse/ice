@@ -55,9 +55,23 @@ public class FileHandler {
 		
 		// Check to make sure the paths exist
 		boolean sourceExists = exists(src);
-		
+		boolean destExists = exists(dest);
+	
+		// If destination doesn't exist, create it
+		if(!destExists) {
+			try {
+				Path destination = Paths.get(dest);
+				Files.createDirectories(destination);
+				// If an exception wasn't thrown, the destination exists
+				destExists = true;
+			}
+			catch(IOException e) {
+				System.out.println("Couldn't create directory for local copy! Failed.");
+				e.printStackTrace();
+			}
+		}
 				
-		if(sourceExists) {
+		if(sourceExists && destExists) {
 			if(isLocal) {
 				command = new LocalMoveFileCommand(src, dest);
 			}
@@ -88,11 +102,24 @@ public class FileHandler {
 		
 		
 		// Check to make sure the source exists
-		// Check destination existing in individual Command classes, since it can
-		// be made to exist
 		boolean sourceExists = exists(src);
+		boolean destExists = exists(dest);
 		
-		if(sourceExists) {
+		// If destination doesn't exist, create it
+		if(!destExists) {
+			try {
+				Path destination = Paths.get(dest);
+				Files.createDirectories(destination);
+				// If an exception wasn't thrown, then destination now exists
+				destExists = true;
+			}
+			catch(IOException e) {
+				System.out.println("Couldn't create directory for local move! Failed.");
+				e.printStackTrace();
+			}
+		}
+		
+		if(sourceExists && destExists) {
 			if(isLocal) {
 				command = new LocalCopyFileCommand(src, dest);
 			}
