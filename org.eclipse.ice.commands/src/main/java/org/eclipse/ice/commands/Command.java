@@ -114,7 +114,7 @@ public abstract class Command{
 	 * It is overridden by the subclasses that require executables.
 	 * @return - String that is the executable to be run
 	 */
-	protected String fixExecutableName() {
+	protected String getExecutableName() {
 		return configuration.execDictionary.get("executable");
 	}
 	

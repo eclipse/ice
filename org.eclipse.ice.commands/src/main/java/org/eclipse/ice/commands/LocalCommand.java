@@ -111,7 +111,7 @@ public class LocalCommand extends Command{
 			configuration.appendInput = false;
 		
 		// Set the command to actually run and execute
-		configuration.fullCommand = fixExecutableName();
+		configuration.fullCommand = getExecutableName();
 		
 		//Set the output and error buffer writers
 		stdOutFileName = configuration.execDictionary.get("stdOutFileName");
@@ -212,7 +212,7 @@ public class LocalCommand extends Command{
 	 * See {@link org.eclipse.ice.commands.Command#fixExecutableName()}
 	 */
 	@Override
-	protected String fixExecutableName() {
+	protected String getExecutableName() {
 		
 		// Get the information from the executable dictionary
 		int numProcs = Math.max(1,

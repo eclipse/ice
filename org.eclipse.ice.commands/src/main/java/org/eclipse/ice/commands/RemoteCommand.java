@@ -86,7 +86,7 @@ public class RemoteCommand extends Command{
 	 * See @{link {@link org.eclipse.ice.commands.Command#fixExecutableName()}
 	 */
 	@Override
-	protected String fixExecutableName() {
+	protected String getExecutableName() {
 		return null;
 	}
 	/**
