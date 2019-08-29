@@ -34,82 +34,104 @@ public class FileHandler {
 	}
 
 	/**
-	 * This operations moves files from the source (src) to the destination
-	 * (dest). If the operation fails, an IOException will be thrown.
+	 * This operation moves files from the source (src) to the destination (dest).
+	 * If the operation fails, an IOException will be thrown.
 	 * 
-	 * @param src
-	 * @param dest
-	 * @param hostname
-	 * @return CommandStatus - status indicating move was successfully completed
+	 * @param src  - source file to be moved
+	 * @param dest - destination for the source file to be moved to
+	 * @return Command - The command to be executed
 	 * @throws IOException
 	 */
-	public static void move(final String src, final String dest) throws IOException {
-		
+	public static Command move(final String src, final String dest) throws IOException {
+
 		MoveFileCommand command = null;
-		
-		// Just test local moving for now. 
-		
-		//TODO need to determine how to differentiate local vs. remote moves with just
+
+		// Just test local moving for now.
+
+		// TODO need to determine how to differentiate local vs. remote moves with just
 		// the strings and not a hostname
 		boolean isLocal = true;
-		
+
 		// Check to make sure the paths exist
 		boolean sourceExists = exists(src);
-		
-				
-		if(sourceExists) {
-			if(isLocal) {
-				command = new LocalMoveFileCommand(src, dest);
+		boolean destExists = exists(dest);
+
+		// If destination doesn't exist, create it
+		if (!destExists) {
+			try {
+				Path destination = Paths.get(dest);
+				Files.createDirectories(destination);
+				// If an exception wasn't thrown, the destination exists
+				destExists = true;
+			} catch (IOException e) {
+				System.out.println("Couldn't create directory for local copy! Failed.");
+				e.printStackTrace();
 			}
-			else {
+		}
+
+		if (sourceExists && destExists) {
+			if (isLocal) {
+				command = new LocalMoveFileCommand(src, dest);
+			} else {
 				command = new RemoteMoveFileCommand(src, dest);
 			}
 		}
-		
-		return;
+
+		return command;
 	}
 
 	/**
-	 * This operations copies files from the source (src) to the destination
-	 * (dest). If the operation fails, an IOException will be thrown. 
+	 * This operations copies files from the source (src) to the destination (dest).
+	 * If the operation fails, an IOException will be thrown.
 	 * 
-	 * @param src
-	 * @param dest
-	 * @return CommandStatus - status indicating copy was successfully completed
+	 * @param src  - source file to be copied
+	 * @param dest - destination to be copied to
+	 * @return Command - The actual Command to be executed
 	 * @throws IOException
 	 */
-	public static void copy(final String src, final String dest) throws IOException {
-		
+	public static Command copy(final String src, final String dest) throws IOException {
+
 		CopyFileCommand command = null;
-	
-		//TODO need to determine how to differentiate local vs. remote copies/moves with just
+
+		// TODO need to determine how to differentiate local vs. remote copies/moves
+		// with just
 		// the strings and not a hostname
 		boolean isLocal = true;
-		
-		
+
 		// Check to make sure the source exists
-		// Check destination existing in individual Command classes, since it can
-		// be made to exist
 		boolean sourceExists = exists(src);
-		
-		if(sourceExists) {
-			if(isLocal) {
-				command = new LocalCopyFileCommand(src, dest);
+		boolean destExists = exists(dest);
+
+		// If destination doesn't exist, create it
+		if (!destExists) {
+			try {
+				Path destination = Paths.get(dest);
+				Files.createDirectories(destination);
+				// If an exception wasn't thrown, then destination now exists
+				destExists = true;
+			} catch (IOException e) {
+				System.out.println("Couldn't create directory for local move! Failed.");
+				e.printStackTrace();
 			}
-			else {
+		}
+
+		if (sourceExists && destExists) {
+			if (isLocal) {
+				command = new LocalCopyFileCommand(src, dest);
+			} else {
 				command = new RemoteCopyFileCommand(src, dest);
 			}
-		}
-		else {
+		} else {
 			System.out.println("The source file does not exist! Doing nothing.");
 		}
-			
-		return;
+
+		return command;
 	}
 
 	/**
-	 * This operations determines whether or not the file argument exists.
-	 * TODO - this only works for local files at the moment.
+	 * This operations determines whether or not the file argument exists. TODO -
+	 * this only works for local files at the moment.
+	 * 
 	 * @param file the file for which to search
 	 * @return true if the file exists, false if not
 	 * @throws IOException
@@ -118,13 +140,10 @@ public class FileHandler {
 
 		// Get the path from the passed string
 		Path path = Paths.get(file);
-		
+
 		// Check if the path exists or not. Symbolic links are followed
 		// by default, see {@link java.nio.file.Files#exists}
 		return Files.exists(path);
 	}
 
-	
-
-	
 }

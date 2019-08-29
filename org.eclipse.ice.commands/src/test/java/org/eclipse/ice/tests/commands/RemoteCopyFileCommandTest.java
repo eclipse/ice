@@ -21,6 +21,7 @@ import org.junit.Test;
 
 /**
  * Test for class {@link org.eclipse.ice.commands.RemoteCopyFileCommand}.
+ * 
  * @author Joe Osborn
  *
  */
@@ -58,7 +59,7 @@ public class RemoteCopyFileCommandTest {
 	public void test() {
 		fail("Not yet implemented");
 	}
-	
+
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.RemoteCopyFileCommand()}
 	 */

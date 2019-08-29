@@ -28,44 +28,20 @@ public class LocalCopyFileCommand extends CopyFileCommand {
 	/**
 	 * Default constructor
 	 */
-	public LocalCopyFileCommand() {
-		
-	}
+	public LocalCopyFileCommand() {}
 	
 	/**
-	 * Constructor which sets the two paths, source and destination,
-	 * to those given by the arguments of the constructor. See 
-	 * {@link org.eclipse.ice.tests.commands.CopyFileCommand} for member
-	 * variable descriptions.
-	 * @param src 
+	 * Constructor which sets the two paths, source and destination, to those given
+	 * by the arguments of the constructor. See
+	 * {@link org.eclipse.ice.tests.commands.CopyFileCommand} for member variable
+	 * descriptions.
+	 * 
+	 * @param src
 	 * @param dest
 	 */
 	public LocalCopyFileCommand(final String src, final String dest) {
 		source = Paths.get(src);
 		destination = Paths.get(dest);
-		
-		boolean destExists = false;
-		// Check if the destination exists
-		try {
-			destExists = FileHandler.exists(dest);
-		} 
-		catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		// If destination doesn't exist, create it
-		if(!destExists) {
-			try {
-				Files.createDirectories(destination);
-			}
-			catch(IOException e) {
-				System.out.println("Couldn't create directory for local copy! Failed.");
-				e.printStackTrace();
-			}
-		}
-		
-		// Do the copying
-		status = execute();
 	}
 	
 	/**

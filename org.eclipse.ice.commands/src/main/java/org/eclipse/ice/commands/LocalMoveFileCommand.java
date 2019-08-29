@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 
 /**
  * Child class for moving a file locally without a remote connection
+ * 
  * @author Joe Osborn
  *
  */
@@ -28,86 +29,61 @@ public class LocalMoveFileCommand extends MoveFileCommand {
 	 * Default constructor
 	 */
 	public LocalMoveFileCommand() {
-		
 	}
-	
+
 	/**
-	 * Constructor which sets the two paths, source and destination,
-	 * to those given by the arguments of the constructor. See 
-	 * {@link org.eclipse.ice.tests.commands.CopyFileCommand} for member
-	 * variable descriptions.
-	 * @param src 
+	 * Constructor which sets the two paths, source and destination, to those given
+	 * by the arguments of the constructor. See
+	 * {@link org.eclipse.ice.tests.commands.CopyFileCommand} for member variable
+	 * descriptions.
+	 * 
+	 * @param src
 	 * @param dest
 	 */
 	public LocalMoveFileCommand(final String src, final String dest) {
 		source = Paths.get(src);
 		destination = Paths.get(dest);
-		
-		boolean destExists = false;
-		try {
-			destExists = FileHandler.exists(dest);
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		// If destination doesn't exist, create it
-		if(!destExists) {
-			try {
-				Files.createDirectories(destination);
-			}
-			catch(IOException e) {
-				System.out.println("Couldn't create directory for local move! Failed.");
-				e.printStackTrace();
-			}
-		}
-		
-		// Do the moving
-		status = execute();
 	}
-	
-	
-	
+
 	/**
-	 * This function actually executes the move file command. It checks that
-	 * the move command was completed successfully. It returns a 
-	 * CommandStatus indicating whether or not the move was successful.
+	 * This function actually executes the move file command. It checks that the
+	 * move command was completed successfully. It returns a CommandStatus
+	 * indicating whether or not the move was successful.
+	 * 
 	 * @return CommandStatus
 	 */
 	@Override
 	public CommandStatus execute() {
 		status = run();
-		
+
 		boolean check = false;
 		try {
 			check = FileHandler.exists(source.toString());
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		if( check )
+
+		if (check)
 			return CommandStatus.SUCCESS;
 		else
 			return CommandStatus.FAILED;
 	}
 
-	
 	/**
-	 * This function contains the command to actually move the file. Returns
-	 * a CommandStatus indicating that the command is currently running and
-	 * needs to be checked that it completed correctly.
+	 * This function contains the command to actually move the file. Returns a
+	 * CommandStatus indicating that the command is currently running and needs to
+	 * be checked that it completed correctly.
+	 * 
 	 * @return CommandStatus
 	 */
 	@Override
 	protected CommandStatus run() {
 		try {
 			Files.move(source, destination.resolve(source.getFileName()));
-		} 
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return CommandStatus.RUNNING;
 	}
 
@@ -121,7 +97,4 @@ public class LocalMoveFileCommand extends MoveFileCommand {
 		return CommandStatus.CANCELED;
 	}
 
-
-
-	
 }

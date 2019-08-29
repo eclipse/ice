@@ -16,7 +16,8 @@ package org.eclipse.ice.commands;
 import java.nio.file.Path;
 
 /**
- * Parent class for remote and local move file commands. 
+ * Parent class for remote and local move file commands.
+ * 
  * @author Joe Osborn
  *
  */
@@ -26,17 +27,16 @@ public abstract class MoveFileCommand extends Command {
 	 * The path to the source file which is to be moved
 	 */
 	Path source;
-	
+
 	/**
 	 * The path of the destination for which the source file will be moved to
 	 */
 	Path destination;
-	
+
 	/**
 	 * Default constructor
 	 */
-	public MoveFileCommand() {}
-	
-	
-	
+	public MoveFileCommand() {
+	}
+
 }

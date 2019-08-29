@@ -21,6 +21,7 @@ import org.junit.Test;
 
 /**
  * Test for class {@link org.eclipse.ice.commands.ConnectionManager}.
+ * 
  * @author Joe Osborn
  *
  */
@@ -60,37 +61,40 @@ public class ConnectionManagerTest {
 	}
 
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.ConnectionManager#ConnectionManager()}
+	 * Test method for
+	 * {@link org.eclipse.ice.commands.ConnectionManager#ConnectionManager()}
 	 */
 	public void testConnectionManager() {
 		fail("Not yet implemented");
 	}
-	
+
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.ConnectionManager#OpenConnection(String)}
+	 * Test method for
+	 * {@link org.eclipse.ice.commands.ConnectionManager#OpenConnection(String)}
 	 */
 	public void testOpenConnection() {
 		fail("Not yet implemented");
 	}
-	
-	
+
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.ConnectionManager#GetConnection(String)}
+	 * Test method for
+	 * {@link org.eclipse.ice.commands.ConnectionManager#GetConnection(String)}
 	 */
 	public void testGetConnection() {
 		fail("Not yet implemented");
 	}
-	
-	
+
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.ConnectionManager#CloseConnection(String)}
+	 * Test method for
+	 * {@link org.eclipse.ice.commands.ConnectionManager#CloseConnection(String)}
 	 */
 	public void testCloseConnection() {
 		fail("Not yet implemented");
 	}
-	
+
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.ConnectionManager#CloseAllConnections()}
+	 * Test method for
+	 * {@link org.eclipse.ice.commands.ConnectionManager#CloseAllConnections()}
 	 */
 	public void testCloseAllConnection() {
 		fail("Not yet implemented");
