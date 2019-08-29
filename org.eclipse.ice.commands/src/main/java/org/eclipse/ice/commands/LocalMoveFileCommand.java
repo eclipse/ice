@@ -27,9 +27,7 @@ public class LocalMoveFileCommand extends MoveFileCommand {
 	/**
 	 * Default constructor
 	 */
-	public LocalMoveFileCommand() {
-		
-	}
+	public LocalMoveFileCommand() {}
 	
 	/**
 	 * Constructor which sets the two paths, source and destination,
@@ -42,9 +40,6 @@ public class LocalMoveFileCommand extends MoveFileCommand {
 	public LocalMoveFileCommand(final String src, final String dest) {
 		source = Paths.get(src);
 		destination = Paths.get(dest);
-		
-		// Do the moving
-		status = execute();
 	}
 	
 	

@@ -34,16 +34,15 @@ public class FileHandler {
 	}
 
 	/**
-	 * This operations moves files from the source (src) to the destination
+	 * This operation moves files from the source (src) to the destination
 	 * (dest). If the operation fails, an IOException will be thrown.
 	 * 
-	 * @param src
-	 * @param dest
-	 * @param hostname
-	 * @return CommandStatus - status indicating move was successfully completed
+	 * @param src - source file to be moved
+	 * @param dest - destination for the source file to be moved to
+	 * @return Command - The command to be executed
 	 * @throws IOException
 	 */
-	public static void move(final String src, final String dest) throws IOException {
+	public static Command move(final String src, final String dest) throws IOException {
 		
 		MoveFileCommand command = null;
 		
@@ -80,19 +79,19 @@ public class FileHandler {
 			}
 		}
 		
-		return;
+		return command;
 	}
 
 	/**
 	 * This operations copies files from the source (src) to the destination
 	 * (dest). If the operation fails, an IOException will be thrown. 
 	 * 
-	 * @param src
-	 * @param dest
-	 * @return CommandStatus - status indicating copy was successfully completed
+	 * @param src - source file to be copied
+	 * @param dest - destination to be copied to
+	 * @return Command - The actual Command to be executed
 	 * @throws IOException
 	 */
-	public static void copy(final String src, final String dest) throws IOException {
+	public static Command copy(final String src, final String dest) throws IOException {
 		
 		CopyFileCommand command = null;
 	
@@ -131,7 +130,7 @@ public class FileHandler {
 			System.out.println("The source file does not exist! Doing nothing.");
 		}
 			
-		return;
+		return command;
 	}
 
 	/**

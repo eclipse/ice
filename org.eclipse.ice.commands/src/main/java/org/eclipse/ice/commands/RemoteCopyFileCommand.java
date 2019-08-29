@@ -25,9 +25,7 @@ public class RemoteCopyFileCommand extends CopyFileCommand {
 	/**
 	 * Default constructor
 	 */
-	public RemoteCopyFileCommand() {
-		
-	}
+	public RemoteCopyFileCommand() {}
 	
 	
 	/**
@@ -41,7 +39,6 @@ public class RemoteCopyFileCommand extends CopyFileCommand {
 	public RemoteCopyFileCommand(String src, String dest) {
 		source = Paths.get(src);
 		destination = Paths.get(dest);
-		status = execute();
 	}
 	
 	

@@ -161,7 +161,7 @@ public class LocalCopyFileCommandTest {
 		// Make the command
 		LocalCopyFileCommand command = 
 				new LocalCopyFileCommand(source, dest);
-		
+		command.execute();
 		// Check if the path exists now
 		Path path = Paths.get(dest);
 		assert(Files.exists(path));

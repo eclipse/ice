@@ -150,8 +150,9 @@ public class LocalMoveFileCommandTest {
 		System.out.println("Moving: " + source + " to destination: " + dest);
 		// Make the command
 		LocalMoveFileCommand command = 
-				new LocalMoveFileCommand(source, dest);
-				
+				new LocalMoveFileCommand(source, dest);		
+		command.execute();
+		
 		// Check if the path exists now
 		Path path = Paths.get(dest);
 		assert(Files.exists(path));

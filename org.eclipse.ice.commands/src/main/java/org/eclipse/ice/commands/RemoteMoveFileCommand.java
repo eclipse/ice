@@ -25,9 +25,7 @@ public class RemoteMoveFileCommand extends MoveFileCommand {
 	/**
 	 * Default constructor
 	 */
-	public RemoteMoveFileCommand() {
-		
-	}
+	public RemoteMoveFileCommand() {}
 	
 	
 	/**
@@ -41,7 +39,6 @@ public class RemoteMoveFileCommand extends MoveFileCommand {
 	public RemoteMoveFileCommand(String src, String dest) {
 		source = Paths.get(src);
 		destination = Paths.get(dest);
-		status = execute();
 	}
 	
 

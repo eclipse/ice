@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
@@ -20,6 +18,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.eclipse.ice.commands.Command;
 import org.eclipse.ice.commands.FileHandler;
 import org.junit.After;
 import org.junit.Before;
@@ -77,6 +76,7 @@ public class FileHandlerTest {
 	 */
 	@After
 	public void tearDown() throws Exception {
+		System.out.println("Delete temporary files/directories that were created.");
 		
 		// Get the paths
 		Path sourcePath = Paths.get(localSource);
@@ -167,13 +167,7 @@ public class FileHandlerTest {
 	}
 	
 	
-	/**
-	 * Test method for {@link org.eclipse.ice.commands.FileHandler#FileHandler()}.
-	 */
-	//@Test
-	public void testFileHandler() {
-		fail("Not yet implemented");
-	}
+	
 	
 	
 	/**
@@ -183,7 +177,8 @@ public class FileHandlerTest {
 	public void testLocalCopy() {
 		System.out.println("Testing testLocalCopy() function.");
 		try {
-			FileHandler.copy(localSource, localDestination+"copy");
+			Command copy = FileHandler.copy(localSource, localDestination);
+			copy.execute();
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
@@ -191,7 +186,8 @@ public class FileHandlerTest {
 		
 		// Check that it exists
 		try {
-			FileHandler.exists(localDestination);
+			boolean exist = FileHandler.exists(localDestination);
+			assert( exist == true );
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
@@ -206,7 +202,8 @@ public class FileHandlerTest {
 	public void testLocalMove() {
 		System.out.println("Testing testLocalMove() function.");
 		try {
-			FileHandler.move(localSource, localDestination);
+			Command move = FileHandler.move(localSource, localDestination);
+			move.execute();
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
@@ -214,7 +211,8 @@ public class FileHandlerTest {
 		
 		// Check that it exists
 		try { 
-			FileHandler.exists(localDestination);
+			boolean exist = FileHandler.exists(localDestination);
+			assert( exist == true );
 		}
 		catch (IOException e) {
 			e.printStackTrace();

@@ -28,9 +28,7 @@ public class LocalCopyFileCommand extends CopyFileCommand {
 	/**
 	 * Default constructor
 	 */
-	public LocalCopyFileCommand() {
-		
-	}
+	public LocalCopyFileCommand() {}
 	
 	/**
 	 * Constructor which sets the two paths, source and destination,
@@ -43,9 +41,6 @@ public class LocalCopyFileCommand extends CopyFileCommand {
 	public LocalCopyFileCommand(final String src, final String dest) {
 		source = Paths.get(src);
 		destination = Paths.get(dest);
-		
-		// Do the copying
-		status = execute();
 	}
 	
 	/**
