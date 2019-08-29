@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-
 import static org.junit.Assert.fail;
 
 import org.junit.After;
@@ -57,7 +56,8 @@ public class CommandConfigurationTest {
 	}
 
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.CommandConfiguration#CommandConfiguration()}.
+	 * Test method for
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#CommandConfiguration()}.
 	 */
 	@Test
 	public void testCommandConfiguration() {

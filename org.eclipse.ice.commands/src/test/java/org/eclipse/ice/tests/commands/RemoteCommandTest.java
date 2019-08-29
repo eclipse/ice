@@ -21,6 +21,7 @@ import org.junit.Test;
 
 /**
  * Test for class {@link org.eclipse.ice.commands.RemoteCommand}.
+ * 
  * @author Joe Osborn
  *
  */
@@ -53,12 +54,12 @@ public class RemoteCommandTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-	
+
 	@Test
 	public void test() {
 		fail("Not yet implemented");
 	}
-	
+
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.RemoteCommand()}
 	 */
@@ -67,14 +68,16 @@ public class RemoteCommandTest {
 	}
 
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.RemoteCommand#SetConnection(String)}
+	 * Test method for
+	 * {@link org.eclipse.ice.commands.RemoteCommand#SetConnection(String)}
 	 */
 	public void testSetConnection() {
 		fail("Not yet implemented");
 	}
-	
+
 	/**
-	 * Test method for {@link org.eclipse.ice.commans.RemoteCommand#GetConnection(String)}
+	 * Test method for
+	 * {@link org.eclipse.ice.commans.RemoteCommand#GetConnection(String)}
 	 */
 	public void testGetConnection() {
 		fail("Not yet implemented");

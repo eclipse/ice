@@ -29,11 +29,12 @@ public class RemoteMoveFileCommand extends MoveFileCommand {
 	
 	
 	/**
-	 * Constructor which sets the two paths, source and destination,
-	 * to those given by the arguments of the constructor. See 
-	 * {@link org.eclipse.ice.tests.commands.MoveFileCommand} for member
-	 * variable descriptions.
-	 * @param src 
+	 * Constructor which sets the two paths, source and destination, to those given
+	 * by the arguments of the constructor. See
+	 * {@link org.eclipse.ice.tests.commands.MoveFileCommand} for member variable
+	 * descriptions.
+	 * 
+	 * @param src
 	 * @param dest
 	 */
 	public RemoteMoveFileCommand(String src, String dest) {

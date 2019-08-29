@@ -22,6 +22,7 @@ import org.junit.Test;
 
 /**
  * This class tests {@link org.eclipse.ice.commands.CommandStatus}.
+ * 
  * @author Joe Osborn
  *
  */
@@ -56,7 +57,8 @@ public class CommandStatusTest {
 	}
 
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.CommandStatus#CommandStatus()}.
+	 * Test method for
+	 * {@link org.eclipse.ice.commands.CommandStatus#CommandStatus()}.
 	 */
 	@Test
 	public void testCommandStatus() {

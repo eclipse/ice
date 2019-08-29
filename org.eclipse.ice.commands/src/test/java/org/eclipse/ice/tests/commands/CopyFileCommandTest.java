@@ -21,6 +21,7 @@ import org.junit.Test;
 
 /**
  * Test for class {@link org.eclipse.ice.commands.CopyFileCommand}.
+ * 
  * @author Joe Osborn
  *
  */
@@ -58,11 +59,11 @@ public class CopyFileCommandTest {
 	public void test() {
 		fail("Not yet implemented");
 	}
-	
+
 	/**
 	 * Test method for{@link org.eclipse.ice.commands.CopyFileCommand()}
 	 */
-	
+
 	public void testCopyFileCommand() {
 		fail("Not yet implemented");
 	}

@@ -34,108 +34,104 @@ public class FileHandler {
 	}
 
 	/**
-	 * This operation moves files from the source (src) to the destination
-	 * (dest). If the operation fails, an IOException will be thrown.
+	 * This operation moves files from the source (src) to the destination (dest).
+	 * If the operation fails, an IOException will be thrown.
 	 * 
-	 * @param src - source file to be moved
+	 * @param src  - source file to be moved
 	 * @param dest - destination for the source file to be moved to
 	 * @return Command - The command to be executed
 	 * @throws IOException
 	 */
 	public static Command move(final String src, final String dest) throws IOException {
-		
+
 		MoveFileCommand command = null;
-		
-		// Just test local moving for now. 
-		
-		//TODO need to determine how to differentiate local vs. remote moves with just
+
+		// Just test local moving for now.
+
+		// TODO need to determine how to differentiate local vs. remote moves with just
 		// the strings and not a hostname
 		boolean isLocal = true;
-		
+
 		// Check to make sure the paths exist
 		boolean sourceExists = exists(src);
 		boolean destExists = exists(dest);
-	
+
 		// If destination doesn't exist, create it
-		if(!destExists) {
+		if (!destExists) {
 			try {
 				Path destination = Paths.get(dest);
 				Files.createDirectories(destination);
 				// If an exception wasn't thrown, the destination exists
 				destExists = true;
-			}
-			catch(IOException e) {
+			} catch (IOException e) {
 				System.out.println("Couldn't create directory for local copy! Failed.");
 				e.printStackTrace();
 			}
 		}
-				
-		if(sourceExists && destExists) {
-			if(isLocal) {
+
+		if (sourceExists && destExists) {
+			if (isLocal) {
 				command = new LocalMoveFileCommand(src, dest);
-			}
-			else {
+			} else {
 				command = new RemoteMoveFileCommand(src, dest);
 			}
 		}
-		
+
 		return command;
 	}
 
 	/**
-	 * This operations copies files from the source (src) to the destination
-	 * (dest). If the operation fails, an IOException will be thrown. 
+	 * This operations copies files from the source (src) to the destination (dest).
+	 * If the operation fails, an IOException will be thrown.
 	 * 
-	 * @param src - source file to be copied
+	 * @param src  - source file to be copied
 	 * @param dest - destination to be copied to
 	 * @return Command - The actual Command to be executed
 	 * @throws IOException
 	 */
 	public static Command copy(final String src, final String dest) throws IOException {
-		
+
 		CopyFileCommand command = null;
-	
-		//TODO need to determine how to differentiate local vs. remote copies/moves with just
+
+		// TODO need to determine how to differentiate local vs. remote copies/moves
+		// with just
 		// the strings and not a hostname
 		boolean isLocal = true;
-		
-		
+
 		// Check to make sure the source exists
 		boolean sourceExists = exists(src);
 		boolean destExists = exists(dest);
-		
+
 		// If destination doesn't exist, create it
-		if(!destExists) {
+		if (!destExists) {
 			try {
 				Path destination = Paths.get(dest);
 				Files.createDirectories(destination);
 				// If an exception wasn't thrown, then destination now exists
 				destExists = true;
-			}
-			catch(IOException e) {
+			} catch (IOException e) {
 				System.out.println("Couldn't create directory for local move! Failed.");
 				e.printStackTrace();
 			}
 		}
-		
-		if(sourceExists && destExists) {
-			if(isLocal) {
+
+		if (sourceExists && destExists) {
+			if (isLocal) {
 				command = new LocalCopyFileCommand(src, dest);
-			}
-			else {
+			} else {
 				command = new RemoteCopyFileCommand(src, dest);
 			}
-		}
-		else {
+		} else {
 			System.out.println("The source file does not exist! Doing nothing.");
 		}
-			
+
 		return command;
 	}
 
 	/**
-	 * This operations determines whether or not the file argument exists.
-	 * TODO - this only works for local files at the moment.
+	 * This operations determines whether or not the file argument exists. TODO -
+	 * this only works for local files at the moment.
+	 * 
 	 * @param file the file for which to search
 	 * @return true if the file exists, false if not
 	 * @throws IOException
@@ -144,13 +140,10 @@ public class FileHandler {
 
 		// Get the path from the passed string
 		Path path = Paths.get(file);
-		
+
 		// Check if the path exists or not. Symbolic links are followed
 		// by default, see {@link java.nio.file.Files#exists}
 		return Files.exists(path);
 	}
 
-	
-
-	
 }

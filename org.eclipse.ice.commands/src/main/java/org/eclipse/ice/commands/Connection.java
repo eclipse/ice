@@ -29,10 +29,9 @@ public class Connection {
 	 * A name identifier for a particular connection.
 	 */
 	private String name;
-	
-	
+
 	/**
-	 *  Default constructor
+	 * Default constructor
 	 */
 	public Connection() {
 
