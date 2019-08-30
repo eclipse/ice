@@ -38,10 +38,10 @@ public class CommandFactoryTest {
 	String hostname = getLocalHostname();
 
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.CommandFactory#getCommand()}
-	 * and for the whole {@link org.eclipse.ice.commands.LocalCommand#execute()}
-	 * execution chain with a fully functional command dictionary
+	 * Create a command factory to use for getting the commands.
 	 */
+	CommandFactory factory = new CommandFactory();
+	
 
 	public CommandFactoryTest() {
 	}
@@ -79,7 +79,7 @@ public class CommandFactoryTest {
 		// Get the command
 		Command localCommand = null;
 		try {
-			localCommand = CommandFactory.getCommand(commandConfig, connectionConfig);
+			localCommand = factory.getCommand(commandConfig, connectionConfig);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -113,7 +113,7 @@ public class CommandFactoryTest {
 		// Get the command
 		Command localCommand = null;
 		try {
-			localCommand = CommandFactory.getCommand(commandConfig, connectConfig);
+			localCommand = factory.getCommand(commandConfig, connectConfig);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -149,7 +149,7 @@ public class CommandFactoryTest {
 		// Get the command
 		Command localCommand2 = null;
 		try {
-			localCommand2 = CommandFactory.getCommand(commandConfiguration, connectConfig);
+			localCommand2 = factory.getCommand(commandConfiguration, connectConfig);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

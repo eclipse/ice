@@ -50,7 +50,7 @@ public class CommandFactory {
 	 *                                remote)
 	 * @return Command
 	 */
-	public static Command getCommand(final CommandConfiguration commandConfig,
+	public Command getCommand(final CommandConfiguration commandConfig,
 			final ConnectionConfiguration connectionConfig) throws IOException {
 
 		Command command = null;
@@ -81,7 +81,7 @@ public class CommandFactory {
 	 * @return boolean - returns true if the hostname matches that of the local
 	 *         hostname, false otherwise.
 	 */
-	private static boolean isLocal(String host) {
+	private boolean isLocal(String host) {
 
 		// Get the local hostname address
 		InetAddress addr = null;
