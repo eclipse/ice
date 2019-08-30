@@ -43,7 +43,7 @@ public class RemoteCommand extends Command {
 	 * @param - CommandConfiguration which corresponds to the particular command
 	 */
 	public RemoteCommand(ConnectionConfiguration connectConfig, CommandConfiguration _commandConfig) {
-		commandConfig= _commandConfig;
+		commandConfig = _commandConfig;
 		connection = new Connection(connectConfig);
 	}
 
@@ -80,14 +80,6 @@ public class RemoteCommand extends Command {
 	protected CommandStatus run() {
 
 		return status;
-	}
-
-	/**
-	 * See @{link {@link org.eclipse.ice.commands.Command#fixExecutableName()}
-	 */
-	@Override
-	protected String getExecutableName() {
-		return null;
 	}
 
 	/**

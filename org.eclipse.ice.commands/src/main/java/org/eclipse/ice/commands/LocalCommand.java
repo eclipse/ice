@@ -13,8 +13,6 @@
 package org.eclipse.ice.commands;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 /**
  * This class inherits from Command and gives available functionality for local
@@ -40,17 +38,25 @@ public class LocalCommand extends Command {
 	 * 
 	 * @param _configuration
 	 */
-	public LocalCommand(CommandConfiguration _configuration) {
+	public LocalCommand(ConnectionConfiguration _connection, CommandConfiguration _configuration) {
 
 		status = CommandStatus.PROCESSING;
-		
-		// Local commands by definition have a local connection, so just set it here
-		// We only need the hostname for some header output file information, so the 
-		// username and password are arbitrary.
-		connectionConfig = new ConnectionConfiguration("username","password",getLocalHostname());
-				
-		status = setConfiguration(_configuration);
-		
+
+		// Set the connection for the local command, which is only relevant for
+		// accessing the hostname of the local computer
+		connectionConfig = _connection;
+
+		// Set the configuration for the command
+		commandConfig = _configuration;
+
+		// Make sure both commandConfig and connectionConfig have the same
+		// hostname, since commandConfig needs the hostname for several output
+		// files (e.g. for debugging purposes).
+		commandConfig.hostname = connectionConfig.hostname;
+
+		// If commandConfig wasn't set properly, the job can't run
+		if (commandConfig == null)
+			status = CommandStatus.FAILED;
 	}
 
 	/**
@@ -60,9 +66,18 @@ public class LocalCommand extends Command {
 	@Override
 	public CommandStatus execute() {
 
-		// Check that the status of the job is good after setting up the configuration
-		// in the constructor. If not, exit
-		// See CheckStatus function in {@link org.eclipse.ice.commands.Command}
+		// Check that the commandConfig file was properly instantiated in the
+		// constructor
+		try {
+			checkStatus(status);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Configure the command to be ready to run.
+		status = commandConfig.setConfiguration();
+
+		// Ensure that the command was properly configured
 		try {
 			checkStatus(status);
 		} catch (IOException e) {
@@ -72,70 +87,9 @@ public class LocalCommand extends Command {
 		// Now that all of the prerequisites have been set, start the job running
 		status = run();
 
+		// Confirm the job finished with some status
 		logger.info("The job finished with status: " + status);
 		return status;
-	}
-
-	/**
-	 * See
-	 * {@link org.eclipse.ice.commands.Command#setConfiguration(CommandConfiguration)}
-	 */
-	@Override
-	protected CommandStatus setConfiguration(final CommandConfiguration config) {
-
-		// Set the configuration for the command
-		commandConfig = config;
-
-		// Now extract the information from the command dictionary
-		String executable = null, inputFile = null;
-		String stdOutFileName = null, stdErrFileName = null;
-		String stdOutHeader = null, stdErrHeader = null;
-		String numProcs = null, os = null;
-		String directory = null;
-
-		// Make sure the configuration was actually set
-		if (commandConfig != null) {
-
-			// Make sure the dictionary contains the keys we need
-			executable = commandConfig.executable;
-			inputFile = commandConfig.inputFile;
-			stdOutFileName = commandConfig.stdOutFileName;
-			stdErrFileName = commandConfig.stdErrFileName;
-			numProcs = commandConfig.numProcs;
-			os = commandConfig.os;
-			directory = commandConfig.workingDirectory;
-		} else
-			return CommandStatus.INFOERROR;
-
-		// Check the info and return failure if something was not set correctly
-		if (executable == null || inputFile == null || stdOutFileName == null || stdErrFileName == null
-				|| numProcs == null || os == null || directory == null)
-			return CommandStatus.INFOERROR;
-
-		// Set the command to actually run and execute
-		commandConfig.fullCommand = getExecutableName();
-
-		// Set the output and error buffer writers
-		stdOut = getBufferedWriter(stdOutFileName);
-		stdErr = getBufferedWriter(stdErrFileName);
-
-		// Create unique headers for the output files which include useful information
-		stdOutHeader = createOutputHeader("standard output");
-		stdErrHeader = createOutputHeader("standard error");
-
-		// Now write them out
-		try {
-			stdOut.write(stdOutHeader);
-			stdOut.write("# Executable to be run is: " + commandConfig.fullCommand + "\n");
-			stdOut.close();
-			stdErr.write(stdErrHeader);
-			stdErr.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// All setup completed, return that the job will now run
-		return CommandStatus.RUNNING;
 	}
 
 	/**
@@ -188,8 +142,8 @@ public class LocalCommand extends Command {
 
 		// Close up the output streams
 		try {
-			stdOut.close();
-			stdErr.close();
+			commandConfig.stdOut.close();
+			commandConfig.stdErr.close();
 		} catch (IOException e) {
 			status = CommandStatus.INFOERROR;
 			logger.error("Could not close the output and/or error files, returning INFOERROR");
@@ -198,67 +152,6 @@ public class LocalCommand extends Command {
 
 		// Return the result
 		return status;
-	}
-
-	/**
-	 * See {@link org.eclipse.ice.commands.Command#fixExecutableName()}
-	 */
-	@Override
-	protected String getExecutableName() {
-
-		// Get the information from the executable dictionary
-		int numProcs = Math.max(1, Integer.parseInt(commandConfig.numProcs));
-		String fixedExecutableName = commandConfig.executable;
-		String installDirectory = commandConfig.installDirectory;
-		String inputFile = commandConfig.inputFile;
-		String separator = "/";
-
-		// If the input file should be appended, append it
-		if (commandConfig.appendInput)
-			fixedExecutableName += " " + inputFile;
-
-		commandConfig.fullCommand = fixedExecutableName;
-
-		// Determine the proper separator
-		if (installDirectory != null && installDirectory.contains(":\\"))
-			separator = "\\";
-
-		// Append a final separator to the install directory if required
-		if (installDirectory != null && !installDirectory.endsWith(separator))
-			installDirectory = installDirectory + separator;
-
-		// Search for and replace the ${inputFile} to properly configure the input file
-		if (fixedExecutableName.contains("${inputFile}") && !commandConfig.appendInput)
-			fixedExecutableName = fixedExecutableName.replace("${inputFile}", inputFile);
-
-		if (fixedExecutableName.contains("${installDir}") && installDirectory != null)
-			fixedExecutableName = fixedExecutableName.replace("${installDir}", installDirectory);
-
-		// If MPI should be used if there are multiple cores, add it to the executable
-		if (numProcs > 1)
-			fixedExecutableName = "mpirun -np " + numProcs + " " + fixedExecutableName;
-
-		// Clean up any unnecessary white space
-		fixedExecutableName = fixedExecutableName.trim();
-
-		// Split the full command into its stages, if there are any.
-		if (!fixedExecutableName.contains(";"))
-			commandConfig.splitCommand.add(fixedExecutableName);
-		// Otherwise split the full command and put it into
-		// CommandConfiguration.splitCommand
-		else {
-			for (String stage : fixedExecutableName.split(";"))
-				commandConfig.splitCommand.add(stage);
-		}
-
-		// Print launch stages so that user can confirm
-		for (int i = 0; i < commandConfig.splitCommand.size(); i++) {
-			String cmd = commandConfig.splitCommand.get(i);
-			logger.info("LocalCommand Message: Launch stage " + i + " = " + cmd);
-		}
-
-		return fixedExecutableName;
-
 	}
 
 	/**
@@ -271,27 +164,4 @@ public class LocalCommand extends Command {
 		return status;
 	}
 
-	
-	
-	/**
-	 * This function just returns the local hostname of your local computer. It is
-	 * useful for testing a variety of local commands.
-	 * 
-	 * @return - String - local hostname
-	 */
-	protected String getLocalHostname() {
-		// Get the hostname for your local computer
-		InetAddress addr = null;
-		try {
-			addr = InetAddress.getLocalHost();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-
-		String hostname = addr.getHostName();
-
-		return hostname;
-	}
-	
-	
 }

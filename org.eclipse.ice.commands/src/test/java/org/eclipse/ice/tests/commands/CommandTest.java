@@ -17,6 +17,7 @@ import java.io.IOException;
 import org.eclipse.ice.commands.Command;
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandStatus;
+import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.LocalCommand;
 import org.junit.Test;
 
@@ -29,17 +30,24 @@ import org.junit.Test;
 public class CommandTest {
 
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.Command#Command()}
+	 * Test method for {@link org.eclipse.ice.commands.Command#Command()} with a
+	 * particular instance of LocalCommand.
 	 */
 	@Test
 	public void testLocalCommand() {
 
 		// Set the CommandConfiguration class
-		CommandConfiguration commandConfig = new CommandConfiguration(1, "./test_code_execution.sh", "someInputFile.txt",
-				"someErrFile.txt", "someOutFile.txt", "1", "osx", "",
+		CommandConfiguration commandConfig = new CommandConfiguration(1, "./test_code_execution.sh",
+				"someInputFile.txt", "someErrFile.txt", "someOutFile.txt", "1", "osx", "",
 				"/Users/4jo/git/icefork2/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands", true);
 
-		Command localCommand = new LocalCommand(commandConfig);
+		// Use the function already defined in the command factory to get the
+		// local host name
+		CommandFactoryTest factory = new CommandFactoryTest();
+		String hostname = factory.getLocalHostname();
+		ConnectionConfiguration connection = new ConnectionConfiguration(hostname);
+
+		Command localCommand = new LocalCommand(connection, commandConfig);
 		CommandStatus status = localCommand.execute();
 
 		System.out.println("Command finished with: " + status);

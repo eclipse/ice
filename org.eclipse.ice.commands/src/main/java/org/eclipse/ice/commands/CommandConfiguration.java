@@ -13,19 +13,35 @@
 
 package org.eclipse.ice.commands;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  * This class configures particular commands to be executed. It contains all of
  * the relevant information about configuring the command. The user should
  * specify the details of the command in the declaration of a Command instance
- * by providing a CommandConfiguration.
+ * by providing a CommandConfiguration. The methods in this class actually
+ * prepare the configuration of the executable and output file logs.
  * 
  * @author Joe Osborn
  *
  */
 public class CommandConfiguration {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	protected static final Logger logger = LoggerFactory.getLogger(CommandConfiguration.class);
 
 	/**
 	 * An integer ID to associate with a job
@@ -77,6 +93,18 @@ public class CommandConfiguration {
 	protected String workingDirectory;
 
 	/**
+	 * The hostname that the command will be executed on. This is the same as the
+	 * hostname in {@link org.eclipse.ice.commands.Connection} and is just used for
+	 * output file purposes.
+	 */
+	protected String hostname;
+
+	/**
+	 * Output streams for the job
+	 */
+	protected BufferedWriter stdOut = null, stdErr = null;
+
+	/**
 	 * A flag to mark whether or not the input file name should be appended to the
 	 * executable command. Marked as true by default so that the user (by default)
 	 * specifies the input file name.
@@ -104,7 +132,7 @@ public class CommandConfiguration {
 	}
 
 	/**
-	 * Constructor which initializes several of the member variables See member
+	 * Constructor which initializes several of the member variables. See member
 	 * variables in class CommandConfiguration for descriptions of variables
 	 * 
 	 * @param _commandId
@@ -131,6 +159,193 @@ public class CommandConfiguration {
 		os = operatingSystem;
 		workingDirectory = workingDir;
 		appendInput = _appendInput;
+	}
+
+	/**
+	 * This function sets up the configuration in preparation for the job running.
+	 * It checks to make sure the necessary strings are set and then constructs the
+	 * executable to be run. It also creates the output files which contain
+	 * log/error information.
+	 * 
+	 * @return - CommandStatus indicating that configuration completed and job can
+	 *         start running
+	 */
+	protected CommandStatus setConfiguration() {
+
+		// Check the info and return failure if something was not set
+		if (executable == null || inputFile == null || stdOutFileName == null || stdErrFileName == null
+				|| numProcs == null || os == null || workingDirectory == null)
+			return CommandStatus.INFOERROR;
+
+		// Set the command to actually run and execute
+		fullCommand = getExecutableName();
+
+		// Create the output files associated to the job for logging
+		createOutputFiles();
+
+		// All setup completed, return that the job will now run
+		return CommandStatus.RUNNING;
+	}
+
+	/**
+	 * This function creates the output files that contain the logging/error
+	 * information from the job. It makes the headers for the output files and then
+	 * creates writers for the files.
+	 */
+	protected void createOutputFiles() {
+		// Create unique headers for the output files which include useful information
+		String stdOutHeader = createOutputHeader("standard output");
+		String stdErrHeader = createOutputHeader("standard error");
+
+		// Set the output and error buffer writers
+		stdOut = getBufferedWriter(stdOutFileName);
+		stdErr = getBufferedWriter(stdErrFileName);
+
+		// Now write them out
+		try {
+			stdOut.write(stdOutHeader);
+			stdOut.write("# Executable to be run is: " + fullCommand + "\n");
+			stdOut.close();
+			stdErr.write(stdErrHeader);
+			stdErr.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
+	 * This function creates and returns a BufferedWriter for appending text to the
+	 * file specified in the call
+	 * 
+	 * @param filename - file to append to
+	 * @return - buffered writer for appending
+	 */
+	protected BufferedWriter getBufferedWriter(String filename) {
+
+		FileWriter writer = null;
+		BufferedWriter bufferedWriter = null;
+
+		// Check the file name and the create the writer
+		if (filename != null) {
+			try {
+				writer = new FileWriter(filename, true);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			bufferedWriter = new BufferedWriter(writer);
+			return bufferedWriter;
+		} else
+			return null;
+	}
+
+	/**
+	 * This function creates a set of generic output header text useful for
+	 * debugging or informational purposes, for example in log files.
+	 * 
+	 * @param logName - the particular log name
+	 * @return - A string with the corresponding header text
+	 */
+	public String createOutputHeader(String logName) {
+		String header = null, localHostname = null;
+
+		// Get the machine identity since the local machine launches the job
+		// regardless of whether or not the job is local or remote
+		try {
+			InetAddress addr = InetAddress.getLocalHost();
+			localHostname = addr.getHostName();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+
+		// Add the header file name so that it can be identified
+		header = "# Logfile type : " + logName + "\n";
+
+		// Add the date and time
+		header += "# Job launch date: ";
+		header += new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "\n";
+
+		// Add the point of origin
+		header += "# Launch host: " + localHostname + "\n";
+
+		// Add the target machine
+		header += "# Target host: " + hostname + "\n";
+
+		// Add the execution command
+		header += "# Command Executed: " + fullCommand + "\n";
+
+		// Add the input file name
+		header += "# Input file: " + inputFile + "\n";
+
+		// Add an empty line
+		header += "\n";
+
+		return header;
+	}
+
+	/**
+	 * This function actually assembles and fixes the name of the executable to be
+	 * launched. It replaces ${inputFile}, ${installDir} and other keys from the
+	 * dictionary. The function is abstract so that Local and Remote executable
+	 * names can be handled individually, since the remote target file system is not
+	 * necessarily the same as the local. It is overridden by the subclasses that
+	 * require executables.
+	 * 
+	 * @return - String that is the executable to be run
+	 */
+	protected String getExecutableName() {
+
+		// Get the information from the executable dictionary
+		int numProcsInt = Math.max(1, Integer.parseInt(numProcs));
+		String fixedExecutableName = executable;
+		String separator = "/";
+
+		// If the input file should be appended, append it
+		if (appendInput)
+			fixedExecutableName += " " + inputFile;
+
+		fullCommand = fixedExecutableName;
+
+		// Determine the proper separator
+		if (installDirectory != null && installDirectory.contains(":\\"))
+			separator = "\\";
+
+		// Append a final separator to the install directory if required
+		if (installDirectory != null && !installDirectory.endsWith(separator))
+			installDirectory = installDirectory + separator;
+
+		// Search for and replace the ${inputFile} to properly configure the input file
+		if (fixedExecutableName.contains("${inputFile}") && !appendInput)
+			fixedExecutableName = fixedExecutableName.replace("${inputFile}", inputFile);
+
+		if (fixedExecutableName.contains("${installDir}") && installDirectory != null)
+			fixedExecutableName = fixedExecutableName.replace("${installDir}", installDirectory);
+
+		// If MPI should be used if there are multiple cores, add it to the executable
+		if (numProcsInt > 1)
+			fixedExecutableName = "mpirun -np " + numProcs + " " + fixedExecutableName;
+
+		// Clean up any unnecessary white space
+		fixedExecutableName = fixedExecutableName.trim();
+
+		// Split the full command into its stages, if there are any.
+		if (!fixedExecutableName.contains(";"))
+			splitCommand.add(fixedExecutableName);
+		// Otherwise split the full command and put it into
+		// CommandConfiguration.splitCommand
+		else {
+			for (String stage : fixedExecutableName.split(";"))
+				splitCommand.add(stage);
+		}
+
+		// Print launch stages so that user can confirm
+		for (int i = 0; i < splitCommand.size(); i++) {
+			String cmd = splitCommand.get(i);
+			logger.info("LocalCommand Message: Launch stage " + i + " = " + cmd);
+		}
+
+		return fixedExecutableName;
+
 	}
 
 	/**

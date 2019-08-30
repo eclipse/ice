@@ -53,6 +53,13 @@ public class CommandFactoryTest {
 	public static void setUpBeforeClass() throws Exception {
 	}
 
+	/**
+	 * This function tests with real files to test an actual job processing. For
+	 * this test to work, make sure you change the workingDirectory to your actual
+	 * workingDirectory where the Commands API lives. TODO - Could we make a
+	 * temporary directory to work in and put the shell script TODO - in so that the
+	 * test would run on any machine?
+	 */
 	@Test
 	public void testFunctionalLocalCommand() {
 
@@ -61,19 +68,14 @@ public class CommandFactoryTest {
 		 * Command. See {@link org.eclipse.ice.commands.CommandConfiguration} for
 		 * relevant member variables/constructor.
 		 */
-		/**
-		 * This is a test with real files to test an actual job processing. For this
-		 * test to work, make sure you change the workingDirectory to your actual
-		 * workingDirectory where the Commands API lives
-		 */
 
 		// Set the CommandConfiguration class
-		CommandConfiguration commandConfig = new CommandConfiguration(1, "./test_code_execution.sh", "someInputFile.txt",
-				"someOutFile.txt", "someErrFile.txt", "1", "osx", "",
+		CommandConfiguration commandConfig = new CommandConfiguration(1, "./test_code_execution.sh",
+				"someInputFile.txt", "someOutFile.txt", "someErrFile.txt", "1", "osx", "",
 				"/Users/4jo/git/icefork2/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands", true);
 
-		ConnectionConfiguration connectionConfig = new ConnectionConfiguration("username","password",hostname);
-		
+		ConnectionConfiguration connectionConfig = new ConnectionConfiguration(hostname);
+
 		// Get the command
 		Command localCommand = null;
 		try {
@@ -102,12 +104,12 @@ public class CommandFactoryTest {
 
 		System.out.println("\nTesting some commands where not enough command information was provided.");
 
-		//Create a command configuration that doesn't have all the necessary information
+		// Create a command configuration that doesn't have all the necessary
+		// information
 		// Set the CommandConfiguration class
 		CommandConfiguration commandConfig = new CommandConfiguration();
-		
-		
-		ConnectionConfiguration connectConfig = new ConnectionConfiguration("uname","pwd",hostname);
+
+		ConnectionConfiguration connectConfig = new ConnectionConfiguration(hostname);
 		// Get the command
 		Command localCommand = null;
 		try {
@@ -139,11 +141,11 @@ public class CommandFactoryTest {
 		System.out.println("\nTesting some commands where not enough command information was provided.");
 
 		// Set the CommandConfiguration class
-		CommandConfiguration commandConfiguration = new CommandConfiguration(1, 
-				"./test_code_execution.sh", "someInputFile.txt", "someOutFile.txt",
-				"someErrFile.txt", "1", "~/installDir", "osx", "~/some_nonexistant_directory", true);
+		CommandConfiguration commandConfiguration = new CommandConfiguration(1, "./test_code_execution.sh",
+				"someInputFile.txt", "someOutFile.txt", "someErrFile.txt", "1", "~/installDir", "osx",
+				"~/some_nonexistant_directory", true);
 
-		ConnectionConfiguration connectConfig = new ConnectionConfiguration("uname","pwd",hostname);
+		ConnectionConfiguration connectConfig = new ConnectionConfiguration(hostname);
 		// Get the command
 		Command localCommand2 = null;
 		try {

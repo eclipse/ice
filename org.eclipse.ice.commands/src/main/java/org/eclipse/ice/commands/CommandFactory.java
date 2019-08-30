@@ -31,7 +31,7 @@ public class CommandFactory {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	protected static final Logger logger = LoggerFactory.getLogger(Command.class);
+	protected static final Logger logger = LoggerFactory.getLogger(CommandFactory.class);
 
 	/**
 	 * Constructor
@@ -62,9 +62,9 @@ public class CommandFactory {
 			throw new IOException();
 		}
 
-		// If it the host is local, get a LocalCommand. Otherwise, RemoteCommand
+		// If the host is local, get a LocalCommand. Otherwise, RemoteCommand
 		if (isLocal(connectionConfig.hostname)) {
-			command = new LocalCommand(commandConfig);
+			command = new LocalCommand(connectionConfig, commandConfig);
 		} else {
 			command = new RemoteCommand(connectionConfig, commandConfig);
 		}

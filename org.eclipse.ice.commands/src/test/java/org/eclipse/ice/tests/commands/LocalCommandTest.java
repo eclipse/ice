@@ -13,6 +13,7 @@ package org.eclipse.ice.tests.commands;
 
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandStatus;
+import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.LocalCommand;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +26,9 @@ import org.junit.Test;
  */
 public class LocalCommandTest {
 
+	/**
+	 * Create some strings that correspond to an actual test script
+	 */
 	String executable = "./someExecutable.sh ${installDir}";
 	String inputFile = "someInputFile.txt";
 	String errorFile = "someErrFile.txt";
@@ -32,17 +36,33 @@ public class LocalCommandTest {
 	String procs = "1";
 	String installDir = "~/install";
 	String os = "osx";
-	String workingDirectory =  "/";
-	
-	CommandConfiguration commandConfig = new CommandConfiguration(3, executable, inputFile,
-			errorFile, outputFile, procs, installDir, os, workingDirectory, true);
+	String workingDirectory = "/";
 
-	
 	/**
+	 * Put these in a command configuration instance to use
+	 */
+	CommandConfiguration commandConfig = new CommandConfiguration(3, executable, inputFile, errorFile, outputFile,
+			procs, installDir, os, workingDirectory, true);
+
+	/**
+	 * The connection used (in this case, it is a local connection)
+	 */
+	ConnectionConfiguration connection;
+
+	/**
+	 * Set up by establishing that the test connection is local
+	 * 
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
+
+		// Use the function already defined in the command factory to get the
+		// local host name
+		CommandFactoryTest factory = new CommandFactoryTest();
+		String hostname = factory.getLocalHostname();
+
+		connection = new ConnectionConfiguration(hostname);
 
 	}
 
@@ -57,11 +77,11 @@ public class LocalCommandTest {
 		System.out.println("Starting testLocalCommand");
 
 		// Now make a "real" command configuration to test
-	
-		LocalCommand realCommand = new LocalCommand(commandConfig);
+
+		LocalCommand realCommand = new LocalCommand(connection, commandConfig);
 		CommandStatus testStatus = realCommand.getStatus();
 
-		assert (testStatus == CommandStatus.RUNNING);
+		assert (testStatus == CommandStatus.PROCESSING);
 		System.out.println("Finished testConfiguration\n");
 
 	}
@@ -77,10 +97,10 @@ public class LocalCommandTest {
 	public void testExecute() {
 		System.out.println("Starting testExecute with a non-existant executable.\n");
 
-	CommandConfiguration badConfig = new CommandConfiguration(2, "fake_exec.sh", "inputfile",
-			"errfile.txt","outfile.txt", "1", "installDir", "osx", "somedirectory", true);
-	
-		LocalCommand testCommand = new LocalCommand(badConfig);
+		CommandConfiguration badConfig = new CommandConfiguration(2, "fake_exec.sh", "inputfile", "errfile.txt",
+				"outfile.txt", "1", "installDir", "osx", "somedirectory", true);
+
+		LocalCommand testCommand = new LocalCommand(connection, badConfig);
 
 		CommandStatus testStatus = testCommand.execute();
 

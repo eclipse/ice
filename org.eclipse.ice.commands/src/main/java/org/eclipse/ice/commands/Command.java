@@ -13,17 +13,11 @@
 package org.eclipse.ice.commands;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -32,8 +26,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is the instantiation class of the CommandFactory class and thus is
- * responsible for executing particular commands. It delegates the creation of a
- * LocalCommand or RemoteCommand, depending on the hostname.
+ * responsible for executing particular commands. It is the base class for local
+ * and remote commands, and thus delegates the creation of a LocalCommand or
+ * RemoteCommand, depending on the hostname.
  * 
  * @author Joe Osborn
  *
@@ -53,16 +48,11 @@ public abstract class Command {
 
 	/**
 	 * The connection configuration parameters of the command - this will contain
-	 * information about whether or not the command should be run locally or remotely.
-	 * If remote, it contains all of the necessary ssh information for opening the
-	 * remote connection.
+	 * information about whether or not the command should be run locally or
+	 * remotely. If remote, it contains all of the necessary ssh information for
+	 * opening the remote connection.
 	 */
 	protected ConnectionConfiguration connectionConfig;
-	
-	/**
-	 * Output streams for the job
-	 */
-	protected BufferedWriter stdOut = null, stdErr = null;
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -125,20 +115,6 @@ public abstract class Command {
 	public abstract CommandStatus cancel();
 
 	/**
-	 * This function actually assembles and fixes the name of the executable to be
-	 * launched. It replaces ${inputFile}, ${installDir} and other keys from the
-	 * dictionary. The function is abstract so that Local and Remote executable
-	 * names can be handled individually, since the remote target file system is not
-	 * necessarily the same as the local. It is overridden by the subclasses that
-	 * require executables.
-	 * 
-	 * @return - String that is the executable to be run
-	 */
-	protected String getExecutableName() {
-		return commandConfig.executable;
-	}
-
-	/**
 	 * This function returns the status for a particular command at a given time in
 	 * the operation of the command.
 	 * 
@@ -160,82 +136,22 @@ public abstract class Command {
 
 	/**
 	 * This function returns to the user the configuration that was used to create a
-	 * particular command. Could be useful for accessing particular details about
-	 * the command.
+	 * particular command.
 	 * 
 	 * @return - the particular configuration for this command
 	 */
-	public CommandConfiguration getConfiguration() {
+	public CommandConfiguration getCommandConfiguration() {
 		return commandConfig;
 	}
 
 	/**
-	 * This function creates and returns a BufferedWriter for appending text to the
-	 * file specified in the call
+	 * This function returns to the user the configuration that was used to set up a
+	 * particular connection.
 	 * 
-	 * @param filename - file to append to
-	 * @return - buffered writer for appending
+	 * @return - the particular connection configuration for this command
 	 */
-	protected BufferedWriter getBufferedWriter(String filename) {
-
-		FileWriter writer = null;
-		BufferedWriter bufferedWriter = null;
-
-		// Check the file name and the create the writer
-		if (filename != null) {
-			try {
-				writer = new FileWriter(filename, true);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			bufferedWriter = new BufferedWriter(writer);
-			return bufferedWriter;
-		} else
-			return null;
-	}
-
-	/**
-	 * This function creates a set of generic output header text useful for
-	 * debugging or informational purposes, for example in log files.
-	 * 
-	 * @param logName - the particular log name
-	 * @return - A string with the corresponding header text
-	 */
-	public String createOutputHeader(String logName) {
-		String header = null, localHostname = null;
-
-		// Get the machine identity since the local machine launches the job
-		// regardless of whether or not the job is local or remote
-		try {
-			InetAddress addr = InetAddress.getLocalHost();
-			localHostname = addr.getHostName();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-
-		// Add the header file name so that it can be identified
-		header = "# Logfile type : " + logName + "\n";
-
-		// Add the date and time
-		header += "# Job launch date: ";
-		header += new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "\n";
-
-		// Add the point of origin
-		header += "# Launch host: " + localHostname + "\n";
-
-		// Add the target machine
-		header += "# Target host: " + connectionConfig.hostname + "\n";
-
-		// Add the execution command
-		header += "# Command Executed: " + commandConfig.fullCommand + "\n";
-
-		// Add the input file name
-		header += "# Input file: " + commandConfig.inputFile + "\n";
-
-		// Add an empty line
-		header += "\n";
-
-		return header;
+	public ConnectionConfiguration getConnectionConfiguration() {
+		return connectionConfig;
 	}
 
 	/**
@@ -352,13 +268,13 @@ public abstract class Command {
 		if (errorMessage != "") {
 			try {
 				// Get the filenames so that they can be written to
-				stdErr = getBufferedWriter(stdErrFileName);
-				stdOut = getBufferedWriter(stdOutFileName);
+				commandConfig.stdErr = commandConfig.getBufferedWriter(stdErrFileName);
+				commandConfig.stdOut = commandConfig.getBufferedWriter(stdOutFileName);
 
 				// Write and close
-				stdErr.write(errorMessage);
-				stdOut.close();
-				stdErr.close();
+				commandConfig.stdErr.write(errorMessage);
+				commandConfig.stdOut.close();
+				commandConfig.stdErr.close();
 			} catch (IOException e) {
 				logger.error("There were errors in the job running, but they could not write to the error log file!");
 				return CommandStatus.FAILED;
@@ -420,7 +336,7 @@ public abstract class Command {
 			} catch (IllegalThreadStateException e) {
 				// Complain, but keep watching
 				try {
-					stdErr.write(getClass().getName() + "IllegalThreadStateException!: " + e);
+					commandConfig.stdErr.write(getClass().getName() + "IllegalThreadStateException!: " + e);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -433,7 +349,7 @@ public abstract class Command {
 			} catch (InterruptedException e) {
 				// Complain
 				try {
-					stdErr.write(getClass().getName() + " InterruptedException!: " + e);
+					commandConfig.stdErr.write(getClass().getName() + " InterruptedException!: " + e);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -449,7 +365,7 @@ public abstract class Command {
 
 		// Print the final exitValue of the job to the output log file
 		try {
-			stdOut.write("INFO: Command::monitorJob Message: Exit value = " + exitValue + "\n");
+			commandConfig.stdOut.write("INFO: Command::monitorJob Message: Exit value = " + exitValue + "\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -483,26 +399,26 @@ public abstract class Command {
 		// Setup the BufferedReader that will get stderr from the process.
 		stdErrStreamReader = new InputStreamReader(errors);
 		stdErrReader = new BufferedReader(stdErrStreamReader);
-		stdErr = getBufferedWriter(commandConfig.stdErrFileName);
-		stdOut = getBufferedWriter(commandConfig.stdOutFileName);
+		commandConfig.stdErr = commandConfig.getBufferedWriter(commandConfig.stdErrFileName);
+		commandConfig.stdOut = commandConfig.getBufferedWriter(commandConfig.stdOutFileName);
 
 		// Catch the stdout and stderr output
 		try {
 			// Write to the stdOut file
 			while ((nextLine = stdOutReader.readLine()) != null) {
-				stdOut.write(nextLine);
+				commandConfig.stdOut.write(nextLine);
 				// MUST put a new line for this type of writer. "\r\n" works on
 				// Windows and Unix-based systems.
-				stdOut.write("\r\n");
-				stdOut.flush();
+				commandConfig.stdOut.write("\r\n");
+				commandConfig.stdOut.flush();
 			}
 			// Write to the stdErr file
 			while ((nextLine = stdErrReader.readLine()) != null) {
-				stdErr.write(nextLine);
+				commandConfig.stdErr.write(nextLine);
 				// MUST put a new line for this type of writer. "\r\n" works on
 				// Windows and Unix-based systems.
-				stdErr.write("\r\n");
-				stdErr.flush();
+				commandConfig.stdErr.write("\r\n");
+				commandConfig.stdErr.flush();
 			}
 		} catch (IOException e) {
 			// Or fail and complain about it.
