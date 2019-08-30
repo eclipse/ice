@@ -13,7 +13,6 @@
 package org.eclipse.ice.tests.commands;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import org.eclipse.ice.commands.Command;
 import org.eclipse.ice.commands.CommandConfiguration;
@@ -35,24 +34,10 @@ public class CommandTest {
 	@Test
 	public void testLocalCommand() {
 
-		// Use the already defined function in CommandFactoryTest to get the
-		// local hostname
-		CommandFactoryTest commandFactory = new CommandFactoryTest();
-		String hostname = commandFactory.getLocalHostname();
-
-		HashMap<String, String> executableDictionary = new HashMap<String, String>();
-		executableDictionary.put("executable", "./test_code_execution.sh");
-		executableDictionary.put("inputFile", "someInputFile.txt");
-		executableDictionary.put("stdOutFileName", "someOutFile.txt");
-		executableDictionary.put("stdErrFileName", "someErrFile.txt");
-		executableDictionary.put("numProcs", "1");
-		executableDictionary.put("os", "osx");
-		executableDictionary.put("workingDirectory",
-				"/Users/4jo/git/icefork2/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands");
-		executableDictionary.put("hostname", hostname);
-
 		// Set the CommandConfiguration class
-		CommandConfiguration commandConfig = new CommandConfiguration(1, executableDictionary, true);
+		CommandConfiguration commandConfig = new CommandConfiguration(1, "./test_code_execution.sh", "someInputFile.txt",
+				"someErrFile.txt", "someOutFile.txt", "1", "osx", "",
+				"/Users/4jo/git/icefork2/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands", true);
 
 		Command localCommand = new LocalCommand(commandConfig);
 		CommandStatus status = localCommand.execute();

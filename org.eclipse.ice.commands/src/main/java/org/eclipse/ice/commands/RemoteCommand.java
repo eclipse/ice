@@ -42,8 +42,8 @@ public class RemoteCommand extends Command {
 	 *          connection
 	 * @param - CommandConfiguration which corresponds to the particular command
 	 */
-	public RemoteCommand(ConnectionConfiguration connectConfig, CommandConfiguration commandConfig) {
-		configuration = commandConfig;
+	public RemoteCommand(ConnectionConfiguration connectConfig, CommandConfiguration _commandConfig) {
+		commandConfig= _commandConfig;
 		connection = new Connection(connectConfig);
 	}
 

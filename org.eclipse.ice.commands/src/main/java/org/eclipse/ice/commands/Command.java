@@ -49,8 +49,16 @@ public abstract class Command {
 	 * The configuration parameters of the command - contains information about what
 	 * the command is actually intended to do (e.g. the executable filename).
 	 */
-	protected CommandConfiguration configuration;
+	protected CommandConfiguration commandConfig;
 
+	/**
+	 * The connection configuration parameters of the command - this will contain
+	 * information about whether or not the command should be run locally or remotely.
+	 * If remote, it contains all of the necessary ssh information for opening the
+	 * remote connection.
+	 */
+	protected ConnectionConfiguration connectionConfig;
+	
 	/**
 	 * Output streams for the job
 	 */
@@ -96,7 +104,7 @@ public abstract class Command {
 	 *         properly set
 	 */
 	protected CommandStatus setConfiguration(CommandConfiguration config) {
-		configuration = config;
+		commandConfig = config;
 		return CommandStatus.PROCESSING;
 	}
 
@@ -127,7 +135,7 @@ public abstract class Command {
 	 * @return - String that is the executable to be run
 	 */
 	protected String getExecutableName() {
-		return configuration.execDictionary.get("executable");
+		return commandConfig.executable;
 	}
 
 	/**
@@ -158,7 +166,7 @@ public abstract class Command {
 	 * @return - the particular configuration for this command
 	 */
 	public CommandConfiguration getConfiguration() {
-		return configuration;
+		return commandConfig;
 	}
 
 	/**
@@ -216,13 +224,13 @@ public abstract class Command {
 		header += "# Launch host: " + localHostname + "\n";
 
 		// Add the target machine
-		header += "# Target host: " + configuration.execDictionary.get("hostname") + "\n";
+		header += "# Target host: " + connectionConfig.hostname + "\n";
 
 		// Add the execution command
-		header += "# Command Executed: " + configuration.fullCommand + "\n";
+		header += "# Command Executed: " + commandConfig.fullCommand + "\n";
 
 		// Add the input file name
-		header += "# Input file: " + configuration.execDictionary.get("inputFile") + "\n";
+		header += "# Input file: " + commandConfig.inputFile + "\n";
 
 		// Add an empty line
 		header += "\n";
@@ -241,7 +249,7 @@ public abstract class Command {
 	protected CommandStatus setupProcessBuilder(String command) {
 
 		// Local declarations
-		String os = configuration.execDictionary.get("os");
+		String os = commandConfig.os;
 		ArrayList<String> commandList = new ArrayList<String>();
 
 		// If the OS is anything other than Windows, then the process builder
@@ -261,7 +269,7 @@ public abstract class Command {
 		jobBuilder = new ProcessBuilder(commandList);
 
 		// Set the directory to execute the job in
-		File directory = new File(configuration.execDictionary.get("workingDirectory"));
+		File directory = new File(commandConfig.workingDirectory);
 		jobBuilder.directory(directory);
 		jobBuilder.redirectErrorStream(false);
 
@@ -275,7 +283,7 @@ public abstract class Command {
 	 */
 	protected CommandStatus runProcessBuilder() {
 
-		String os = configuration.execDictionary.get("os");
+		String os = commandConfig.os;
 		List<String> commandList = jobBuilder.command();
 		String errMsg = "";
 
@@ -296,7 +304,7 @@ public abstract class Command {
 
 				// Reset the ProcessBuilder to reflect these changes
 				jobBuilder = new ProcessBuilder(commandList);
-				File directory = new File(configuration.execDictionary.get("workingDirectory"));
+				File directory = new File(commandConfig.workingDirectory);
 				jobBuilder.directory(directory);
 				jobBuilder.redirectErrorStream(false);
 
@@ -334,8 +342,8 @@ public abstract class Command {
 		String stdErrFileName = null, stdOutFileName = null;
 
 		// Get the output file names
-		stdErrFileName = configuration.execDictionary.get("stdErrFileName");
-		stdOutFileName = configuration.execDictionary.get("stdOutFileName");
+		stdErrFileName = commandConfig.stdErrFileName;
+		stdOutFileName = commandConfig.stdOutFileName;
 
 		int exitValue = -1; // arbitrary value indicating not completed (yet)
 
@@ -434,7 +442,7 @@ public abstract class Command {
 			// If for some reason the job has failed,
 			// it shouldn't be alive and we should break;
 			if (!job.isAlive()) {
-				logger.info("Job is no longer alive, no longer monitoring it's status");
+				logger.info("Job is no longer alive, done monitoring");
 				break;
 			}
 		}
@@ -475,8 +483,8 @@ public abstract class Command {
 		// Setup the BufferedReader that will get stderr from the process.
 		stdErrStreamReader = new InputStreamReader(errors);
 		stdErrReader = new BufferedReader(stdErrStreamReader);
-		stdErr = getBufferedWriter(configuration.execDictionary.get("stdErrFileName"));
-		stdOut = getBufferedWriter(configuration.execDictionary.get("stdOutFileName"));
+		stdErr = getBufferedWriter(commandConfig.stdErrFileName);
+		stdOut = getBufferedWriter(commandConfig.stdOutFileName);
 
 		// Catch the stdout and stderr output
 		try {

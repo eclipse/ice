@@ -14,7 +14,6 @@
 package org.eclipse.ice.commands;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * 
@@ -34,9 +33,48 @@ public class CommandConfiguration {
 	protected int commandId;
 
 	/**
-	 * The dictionary that contains the command properties.
+	 * The file name of the executable that is to be processed or run
 	 */
-	protected HashMap<String, String> execDictionary = new HashMap<String, String>();
+	protected String executable;
+
+	/**
+	 * The input file that the executable needs or takes as an argument in its
+	 * processing
+	 */
+	protected String inputFile;
+
+	/**
+	 * The name of the file that will contain the output of the job
+	 */
+	protected String stdOutFileName;
+
+	/**
+	 * The name of the file that will contain any error messages the job might give,
+	 * if it fails for some reason
+	 */
+	protected String stdErrFileName;
+
+	/**
+	 * The number of processes for the job to run
+	 */
+	protected String numProcs;
+
+	/**
+	 * The installation directory of some libraries the job may need, if it needs
+	 * access to them
+	 */
+	protected String installDirectory;
+
+	/**
+	 * The operating system on which the job will run
+	 */
+	protected String os;
+
+	/**
+	 * The working directory for the job to be executed in, and thus where e.g. the
+	 * output files will be located
+	 */
+	protected String workingDirectory;
 
 	/**
 	 * A flag to mark whether or not the input file name should be appended to the
@@ -58,12 +96,6 @@ public class CommandConfiguration {
 	protected ArrayList<String> splitCommand = new ArrayList<String>();
 
 	/**
-	 * The name of the working directory in which the job will be launched. The
-	 * default value is the prefix.
-	 */
-	protected String workingDirectoryName = "";
-
-	/**
 	 * Default constructor
 	 */
 	public CommandConfiguration() {
@@ -76,15 +108,29 @@ public class CommandConfiguration {
 	 * variables in class CommandConfiguration for descriptions of variables
 	 * 
 	 * @param _commandId
-	 * @param _isLocal
-	 * @param _execDictionary
+	 * @param exec
+	 * @param input
+	 * @param errFile
+	 * @param outFile
+	 * @param procs
+	 * @param installDir
+	 * @param operatingSystem
+	 * @param workingDir
 	 * @param _appendInput
 	 */
-	public CommandConfiguration(int _commandId, HashMap<String, String> _execDictionary, boolean _appendInput) {
-		commandId = _commandId;
-		execDictionary = _execDictionary;
-		appendInput = _appendInput;
+	public CommandConfiguration(int _commandId, String exec, String input, String errFile, String outFile, String procs,
+			String installDir, String operatingSystem, String workingDir, boolean _appendInput) {
 
+		commandId = _commandId;
+		executable = exec;
+		inputFile = input;
+		stdErrFileName = errFile;
+		stdOutFileName = outFile;
+		numProcs = procs;
+		installDirectory = installDir;
+		os = operatingSystem;
+		workingDirectory = workingDir;
+		appendInput = _appendInput;
 	}
 
 	/**
@@ -97,18 +143,89 @@ public class CommandConfiguration {
 		return;
 	}
 
-	public int getCommandId() {
-		return commandId;
+	public void setExecutable(String exec) {
+		executable = exec;
+		return;
 	}
 
-	public void setExecDictionary(HashMap<String, String> _dictionary) {
-		execDictionary = _dictionary;
+	public void setInputFile(String input) {
+		inputFile = input;
+		return;
+	}
+
+	public void setErrFileName(String errFile) {
+		stdErrFileName = errFile;
+		return;
+	}
+
+	public void setOutFileName(String outFile) {
+		stdOutFileName = outFile;
+		return;
+	}
+
+	public void setNumProcs(String procs) {
+		numProcs = procs;
+		return;
+	}
+
+	public void setInstallDirectory(String installDir) {
+		installDirectory = installDir;
+		return;
+	}
+
+	public void setOS(String operatingSys) {
+		os = operatingSys;
+		return;
+	}
+
+	public void setWorkingDirectory(String workingDir) {
+		workingDirectory = workingDir;
 		return;
 	}
 
 	public void setAppendInput(boolean _appendInput) {
 		appendInput = _appendInput;
 		return;
+	}
+
+	public String getExecutable() {
+		return executable;
+	}
+
+	public String getInputFile() {
+		return inputFile;
+	}
+
+	public String getErrFileName() {
+		return stdErrFileName;
+	}
+
+	public String getOutFileName() {
+		return stdOutFileName;
+	}
+
+	public String getNumProcs() {
+		return numProcs;
+	}
+
+	public String getInstallDirectory() {
+		return installDirectory;
+	}
+
+	public String getOS() {
+		return os;
+	}
+
+	public String getWorkingDirectory() {
+		return workingDirectory;
+	}
+
+	public boolean getAppendInput() {
+		return appendInput;
+	}
+
+	public int getCommandId() {
+		return commandId;
 	}
 
 	/**

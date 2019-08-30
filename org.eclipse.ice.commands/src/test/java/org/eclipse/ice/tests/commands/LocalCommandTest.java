@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import java.util.HashMap;
-
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.LocalCommand;
@@ -27,24 +25,25 @@ import org.junit.Test;
  */
 public class LocalCommandTest {
 
-	HashMap<String, String> executableDictionary;
+	String executable = "./someExecutable.sh ${installDir}";
+	String inputFile = "someInputFile.txt";
+	String errorFile = "someErrFile.txt";
+	String outputFile = "someOutFile.txt";
+	String procs = "1";
+	String installDir = "~/install";
+	String os = "osx";
+	String workingDirectory =  "/";
+	
+	CommandConfiguration commandConfig = new CommandConfiguration(3, executable, inputFile,
+			errorFile, outputFile, procs, installDir, os, workingDirectory, true);
 
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
 
-		// Set up some default instance variables
-		executableDictionary = new HashMap<String, String>();
-		executableDictionary.put("executable", "someExecutable.sh ${installDir}");
-		executableDictionary.put("inputFile", "someInputFile.txt");
-		executableDictionary.put("stdOutFileName", "someOutFile.txt");
-		executableDictionary.put("stdErrFileName", "someErrFile.txt");
-		executableDictionary.put("installDir", "~/install");
-		executableDictionary.put("numProcs", "1");
-		executableDictionary.put("os", "OSX");
-		executableDictionary.put("workingDirectory", "/");
 	}
 
 	/**
@@ -58,8 +57,7 @@ public class LocalCommandTest {
 		System.out.println("Starting testLocalCommand");
 
 		// Now make a "real" command configuration to test
-		CommandConfiguration commandConfig = new CommandConfiguration(3, executableDictionary, true);
-
+	
 		LocalCommand realCommand = new LocalCommand(commandConfig);
 		CommandStatus testStatus = realCommand.getStatus();
 
@@ -77,9 +75,12 @@ public class LocalCommandTest {
 	 */
 	@Test
 	public void testExecute() {
-		System.out.println("Starting testExecute\n");
+		System.out.println("Starting testExecute with a non-existant executable.\n");
 
-		LocalCommand testCommand = new LocalCommand(new CommandConfiguration(2, executableDictionary, true));
+	CommandConfiguration badConfig = new CommandConfiguration(2, "fake_exec.sh", "inputfile",
+			"errfile.txt","outfile.txt", "1", "installDir", "osx", "somedirectory", true);
+	
+		LocalCommand testCommand = new LocalCommand(badConfig);
 
 		CommandStatus testStatus = testCommand.execute();
 

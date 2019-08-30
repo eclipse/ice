@@ -13,6 +13,8 @@
 package org.eclipse.ice.commands;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * This class inherits from Command and gives available functionality for local
@@ -41,7 +43,14 @@ public class LocalCommand extends Command {
 	public LocalCommand(CommandConfiguration _configuration) {
 
 		status = CommandStatus.PROCESSING;
+		
+		// Local commands by definition have a local connection, so just set it here
+		// We only need the hostname for some header output file information, so the 
+		// username and password are arbitrary.
+		connectionConfig = new ConnectionConfiguration("username","password",getLocalHostname());
+				
 		status = setConfiguration(_configuration);
+		
 	}
 
 	/**
@@ -75,27 +84,26 @@ public class LocalCommand extends Command {
 	protected CommandStatus setConfiguration(final CommandConfiguration config) {
 
 		// Set the configuration for the command
-		configuration = config;
+		commandConfig = config;
 
 		// Now extract the information from the command dictionary
 		String executable = null, inputFile = null;
 		String stdOutFileName = null, stdErrFileName = null;
 		String stdOutHeader = null, stdErrHeader = null;
-		String numProcs = null, installDir = null, os = null;
+		String numProcs = null, os = null;
 		String directory = null;
 
-		// Make sure the dictionary was actually set
-		if (configuration.execDictionary != null) {
+		// Make sure the configuration was actually set
+		if (commandConfig != null) {
 
 			// Make sure the dictionary contains the keys we need
-			executable = configuration.execDictionary.get("executable");
-			inputFile = configuration.execDictionary.get("inputFile");
-			stdOutFileName = configuration.execDictionary.get("stdOutFileName");
-			stdErrFileName = configuration.execDictionary.get("stdErrFileName");
-			numProcs = configuration.execDictionary.get("numProcs");
-			installDir = configuration.execDictionary.get("installDir");
-			os = configuration.execDictionary.get("os");
-			directory = configuration.execDictionary.get("workingDirectory");
+			executable = commandConfig.executable;
+			inputFile = commandConfig.inputFile;
+			stdOutFileName = commandConfig.stdOutFileName;
+			stdErrFileName = commandConfig.stdErrFileName;
+			numProcs = commandConfig.numProcs;
+			os = commandConfig.os;
+			directory = commandConfig.workingDirectory;
 		} else
 			return CommandStatus.INFOERROR;
 
@@ -104,18 +112,11 @@ public class LocalCommand extends Command {
 				|| numProcs == null || os == null || directory == null)
 			return CommandStatus.INFOERROR;
 
-		// If the input file name should not be appended to the executable, set it
-		if (configuration.execDictionary.get("noAppendInput") != null
-				&& configuration.execDictionary.get("noAppendInput") == "true")
-			configuration.appendInput = false;
-
 		// Set the command to actually run and execute
-		configuration.fullCommand = getExecutableName();
+		commandConfig.fullCommand = getExecutableName();
 
 		// Set the output and error buffer writers
-		stdOutFileName = configuration.execDictionary.get("stdOutFileName");
 		stdOut = getBufferedWriter(stdOutFileName);
-		stdErrFileName = configuration.execDictionary.get("stdErrFileName");
 		stdErr = getBufferedWriter(stdErrFileName);
 
 		// Create unique headers for the output files which include useful information
@@ -125,7 +126,7 @@ public class LocalCommand extends Command {
 		// Now write them out
 		try {
 			stdOut.write(stdOutHeader);
-			stdOut.write("# Executable to be run is: " + configuration.fullCommand + "\n");
+			stdOut.write("# Executable to be run is: " + commandConfig.fullCommand + "\n");
 			stdOut.close();
 			stdErr.write(stdErrHeader);
 			stdErr.close();
@@ -145,7 +146,7 @@ public class LocalCommand extends Command {
 
 		// Loop over the stages and launch them. This needs to be done
 		// sequentially, so use a regular, non-concurrent access loop
-		for (int i = 0; i < configuration.splitCommand.size(); i++) {
+		for (int i = 0; i < commandConfig.splitCommand.size(); i++) {
 
 			// Check the status to ensure job has not been canceled
 			if (status == CommandStatus.CANCELED) {
@@ -154,7 +155,7 @@ public class LocalCommand extends Command {
 			}
 
 			// Get the command
-			String thisCommand = configuration.splitCommand.get(i);
+			String thisCommand = commandConfig.splitCommand.get(i);
 
 			// Set up the process builder
 			status = setupProcessBuilder(thisCommand);
@@ -206,20 +207,17 @@ public class LocalCommand extends Command {
 	protected String getExecutableName() {
 
 		// Get the information from the executable dictionary
-		int numProcs = Math.max(1, Integer.parseInt(configuration.execDictionary.get("numProcs")));
-		String fixedExecutableName = configuration.execDictionary.get("executable");
-		String installDirectory = configuration.execDictionary.get("installDir");
-		String inputFile = configuration.execDictionary.get("inputFile");
+		int numProcs = Math.max(1, Integer.parseInt(commandConfig.numProcs));
+		String fixedExecutableName = commandConfig.executable;
+		String installDirectory = commandConfig.installDirectory;
+		String inputFile = commandConfig.inputFile;
 		String separator = "/";
 
-		// Set the name of the working directory
-		configuration.workingDirectoryName = configuration.execDictionary.get("workingDirectory");
-
 		// If the input file should be appended, append it
-		if (configuration.appendInput)
+		if (commandConfig.appendInput)
 			fixedExecutableName += " " + inputFile;
 
-		configuration.fullCommand = fixedExecutableName;
+		commandConfig.fullCommand = fixedExecutableName;
 
 		// Determine the proper separator
 		if (installDirectory != null && installDirectory.contains(":\\"))
@@ -230,7 +228,7 @@ public class LocalCommand extends Command {
 			installDirectory = installDirectory + separator;
 
 		// Search for and replace the ${inputFile} to properly configure the input file
-		if (fixedExecutableName.contains("${inputFile}") && !configuration.appendInput)
+		if (fixedExecutableName.contains("${inputFile}") && !commandConfig.appendInput)
 			fixedExecutableName = fixedExecutableName.replace("${inputFile}", inputFile);
 
 		if (fixedExecutableName.contains("${installDir}") && installDirectory != null)
@@ -245,17 +243,17 @@ public class LocalCommand extends Command {
 
 		// Split the full command into its stages, if there are any.
 		if (!fixedExecutableName.contains(";"))
-			configuration.splitCommand.add(fixedExecutableName);
+			commandConfig.splitCommand.add(fixedExecutableName);
 		// Otherwise split the full command and put it into
 		// CommandConfiguration.splitCommand
 		else {
 			for (String stage : fixedExecutableName.split(";"))
-				configuration.splitCommand.add(stage);
+				commandConfig.splitCommand.add(stage);
 		}
 
 		// Print launch stages so that user can confirm
-		for (int i = 0; i < configuration.splitCommand.size(); i++) {
-			String cmd = configuration.splitCommand.get(i);
+		for (int i = 0; i < commandConfig.splitCommand.size(); i++) {
+			String cmd = commandConfig.splitCommand.get(i);
 			logger.info("LocalCommand Message: Launch stage " + i + " = " + cmd);
 		}
 
@@ -273,4 +271,27 @@ public class LocalCommand extends Command {
 		return status;
 	}
 
+	
+	
+	/**
+	 * This function just returns the local hostname of your local computer. It is
+	 * useful for testing a variety of local commands.
+	 * 
+	 * @return - String - local hostname
+	 */
+	protected String getLocalHostname() {
+		// Get the hostname for your local computer
+		InetAddress addr = null;
+		try {
+			addr = InetAddress.getLocalHost();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+
+		String hostname = addr.getHostName();
+
+		return hostname;
+	}
+	
+	
 }

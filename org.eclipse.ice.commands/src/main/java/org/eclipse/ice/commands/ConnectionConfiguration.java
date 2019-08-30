@@ -34,7 +34,7 @@ public class ConnectionConfiguration {
 	 * The hostname on which to host the particular session, or 
 	 * where the RemoteCommand will eventually be run
 	 */
-	private String hostname = "";
+	protected String hostname = "";
 
 	/**
 	 * Default constructor
