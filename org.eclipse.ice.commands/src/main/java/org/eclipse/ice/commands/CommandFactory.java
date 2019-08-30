@@ -72,7 +72,7 @@ public class CommandFactory {
 		if (isLocal(host)) {
 			command = new LocalCommand(configuration);
 		} else {
-			Connection connect = new Connection();
+			ConnectionConfiguration connect = new ConnectionConfiguration();
 			command = new RemoteCommand(connect, configuration);
 		}
 

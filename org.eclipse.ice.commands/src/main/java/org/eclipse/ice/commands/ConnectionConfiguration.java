@@ -23,19 +23,36 @@ public class ConnectionConfiguration {
 	/**
 	 * Username to configure a particular connection
 	 */
-	private String username;
+	private String username = "";
 
 	/**
 	 * Password to configure a particular connection
 	 */
-	private String password;
+	private String password = "";
+	
+	/**
+	 * The hostname on which to host the particular session, or 
+	 * where the RemoteCommand will eventually be run
+	 */
+	private String hostname = "";
 
 	/**
 	 * Default constructor
 	 */
 	public ConnectionConfiguration() {
-
-		// TODO Auto-generated constructor stub
+	}
+	
+	
+	/**
+	 * Constructor which gives a particular username, password, and hostname
+	 * @param uname - username for a connection
+	 * @param pwd - password for the connection
+	 * @param hname - hostname for the connection
+	 */
+	public ConnectionConfiguration(String uname, String pwd, String hname) {
+		username = uname;
+		password = pwd;
+		hostname = hname;
 	}
 
 }

@@ -36,12 +36,15 @@ public class RemoteCommand extends Command {
 
 	/**
 	 * Constructor to instantiate the remote command with a particular
-	 * CommandConfiguration
+	 * CommandConfiguration and ConnectionConfiguration.
 	 * 
+	 * @param - ConnectionConfiguration which corresponds to the particular
+	 *          connection
 	 * @param - CommandConfiguration which corresponds to the particular command
 	 */
-	public RemoteCommand(Connection connect, CommandConfiguration config) {
-		configuration = config;
+	public RemoteCommand(ConnectionConfiguration connectConfig, CommandConfiguration commandConfig) {
+		configuration = commandConfig;
+		connection = new Connection(connectConfig);
 	}
 
 	@Override
