@@ -155,6 +155,34 @@ public abstract class Command {
 	}
 
 	/**
+	 * This function sets up the configuration in preparation for the job running.
+	 * It checks to make sure the necessary strings are set and then constructs the
+	 * executable to be run. It also creates the output files which contain
+	 * log/error information.
+	 * 
+	 * @return - CommandStatus indicating that configuration completed and job can
+	 *         start running
+	 */
+	protected CommandStatus setConfiguration() {
+
+		// Check the info and return failure if something was not set
+		if (commandConfig.getExecutable() == null || commandConfig.getInputFile() == null
+				|| commandConfig.getOutFileName() == null || commandConfig.getErrFileName() == null
+				|| commandConfig.getNumProcs() == null || commandConfig.getOS() == null
+				|| commandConfig.getWorkingDirectory() == null)
+			return CommandStatus.INFOERROR;
+
+		// Set the command to actually run and execute
+		commandConfig.setFullCommand(commandConfig.getExecutableName());
+
+		// Create the output files associated to the job for logging
+		commandConfig.createOutputFiles();
+
+		// All setup completed, return that the job will now run
+		return CommandStatus.RUNNING;
+	}
+
+	/**
 	 * This function sets up the ProcessBuilder member variable to prepare for
 	 * actually submitting the job process to the command line from Java. The
 	 * function adjusts the command based on the OS on which it shall run, and then

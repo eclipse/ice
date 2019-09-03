@@ -75,7 +75,7 @@ public class LocalCommand extends Command {
 		}
 
 		// Configure the command to be ready to run.
-		status = commandConfig.setConfiguration();
+		status = setConfiguration();
 
 		// Ensure that the command was properly configured
 		try {

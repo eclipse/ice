@@ -133,31 +133,6 @@ public class CommandConfiguration {
 
 
 
-	/**
-	 * This function sets up the configuration in preparation for the job running.
-	 * It checks to make sure the necessary strings are set and then constructs the
-	 * executable to be run. It also creates the output files which contain
-	 * log/error information.
-	 * 
-	 * @return - CommandStatus indicating that configuration completed and job can
-	 *         start running
-	 */
-	protected CommandStatus setConfiguration() {
-
-		// Check the info and return failure if something was not set
-		if (executable == null || inputFile == null || stdOutFileName == null || stdErrFileName == null
-				|| numProcs == null || os == null || workingDirectory == null)
-			return CommandStatus.INFOERROR;
-
-		// Set the command to actually run and execute
-		fullCommand = getExecutableName();
-
-		// Create the output files associated to the job for logging
-		createOutputFiles();
-
-		// All setup completed, return that the job will now run
-		return CommandStatus.RUNNING;
-	}
 
 	/**
 	 * This function creates the output files that contain the logging/error
@@ -438,9 +413,13 @@ public class CommandConfiguration {
 	}
 
 	/**
-	 * Don't want a setter function for FullCommand since this is determined in
-	 * {@link org.eclipse.ice.commands.LocalCommand#fixExecutableName()}
+	 * We make the setter for full command protected so that it can only be 
+	 * accessed within the package and not by (e.g.) the user
 	 */
+	protected void setFullCommand(String command) {
+		fullCommand = command;
+		return;
+	}
 	public String getFullCommand() {
 		return fullCommand;
 	}
