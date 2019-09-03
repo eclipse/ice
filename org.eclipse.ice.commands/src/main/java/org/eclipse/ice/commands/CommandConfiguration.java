@@ -46,75 +46,75 @@ public class CommandConfiguration {
 	/**
 	 * An integer ID to associate with a job
 	 */
-	protected int commandId;
+	private int commandId;
 
 	/**
 	 * The file name of the executable that is to be processed or run
 	 */
-	protected String executable;
+	private String executable;
 
 	/**
 	 * The input file that the executable needs or takes as an argument in its
 	 * processing
 	 */
-	protected String inputFile;
+	private String inputFile;
 
 	/**
 	 * The name of the file that will contain the output of the job
 	 */
-	protected String stdOutFileName;
+	private String stdOutFileName;
 
 	/**
 	 * The name of the file that will contain any error messages the job might give,
 	 * if it fails for some reason
 	 */
-	protected String stdErrFileName;
+	private String stdErrFileName;
 
 	/**
 	 * The number of processes for the job to run
 	 */
-	protected String numProcs;
+	private String numProcs;
 
 	/**
 	 * The installation directory of some libraries the job may need, if it needs
 	 * access to them
 	 */
-	protected String installDirectory;
+	private String installDirectory;
 
 	/**
 	 * The operating system on which the job will run
 	 */
-	protected String os;
+	private String os;
 
 	/**
 	 * The working directory for the job to be executed in, and thus where e.g. the
 	 * output files will be located
 	 */
-	protected String workingDirectory;
+	private String workingDirectory;
 
 	/**
 	 * The hostname that the command will be executed on. This is the same as the
 	 * hostname in {@link org.eclipse.ice.commands.Connection} and is just used for
 	 * output file purposes.
 	 */
-	protected String hostname;
+	private String hostname;
 
 	/**
 	 * Output streams for the job
 	 */
-	protected BufferedWriter stdOut = null, stdErr = null;
+	private BufferedWriter stdOut = null, stdErr = null;
 
 	/**
 	 * A flag to mark whether or not the input file name should be appended to the
 	 * executable command. Marked as true by default so that the user (by default)
 	 * specifies the input file name.
 	 */
-	protected boolean appendInput = true;
+	private boolean appendInput = true;
 
 	/**
 	 * The full command string of all stages that will be executed.
 	 */
-	protected String fullCommand = "";
+	private String fullCommand = "";
 
 	/**
 	 * The set of commands in the fullCommand string split into stages. Each command
@@ -130,9 +130,6 @@ public class CommandConfiguration {
 		// Assume some default variables
 		commandId = -999;
 	}
-
-
-
 
 	/**
 	 * This function creates the output files that contain the logging/error
@@ -301,112 +298,15 @@ public class CommandConfiguration {
 	 * protected variables
 	 */
 
+	/**
+	 * Getter and setter for CommandId, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#commandId}
+	 * 
+	 * @param _commandId
+	 */
 	public void setCommandId(int _commandId) {
 		commandId = _commandId;
 		return;
-	}
-
-	public void setExecutable(String exec) {
-		executable = exec;
-		return;
-	}
-
-	public void setInputFile(String input) {
-		inputFile = input;
-		return;
-	}
-
-	public void setErrFileName(String errFile) {
-		stdErrFileName = errFile;
-		return;
-	}
-
-	public void setOutFileName(String outFile) {
-		stdOutFileName = outFile;
-		return;
-	}
-
-	public void setNumProcs(String procs) {
-		numProcs = procs;
-		return;
-	}
-
-	public void setInstallDirectory(String installDir) {
-		installDirectory = installDir;
-		return;
-	}
-
-	public void setOS(String operatingSys) {
-		os = operatingSys;
-		return;
-	}
-
-	public void setWorkingDirectory(String workingDir) {
-		workingDirectory = workingDir;
-		return;
-	}
-
-	public void setAppendInput(boolean _appendInput) {
-		appendInput = _appendInput;
-		return;
-	}
-	public void setHostname(String host) {
-		hostname = host;
-		return;
-	}
-
-	public void setStdErr(BufferedWriter writer) {
-		stdErr = writer;
-		return;
-	}
-	public void setStdOut(BufferedWriter writer) {
-		stdOut = writer;
-		return;
-	}
-	public BufferedWriter getStdOut() {
-		return stdOut;
-	}
-	public BufferedWriter getStdErr() {
-		return stdErr;
-	}
-	public ArrayList<String> getSplitCommand(){
-		return splitCommand;
-	}
-	
-	public String getExecutable() {
-		return executable;
-	}
-
-	public String getInputFile() {
-		return inputFile;
-	}
-
-	public String getErrFileName() {
-		return stdErrFileName;
-	}
-
-	public String getOutFileName() {
-		return stdOutFileName;
-	}
-
-	public String getNumProcs() {
-		return numProcs;
-	}
-
-	public String getInstallDirectory() {
-		return installDirectory;
-	}
-
-	public String getOS() {
-		return os;
-	}
-
-	public String getWorkingDirectory() {
-		return workingDirectory;
-	}
-
-	public boolean getAppendInput() {
-		return appendInput;
 	}
 
 	public int getCommandId() {
@@ -414,13 +314,212 @@ public class CommandConfiguration {
 	}
 
 	/**
-	 * We make the setter for full command protected so that it can only be 
-	 * accessed within the package and not by (e.g.) the user
+	 * Getter and setter for executable, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#executable}
+	 * 
+	 * @param exec
+	 */
+	public void setExecutable(String exec) {
+		executable = exec;
+		return;
+	}
+
+	public String getExecutable() {
+		return executable;
+	}
+
+	/**
+	 * Getter and setter for inputFile, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#inputFile}
+	 * 
+	 * @param input
+	 */
+	public void setInputFile(String input) {
+		inputFile = input;
+		return;
+	}
+
+	public String getInputFile() {
+		return inputFile;
+	}
+
+	/**
+	 * Getter and setter for stdErrFileName, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdErrFileName}
+	 * 
+	 * @param errFile
+	 */
+	public void setErrFileName(String errFile) {
+		stdErrFileName = errFile;
+		return;
+	}
+
+	public String getErrFileName() {
+		return stdErrFileName;
+	}
+
+	/**
+	 * Getter and setter for stdOutFileName, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOutFileName}
+	 * 
+	 * @param outFile
+	 */
+	public void setOutFileName(String outFile) {
+		stdOutFileName = outFile;
+		return;
+	}
+
+	public String getOutFileName() {
+		return stdOutFileName;
+	}
+
+	/**
+	 * Getter and setter for numProcs, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#numProcs}
+	 * 
+	 * @param procs
+	 */
+	public void setNumProcs(String procs) {
+		numProcs = procs;
+		return;
+	}
+
+	public String getNumProcs() {
+		return numProcs;
+	}
+
+	/**
+	 * Getter and setter for installDirectory, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#installDirectory}
+	 * 
+	 * @param installDir
+	 */
+	public void setInstallDirectory(String installDir) {
+		installDirectory = installDir;
+		return;
+	}
+
+	public String getInstallDirectory() {
+		return installDirectory;
+	}
+
+	/**
+	 * Getter and setter for operating system, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#os}
+	 * 
+	 * @param operatingSys
+	 */
+	public void setOS(String operatingSys) {
+		os = operatingSys;
+		return;
+	}
+
+	public String getOS() {
+		return os;
+	}
+
+	/**
+	 * Getter and setter for workingDirectory, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#workingDirectory}
+	 * 
+	 * @param workingDir
+	 */
+	public void setWorkingDirectory(String workingDir) {
+		workingDirectory = workingDir;
+		return;
+	}
+
+	public String getWorkingDirectory() {
+		return workingDirectory;
+	}
+
+	/**
+	 * Getter and setter for appendInput, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#appendInput}
+	 * 
+	 * @param _appendInput
+	 */
+	public void setAppendInput(boolean _appendInput) {
+		appendInput = _appendInput;
+		return;
+	}
+
+	public boolean getAppendInput() {
+		return appendInput;
+	}
+
+	/**
+	 * Getter and setter for hostname, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#hostname}. Make the
+	 * setter protected so that only ConnectionConfiguration can modify this member
+	 * variable.
+	 * 
+	 * @param host
+	 */
+	protected void setHostname(String host) {
+		hostname = host;
+		return;
+	}
+
+	public String getHostname() {
+		return hostname;
+	}
+
+	/**
+	 * Getter and setter for stdErr, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdErr}
+	 * 
+	 * @param writer
+	 */
+	public void setStdErr(BufferedWriter writer) {
+		stdErr = writer;
+		return;
+	}
+
+	public BufferedWriter getStdErr() {
+		return stdErr;
+	}
+
+	/**
+	 * Getter and setter for stdOut, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOut}
+	 * 
+	 * @param writer
+	 */
+	public void setStdOut(BufferedWriter writer) {
+		stdOut = writer;
+		return;
+	}
+
+	public BufferedWriter getStdOut() {
+		return stdOut;
+	}
+
+	/**
+	 * Getter for splitCommand, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#splitCommand} No setter
+	 * since splitCommand is determined by
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#getExecutableName()}
+	 */
+	public ArrayList<String> getSplitCommand() {
+		return splitCommand;
+	}
+
+	/**
+	 *
+	 * Getter and setter for fullCommand, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#fullCommand}
+	 * 
+	 * @param command
+	 *
+	 *                We make the setter for full command protected so that it can
+	 *                only be accessed within the package and not by (e.g.) the user
 	 */
 	protected void setFullCommand(String command) {
 		fullCommand = command;
 		return;
 	}
+
 	public String getFullCommand() {
 		return fullCommand;
 	}
