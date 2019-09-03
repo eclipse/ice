@@ -65,4 +65,13 @@ public class ConnectionConfiguration {
 		hostname = hname;
 	}
 
+	/**
+	 * Create getter and setter functions to access member variables
+	 */
+	
+	public String getHostname() {
+		return hostname;
+	
+	}
+	
 }

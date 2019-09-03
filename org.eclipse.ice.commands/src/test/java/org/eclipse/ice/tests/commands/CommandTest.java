@@ -37,10 +37,18 @@ public class CommandTest {
 	public void testLocalCommand() {
 
 		// Set the CommandConfiguration class
-		CommandConfiguration commandConfig = new CommandConfiguration(1, "./test_code_execution.sh",
-				"someInputFile.txt", "someErrFile.txt", "someOutFile.txt", "1", "osx", "",
-				"/Users/4jo/git/icefork2/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands", true);
-
+		CommandConfiguration commandConfig = new CommandConfiguration();
+		commandConfig.setCommandId(1);
+		commandConfig.setExecutable("./test_code_execution.sh");
+		commandConfig.setInputFile("someInputFile.txt");
+		commandConfig.setErrFileName("someErrFile.txt");
+		commandConfig.setOutFileName("someOutFile.txt");
+		commandConfig.setInstallDirectory("");
+		commandConfig.setWorkingDirectory("/Users/4jo/git/icefork2/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands");
+		commandConfig.setAppendInput(true);
+		commandConfig.setOS("osx");
+		commandConfig.setNumProcs("1");
+		
 		// Use the function already defined in the command factory to get the
 		// local host name
 		CommandFactoryTest factory = new CommandFactoryTest();

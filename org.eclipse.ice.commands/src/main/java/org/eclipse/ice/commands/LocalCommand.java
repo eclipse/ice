@@ -52,7 +52,7 @@ public class LocalCommand extends Command {
 		// Make sure both commandConfig and connectionConfig have the same
 		// hostname, since commandConfig needs the hostname for several output
 		// files (e.g. for debugging purposes).
-		commandConfig.hostname = connectionConfig.hostname;
+		commandConfig.setHostname(connectionConfig.getHostname());
 
 		// If commandConfig wasn't set properly, the job can't run
 		if (commandConfig == null)
@@ -100,7 +100,7 @@ public class LocalCommand extends Command {
 
 		// Loop over the stages and launch them. This needs to be done
 		// sequentially, so use a regular, non-concurrent access loop
-		for (int i = 0; i < commandConfig.splitCommand.size(); i++) {
+		for (int i = 0; i < commandConfig.getSplitCommand().size(); i++) {
 
 			// Check the status to ensure job has not been canceled
 			if (status == CommandStatus.CANCELED) {
@@ -109,7 +109,7 @@ public class LocalCommand extends Command {
 			}
 
 			// Get the command
-			String thisCommand = commandConfig.splitCommand.get(i);
+			String thisCommand = commandConfig.getSplitCommand().get(i);
 
 			// Set up the process builder
 			status = setupProcessBuilder(thisCommand);
@@ -142,8 +142,8 @@ public class LocalCommand extends Command {
 
 		// Close up the output streams
 		try {
-			commandConfig.stdOut.close();
-			commandConfig.stdErr.close();
+			commandConfig.getStdOut().close();
+			commandConfig.getStdErr().close();
 		} catch (IOException e) {
 			status = CommandStatus.INFOERROR;
 			logger.error("Could not close the output and/or error files, returning INFOERROR");

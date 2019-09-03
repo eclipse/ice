@@ -41,8 +41,8 @@ public class LocalCommandTest {
 	/**
 	 * Put these in a command configuration instance to use
 	 */
-	CommandConfiguration commandConfig = new CommandConfiguration(3, executable, inputFile, errorFile, outputFile,
-			procs, installDir, os, workingDirectory, true);
+	CommandConfiguration commandConfig = new CommandConfiguration();
+
 
 	/**
 	 * The connection used (in this case, it is a local connection)
@@ -64,6 +64,16 @@ public class LocalCommandTest {
 
 		connection = new ConnectionConfiguration(hostname);
 
+		commandConfig.setCommandId(1);
+		commandConfig.setExecutable(executable);
+		commandConfig.setInputFile(inputFile);
+		commandConfig.setErrFileName(errorFile);
+		commandConfig.setOutFileName(outputFile);
+		commandConfig.setInstallDirectory(installDir);
+		commandConfig.setWorkingDirectory(workingDirectory);
+		commandConfig.setAppendInput(true);
+		commandConfig.setOS(os);
+		commandConfig.setNumProcs(procs);
 	}
 
 	/**
@@ -97,9 +107,19 @@ public class LocalCommandTest {
 	public void testExecute() {
 		System.out.println("Starting testExecute with a non-existant executable.\n");
 
-		CommandConfiguration badConfig = new CommandConfiguration(2, "fake_exec.sh", "inputfile", "errfile.txt",
-				"outfile.txt", "1", "installDir", "osx", "somedirectory", true);
-
+		CommandConfiguration badConfig = new CommandConfiguration(); 
+				
+		badConfig.setCommandId(2);
+		badConfig.setExecutable("fake_exec.sh");
+		badConfig.setInputFile("inputfile");
+		badConfig.setErrFileName("errfile.txt");
+		badConfig.setOutFileName("outfile.txt");
+		badConfig.setInstallDirectory("installDir");
+		badConfig.setWorkingDirectory("somedirectory");
+		badConfig.setAppendInput(true);
+		badConfig.setOS("osx");
+		badConfig.setNumProcs("1");
+		
 		LocalCommand testCommand = new LocalCommand(connection, badConfig);
 
 		CommandStatus testStatus = testCommand.execute();

@@ -131,35 +131,7 @@ public class CommandConfiguration {
 		commandId = -999;
 	}
 
-	/**
-	 * Constructor which initializes several of the member variables. See member
-	 * variables in class CommandConfiguration for descriptions of variables
-	 * 
-	 * @param _commandId
-	 * @param exec
-	 * @param input
-	 * @param errFile
-	 * @param outFile
-	 * @param procs
-	 * @param installDir
-	 * @param operatingSystem
-	 * @param workingDir
-	 * @param _appendInput
-	 */
-	public CommandConfiguration(int _commandId, String exec, String input, String errFile, String outFile, String procs,
-			String installDir, String operatingSystem, String workingDir, boolean _appendInput) {
 
-		commandId = _commandId;
-		executable = exec;
-		inputFile = input;
-		stdErrFileName = errFile;
-		stdOutFileName = outFile;
-		numProcs = procs;
-		installDirectory = installDir;
-		os = operatingSystem;
-		workingDirectory = workingDir;
-		appendInput = _appendInput;
-	}
 
 	/**
 	 * This function sets up the configuration in preparation for the job running.
@@ -402,7 +374,29 @@ public class CommandConfiguration {
 		appendInput = _appendInput;
 		return;
 	}
+	public void setHostname(String host) {
+		hostname = host;
+		return;
+	}
 
+	public void setStdErr(BufferedWriter writer) {
+		stdErr = writer;
+		return;
+	}
+	public void setStdOut(BufferedWriter writer) {
+		stdOut = writer;
+		return;
+	}
+	public BufferedWriter getStdOut() {
+		return stdOut;
+	}
+	public BufferedWriter getStdErr() {
+		return stdErr;
+	}
+	public ArrayList<String> getSplitCommand(){
+		return splitCommand;
+	}
+	
 	public String getExecutable() {
 		return executable;
 	}

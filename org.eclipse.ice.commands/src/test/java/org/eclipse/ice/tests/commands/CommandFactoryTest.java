@@ -70,10 +70,18 @@ public class CommandFactoryTest {
 		 */
 
 		// Set the CommandConfiguration class
-		CommandConfiguration commandConfig = new CommandConfiguration(1, "./test_code_execution.sh",
-				"someInputFile.txt", "someOutFile.txt", "someErrFile.txt", "1", "osx", "",
-				"/Users/4jo/git/icefork2/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands", true);
-
+		CommandConfiguration commandConfig = new CommandConfiguration();
+		commandConfig.setCommandId(1);
+		commandConfig.setExecutable("./test_code_execution.sh");
+		commandConfig.setInputFile("someInputFile.txt");
+		commandConfig.setErrFileName("someErrFile.txt");
+		commandConfig.setOutFileName("someOutFile.txt");
+		commandConfig.setNumProcs("1");
+		commandConfig.setInstallDirectory("");
+		commandConfig.setOS("osx");
+		commandConfig.setWorkingDirectory("/Users/4jo/git/icefork2/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands");
+		commandConfig.setAppendInput(true);
+	
 		ConnectionConfiguration connectionConfig = new ConnectionConfiguration(hostname);
 
 		// Get the command
@@ -141,10 +149,18 @@ public class CommandFactoryTest {
 		System.out.println("\nTesting some commands where not enough command information was provided.");
 
 		// Set the CommandConfiguration class
-		CommandConfiguration commandConfiguration = new CommandConfiguration(1, "./test_code_execution.sh",
-				"someInputFile.txt", "someOutFile.txt", "someErrFile.txt", "1", "~/installDir", "osx",
-				"~/some_nonexistant_directory", true);
-
+		CommandConfiguration commandConfiguration = new CommandConfiguration();
+		commandConfiguration.setCommandId(1);
+		commandConfiguration.setExecutable("./test_code_execution.sh");
+		commandConfiguration.setInputFile("someInputFile.txt");
+		commandConfiguration.setErrFileName("someErrFile.txt");
+		commandConfiguration.setOutFileName("someOutFile.txt");
+		commandConfiguration.setNumProcs("1");
+		commandConfiguration.setInstallDirectory("~/installDir");
+		commandConfiguration.setOS("osx");
+		commandConfiguration.setWorkingDirectory("~/some_nonexistant_directory");
+		commandConfiguration.setAppendInput(true);
+	
 		ConnectionConfiguration connectConfig = new ConnectionConfiguration(hostname);
 		// Get the command
 		Command localCommand2 = null;

@@ -165,7 +165,7 @@ public abstract class Command {
 	protected CommandStatus setupProcessBuilder(String command) {
 
 		// Local declarations
-		String os = commandConfig.os;
+		String os = commandConfig.getOS();
 		ArrayList<String> commandList = new ArrayList<String>();
 
 		// If the OS is anything other than Windows, then the process builder
@@ -185,7 +185,7 @@ public abstract class Command {
 		jobBuilder = new ProcessBuilder(commandList);
 
 		// Set the directory to execute the job in
-		File directory = new File(commandConfig.workingDirectory);
+		File directory = new File(commandConfig.getWorkingDirectory());
 		jobBuilder.directory(directory);
 		jobBuilder.redirectErrorStream(false);
 
@@ -199,7 +199,7 @@ public abstract class Command {
 	 */
 	protected CommandStatus runProcessBuilder() {
 
-		String os = commandConfig.os;
+		String os = commandConfig.getOS();
 		List<String> commandList = jobBuilder.command();
 		String errMsg = "";
 
@@ -220,7 +220,7 @@ public abstract class Command {
 
 				// Reset the ProcessBuilder to reflect these changes
 				jobBuilder = new ProcessBuilder(commandList);
-				File directory = new File(commandConfig.workingDirectory);
+				File directory = new File(commandConfig.getWorkingDirectory());
 				jobBuilder.directory(directory);
 				jobBuilder.redirectErrorStream(false);
 
@@ -258,8 +258,8 @@ public abstract class Command {
 		String stdErrFileName = null, stdOutFileName = null;
 
 		// Get the output file names
-		stdErrFileName = commandConfig.stdErrFileName;
-		stdOutFileName = commandConfig.stdOutFileName;
+		stdErrFileName = commandConfig.getErrFileName();
+		stdOutFileName = commandConfig.getOutFileName();
 
 		int exitValue = -1; // arbitrary value indicating not completed (yet)
 
@@ -268,13 +268,13 @@ public abstract class Command {
 		if (errorMessage != "") {
 			try {
 				// Get the filenames so that they can be written to
-				commandConfig.stdErr = commandConfig.getBufferedWriter(stdErrFileName);
-				commandConfig.stdOut = commandConfig.getBufferedWriter(stdOutFileName);
+				commandConfig.setStdErr(commandConfig.getBufferedWriter(stdErrFileName));
+				commandConfig.setStdOut(commandConfig.getBufferedWriter(stdOutFileName));
 
 				// Write and close
-				commandConfig.stdErr.write(errorMessage);
-				commandConfig.stdOut.close();
-				commandConfig.stdErr.close();
+				commandConfig.getStdErr().write(errorMessage);
+				commandConfig.getStdOut().close();
+				commandConfig.getStdErr().close();
 			} catch (IOException e) {
 				logger.error("There were errors in the job running, but they could not write to the error log file!");
 				return CommandStatus.FAILED;
@@ -336,7 +336,7 @@ public abstract class Command {
 			} catch (IllegalThreadStateException e) {
 				// Complain, but keep watching
 				try {
-					commandConfig.stdErr.write(getClass().getName() + "IllegalThreadStateException!: " + e);
+					commandConfig.getStdErr().write(getClass().getName() + "IllegalThreadStateException!: " + e);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -349,7 +349,7 @@ public abstract class Command {
 			} catch (InterruptedException e) {
 				// Complain
 				try {
-					commandConfig.stdErr.write(getClass().getName() + " InterruptedException!: " + e);
+					commandConfig.getStdErr().write(getClass().getName() + " InterruptedException!: " + e);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -365,7 +365,7 @@ public abstract class Command {
 
 		// Print the final exitValue of the job to the output log file
 		try {
-			commandConfig.stdOut.write("INFO: Command::monitorJob Message: Exit value = " + exitValue + "\n");
+			commandConfig.getStdOut().write("INFO: Command::monitorJob Message: Exit value = " + exitValue + "\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -399,26 +399,26 @@ public abstract class Command {
 		// Setup the BufferedReader that will get stderr from the process.
 		stdErrStreamReader = new InputStreamReader(errors);
 		stdErrReader = new BufferedReader(stdErrStreamReader);
-		commandConfig.stdErr = commandConfig.getBufferedWriter(commandConfig.stdErrFileName);
-		commandConfig.stdOut = commandConfig.getBufferedWriter(commandConfig.stdOutFileName);
+		commandConfig.setStdErr(commandConfig.getBufferedWriter(commandConfig.getErrFileName()));
+		commandConfig.setStdOut(commandConfig.getBufferedWriter(commandConfig.getOutFileName()));
 
 		// Catch the stdout and stderr output
 		try {
 			// Write to the stdOut file
 			while ((nextLine = stdOutReader.readLine()) != null) {
-				commandConfig.stdOut.write(nextLine);
+				commandConfig.getStdOut().write(nextLine);
 				// MUST put a new line for this type of writer. "\r\n" works on
 				// Windows and Unix-based systems.
-				commandConfig.stdOut.write("\r\n");
-				commandConfig.stdOut.flush();
+				commandConfig.getStdOut().write("\r\n");
+				commandConfig.getStdOut().flush();
 			}
 			// Write to the stdErr file
 			while ((nextLine = stdErrReader.readLine()) != null) {
-				commandConfig.stdErr.write(nextLine);
+				commandConfig.getStdErr().write(nextLine);
 				// MUST put a new line for this type of writer. "\r\n" works on
 				// Windows and Unix-based systems.
-				commandConfig.stdErr.write("\r\n");
-				commandConfig.stdErr.flush();
+				commandConfig.getStdErr().write("\r\n");
+				commandConfig.getStdErr().flush();
 			}
 		} catch (IOException e) {
 			// Or fail and complain about it.

@@ -15,7 +15,6 @@ import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 
-import org.eclipse.ice.commands.Command;
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionConfiguration;
@@ -77,9 +76,19 @@ public class RemoteCommandTest {
 		executableDictionary.put("os", "OSX");
 		executableDictionary.put("workingDirectory", "/");
 		
-		commandConfig = new CommandConfiguration(0, "someExecutable.sh ${installDir}",
-				"someInputFile.txt", "someOutFile.txt", "someErrFile.txt", "~/install",
-				"1", "OSX", "/", true);
+		commandConfig = new CommandConfiguration();
+		
+		commandConfig.setCommandId(0);
+		commandConfig.setExecutable("someExecutable.sh ${installDir}");
+		commandConfig.setInputFile("someInputFile.txt");
+		commandConfig.setErrFileName("someErrFile.txt");
+		commandConfig.setOutFileName("someOutFile.txt");
+		commandConfig.setInstallDirectory("~/install");
+		commandConfig.setWorkingDirectory("/");
+		commandConfig.setAppendInput(true);
+		commandConfig.setOS("OSX");
+		commandConfig.setNumProcs("1");
+		
 		connectConfig = new ConnectionConfiguration(username, password, host);
 	}
 

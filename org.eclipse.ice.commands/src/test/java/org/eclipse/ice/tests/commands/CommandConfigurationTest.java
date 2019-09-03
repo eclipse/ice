@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import org.eclipse.ice.commands.CommandConfiguration;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -59,6 +60,39 @@ public class CommandConfigurationTest {
 	 */
 	@Test
 	public void testCommandConfiguration() {
+		
+		// Create a default instance
+		CommandConfiguration config = new CommandConfiguration();
+		
+		// Set some things
+		config.setCommandId(3);
+		config.setExecutable("./some_executable.sh");
+		config.setErrFileName("errorFile.txt");
+		config.setOutFileName("outFile.txt");
+		config.setOS("osx");
+		
+		
 	}
 
+	
+	
+	/**
+	 * Test method for {@link org.eclipse.ice.commands.CommandConfiguration#getBufferedWriter(String)}
+	 */
+	@Test
+	public void testCreateOutputFiles() {
+		
+	}
+	
+	/**
+	 * Test method for {@link org.eclipse.ice.commands.CommandConfiguration#getExecutableName()}
+	 */
+	@Test
+	public void testGetExecutableName() {
+		
+	}
+	
+	
+	
+	
 }
