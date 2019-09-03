@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.fail;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -61,8 +63,9 @@ public class RemoteMoveFileCommandTest {
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.RemoteMoveFileCommand()}
 	 */
+	@Test
 	public void testRemoteMoveFileCommand() {
-		
+		fail("Not yet implemented");
 	}
 
 }

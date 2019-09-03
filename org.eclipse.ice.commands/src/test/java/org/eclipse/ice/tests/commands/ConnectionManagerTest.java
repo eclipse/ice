@@ -63,6 +63,7 @@ public class ConnectionManagerTest {
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.ConnectionManager#ConnectionManager()}
 	 */
+	@Test
 	public void testConnectionManager() {
 		fail("Not yet implemented");
 	}
@@ -71,6 +72,7 @@ public class ConnectionManagerTest {
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.ConnectionManager#OpenConnection(String)}
 	 */
+	@Test
 	public void testOpenConnection() {
 		fail("Not yet implemented");
 	}
@@ -79,6 +81,7 @@ public class ConnectionManagerTest {
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.ConnectionManager#GetConnection(String)}
 	 */
+	@Test
 	public void testGetConnection() {
 		fail("Not yet implemented");
 	}
@@ -87,6 +90,7 @@ public class ConnectionManagerTest {
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.ConnectionManager#CloseConnection(String)}
 	 */
+	@Test
 	public void testCloseConnection() {
 		fail("Not yet implemented");
 	}
@@ -95,6 +99,7 @@ public class ConnectionManagerTest {
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.ConnectionManager#CloseAllConnections()}
 	 */
+	@Test
 	public void testCloseAllConnection() {
 		fail("Not yet implemented");
 	}

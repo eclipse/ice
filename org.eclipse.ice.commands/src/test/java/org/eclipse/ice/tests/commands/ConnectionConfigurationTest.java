@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.fail;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -35,6 +37,6 @@ public class ConnectionConfigurationTest {
 	 */
 	@Test
 	public void testConnectionConfiguration() {
+		fail("Not yet implemented");
 	}
-
 }

@@ -62,7 +62,7 @@ public class CopyFileCommandTest {
 	/**
 	 * Test method for{@link org.eclipse.ice.commands.CopyFileCommand()}
 	 */
-
+	@Test
 	public void testCopyFileCommand() {
 		fail("Not yet implemented");
 	}
