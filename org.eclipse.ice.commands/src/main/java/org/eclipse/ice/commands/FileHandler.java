@@ -9,6 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
+
 package org.eclipse.ice.commands;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings, Joe Osborn
  *
  */
-public class FileHandler {
+public abstract class FileHandler {
 
 	/**
 	 * Map keys for cleaner command mapping
@@ -42,8 +43,34 @@ public class FileHandler {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	protected static final Logger logger = LoggerFactory
-			.getLogger(FileHandler.class);
+	protected static final Logger logger = LoggerFactory.getLogger(FileHandler.class);
+
+	/**
+	 * The command member variable that will actually execute the move or copy that
+	 * was requested by the user
+	 */
+	Command command;
+
+	/**
+	 * A string that contains the path for the source file to be transfered
+	 */
+	String source;
+
+	/**
+	 * A string that contains the path for the destination for the source to be
+	 * transferred to
+	 */
+	String destination;
+
+	/**
+	 * The ConnectionConfiguration associated with the source file
+	 */
+	ConnectionConfiguration sourceConfiguration;
+
+	/**
+	 * The ConnectionConfiguration associated with the destination file
+	 */
+	ConnectionConfiguration destinationConfiguration;
 
 	/**
 	 * Default constructor
@@ -51,86 +78,35 @@ public class FileHandler {
 	public FileHandler() {
 	}
 
+
+
 	/**
-	 * This operation moves files from the source (src) to the destination
-	 * (dest). If the operation fails, an IOException will be thrown.
+	 * This operation moves files from the source (src) to the destination (dest).
+	 * If the operation fails, an IOException will be thrown.
 	 * 
-	 * @param src  - source file to be moved
-	 * @param dest - destination for the source file to be moved to
 	 * @return Command - The command to be executed
 	 * @throws IOException
 	 */
-	public static Command move(final String src, final String dest)
-			throws IOException {
-
-		// Just test local moving for now.
-
-		// TODO need to determine how to differentiate local vs. remote moves
-		// with just the strings and not a hostname
-		boolean isLocal = true;
-		// Set the command type based on whether or not the move is local
-		int commandType = (isLocal) ? LOCAL_MOVE : REMOTE_MOVE;
-
-		return getCommand(commandType, src, dest);
-	}
+	public abstract CommandStatus move() throws IOException;
 
 	/**
-	 * This operations copies files from the source (src) to the destination
-	 * (dest). If the operation fails, an IOException will be thrown.
+	 * This operations copies files from the source (src) to the destination (dest).
+	 * If the operation fails, an IOException will be thrown.
 	 * 
 	 * @param src  - source file to be copied
 	 * @param dest - destination to be copied to
 	 * @return Command - The actual Command to be executed
 	 * @throws IOException
 	 */
-	public static Command copy(final String src, final String dest)
-			throws IOException {
-
-		// TODO need to determine how to differentiate local vs. remote
-		// copies/moves with just the strings and not a hostname
-		boolean isLocal = true;
-		// Set the command type based on whether or not the move is local
-		int commandType = (isLocal) ? LOCAL_COPY : REMOTE_COPY;
-
-		return getCommand(commandType, src, dest);
-	}
+	public abstract CommandStatus copy() throws IOException;
 
 	/**
-	 * This private operation is a command factory for internal use.
+	 * This function gets and returns the private member variable command of type
+	 * Command
 	 * 
-	 * @param commandType the type of command to be executed. Must be one of the
-	 *                    private member keys.
-	 * @param src         the source file
-	 * @param dest        the final destination
-	 * @return the command to execute, either a move or copy executed locally or
-	 *         remotely
-	 * @throws IOException thrown if the source or destination doesn't exist
+	 * @return Command - the command associated with this FileHandler
 	 */
-	private static Command getCommand(int commandType, String src, String dest)
-			throws IOException {
-
-		// Check to make sure the source exists
-		boolean sourceExists = exists(src);
-
-		Command command = null;
-		// If destination doesn't exist, create it, then get the command
-		if (sourceExists && createDirectories(dest)) {
-			if (commandType == LOCAL_COPY) {
-				command = new LocalCopyFileCommand(src, dest);
-			} else if (commandType == LOCAL_MOVE) {
-				command = new LocalMoveFileCommand(src, dest);
-			} else if (commandType == REMOTE_COPY) {
-				command = new RemoteCopyFileCommand(src, dest);
-			} else if (commandType == REMOTE_MOVE) {
-				command = new RemoteMoveFileCommand(src, dest);
-			}
-		} else {
-			String msg = "Aborting. The source file " + src
-					+ " or destination does not exist!";
-			logger.error(msg);
-			throw new IOException(msg);
-		}
-
+	public Command getCommand() {
 		return command;
 	}
 
@@ -138,12 +114,11 @@ public class FileHandler {
 	 * This operation creates all the directories that are parents of the
 	 * destination.
 	 * 
-	 * @param dest the destination for which parent directories should be
-	 *             created
+	 * @param dest the destination for which parent directories should be created
 	 * @return true if the directories were created
 	 * @throws IOException thrown if the dest cannot be created
 	 */
-	private static boolean createDirectories(String dest) throws IOException {
+	protected boolean createDirectories(String dest) throws IOException {
 
 		boolean exists = false;
 		if (exists(dest)) {
@@ -153,8 +128,7 @@ public class FileHandler {
 				// If an exception wasn't thrown, then destination now exists
 				exists = true;
 			} catch (IOException e) {
-				logger.error(
-						"Couldn't create directory for local move! Failed.");
+				logger.error("Couldn't create directory for local move! Failed.");
 				e.printStackTrace();
 			}
 		}
@@ -163,14 +137,14 @@ public class FileHandler {
 	}
 
 	/**
-	 * This operations determines whether or not the file argument exists. TODO
-	 * - this only works for local files at the moment.
+	 * This operations determines whether or not the file argument exists. TODO -
+	 * this only works for local files at the moment.
 	 * 
 	 * @param file the file for which to search
 	 * @return true if the file exists, false if not
 	 * @throws IOException
 	 */
-	public static boolean exists(final String file) throws IOException {
+	public boolean exists(final String file) throws IOException {
 
 		// Get the path from the passed string
 		Path path = Paths.get(file);
@@ -178,6 +152,16 @@ public class FileHandler {
 		// Check if the path exists or not. Symbolic links are followed
 		// by default, see {@link java.nio.file.Files#exists}
 		return Files.exists(path);
+	}
+
+	/**
+	 * This function returns the current status of the copy or move, as it is given
+	 * by the member variable {@link org.eclipse.ice.commands.FileHandler#command}
+	 * 
+	 * @return - CommandStatus indicating the status of the file transfer
+	 */
+	public CommandStatus getStatus() {
+		return command.getStatus();
 	}
 
 }

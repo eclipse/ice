@@ -18,8 +18,8 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.eclipse.ice.commands.Command;
 import org.eclipse.ice.commands.FileHandler;
+import org.eclipse.ice.commands.LocalFileHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -160,16 +160,17 @@ public class FileHandlerTest {
 	@Test
 	public void testLocalCopy() {
 		System.out.println("Testing testLocalCopy() function.");
+		FileHandler handler = null;
 		try {
-			Command copy = FileHandler.copy(localSource, localDestination);
-			copy.execute();
+			handler = new LocalFileHandler(localSource, localDestination);
+			handler.copy();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		// Check that it exists
 		try {
-			boolean exist = FileHandler.exists(localDestination);
+			boolean exist = handler.exists(localDestination);
 			assert (exist == true);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -184,16 +185,18 @@ public class FileHandlerTest {
 	@Test
 	public void testLocalMove() {
 		System.out.println("Testing testLocalMove() function.");
+		
+		FileHandler handler = null;
 		try {
-			Command move = FileHandler.move(localSource, localDestination);
-			move.execute();
+			handler = new LocalFileHandler(localSource, localDestination);
+			handler.move();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		// Check that it exists
 		try {
-			boolean exist = FileHandler.exists(localDestination);
+			boolean exist = handler.exists(localDestination);
 			assert (exist == true);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -214,15 +217,16 @@ public class FileHandlerTest {
 		/**
 		 * Test a file that everyone should have existing
 		 */
+		FileHandler handler = new LocalFileHandler();
 		try {
-			assert (FileHandler.exists("/usr/lib/python2.7"));
+			assert (handler.exists("/usr/lib/python2.7"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		System.out.println("Testing testExists() with a non existing file");
 		try {
-			assert (!FileHandler.exists("/usr/file_that_doesnot_exist.txt"));
+			assert (!handler.exists("/usr/file_that_doesnot_exist.txt"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
