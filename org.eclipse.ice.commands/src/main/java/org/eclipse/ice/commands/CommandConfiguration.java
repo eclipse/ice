@@ -240,7 +240,7 @@ public class CommandConfiguration {
 	 * 
 	 * @return - String that is the executable to be run
 	 */
-	protected String getExecutableName() {
+	public String getExecutableName() {
 
 		// Get the information from the executable dictionary
 		int numProcsInt = Math.max(1, Integer.parseInt(numProcs));
@@ -281,8 +281,9 @@ public class CommandConfiguration {
 		// Otherwise split the full command and put it into
 		// CommandConfiguration.splitCommand
 		else {
-			for (String stage : fixedExecutableName.split(";"))
-				splitCommand.add(stage);
+			for (String stage : fixedExecutableName.split(";")) {
+				splitCommand.add(stage.trim());
+			}
 		}
 
 		// Print launch stages so that user can confirm
