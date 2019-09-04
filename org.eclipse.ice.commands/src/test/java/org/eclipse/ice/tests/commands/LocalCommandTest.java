@@ -11,10 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import java.util.HashMap;
-
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandStatus;
+import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.LocalCommand;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,24 +26,54 @@ import org.junit.Test;
  */
 public class LocalCommandTest {
 
-	HashMap<String, String> executableDictionary;
+	/**
+	 * Create some strings that correspond to an actual test script
+	 */
+	String executable = "./someExecutable.sh ${installDir}";
+	String inputFile = "someInputFile.txt";
+	String errorFile = "someErrFile.txt";
+	String outputFile = "someOutFile.txt";
+	String procs = "1";
+	String installDir = "~/install";
+	String os = "osx";
+	String workingDirectory = "/";
 
 	/**
+	 * Put these in a command configuration instance to use
+	 */
+	CommandConfiguration commandConfig = new CommandConfiguration();
+
+
+	/**
+	 * The connection used (in this case, it is a local connection)
+	 */
+	ConnectionConfiguration connection;
+
+	/**
+	 * Set up by establishing that the test connection is local
+	 * 
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
 
-		// Set up some default instance variables
-		executableDictionary = new HashMap<String, String>();
-		executableDictionary.put("executable", "someExecutable.sh ${installDir}");
-		executableDictionary.put("inputFile", "someInputFile.txt");
-		executableDictionary.put("stdOutFileName", "someOutFile.txt");
-		executableDictionary.put("stdErrFileName", "someErrFile.txt");
-		executableDictionary.put("installDir", "~/install");
-		executableDictionary.put("numProcs", "1");
-		executableDictionary.put("os", "OSX");
-		executableDictionary.put("workingDirectory", "/");
+		// Use the function already defined in the command factory to get the
+		// local host name
+		CommandFactoryTest factory = new CommandFactoryTest();
+		String hostname = factory.getLocalHostname();
+
+		connection = new ConnectionConfiguration(hostname);
+
+		commandConfig.setCommandId(1);
+		commandConfig.setExecutable(executable);
+		commandConfig.setInputFile(inputFile);
+		commandConfig.setErrFileName(errorFile);
+		commandConfig.setOutFileName(outputFile);
+		commandConfig.setInstallDirectory(installDir);
+		commandConfig.setWorkingDirectory(workingDirectory);
+		commandConfig.setAppendInput(true);
+		commandConfig.setOS(os);
+		commandConfig.setNumProcs(procs);
 	}
 
 	/**
@@ -58,12 +87,11 @@ public class LocalCommandTest {
 		System.out.println("Starting testLocalCommand");
 
 		// Now make a "real" command configuration to test
-		CommandConfiguration commandConfig = new CommandConfiguration(3, executableDictionary, true);
 
-		LocalCommand realCommand = new LocalCommand(commandConfig);
+		LocalCommand realCommand = new LocalCommand(connection, commandConfig);
 		CommandStatus testStatus = realCommand.getStatus();
 
-		assert (testStatus == CommandStatus.RUNNING);
+		assert (testStatus == CommandStatus.PROCESSING);
 		System.out.println("Finished testConfiguration\n");
 
 	}
@@ -77,9 +105,22 @@ public class LocalCommandTest {
 	 */
 	@Test
 	public void testExecute() {
-		System.out.println("Starting testExecute\n");
+		System.out.println("Starting testExecute with a non-existant executable.\n");
 
-		LocalCommand testCommand = new LocalCommand(new CommandConfiguration(2, executableDictionary, true));
+		CommandConfiguration badConfig = new CommandConfiguration(); 
+				
+		badConfig.setCommandId(2);
+		badConfig.setExecutable("fake_exec.sh");
+		badConfig.setInputFile("inputfile");
+		badConfig.setErrFileName("errfile.txt");
+		badConfig.setOutFileName("outfile.txt");
+		badConfig.setInstallDirectory("installDir");
+		badConfig.setWorkingDirectory("somedirectory");
+		badConfig.setAppendInput(true);
+		badConfig.setOS("osx");
+		badConfig.setNumProcs("1");
+		
+		LocalCommand testCommand = new LocalCommand(connection, badConfig);
 
 		CommandStatus testStatus = testCommand.execute();
 

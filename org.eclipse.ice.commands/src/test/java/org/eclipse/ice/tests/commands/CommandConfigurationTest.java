@@ -11,12 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import static org.junit.Assert.fail;
+import java.util.ArrayList;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.eclipse.ice.commands.CommandConfiguration;
 import org.junit.Test;
 
 /**
@@ -27,41 +24,94 @@ import org.junit.Test;
  */
 public class CommandConfigurationTest {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
+	// Create a default instance to test
+	CommandConfiguration config = new CommandConfiguration();
 
 	/**
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#CommandConfiguration()}.
+	 * Check some of the getters and setters
 	 */
 	@Test
 	public void testCommandConfiguration() {
-		fail("Not yet implemented");
+
+		// Set some things
+		config.setCommandId(3);
+		config.setExecutable("./some_executable.sh");
+		config.setErrFileName("errorFile.txt");
+		config.setOutFileName("outFile.txt");
+		config.setOS("osx");
+
+		// Assert whether or not things are/aren't set
+		assert (config.getOutFileName() != null);
+		assert (config.getOS() != null);
+
+		// Didn't set working directory
+		assert (config.getWorkingDirectory() == null);
+
+	}
+
+	/**
+	 * Test method for
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#getExecutableName()}
+	 */
+	@Test
+	public void testGetExecutableName() {
+
+		// Test that if one wants to append inputfile, it is appended
+		config.setCommandId(1);
+		config.setExecutable("./test_code_execution.sh");
+		config.setInputFile("someInputFile.txt");
+		config.setNumProcs("1");
+		config.setAppendInput(true);
+
+		String executable = config.getExecutableName();
+		assert (executable.equals("./test_code_execution.sh someInputFile.txt"));
+
+		// Test that if num processes is more than 1, mpi options are added
+		config.setNumProcs("4"); // arbitrary number
+		// We can test append input as well when it is false
+		config.setAppendInput(false);
+		executable = config.getExecutableName();
+		assert (executable.equals("mpirun -np 4 ./test_code_execution.sh"));
+
+	}
+
+	/**
+	 * Test method for
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#getExecutableName()} and
+	 * for testing the split command functionality
+	 */
+	@Test
+	public void testGetExecutableNameSplitCommand() {
+		CommandConfiguration splitConfig = new CommandConfiguration();
+		splitConfig.setCommandId(2);
+		splitConfig
+				.setExecutable("./dummy.sh ${inputFile}; ./next_file.sh ${inputFile}; ./other_file.sh ${installDir}");
+		// Test if the user falsifies append input whether or not the environment
+		// variable is replaced
+		splitConfig.setAppendInput(false);
+		splitConfig.setNumProcs("1");
+		splitConfig.setInputFile("inputfile.txt");
+		splitConfig.setInstallDirectory("~/install_dir");
+
+		String executable = splitConfig.getExecutableName();
+		assert (executable
+				.equals("./dummy.sh inputfile.txt; ./next_file.sh inputfile.txt; ./other_file.sh ~/install_dir/"));
+
+		ArrayList<String> split = new ArrayList<String>();
+		split = splitConfig.getSplitCommand();
+
+		// Create an array list to check the split command against
+		ArrayList<String> checkSplit = new ArrayList<String>();
+		checkSplit.add("./dummy.sh inputfile.txt");
+		checkSplit.add("./next_file.sh inputfile.txt");
+		checkSplit.add("./other_file.sh ~/install_dir/");
+
+		for (int i = 0; i < split.size(); i++) {
+			assert (split.get(i).equals(checkSplit.get(i)));
+		}
+
 	}
 
 }

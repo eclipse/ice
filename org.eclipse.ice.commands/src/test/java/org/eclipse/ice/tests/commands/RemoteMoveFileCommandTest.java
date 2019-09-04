@@ -57,12 +57,13 @@ public class RemoteMoveFileCommandTest {
 
 	@Test
 	public void test() {
-		fail("Not yet implemented");
+		
 	}
 
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.RemoteMoveFileCommand()}
 	 */
+	@Test
 	public void testRemoteMoveFileCommand() {
 		fail("Not yet implemented");
 	}

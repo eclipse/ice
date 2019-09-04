@@ -38,10 +38,25 @@ public class LocalCommand extends Command {
 	 * 
 	 * @param _configuration
 	 */
-	public LocalCommand(CommandConfiguration _configuration) {
+	public LocalCommand(ConnectionConfiguration _connection, CommandConfiguration _configuration) {
 
 		status = CommandStatus.PROCESSING;
-		status = setConfiguration(_configuration);
+
+		// Set the connection for the local command, which is only relevant for
+		// accessing the hostname of the local computer
+		connectionConfig = _connection;
+
+		// Set the configuration for the command
+		commandConfig = _configuration;
+
+		// Make sure both commandConfig and connectionConfig have the same
+		// hostname, since commandConfig needs the hostname for several output
+		// files (e.g. for debugging purposes).
+		commandConfig.setHostname(connectionConfig.getHostname());
+
+		// If commandConfig wasn't set properly, the job can't run
+		if (commandConfig == null)
+			status = CommandStatus.FAILED;
 	}
 
 	/**
@@ -51,9 +66,18 @@ public class LocalCommand extends Command {
 	@Override
 	public CommandStatus execute() {
 
-		// Check that the status of the job is good after setting up the configuration
-		// in the constructor. If not, exit
-		// See CheckStatus function in {@link org.eclipse.ice.commands.Command}
+		// Check that the commandConfig file was properly instantiated in the
+		// constructor
+		try {
+			checkStatus(status);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Configure the command to be ready to run.
+		status = setConfiguration();
+
+		// Ensure that the command was properly configured
 		try {
 			checkStatus(status);
 		} catch (IOException e) {
@@ -63,78 +87,9 @@ public class LocalCommand extends Command {
 		// Now that all of the prerequisites have been set, start the job running
 		status = run();
 
+		// Confirm the job finished with some status
 		logger.info("The job finished with status: " + status);
 		return status;
-	}
-
-	/**
-	 * See
-	 * {@link org.eclipse.ice.commands.Command#setConfiguration(CommandConfiguration)}
-	 */
-	@Override
-	protected CommandStatus setConfiguration(final CommandConfiguration config) {
-
-		// Set the configuration for the command
-		configuration = config;
-
-		// Now extract the information from the command dictionary
-		String executable = null, inputFile = null;
-		String stdOutFileName = null, stdErrFileName = null;
-		String stdOutHeader = null, stdErrHeader = null;
-		String numProcs = null, installDir = null, os = null;
-		String directory = null;
-
-		// Make sure the dictionary was actually set
-		if (configuration.execDictionary != null) {
-
-			// Make sure the dictionary contains the keys we need
-			executable = configuration.execDictionary.get("executable");
-			inputFile = configuration.execDictionary.get("inputFile");
-			stdOutFileName = configuration.execDictionary.get("stdOutFileName");
-			stdErrFileName = configuration.execDictionary.get("stdErrFileName");
-			numProcs = configuration.execDictionary.get("numProcs");
-			installDir = configuration.execDictionary.get("installDir");
-			os = configuration.execDictionary.get("os");
-			directory = configuration.execDictionary.get("workingDirectory");
-		} else
-			return CommandStatus.INFOERROR;
-
-		// Check the info and return failure if something was not set correctly
-		if (executable == null || inputFile == null || stdOutFileName == null || stdErrFileName == null
-				|| numProcs == null || os == null || directory == null)
-			return CommandStatus.INFOERROR;
-
-		// If the input file name should not be appended to the executable, set it
-		if (configuration.execDictionary.get("noAppendInput") != null
-				&& configuration.execDictionary.get("noAppendInput") == "true")
-			configuration.appendInput = false;
-
-		// Set the command to actually run and execute
-		configuration.fullCommand = getExecutableName();
-
-		// Set the output and error buffer writers
-		stdOutFileName = configuration.execDictionary.get("stdOutFileName");
-		stdOut = getBufferedWriter(stdOutFileName);
-		stdErrFileName = configuration.execDictionary.get("stdErrFileName");
-		stdErr = getBufferedWriter(stdErrFileName);
-
-		// Create unique headers for the output files which include useful information
-		stdOutHeader = createOutputHeader("standard output");
-		stdErrHeader = createOutputHeader("standard error");
-
-		// Now write them out
-		try {
-			stdOut.write(stdOutHeader);
-			stdOut.write("# Executable to be run is: " + configuration.fullCommand + "\n");
-			stdOut.close();
-			stdErr.write(stdErrHeader);
-			stdErr.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// All setup completed, return that the job will now run
-		return CommandStatus.RUNNING;
 	}
 
 	/**
@@ -145,7 +100,7 @@ public class LocalCommand extends Command {
 
 		// Loop over the stages and launch them. This needs to be done
 		// sequentially, so use a regular, non-concurrent access loop
-		for (int i = 0; i < configuration.splitCommand.size(); i++) {
+		for (int i = 0; i < commandConfig.getSplitCommand().size(); i++) {
 
 			// Check the status to ensure job has not been canceled
 			if (status == CommandStatus.CANCELED) {
@@ -154,7 +109,7 @@ public class LocalCommand extends Command {
 			}
 
 			// Get the command
-			String thisCommand = configuration.splitCommand.get(i);
+			String thisCommand = commandConfig.getSplitCommand().get(i);
 
 			// Set up the process builder
 			status = setupProcessBuilder(thisCommand);
@@ -187,8 +142,8 @@ public class LocalCommand extends Command {
 
 		// Close up the output streams
 		try {
-			stdOut.close();
-			stdErr.close();
+			commandConfig.getStdOut().close();
+			commandConfig.getStdErr().close();
 		} catch (IOException e) {
 			status = CommandStatus.INFOERROR;
 			logger.error("Could not close the output and/or error files, returning INFOERROR");
@@ -197,70 +152,6 @@ public class LocalCommand extends Command {
 
 		// Return the result
 		return status;
-	}
-
-	/**
-	 * See {@link org.eclipse.ice.commands.Command#fixExecutableName()}
-	 */
-	@Override
-	protected String getExecutableName() {
-
-		// Get the information from the executable dictionary
-		int numProcs = Math.max(1, Integer.parseInt(configuration.execDictionary.get("numProcs")));
-		String fixedExecutableName = configuration.execDictionary.get("executable");
-		String installDirectory = configuration.execDictionary.get("installDir");
-		String inputFile = configuration.execDictionary.get("inputFile");
-		String separator = "/";
-
-		// Set the name of the working directory
-		configuration.workingDirectoryName = configuration.execDictionary.get("workingDirectory");
-
-		// If the input file should be appended, append it
-		if (configuration.appendInput)
-			fixedExecutableName += " " + inputFile;
-
-		configuration.fullCommand = fixedExecutableName;
-
-		// Determine the proper separator
-		if (installDirectory != null && installDirectory.contains(":\\"))
-			separator = "\\";
-
-		// Append a final separator to the install directory if required
-		if (installDirectory != null && !installDirectory.endsWith(separator))
-			installDirectory = installDirectory + separator;
-
-		// Search for and replace the ${inputFile} to properly configure the input file
-		if (fixedExecutableName.contains("${inputFile}") && !configuration.appendInput)
-			fixedExecutableName = fixedExecutableName.replace("${inputFile}", inputFile);
-
-		if (fixedExecutableName.contains("${installDir}") && installDirectory != null)
-			fixedExecutableName = fixedExecutableName.replace("${installDir}", installDirectory);
-
-		// If MPI should be used if there are multiple cores, add it to the executable
-		if (numProcs > 1)
-			fixedExecutableName = "mpirun -np " + numProcs + " " + fixedExecutableName;
-
-		// Clean up any unnecessary white space
-		fixedExecutableName = fixedExecutableName.trim();
-
-		// Split the full command into its stages, if there are any.
-		if (!fixedExecutableName.contains(";"))
-			configuration.splitCommand.add(fixedExecutableName);
-		// Otherwise split the full command and put it into
-		// CommandConfiguration.splitCommand
-		else {
-			for (String stage : fixedExecutableName.split(";"))
-				configuration.splitCommand.add(stage);
-		}
-
-		// Print launch stages so that user can confirm
-		for (int i = 0; i < configuration.splitCommand.size(); i++) {
-			String cmd = configuration.splitCommand.get(i);
-			logger.info("LocalCommand Message: Launch stage " + i + " = " + cmd);
-		}
-
-		return fixedExecutableName;
-
 	}
 
 	/**

@@ -14,12 +14,12 @@ package org.eclipse.ice.tests.commands;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.HashMap;
 
 import org.eclipse.ice.commands.Command;
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandFactory;
 import org.eclipse.ice.commands.CommandStatus;
+import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -38,10 +38,10 @@ public class CommandFactoryTest {
 	String hostname = getLocalHostname();
 
 	/**
-	 * Test method for {@link org.eclipse.ice.commands.CommandFactory#getCommand()}
-	 * and for the whole {@link org.eclipse.ice.commands.LocalCommand#execute()}
-	 * execution chain with a fully functional command dictionary
+	 * Create a command factory to use for getting the commands.
 	 */
+	CommandFactory factory = new CommandFactory();
+	
 
 	public CommandFactoryTest() {
 	}
@@ -53,43 +53,41 @@ public class CommandFactoryTest {
 	public static void setUpBeforeClass() throws Exception {
 	}
 
+	/**
+	 * This function tests with real files to test an actual job processing. For
+	 * this test to work, make sure you change the workingDirectory to your actual
+	 * workingDirectory where the Commands API lives. TODO - Could we make a
+	 * temporary directory to work in and put the shell script TODO - in so that the
+	 * test would run on any machine?
+	 */
 	@Test
 	public void testFunctionalLocalCommand() {
 
-		String hostname = getLocalHostname();
-
 		/**
-		 * Create a HashMap which holds the executable instructions Requirements for a
-		 * Command to work: executable - executable to be run inputFile - input file,
-		 * can set to "" if no input file stdOutFileName - output file name
-		 * stdErrFileName - error file name numProcs - number of processes os -
-		 * operating system to execute command on workingDirectory - directory in which
-		 * to execute the job hostname - the hostname on which the job is to be hosted
+		 * Create a CommandConfiguration with the necessary information to execute a
+		 * Command. See {@link org.eclipse.ice.commands.CommandConfiguration} for
+		 * relevant member variables/constructor.
 		 */
-		/**
-		 * This is a test with real files to test an actual job processing. For this
-		 * test to work, make sure you change the workingDirectory to your actual
-		 * workingDirectory where the Commands API lives
-		 */
-
-		HashMap<String, String> executableDictionary = new HashMap<String, String>();
-		executableDictionary.put("executable", "./test_code_execution.sh");
-		executableDictionary.put("inputFile", "someInputFile.txt");
-		executableDictionary.put("stdOutFileName", "someOutFile.txt");
-		executableDictionary.put("stdErrFileName", "someErrFile.txt");
-		executableDictionary.put("numProcs", "1");
-		executableDictionary.put("os", "osx");
-		executableDictionary.put("workingDirectory",
-				"/Users/4jo/git/icefork2/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands");
-		executableDictionary.put("hostname", hostname);
 
 		// Set the CommandConfiguration class
-		CommandConfiguration commandConfig = new CommandConfiguration(1, executableDictionary, true);
+		CommandConfiguration commandConfig = new CommandConfiguration();
+		commandConfig.setCommandId(1);
+		commandConfig.setExecutable("./test_code_execution.sh");
+		commandConfig.setInputFile("someInputFile.txt");
+		commandConfig.setErrFileName("someErrFile.txt");
+		commandConfig.setOutFileName("someOutFile.txt");
+		commandConfig.setNumProcs("1");
+		commandConfig.setInstallDirectory("");
+		commandConfig.setOS("osx");
+		commandConfig.setWorkingDirectory("/Users/4jo/git/icefork2/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands");
+		commandConfig.setAppendInput(true);
+	
+		ConnectionConfiguration connectionConfig = new ConnectionConfiguration(hostname);
 
 		// Get the command
 		Command localCommand = null;
 		try {
-			localCommand = CommandFactory.getCommand(commandConfig);
+			localCommand = factory.getCommand(commandConfig, connectionConfig);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -114,18 +112,16 @@ public class CommandFactoryTest {
 
 		System.out.println("\nTesting some commands where not enough command information was provided.");
 
-		// Create a HashMap that doesn't have all of the necessary ingredients
-		// a good job should have
-		HashMap<String, String> executableDictionary = new HashMap<String, String>();
-		executableDictionary.put("executable", "./test_code_execution.sh");
-
+		// Create a command configuration that doesn't have all the necessary
+		// information
 		// Set the CommandConfiguration class
-		CommandConfiguration commandConfig = new CommandConfiguration(2, executableDictionary, true);
+		CommandConfiguration commandConfig = new CommandConfiguration();
 
+		ConnectionConfiguration connectConfig = new ConnectionConfiguration(hostname);
 		// Get the command
 		Command localCommand = null;
 		try {
-			localCommand = CommandFactory.getCommand(commandConfig);
+			localCommand = factory.getCommand(commandConfig, connectConfig);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -152,23 +148,24 @@ public class CommandFactoryTest {
 
 		System.out.println("\nTesting some commands where not enough command information was provided.");
 
-		HashMap<String, String> executableDictionary = new HashMap<String, String>();
-		executableDictionary.put("executable", "./test_code_execution.sh");
-		executableDictionary.put("inputFile", "someInputFile.txt");
-		executableDictionary.put("stdOutFileName", "someOutFile.txt");
-		executableDictionary.put("stdErrFileName", "someErrFile.txt");
-		executableDictionary.put("numProcs", "1");
-		executableDictionary.put("os", "osx");
-		executableDictionary.put("workingDirectory", "~/some_nonexistant_directory");
-		executableDictionary.put("hostname", hostname);
-
 		// Set the CommandConfiguration class
-		CommandConfiguration commandConfiguration = new CommandConfiguration(1, executableDictionary, true);
-
+		CommandConfiguration commandConfiguration = new CommandConfiguration();
+		commandConfiguration.setCommandId(1);
+		commandConfiguration.setExecutable("./test_code_execution.sh");
+		commandConfiguration.setInputFile("someInputFile.txt");
+		commandConfiguration.setErrFileName("someErrFile.txt");
+		commandConfiguration.setOutFileName("someOutFile.txt");
+		commandConfiguration.setNumProcs("1");
+		commandConfiguration.setInstallDirectory("~/installDir");
+		commandConfiguration.setOS("osx");
+		commandConfiguration.setWorkingDirectory("~/some_nonexistant_directory");
+		commandConfiguration.setAppendInput(true);
+	
+		ConnectionConfiguration connectConfig = new ConnectionConfiguration(hostname);
 		// Get the command
 		Command localCommand2 = null;
 		try {
-			localCommand2 = CommandFactory.getCommand(commandConfiguration);
+			localCommand2 = factory.getCommand(commandConfiguration, connectConfig);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

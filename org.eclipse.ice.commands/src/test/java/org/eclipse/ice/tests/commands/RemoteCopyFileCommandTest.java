@@ -57,14 +57,14 @@ public class RemoteCopyFileCommandTest {
 
 	@Test
 	public void test() {
-		fail("Not yet implemented");
 	}
 
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.RemoteCopyFileCommand()}
 	 */
+	@Test
 	public void testRemoteCopyFileCommand() {
-		fail("Not yet implemented");
+		fail("not yet implemented");
 	}
 
 }

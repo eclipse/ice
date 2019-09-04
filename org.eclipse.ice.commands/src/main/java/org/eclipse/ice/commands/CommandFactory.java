@@ -31,7 +31,7 @@ public class CommandFactory {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	protected static final Logger logger = LoggerFactory.getLogger(Command.class);
+	protected static final Logger logger = LoggerFactory.getLogger(CommandFactory.class);
 
 	/**
 	 * Constructor
@@ -43,37 +43,30 @@ public class CommandFactory {
 	 * Method which gets a command and subsequently executes it on a host See also
 	 * Command class {@link org.eclipse.ice.commands.Command}.
 	 * 
-	 * @param CommandConfiguration - the CommandConfiguration which holds the
-	 *                             particular details of a given command.
+	 * @param CommandConfiguration    - the CommandConfiguration which holds the
+	 *                                particular details of a given command.
+	 * @param ConnectionConfiguration - the ConnectionConfiguration which holds the
+	 *                                details on the connection (i.e. local vs.
+	 *                                remote)
 	 * @return Command
 	 */
-	public static Command getCommand(final CommandConfiguration configuration) throws IOException {
-		// Necessary for logger to print to console correctly
-		// BasicConfigurator.configure();
+	public Command getCommand(final CommandConfiguration commandConfig,
+			final ConnectionConfiguration connectionConfig) throws IOException {
 
 		Command command = null;
-		String host = null;
-
-		// Check to make sure that a hostname was provided for this command
-		if (configuration.execDictionary != null) {
-			host = configuration.execDictionary.get("hostname");
-		} else {
-			logger.error("You didn't provide a Dictionary with the Command information to run! Exiting.");
-			throw new IOException();
-		}
 
 		// If no host was provided, we don't know where to run the job
-		if (host == null) {
-			logger.error("You didn't provide a hostname in the CommandConfiguration for the job to run on! Exiting.");
+		if (connectionConfig.hostname == null) {
+			logger.error(
+					"You didn't provide a hostname in the ConnectionConfiguration for the job to run on! Exiting.");
 			throw new IOException();
 		}
 
-		// If it the host is local, get a LocalCommand. Otherwise, RemoteCommand
-		if (isLocal(host)) {
-			command = new LocalCommand(configuration);
+		// If the host is local, get a LocalCommand. Otherwise, RemoteCommand
+		if (isLocal(connectionConfig.hostname)) {
+			command = new LocalCommand(connectionConfig, commandConfig);
 		} else {
-			Connection connect = new Connection();
-			command = new RemoteCommand(connect, configuration);
+			command = new RemoteCommand(connectionConfig, commandConfig);
 		}
 
 		return command;
@@ -88,7 +81,7 @@ public class CommandFactory {
 	 * @return boolean - returns true if the hostname matches that of the local
 	 *         hostname, false otherwise.
 	 */
-	private static boolean isLocal(String host) {
+	private boolean isLocal(String host) {
 
 		// Get the local hostname address
 		InetAddress addr = null;

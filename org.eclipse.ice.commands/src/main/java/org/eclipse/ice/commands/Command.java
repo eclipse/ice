@@ -13,17 +13,11 @@
 package org.eclipse.ice.commands;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -32,8 +26,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is the instantiation class of the CommandFactory class and thus is
- * responsible for executing particular commands. It delegates the creation of a
- * LocalCommand or RemoteCommand, depending on the hostname.
+ * responsible for executing particular commands. It is the base class for local
+ * and remote commands, and thus delegates the creation of a LocalCommand or
+ * RemoteCommand, depending on the hostname.
  * 
  * @author Joe Osborn
  *
@@ -49,12 +44,15 @@ public abstract class Command {
 	 * The configuration parameters of the command - contains information about what
 	 * the command is actually intended to do (e.g. the executable filename).
 	 */
-	protected CommandConfiguration configuration;
+	protected CommandConfiguration commandConfig;
 
 	/**
-	 * Output streams for the job
+	 * The connection configuration parameters of the command - this will contain
+	 * information about whether or not the command should be run locally or
+	 * remotely. If remote, it contains all of the necessary ssh information for
+	 * opening the remote connection.
 	 */
-	protected BufferedWriter stdOut = null, stdErr = null;
+	protected ConnectionConfiguration connectionConfig;
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -96,7 +94,7 @@ public abstract class Command {
 	 *         properly set
 	 */
 	protected CommandStatus setConfiguration(CommandConfiguration config) {
-		configuration = config;
+		commandConfig = config;
 		return CommandStatus.PROCESSING;
 	}
 
@@ -115,20 +113,6 @@ public abstract class Command {
 	 *         cancelled.
 	 */
 	public abstract CommandStatus cancel();
-
-	/**
-	 * This function actually assembles and fixes the name of the executable to be
-	 * launched. It replaces ${inputFile}, ${installDir} and other keys from the
-	 * dictionary. The function is abstract so that Local and Remote executable
-	 * names can be handled individually, since the remote target file system is not
-	 * necessarily the same as the local. It is overridden by the subclasses that
-	 * require executables.
-	 * 
-	 * @return - String that is the executable to be run
-	 */
-	protected String getExecutableName() {
-		return configuration.execDictionary.get("executable");
-	}
 
 	/**
 	 * This function returns the status for a particular command at a given time in
@@ -152,82 +136,50 @@ public abstract class Command {
 
 	/**
 	 * This function returns to the user the configuration that was used to create a
-	 * particular command. Could be useful for accessing particular details about
-	 * the command.
+	 * particular command.
 	 * 
 	 * @return - the particular configuration for this command
 	 */
-	public CommandConfiguration getConfiguration() {
-		return configuration;
+	public CommandConfiguration getCommandConfiguration() {
+		return commandConfig;
 	}
 
 	/**
-	 * This function creates and returns a BufferedWriter for appending text to the
-	 * file specified in the call
+	 * This function returns to the user the configuration that was used to set up a
+	 * particular connection.
 	 * 
-	 * @param filename - file to append to
-	 * @return - buffered writer for appending
+	 * @return - the particular connection configuration for this command
 	 */
-	protected BufferedWriter getBufferedWriter(String filename) {
-
-		FileWriter writer = null;
-		BufferedWriter bufferedWriter = null;
-
-		// Check the file name and the create the writer
-		if (filename != null) {
-			try {
-				writer = new FileWriter(filename, true);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			bufferedWriter = new BufferedWriter(writer);
-			return bufferedWriter;
-		} else
-			return null;
+	public ConnectionConfiguration getConnectionConfiguration() {
+		return connectionConfig;
 	}
 
 	/**
-	 * This function creates a set of generic output header text useful for
-	 * debugging or informational purposes, for example in log files.
+	 * This function sets up the configuration in preparation for the job running.
+	 * It checks to make sure the necessary strings are set and then constructs the
+	 * executable to be run. It also creates the output files which contain
+	 * log/error information.
 	 * 
-	 * @param logName - the particular log name
-	 * @return - A string with the corresponding header text
+	 * @return - CommandStatus indicating that configuration completed and job can
+	 *         start running
 	 */
-	public String createOutputHeader(String logName) {
-		String header = null, localHostname = null;
+	protected CommandStatus setConfiguration() {
 
-		// Get the machine identity since the local machine launches the job
-		// regardless of whether or not the job is local or remote
-		try {
-			InetAddress addr = InetAddress.getLocalHost();
-			localHostname = addr.getHostName();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
+		// Check the info and return failure if something was not set
+		if (commandConfig.getExecutable() == null || commandConfig.getInputFile() == null
+				|| commandConfig.getOutFileName() == null || commandConfig.getErrFileName() == null
+				|| commandConfig.getNumProcs() == null || commandConfig.getOS() == null
+				|| commandConfig.getWorkingDirectory() == null)
+			return CommandStatus.INFOERROR;
 
-		// Add the header file name so that it can be identified
-		header = "# Logfile type : " + logName + "\n";
+		// Set the command to actually run and execute
+		commandConfig.setFullCommand(commandConfig.getExecutableName());
 
-		// Add the date and time
-		header += "# Job launch date: ";
-		header += new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "\n";
+		// Create the output files associated to the job for logging
+		commandConfig.createOutputFiles();
 
-		// Add the point of origin
-		header += "# Launch host: " + localHostname + "\n";
-
-		// Add the target machine
-		header += "# Target host: " + configuration.execDictionary.get("hostname") + "\n";
-
-		// Add the execution command
-		header += "# Command Executed: " + configuration.fullCommand + "\n";
-
-		// Add the input file name
-		header += "# Input file: " + configuration.execDictionary.get("inputFile") + "\n";
-
-		// Add an empty line
-		header += "\n";
-
-		return header;
+		// All setup completed, return that the job will now run
+		return CommandStatus.RUNNING;
 	}
 
 	/**
@@ -241,7 +193,7 @@ public abstract class Command {
 	protected CommandStatus setupProcessBuilder(String command) {
 
 		// Local declarations
-		String os = configuration.execDictionary.get("os");
+		String os = commandConfig.getOS();
 		ArrayList<String> commandList = new ArrayList<String>();
 
 		// If the OS is anything other than Windows, then the process builder
@@ -261,7 +213,7 @@ public abstract class Command {
 		jobBuilder = new ProcessBuilder(commandList);
 
 		// Set the directory to execute the job in
-		File directory = new File(configuration.execDictionary.get("workingDirectory"));
+		File directory = new File(commandConfig.getWorkingDirectory());
 		jobBuilder.directory(directory);
 		jobBuilder.redirectErrorStream(false);
 
@@ -275,7 +227,7 @@ public abstract class Command {
 	 */
 	protected CommandStatus runProcessBuilder() {
 
-		String os = configuration.execDictionary.get("os");
+		String os = commandConfig.getOS();
 		List<String> commandList = jobBuilder.command();
 		String errMsg = "";
 
@@ -296,7 +248,7 @@ public abstract class Command {
 
 				// Reset the ProcessBuilder to reflect these changes
 				jobBuilder = new ProcessBuilder(commandList);
-				File directory = new File(configuration.execDictionary.get("workingDirectory"));
+				File directory = new File(commandConfig.getWorkingDirectory());
 				jobBuilder.directory(directory);
 				jobBuilder.redirectErrorStream(false);
 
@@ -334,8 +286,8 @@ public abstract class Command {
 		String stdErrFileName = null, stdOutFileName = null;
 
 		// Get the output file names
-		stdErrFileName = configuration.execDictionary.get("stdErrFileName");
-		stdOutFileName = configuration.execDictionary.get("stdOutFileName");
+		stdErrFileName = commandConfig.getErrFileName();
+		stdOutFileName = commandConfig.getOutFileName();
 
 		int exitValue = -1; // arbitrary value indicating not completed (yet)
 
@@ -344,13 +296,13 @@ public abstract class Command {
 		if (errorMessage != "") {
 			try {
 				// Get the filenames so that they can be written to
-				stdErr = getBufferedWriter(stdErrFileName);
-				stdOut = getBufferedWriter(stdOutFileName);
+				commandConfig.setStdErr(commandConfig.getBufferedWriter(stdErrFileName));
+				commandConfig.setStdOut(commandConfig.getBufferedWriter(stdOutFileName));
 
 				// Write and close
-				stdErr.write(errorMessage);
-				stdOut.close();
-				stdErr.close();
+				commandConfig.getStdErr().write(errorMessage);
+				commandConfig.getStdOut().close();
+				commandConfig.getStdErr().close();
 			} catch (IOException e) {
 				logger.error("There were errors in the job running, but they could not write to the error log file!");
 				return CommandStatus.FAILED;
@@ -412,7 +364,7 @@ public abstract class Command {
 			} catch (IllegalThreadStateException e) {
 				// Complain, but keep watching
 				try {
-					stdErr.write(getClass().getName() + "IllegalThreadStateException!: " + e);
+					commandConfig.getStdErr().write(getClass().getName() + "IllegalThreadStateException!: " + e);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -425,7 +377,7 @@ public abstract class Command {
 			} catch (InterruptedException e) {
 				// Complain
 				try {
-					stdErr.write(getClass().getName() + " InterruptedException!: " + e);
+					commandConfig.getStdErr().write(getClass().getName() + " InterruptedException!: " + e);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -434,14 +386,14 @@ public abstract class Command {
 			// If for some reason the job has failed,
 			// it shouldn't be alive and we should break;
 			if (!job.isAlive()) {
-				logger.info("Job is no longer alive, no longer monitoring it's status");
+				logger.info("Job is no longer alive, done monitoring");
 				break;
 			}
 		}
 
 		// Print the final exitValue of the job to the output log file
 		try {
-			stdOut.write("INFO: Command::monitorJob Message: Exit value = " + exitValue + "\n");
+			commandConfig.getStdOut().write("INFO: Command::monitorJob Message: Exit value = " + exitValue + "\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -475,26 +427,26 @@ public abstract class Command {
 		// Setup the BufferedReader that will get stderr from the process.
 		stdErrStreamReader = new InputStreamReader(errors);
 		stdErrReader = new BufferedReader(stdErrStreamReader);
-		stdErr = getBufferedWriter(configuration.execDictionary.get("stdErrFileName"));
-		stdOut = getBufferedWriter(configuration.execDictionary.get("stdOutFileName"));
+		commandConfig.setStdErr(commandConfig.getBufferedWriter(commandConfig.getErrFileName()));
+		commandConfig.setStdOut(commandConfig.getBufferedWriter(commandConfig.getOutFileName()));
 
 		// Catch the stdout and stderr output
 		try {
 			// Write to the stdOut file
 			while ((nextLine = stdOutReader.readLine()) != null) {
-				stdOut.write(nextLine);
+				commandConfig.getStdOut().write(nextLine);
 				// MUST put a new line for this type of writer. "\r\n" works on
 				// Windows and Unix-based systems.
-				stdOut.write("\r\n");
-				stdOut.flush();
+				commandConfig.getStdOut().write("\r\n");
+				commandConfig.getStdOut().flush();
 			}
 			// Write to the stdErr file
 			while ((nextLine = stdErrReader.readLine()) != null) {
-				stdErr.write(nextLine);
+				commandConfig.getStdErr().write(nextLine);
 				// MUST put a new line for this type of writer. "\r\n" works on
 				// Windows and Unix-based systems.
-				stdErr.write("\r\n");
-				stdErr.flush();
+				commandConfig.getStdErr().write("\r\n");
+				commandConfig.getStdErr().flush();
 			}
 		} catch (IOException e) {
 			// Or fail and complain about it.

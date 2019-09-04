@@ -57,12 +57,12 @@ public class MoveFileCommandTest {
 
 	@Test
 	public void test() {
-		fail("Not yet implemented");
 	}
 
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.MoveFileCommand()}
 	 */
+	@Test
 	public void testMoveFileCommand() {
 		fail("Not yet implemented");
 	}

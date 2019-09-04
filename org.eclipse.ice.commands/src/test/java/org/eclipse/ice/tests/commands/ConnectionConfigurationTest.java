@@ -39,5 +39,4 @@ public class ConnectionConfigurationTest {
 	public void testConnectionConfiguration() {
 		fail("Not yet implemented");
 	}
-
 }
