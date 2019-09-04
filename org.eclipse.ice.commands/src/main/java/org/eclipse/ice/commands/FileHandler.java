@@ -29,16 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings, Joe Osborn
  *
  */
-public abstract class FileHandler {
-
-	/**
-	 * Map keys for cleaner command mapping
-	 */
-
-	private static final int LOCAL_COPY = 0;
-	private static final int LOCAL_MOVE = 1;
-	private static final int REMOTE_COPY = 2;
-	private static final int REMOTE_MOVE = 3;
+public abstract class FileHandler implements IFileHandler {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -73,12 +64,16 @@ public abstract class FileHandler {
 	ConnectionConfiguration destinationConfiguration;
 
 	/**
+	 * A status member variable that indicates the status of the file transfer. See
+	 * also {@link org.eclipse.ice.commands.CommandStatus}
+	 */
+	CommandStatus transferStatus;
+
+	/**
 	 * Default constructor
 	 */
 	public FileHandler() {
 	}
-
-
 
 	/**
 	 * This operation moves files from the source (src) to the destination (dest).
@@ -101,6 +96,15 @@ public abstract class FileHandler {
 	public abstract CommandStatus copy() throws IOException;
 
 	/**
+	 * This operations determines whether or not the file argument exists.
+	 * 
+	 * @param file the file for which to search
+	 * @return true if the file exists, false if not
+	 * @throws IOException
+	 */
+	public abstract boolean exists(final String file) throws IOException;
+
+	/**
 	 * This function gets and returns the private member variable command of type
 	 * Command
 	 * 
@@ -121,12 +125,12 @@ public abstract class FileHandler {
 	protected boolean createDirectories(String dest) throws IOException {
 
 		boolean exists = false;
-		if (exists(dest)) {
+		if (!exists(dest)) {
 			try {
 				Path destination = Paths.get(dest);
 				Files.createDirectories(destination);
 				// If an exception wasn't thrown, then destination now exists
-				exists = true;
+				exists = exists(dest);
 			} catch (IOException e) {
 				logger.error("Couldn't create directory for local move! Failed.");
 				e.printStackTrace();
@@ -136,22 +140,22 @@ public abstract class FileHandler {
 		return exists;
 	}
 
-	/**
-	 * This operations determines whether or not the file argument exists. TODO -
-	 * this only works for local files at the moment.
-	 * 
-	 * @param file the file for which to search
-	 * @return true if the file exists, false if not
-	 * @throws IOException
-	 */
-	public boolean exists(final String file) throws IOException {
+	protected CommandStatus executeTransfer() {
+		// Execute the file transfer
+		transferStatus = command.execute();
 
-		// Get the path from the passed string
-		Path path = Paths.get(file);
+		// Check that the move succeeded
+		boolean check = false;
+		try {
+			check = exists(source.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		if (check)
+			return CommandStatus.SUCCESS;
+		else
+			return CommandStatus.FAILED;
 
-		// Check if the path exists or not. Symbolic links are followed
-		// by default, see {@link java.nio.file.Files#exists}
-		return Files.exists(path);
 	}
 
 	/**
@@ -162,6 +166,22 @@ public abstract class FileHandler {
 	 */
 	public CommandStatus getStatus() {
 		return command.getStatus();
+	}
+	
+	/**
+	 * This function returns the source file string
+	 * @return - String - the source string
+	 */
+	public String getSource() {
+		return source;
+	}
+	
+	/**
+	 * This function returns the destination file string
+	 * @return - String - the destination string
+	 */
+	public String getDestination() {
+		return destination;
 	}
 
 }

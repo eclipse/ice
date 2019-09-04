@@ -185,7 +185,7 @@ public class FileHandlerTest {
 	@Test
 	public void testLocalMove() {
 		System.out.println("Testing testLocalMove() function.");
-		
+
 		FileHandler handler = null;
 		try {
 			handler = new LocalFileHandler(localSource, localDestination);
@@ -215,18 +215,18 @@ public class FileHandlerTest {
 		System.out.println("Testing testExists() function.");
 
 		/**
-		 * Test a file that everyone should have existing
+		 * Test a temp file that was created
 		 */
 		FileHandler handler = new LocalFileHandler();
 		try {
-			assert (handler.exists("/usr/lib/python2.7"));
+			assert (handler.exists(localSource));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		System.out.println("Testing testExists() with a non existing file");
 		try {
-			assert (!handler.exists("/usr/file_that_doesnot_exist.txt"));
+			assert (!handler.exists("/usr/file_that_definitely_doesnot_exist.txt"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

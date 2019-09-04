@@ -56,18 +56,7 @@ public class LocalCopyFileCommand extends CopyFileCommand {
 		// Run the copying
 		status = run();
 				
-		// Check that the copy succeeded
-		boolean check = false;
-		try {
-			check = FileHandler.exists(source.toString());
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		if( check )
-			return CommandStatus.SUCCESS;
-		else
-			return CommandStatus.FAILED;
+		return status;
 	}
 
 

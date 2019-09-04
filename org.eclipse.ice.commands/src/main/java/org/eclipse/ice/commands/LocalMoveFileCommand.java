@@ -56,17 +56,7 @@ public class LocalMoveFileCommand extends MoveFileCommand {
 	public CommandStatus execute() {
 		status = run();
 
-		boolean check = false;
-		try {
-			check = FileHandler.exists(source.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		if (check)
-			return CommandStatus.SUCCESS;
-		else
-			return CommandStatus.FAILED;
+		return status;
 	}
 
 	/**

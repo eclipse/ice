@@ -43,26 +43,43 @@ public class FileHandlerFactory {
 	 * Method which gets a FileHandler and subsequently executes it to initiate a
 	 * file transfer.
 	 * 
-	 * @return
+	 * @return FileHandler - instance of FileHandler that does the transfer
 	 */
-	public FileHandler getFileHandler(String source, String destination, ConnectionConfiguration sourceConfig, ConnectionConfiguration destinationConfig) throws IOException {
+	public FileHandler getFileHandler(String source, String destination, ConnectionConfiguration sourceConfig,
+			ConnectionConfiguration destinationConfig) throws IOException {
 		FileHandler handler = null;
 
-		if (sourceConfig.hostname == null || destinationConfig.hostname == null) {
-			logger.error("you didn't provide a hostname in the ConnectionConfiguration for the files to be transfered to! Exiting.");
+		if (sourceConfig.hostname == "" || destinationConfig.hostname == "") {
+			logger.error(
+					"You didn't provide a hostname in the ConnectionConfiguration for the files to be transfered to! Exiting.");
+			throw new IOException();
 		}
-		
-		if(isLocal(sourceConfig.hostname) && isLocal(destinationConfig.hostname)) {
+
+		if (isLocal(sourceConfig.hostname) && isLocal(destinationConfig.hostname)) {
 			handler = new LocalFileHandler(source, destination);
-		}
-		else {
+		} else {
 			handler = new RemoteFileHandler(source, destination, sourceConfig, destinationConfig);
 		}
+
+		// Check if the files exist. If they don't, and can be made, make them. If not,
+		// complain
+		if (!handler.exists(handler.getSource())) {
+			logger.error("Source file doesn't exist! Exiting.");
+			throw new IOException();
+		}
+
+		// If the destination doesn't exist, make a new directory
+		if (!handler.exists(handler.getDestination())) {
+			// If directory can't be made, throw an exception
+			if (!handler.createDirectories(handler.getDestination())) {
+				logger.error("Destination doesn't exist! Exiting.");
+				throw new IOException();
+			}
 		
+		}
 		return handler;
 	}
 
-	
 	/**
 	 * A function to check whether or not the provided hostname by the user in
 	 * CommandFactory is a local hostname or remote hostname.

@@ -53,4 +53,12 @@ public class RemoteFileHandler extends FileHandler{
 		return null;
 	}
 
+	/**
+	 * See {@link org.eclipse.ice.commands.FileHandler#exists(String)}
+	 */
+	@Override
+	public boolean exists(String file) throws IOException {
+		return false;
+	}
+
 }
