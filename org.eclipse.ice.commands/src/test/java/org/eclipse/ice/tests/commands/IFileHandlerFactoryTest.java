@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.FileHandlerFactory;
 import org.eclipse.ice.commands.IFileHandler;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -91,7 +92,7 @@ public class IFileHandlerFactoryTest {
 	 * @throws java.lang.Exception
 	 */
 	
-	//@After
+	@After
 	public void tearDown() throws Exception {
 		System.out.println("Delete temporary files/directories that were created.");
 
@@ -143,7 +144,7 @@ public class IFileHandlerFactoryTest {
 	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler()}
 	 * and local file copying.
 	 */
-	//@Test
+	@Test
 	public void testLocalFileHandlerFactoryCopyCommand() {
 		IFileHandler handler = null;
 
@@ -209,7 +210,7 @@ public class IFileHandlerFactoryTest {
 	 * does not exist. Tests
 	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler()}
 	 */
-	//@Test
+	@Test
 	public void testLocalFileHandlerFactoryDestinationNonExistant() {
 
 		IFileHandler handler = null;
@@ -279,6 +280,13 @@ public class IFileHandlerFactoryTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		
+		// If the file was successfully created, delete it here
+		// Needs a special delete since the filename was created in this function
+		File fileToDelete = new File(localNewName);
+		fileToDelete.delete();
+		
 	}
 	
 	

@@ -13,10 +13,13 @@
 
 package org.eclipse.ice.commands;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 
 /**
  * Child class for moving a file locally without a remote connection
@@ -24,7 +27,7 @@ import java.nio.file.Paths;
  * @author Joe Osborn
  *
  */
-public class LocalMoveFileCommand extends LocalCommand{
+public class LocalMoveFileCommand extends LocalCommand {
 
 	/**
 	 * The path to the source file which is to be copied
@@ -65,19 +68,54 @@ public class LocalMoveFileCommand extends LocalCommand{
 	 */
 	@Override
 	protected CommandStatus run() {
-		
+
 		// Get the directory structure to test if we are moving to a new directory
 		// or simply changing the name of a file
 		String[] sourceDirs = source.toString().split("/");
 		String[] destinationDirs = destination.toString().split("/");
+		boolean different = false;
 		
-		
-		try {
-			Files.move(source, destination.resolve(source.getFileName()));
-		} catch (IOException e) {
-			e.printStackTrace();
+		// If the number of directories is different, then the source/destination are 
+		// definitely different
+		if(sourceDirs.length != destinationDirs.length)
+			different = true;
+		// Otherwise they are the same length and we can iterate over either happily
+		else {
+			for(int i = 0; i< sourceDirs.length-1; i++) {
+				if(!sourceDirs[i].equals(destinationDirs[i])) {
+					different = true;
+					break;
+				}
+			}
 		}
-
+		// If all of the directories are the same, check to see if the final entry in the path
+		// is either a filename or a directory by looking at its .* file extension
+		
+		String[] sourceFileNames = sourceDirs[sourceDirs.length-1].split("\\.");
+		String[] destinationFileNames = destinationDirs[destinationDirs.length-1].split("\\.");
+	
+		// Check if the file extensions are equal to one another
+		boolean sameFileExt = sourceFileNames[sourceFileNames.length-1].equals(destinationFileNames[destinationFileNames.length-1]);
+		
+		// If the directory paths are the same and the files have the same file extension
+		// type, then we are just changing a file name
+		if(!different && sameFileExt) {
+			try {
+				// destinationDirs will have the desired file name in the length-1 entry
+				Files.move(source, source.resolveSibling(destinationDirs[destinationDirs.length-1]), REPLACE_EXISTING);
+			}catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		// All other cases the file is moving directory
+		else {
+			try {
+				Files.move(source, destination.resolve(source.getFileName()));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		return CommandStatus.RUNNING;
 	}
 
@@ -93,7 +131,8 @@ public class LocalMoveFileCommand extends LocalCommand{
 
 	/**
 	 * This function sets the Paths for source and destination to the given strings
-	 * @param src - string corresponding to the source file
+	 * 
+	 * @param src  - string corresponding to the source file
 	 * @param dest - string corresponding to the destination file
 	 */
 	public void setConfiguration(String src, String dest) {
@@ -101,7 +140,7 @@ public class LocalMoveFileCommand extends LocalCommand{
 		destination = Paths.get(dest);
 		return;
 	}
-	
+
 	/**
 	 * A function that returns the source path in string form
 	 * 
@@ -110,8 +149,7 @@ public class LocalMoveFileCommand extends LocalCommand{
 	public String getSource() {
 		return source.toString();
 	}
-	
-	
+
 	/**
 	 * A function that returns the destination path in string form
 	 * 
@@ -120,6 +158,5 @@ public class LocalMoveFileCommand extends LocalCommand{
 	public String getDestination() {
 		return destination.toString();
 	}
-
 
 }
