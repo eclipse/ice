@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * @author Joe Osborn
  *
  */
-public class IFileHandlerFactory {
+public class FileHandlerFactory {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -36,7 +36,7 @@ public class IFileHandlerFactory {
 	/**
 	 * Default constructor
 	 */
-	public IFileHandlerFactory() {
+	public FileHandlerFactory() {
 	}
 
 	/**

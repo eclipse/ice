@@ -22,7 +22,7 @@ import java.nio.file.Paths;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.IFileHandler;
-import org.eclipse.ice.commands.IFileHandlerFactory;
+import org.eclipse.ice.commands.FileHandlerFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +39,7 @@ public class IFileHandlerFactoryTest {
 	/**
 	 * A default factory with which to create FileHandler instances
 	 */
-	IFileHandlerFactory factory = new IFileHandlerFactory();
+	FileHandlerFactory factory = new FileHandlerFactory();
 
 	/**
 	 * A command factory test that is only useful for accessing some of its member
