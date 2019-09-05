@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
@@ -19,26 +20,44 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.eclipse.ice.commands.CommandStatus;
-import org.eclipse.ice.commands.FileHandler;
-import org.eclipse.ice.commands.LocalFileHandler;
+import org.eclipse.ice.commands.ConnectionConfiguration;
+import org.eclipse.ice.commands.IFileHandler;
+import org.eclipse.ice.commands.IFileHandlerFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * This class tests {@link org.eclipse.ice.commands.FileHandler}.
+ * This class implements several test methods for
+ * {@link org.eclipse.ice.commands.FileHandlerFactory}
  * 
- * @author Jay Jay Billings, Joe Osborn
+ * @author Joe Osborn
  *
  */
-public class FileHandlerTest {
-
-	String localSource = null;
-	String localDestination = null;
+public class IFileHandlerFactoryTest {
 
 	/**
-	 * Set up some dummy local files to work with
-	 * 
+	 * A default factory with which to create FileHandler instances
+	 */
+	IFileHandlerFactory factory = new IFileHandlerFactory();
+
+	/**
+	 * A command factory test that is only useful for accessing some of its member
+	 * functions
+	 */
+	CommandFactoryTest factorytest = new CommandFactoryTest();
+
+	/**
+	 * A string which contains a local temporary source file to work with
+	 */
+	String localSource;
+
+	/**
+	 * A string which contains a local temporary destination directory to work with
+	 */
+	String localDestination;
+
+	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
@@ -52,10 +71,10 @@ public class FileHandlerTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		// Turn the path into a string to pass to the command
 		localSource = sourcePath.toString();
 		System.out.println("Created source file at: " + localSource);
+
 		// Do the same for the destination
 		Path destinationPath = null;
 		String dest = "testCopyDirectory";
@@ -64,15 +83,13 @@ public class FileHandlerTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		// Turn the path into a string to give to the command
 		localDestination = destinationPath.toString();
 		System.out.println("Created destination file at: " + localDestination);
+
 	}
 
 	/**
-	 * Deletes the temporarily made files since they are not useful
-	 * 
 	 * @throws java.lang.Exception
 	 */
 	@After
@@ -96,145 +113,151 @@ public class FileHandlerTest {
 			System.err.println(e);
 			e.printStackTrace();
 		}
+
 		try {
 			Files.deleteIfExists(destPath);
 		} catch (NoSuchFileException e) {
 			System.err.format("%s: no such" + " file or directory%n", destPath);
 			e.printStackTrace();
 		} catch (DirectoryNotEmptyException e) {
+
 			// If the directory is not empty, that is because it was a move command
 			// and the moved file is in there. So delete the file first and then
 			// delete the directory
+			File localDestinationFile = new File(localDestination);
+			boolean deleted = deleteDirectory(localDestinationFile);
 
-			// Need to get the filename individually
-			String delims = "[/]";
-			String[] tokens = localSource.split(delims);
-			String filename = tokens[tokens.length - 1];
-
-			// Make the destination path + the filename
-			String fullDestination = localDestination + "/" + filename;
-
-			// Get the paths
-			Path destFile = Paths.get(fullDestination);
-			Path destDir = Paths.get(localDestination);
-
-			// Try to delete the destination file. If it can't be deleted, then
-			// there is really a problem now and it will complain
-			try {
-				Files.deleteIfExists(destFile);
-			} catch (NoSuchFileException e1) {
-				System.err.format("%s: no such" + " file or directory%n", destFile);
-				e1.printStackTrace();
-			} catch (DirectoryNotEmptyException e1) {
-				System.err.format("%s not empty%n", destFile);
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				System.err.println(e1);
-				e1.printStackTrace();
-			}
-
-			// Try to delete the destination directory. If it can't be deleted, then
-			// there is really a problem now and it will complain
-			try {
-				Files.deleteIfExists(destDir);
-			} catch (NoSuchFileException e1) {
-				System.err.format("%s: no such" + " file or directory%n", destDir);
-				e1.printStackTrace();
-			} catch (DirectoryNotEmptyException e1) {
-				System.err.format("%s not empty%n", destDir);
-				e1.printStackTrace();
-			} catch (IOException e1) {
+			// Something went wrong and couldn't be deleted
+			if (!deleted) {
 				System.err.println(e);
-				e1.printStackTrace();
+				e.printStackTrace();
 			}
-
 		} catch (IOException e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
+
 	}
 
 	/**
 	 * Test method for
-	 * {@link org.eclipse.ice.commands.FileHandler#copy(java.lang.String, java.lang.String)}.
+	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler(String, String, ConnectionConfiguration, ConnectionConfiguration)}
+	 * and local file copying.
 	 */
 	@Test
-	public void testLocalCopy() {
-		System.out.println("Testing testLocalCopy() function.");
-		FileHandler handler = null;
+	public void testLocalFileHandlerFactoryCopyCommand() {
+		IFileHandler handler = null;
+
+		// Get the file transfer handler
 		try {
-			handler = new LocalFileHandler();
+			handler = factory.getIFileHandler();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Now try to copy the file
+		try {
 			CommandStatus status = handler.copy(localSource, localDestination);
-			assert(status == CommandStatus.SUCCESS);
+			assert (status == CommandStatus.SUCCESS);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		// Check that it exists
+		// Check that the file exists now
 		try {
 			boolean exist = handler.exists(localDestination);
 			assert (exist == true);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Finished testing testLocalCopy() function.");
 	}
 
 	/**
 	 * Test method for
-	 * {@link org.eclipse.ice.commands.FileHandler#move(java.lang.String, java.lang.String)}.
+	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler(String, String, ConnectionConfiguration, ConnectionConfiguration)}
+	 * and local file moving.
 	 */
 	@Test
-	public void testLocalMove() {
-		System.out.println("Testing testLocalMove() function.");
+	public void testLocalFileHandlerFactoryMoveCommand() {
+		IFileHandler handler = null;
 
-		FileHandler handler = null;
+		// Get the file transfer handler
 		try {
-			handler = new LocalFileHandler();
+			handler = factory.getIFileHandler();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Now try to move the file
+		try {
 			CommandStatus status = handler.move(localSource, localDestination);
-			assert(status == CommandStatus.SUCCESS);
+			assert (status == CommandStatus.SUCCESS);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		// Check that it exists
+		// Check that the file exists now
 		try {
 			boolean exist = handler.exists(localDestination);
 			assert (exist == true);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
 
-		System.out.println("Finished testing testLocalMove() function.");
+	/**
+	 * Test method for a source file that exists but a destination directory that
+	 * does not exist. Tests
+	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler(String, String, ConnectionConfiguration, ConnectionConfiguration)}
+	 */
+	@Test
+	public void testLocalFileHandlerFactoryDestinationNonExistant() {
+
+		IFileHandler handler = null;
+
+		String newDirectory = "/some/new/directory/";
+
+		// Get the file transfer handler with a nonexistent destination
+		try {
+			handler = factory.getIFileHandler();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Now try to move the file
+		try {
+			CommandStatus status = handler.move(localSource, localDestination + newDirectory);
+			assert (status == CommandStatus.SUCCESS);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Check that the file exists now
+		try {
+			boolean exist = handler.exists(localDestination + newDirectory);
+			assert (exist == true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 
 	/**
-	 * Test method for
-	 * {@link org.eclipse.ice.commands.FileHandler#exists(java.lang.String)}.
+	 * A simple test method to recursively delete temporary files/directories
+	 * created in this test class
+	 * 
+	 * @param directory - top level directory from which to delete everything
+	 *                  underneath
+	 * @return - boolean - true if everything deleted, false if not
 	 */
-	@Test
-	public void testExists() {
-		System.out.println("Testing testExists() function.");
-
-		/**
-		 * Test a temp file that was created
-		 */
-		FileHandler handler = new LocalFileHandler();
-		try {
-			assert (handler.exists(localSource));
-		} catch (IOException e) {
-			e.printStackTrace();
+	boolean deleteDirectory(File directory) {
+		File[] contents = directory.listFiles();
+		if (contents != null) {
+			for (File file : contents) {
+				deleteDirectory(file);
+			}
 		}
-
-		System.out.println("Testing testExists() with a non existing file");
-		try {
-			assert (!handler.exists("/usr/file_that_definitely_doesnot_exist.txt"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		System.out.println("Finished testing testExists()");
+		return directory.delete();
 	}
 
 }

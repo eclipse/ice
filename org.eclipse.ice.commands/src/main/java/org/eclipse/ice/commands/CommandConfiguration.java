@@ -299,7 +299,7 @@ public class CommandConfiguration {
 	 */
 
 	/**
-	 * Getter and setter for CommandId, see
+	 * Setter for CommandId, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#commandId}
 	 * 
 	 * @param _commandId
@@ -309,12 +309,18 @@ public class CommandConfiguration {
 		return;
 	}
 
+	/**
+	 * Getter for CommandId, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#commandId}
+	 * 
+	 * @return commandId
+	 */
 	public int getCommandId() {
 		return commandId;
 	}
 
 	/**
-	 * Getter and setter for executable, see
+	 * Setter for executable, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#executable}
 	 * 
 	 * @param exec
@@ -324,12 +330,18 @@ public class CommandConfiguration {
 		return;
 	}
 
+	/**
+	 * Getter for executable, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#executable}
+	 * 
+	 * @return executable
+	 */
 	public String getExecutable() {
 		return executable;
 	}
 
 	/**
-	 * Getter and setter for inputFile, see
+	 * Setter for inputFile, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#inputFile}
 	 * 
 	 * @param input
@@ -339,12 +351,18 @@ public class CommandConfiguration {
 		return;
 	}
 
+	/**
+	 * Getter for inputFile, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#inputFile}
+	 * 
+	 * @return inputFile
+	 */
 	public String getInputFile() {
 		return inputFile;
 	}
 
 	/**
-	 * Getter and setter for stdErrFileName, see
+	 * Setter for stdErrFileName, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdErrFileName}
 	 * 
 	 * @param errFile
@@ -354,12 +372,18 @@ public class CommandConfiguration {
 		return;
 	}
 
+	/**
+	 * Getter for stdErrFileName, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdErrFileName}
+	 * 
+	 * @return stdErrFileName
+	 */
 	public String getErrFileName() {
 		return stdErrFileName;
 	}
 
 	/**
-	 * Getter and setter for stdOutFileName, see
+	 * Setter for stdOutFileName, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOutFileName}
 	 * 
 	 * @param outFile
@@ -369,12 +393,18 @@ public class CommandConfiguration {
 		return;
 	}
 
+	/**
+	 * Getter for stdOutFileName, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOutFileName}
+	 * 
+	 * @return stdOutFileName
+	 */
 	public String getOutFileName() {
 		return stdOutFileName;
 	}
 
 	/**
-	 * Getter and setter for numProcs, see
+	 * Setter for numProcs, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#numProcs}
 	 * 
 	 * @param procs
@@ -384,12 +414,18 @@ public class CommandConfiguration {
 		return;
 	}
 
+	/**
+	 * Getter for numProcs, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#numProcs}
+	 * 
+	 * @return numProcs
+	 */
 	public String getNumProcs() {
 		return numProcs;
 	}
 
 	/**
-	 * Getter and setter for installDirectory, see
+	 * Setter for installDirectory, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#installDirectory}
 	 * 
 	 * @param installDir
@@ -399,12 +435,18 @@ public class CommandConfiguration {
 		return;
 	}
 
+	/**
+	 * Getter for installDirectory, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#installDirectory}
+	 * 
+	 * @return installDirectory
+	 */
 	public String getInstallDirectory() {
 		return installDirectory;
 	}
 
 	/**
-	 * Getter and setter for operating system, see
+	 * Setter for operating system, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#os}
 	 * 
 	 * @param operatingSys
@@ -414,12 +456,18 @@ public class CommandConfiguration {
 		return;
 	}
 
+	/**
+	 * Getter for operating system, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#os}
+	 * 
+	 * @return os
+	 */
 	public String getOS() {
 		return os;
 	}
 
 	/**
-	 * Getter and setter for workingDirectory, see
+	 * Setter for workingDirectory, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#workingDirectory}
 	 * 
 	 * @param workingDir
@@ -429,12 +477,18 @@ public class CommandConfiguration {
 		return;
 	}
 
+	/**
+	 * Getter for workingDirectory, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#workingDirectory}
+	 * 
+	 * @return workingDirectory
+	 */
 	public String getWorkingDirectory() {
 		return workingDirectory;
 	}
 
 	/**
-	 * Getter and setter for appendInput, see
+	 * Setter for appendInput, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#appendInput}
 	 * 
 	 * @param _appendInput
@@ -444,12 +498,18 @@ public class CommandConfiguration {
 		return;
 	}
 
+	/**
+	 * Getter for appendInput, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#appendInput}
+	 * 
+	 * @return appendInput
+	 */
 	public boolean getAppendInput() {
 		return appendInput;
 	}
 
 	/**
-	 * Getter and setter for hostname, see
+	 * Setter for hostname, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#hostname}. Make the
 	 * setter protected so that only ConnectionConfiguration can modify this member
 	 * variable.
@@ -461,12 +521,18 @@ public class CommandConfiguration {
 		return;
 	}
 
+	/**
+	 * Getter for hostname, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#hostname}.
+	 * 
+	 * @return
+	 */
 	public String getHostname() {
 		return hostname;
 	}
 
 	/**
-	 * Getter and setter for stdErr, see
+	 * Setter for stdErr, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdErr}
 	 * 
 	 * @param writer
@@ -476,12 +542,18 @@ public class CommandConfiguration {
 		return;
 	}
 
+	/**
+	 * Getter for stdErr, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdErr}
+	 * 
+	 * @return stdErr
+	 */
 	public BufferedWriter getStdErr() {
 		return stdErr;
 	}
 
 	/**
-	 * Getter and setter for stdOut, see
+	 * Setter for stdOut, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOut}
 	 * 
 	 * @param writer
@@ -491,6 +563,12 @@ public class CommandConfiguration {
 		return;
 	}
 
+	/**
+	 * Getter for stdOut, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOut}
+	 * 
+	 * @return stdOut
+	 */
 	public BufferedWriter getStdOut() {
 		return stdOut;
 	}
@@ -506,20 +584,26 @@ public class CommandConfiguration {
 	}
 
 	/**
-	 *
-	 * Getter and setter for fullCommand, see
-	 * {@link org.eclipse.ice.commands.CommandConfiguration#fullCommand}
+	 * Setter for fullCommand, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#fullCommand}. We make
+	 * the setter for full command protected so that it can only be accessed within
+	 * the package and not by (e.g.) the user
 	 * 
 	 * @param command
 	 *
-	 *                We make the setter for full command protected so that it can
-	 *                only be accessed within the package and not by (e.g.) the user
+	 * 
 	 */
 	protected void setFullCommand(String command) {
 		fullCommand = command;
 		return;
 	}
 
+	/**
+	 * Getter for fullCommand, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#fullCommand}
+	 * 
+	 * @return fullCommand
+	 */
 	public String getFullCommand() {
 		return fullCommand;
 	}

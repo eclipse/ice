@@ -20,7 +20,7 @@ import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandFactory;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionConfiguration;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -41,7 +41,11 @@ public class CommandFactoryTest {
 	 * Create a command factory to use for getting the commands.
 	 */
 	CommandFactory factory = new CommandFactory();
-	
+
+	/**
+	 * A string containing the working directory for the executable to run in
+	 */
+	String workingDirectory;
 
 	public CommandFactoryTest() {
 	}
@@ -49,8 +53,9 @@ public class CommandFactoryTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
+	@Before
+	public void setUp() throws Exception {
+
 	}
 
 	/**
@@ -69,6 +74,12 @@ public class CommandFactoryTest {
 		 * relevant member variables/constructor.
 		 */
 
+		// Get the present working directory
+		String pwd = System.getProperty("user.dir");
+		
+		// Add the following directories where the tests live
+		pwd += "/src/test/java/org/eclipse/ice/tests/commands/";
+		
 		// Set the CommandConfiguration class
 		CommandConfiguration commandConfig = new CommandConfiguration();
 		commandConfig.setCommandId(1);
@@ -78,10 +89,10 @@ public class CommandFactoryTest {
 		commandConfig.setOutFileName("someOutFile.txt");
 		commandConfig.setNumProcs("1");
 		commandConfig.setInstallDirectory("");
-		commandConfig.setOS("osx");
-		commandConfig.setWorkingDirectory("/Users/4jo/git/icefork2/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands");
+		commandConfig.setOS(System.getProperty("os.name"));
+		commandConfig.setWorkingDirectory(pwd);
 		commandConfig.setAppendInput(true);
-	
+
 		ConnectionConfiguration connectionConfig = new ConnectionConfiguration(hostname);
 
 		// Get the command
@@ -146,7 +157,7 @@ public class CommandFactoryTest {
 		 * Run another non functional command, with a non existing working directory
 		 */
 
-		System.out.println("\nTesting some commands where not enough command information was provided.");
+		System.out.println("\nTesting a command where a nonexistent working directory was provided.");
 
 		// Set the CommandConfiguration class
 		CommandConfiguration commandConfiguration = new CommandConfiguration();
@@ -158,9 +169,9 @@ public class CommandFactoryTest {
 		commandConfiguration.setNumProcs("1");
 		commandConfiguration.setInstallDirectory("~/installDir");
 		commandConfiguration.setOS("osx");
-		commandConfiguration.setWorkingDirectory("~/some_nonexistant_directory");
+		commandConfiguration.setWorkingDirectory("~/some_nonexistent_directory");
 		commandConfiguration.setAppendInput(true);
-	
+
 		ConnectionConfiguration connectConfig = new ConnectionConfiguration(hostname);
 		// Get the command
 		Command localCommand2 = null;
