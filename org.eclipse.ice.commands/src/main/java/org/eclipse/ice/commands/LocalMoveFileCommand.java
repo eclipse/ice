@@ -15,6 +15,7 @@ package org.eclipse.ice.commands;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -23,7 +24,17 @@ import java.nio.file.Paths;
  * @author Joe Osborn
  *
  */
-public class LocalMoveFileCommand extends MoveFileCommand {
+public class LocalMoveFileCommand extends LocalCommand {
+
+	/**
+	 * The path to the source file which is to be copied
+	 */
+	Path source;
+
+	/**
+	 * The path of the destination for which the source file will be copied to
+	 */
+	Path destination;
 
 	/**
 	 * Default constructor
@@ -85,6 +96,24 @@ public class LocalMoveFileCommand extends MoveFileCommand {
 	public CommandStatus cancel() {
 		status = CommandStatus.CANCELED;
 		return CommandStatus.CANCELED;
+	}
+
+	/**
+	 * A function that returns the source path in string form
+	 * 
+	 * @return - String
+	 */
+	public String getSource() {
+		return source.toString();
+	}
+
+	/**
+	 * A function that returns the destination path in string form
+	 * 
+	 * @return - String
+	 */
+	public String getDestination() {
+		return destination.toString();
 	}
 
 }

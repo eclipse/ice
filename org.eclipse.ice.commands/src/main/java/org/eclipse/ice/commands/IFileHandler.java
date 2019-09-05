@@ -30,7 +30,7 @@ public interface IFileHandler {
 	 *         was successful
 	 * @throws IOException
 	 */
-	public abstract CommandStatus move() throws IOException;
+	public abstract CommandStatus move(final String source, final String destination) throws IOException;
 
 	/**
 	 * This method is responsible for copying a file from a source to a destination
@@ -40,15 +40,30 @@ public interface IFileHandler {
 	 *         was successful
 	 * @throws IOException
 	 */
-	public abstract CommandStatus copy() throws IOException;
+	public abstract CommandStatus copy(final String source, final String destination) throws IOException;
 
 	/**
-	 * This method is responsible for determining whether or not a file or directory 
+	 * This method is responsible for determining whether or not a file or directory
 	 * already exists for a given path.
-	 * @param - String - a string with the path for the method to check its existence
-	 * @return - boolean indicating whether or not the file exists (returns true) or does not exist (returns false)
+	 * 
+	 * @param - String - a string with the path for the method to check its
+	 *          existence
+	 * @return - boolean indicating whether or not the file exists (returns true) or
+	 *         does not exist (returns false)
 	 * @throws IOException
 	 */
 	public abstract boolean exists(final String file) throws IOException;
+
+	/**
+	 * This method checks the existence of the source and destination files. If the
+	 * destination doesn't exist, it tries to make it. If the destination can't be
+	 * made, or the source doesn't exist, the method throws an exception.
+	 * 
+	 * @param source
+	 * @param destination
+	 * @return
+	 * @throws IOException
+	 */
+	public abstract void checkExistence(final String source, final String destination) throws IOException;
 
 }

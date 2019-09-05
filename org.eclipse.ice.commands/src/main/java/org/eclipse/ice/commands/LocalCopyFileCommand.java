@@ -17,19 +17,33 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+
 /**
  * Child class for locally copying a file without a remote connection
+ * 
  * @author Joe Osborn
  *
  */
-public class LocalCopyFileCommand extends CopyFileCommand {
+public class LocalCopyFileCommand extends LocalCommand {
+
+	/**
+	 * The path to the source file which is to be copied
+	 */
+	Path source;
+
+	/**
+	 * The path of the destination for which the source file will be copied to
+	 */
+	Path destination;
 
 	/**
 	 * Default constructor
 	 */
-	public LocalCopyFileCommand() {}
-	
+	public LocalCopyFileCommand() {
+	}
+
 	/**
 	 * Constructor which sets the two paths, source and destination, to those given
 	 * by the arguments of the constructor. See
@@ -43,27 +57,28 @@ public class LocalCopyFileCommand extends CopyFileCommand {
 		source = Paths.get(src);
 		destination = Paths.get(dest);
 	}
-	
+
 	/**
-	 * This function actually executes the copy file command. It checks that
-	 * the copy was completed successfully. It returns a 
-	 * CommandStatus indicating whether or not the move was successful.
+	 * This function actually executes the copy file command. It checks that the
+	 * copy was completed successfully. It returns a CommandStatus indicating
+	 * whether or not the move was successful.
+	 * 
 	 * @return CommandStatus
 	 */
 	@Override
 	public CommandStatus execute() {
-		
+
 		// Run the copying
 		status = run();
-				
+
 		return status;
 	}
 
-
 	/**
-	 * This function contains the command to actually copy the file. Returns
-	 * a CommandStatus indicating that the command is currently running and
-	 * needs to be checked that it completed correctly.
+	 * This function contains the command to actually copy the file. Returns a
+	 * CommandStatus indicating that the command is currently running and needs to
+	 * be checked that it completed correctly.
+	 * 
 	 * @return CommandStatus
 	 */
 	@Override
@@ -71,9 +86,8 @@ public class LocalCopyFileCommand extends CopyFileCommand {
 		// Try to copy from source to destination, overwriting if the file already
 		// exists at the destination. If it can't, complain.
 		try {
-			Files.copy(source,  destination.resolve(source.getFileName()), REPLACE_EXISTING);
-		} 
-		catch (IOException e) {
+			Files.copy(source, destination.resolve(source.getFileName()), REPLACE_EXISTING);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return CommandStatus.RUNNING;
@@ -89,5 +103,21 @@ public class LocalCopyFileCommand extends CopyFileCommand {
 		return CommandStatus.CANCELED;
 	}
 
-	
+	/**
+	 * A function that returns the source path in string form
+	 * 
+	 * @return - String
+	 */
+	public String getSource() {
+		return source.toString();
+	}
+
+	/**
+	 * A function that returns the destination path in string form
+	 * 
+	 * @return - String
+	 */
+	public String getDestination() {
+		return destination.toString();
+	}
 }

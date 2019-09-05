@@ -18,6 +18,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.FileHandler;
 import org.eclipse.ice.commands.LocalFileHandler;
 import org.junit.After;
@@ -162,8 +163,9 @@ public class FileHandlerTest {
 		System.out.println("Testing testLocalCopy() function.");
 		FileHandler handler = null;
 		try {
-			handler = new LocalFileHandler(localSource, localDestination);
-			handler.copy();
+			handler = new LocalFileHandler();
+			CommandStatus status = handler.copy(localSource, localDestination);
+			assert(status == CommandStatus.SUCCESS);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -188,8 +190,9 @@ public class FileHandlerTest {
 
 		FileHandler handler = null;
 		try {
-			handler = new LocalFileHandler(localSource, localDestination);
-			handler.move();
+			handler = new LocalFileHandler();
+			CommandStatus status = handler.move(localSource, localDestination);
+			assert(status == CommandStatus.SUCCESS);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

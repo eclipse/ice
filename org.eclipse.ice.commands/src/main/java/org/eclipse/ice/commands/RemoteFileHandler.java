@@ -14,34 +14,26 @@ package org.eclipse.ice.commands;
 import java.io.IOException;
 
 /**
- * This class inherits from FileHandler and handles the processing of remote file
- * transfer commands. Remote file transfers can be from a local-to-remote (or vice versa) or 
- * remote-to-remote system.
+ * This class inherits from FileHandler and handles the processing of remote
+ * file transfer commands. Remote file transfers can be from a local-to-remote
+ * (or vice versa) or remote-to-remote system.
+ * 
  * @author Joe Osborn
  *
  */
-public class RemoteFileHandler extends FileHandler{
+public class RemoteFileHandler extends FileHandler {
 
 	/**
 	 * Default constructor
 	 */
 	public RemoteFileHandler() {
 	}
-	
-	public RemoteFileHandler(String _source, String _destination, ConnectionConfiguration _sourceConfiguration,
-			ConnectionConfiguration _destinationConfiguration) {
-		source = _source;
-		destination = _destination;
-		sourceConfiguration = _sourceConfiguration;
-		destinationConfiguration = _destinationConfiguration;
 
-	}
-	
 	/**
 	 * See {@link org.eclipse.ice.commands.FileHandler#move()}
 	 */
 	@Override
-	public CommandStatus move() throws IOException {
+	public CommandStatus move(final String source, final String destination) throws IOException {
 		return null;
 	}
 
@@ -49,7 +41,7 @@ public class RemoteFileHandler extends FileHandler{
 	 * See {@link org.eclipse.ice.commands.FileHandler#copy()}
 	 */
 	@Override
-	public CommandStatus copy() throws IOException {
+	public CommandStatus copy(final String source, final String destination) throws IOException {
 		return null;
 	}
 
@@ -59,6 +51,16 @@ public class RemoteFileHandler extends FileHandler{
 	@Override
 	public boolean exists(String file) throws IOException {
 		return false;
+	}
+
+	/**
+	 * See
+	 * {@link org.eclipse.ice.commands.FileHandler#checkExistence(String, String)}
+	 */
+	@Override
+	public void checkExistence(String source, String destination) throws IOException {
+		// TODO Auto-generated method stub
+
 	}
 
 }

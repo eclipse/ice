@@ -43,17 +43,6 @@ public abstract class FileHandler implements IFileHandler {
 	Command command;
 
 	/**
-	 * A string that contains the path for the source file to be transfered
-	 */
-	String source;
-
-	/**
-	 * A string that contains the path for the destination for the source to be
-	 * transferred to
-	 */
-	String destination;
-
-	/**
 	 * The ConnectionConfiguration associated with the source file
 	 */
 	ConnectionConfiguration sourceConfiguration;
@@ -76,33 +65,48 @@ public abstract class FileHandler implements IFileHandler {
 	}
 
 	/**
-	 * This operation moves files from the source (src) to the destination (dest).
-	 * If the operation fails, an IOException will be thrown.
+	 * This method is responsible for moving a file from a source to a destination
+	 * path If the operation fails, an exception is thrown
 	 * 
-	 * @return Command - The command to be executed
+	 * @return - CommandStatus - a CommandStatus indicating whether or not the move
+	 *         was successful
 	 * @throws IOException
 	 */
-	public abstract CommandStatus move() throws IOException;
+	public abstract CommandStatus move(final String source, final String destination) throws IOException;
 
 	/**
-	 * This operations copies files from the source (src) to the destination (dest).
-	 * If the operation fails, an IOException will be thrown.
+	 * This method is responsible for copying a file from a source to a destination
+	 * path If the operation fails, an exception is thrown
 	 * 
-	 * @param src  - source file to be copied
-	 * @param dest - destination to be copied to
-	 * @return Command - The actual Command to be executed
+	 * @return - CommandStatus - a CommandStatus indicating whether or not the copy
+	 *         was successful
 	 * @throws IOException
 	 */
-	public abstract CommandStatus copy() throws IOException;
+	public abstract CommandStatus copy(final String source, final String destination) throws IOException;
 
 	/**
-	 * This operations determines whether or not the file argument exists.
+	 * This method is responsible for determining whether or not a file or directory
+	 * already exists for a given path.
 	 * 
-	 * @param file the file for which to search
-	 * @return true if the file exists, false if not
+	 * @param - String - a string with the path for the method to check its
+	 *          existence
+	 * @return - boolean indicating whether or not the file exists (returns true) or
+	 *         does not exist (returns false)
 	 * @throws IOException
 	 */
 	public abstract boolean exists(final String file) throws IOException;
+
+	/**
+	 * This method checks the existence of the source and destination files. If the
+	 * destination doesn't exist, it tries to make it. If the destination can't be
+	 * made, or the source doesn't exist, the method throws an exception.
+	 * 
+	 * @param source
+	 * @param destination
+	 * @return
+	 * @throws IOException
+	 */
+	public abstract void checkExistence(final String source, final String destination) throws IOException;
 
 	/**
 	 * This function gets and returns the private member variable command of type
@@ -140,14 +144,14 @@ public abstract class FileHandler implements IFileHandler {
 		return exists;
 	}
 
-	protected CommandStatus executeTransfer() {
+	protected CommandStatus executeTransfer(final String destination) {
 		// Execute the file transfer
 		transferStatus = command.execute();
 
 		// Check that the move succeeded
 		boolean check = false;
 		try {
-			check = exists(source.toString());
+			check = exists(destination);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -166,22 +170,6 @@ public abstract class FileHandler implements IFileHandler {
 	 */
 	public CommandStatus getStatus() {
 		return command.getStatus();
-	}
-	
-	/**
-	 * This function returns the source file string
-	 * @return - String - the source string
-	 */
-	public String getSource() {
-		return source;
-	}
-	
-	/**
-	 * This function returns the destination file string
-	 * @return - String - the destination string
-	 */
-	public String getDestination() {
-		return destination;
 	}
 
 }

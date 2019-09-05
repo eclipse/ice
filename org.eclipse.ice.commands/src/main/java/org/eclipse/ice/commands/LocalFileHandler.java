@@ -32,22 +32,20 @@ public class LocalFileHandler extends FileHandler {
 
 	}
 
-	public LocalFileHandler(String _source, String _destination) {
-		source = _source;
-		destination = _destination;
-
-	}
-
 	/**
 	 * See {@link org.eclipse.ice.commands.FileHandler#move()}
 	 */
 	@Override
-	public CommandStatus move() throws IOException {
+	public CommandStatus move(final String source, final String destination) throws IOException {
+
+		// Check the file existence. If they don't exist, an exception is thrown
+		checkExistence(source, destination);
+
 		// Make the command
 		command = new LocalMoveFileCommand(source, destination);
 
 		// Execute and process the file transfer
-		transferStatus = executeTransfer();
+		transferStatus = executeTransfer(destination);
 
 		// Return whether or not it succeeded
 		return transferStatus;
@@ -57,12 +55,15 @@ public class LocalFileHandler extends FileHandler {
 	 * See {@link org.eclipse.ice.commands.FileHandler#copy()}
 	 */
 	@Override
-	public CommandStatus copy() throws IOException {
+	public CommandStatus copy(final String source, final String destination) throws IOException {
+		// Check the file existence. If one or both don't exist, an exception is thrown
+		checkExistence(source, destination);
+
 		// Make the command
 		command = new LocalCopyFileCommand(source, destination);
 
 		// Execute and process the file transfer
-		transferStatus = executeTransfer();
+		transferStatus = executeTransfer(destination);
 
 		// Return whether or not it succeeded
 		return transferStatus;
@@ -82,6 +83,26 @@ public class LocalFileHandler extends FileHandler {
 		// by default, see {@link java.nio.file.Files#exists}
 		return Files.exists(path);
 
+	}
+
+	/**
+	 * See
+	 * {@link org.eclipse.ice.commands.FileHandler#checkExistence(String, String)}
+	 */
+	@Override
+	public void checkExistence(final String source, final String destination) throws IOException {
+		if (!exists(source)) {
+			logger.error("Source doesn't exist! Exiting.");
+			throw new IOException();
+		}
+		// If the destination doesn't exist, make a new directory
+		if (!exists(destination)) {
+			// If directory can't be made, throw an exception
+			if (!createDirectories(destination)) {
+				logger.error("Destination doesn't exist! Exiting.");
+				throw new IOException();
+			}
+		}
 	}
 
 }

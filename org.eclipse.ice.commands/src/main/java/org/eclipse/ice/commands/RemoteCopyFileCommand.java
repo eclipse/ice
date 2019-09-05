@@ -13,6 +13,7 @@
 
 package org.eclipse.ice.commands;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -21,8 +22,20 @@ import java.nio.file.Paths;
  * @author Joe Osborn
  *
  */
-public class RemoteCopyFileCommand extends CopyFileCommand {
+public class RemoteCopyFileCommand extends RemoteCommand {
+	
 
+	/**
+	 * The path to the source file which is to be copied
+	 */
+	Path source;
+
+	/**
+	 * The path of the destination for which the source file will be copied to
+	 */
+	Path destination;
+
+	
 	/**
 	 * Default constructor
 	 */

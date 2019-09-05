@@ -19,9 +19,10 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionConfiguration;
-import org.eclipse.ice.commands.FileHandler;
-import org.eclipse.ice.commands.FileHandlerFactory;
+import org.eclipse.ice.commands.IFileHandler;
+import org.eclipse.ice.commands.IFileHandlerFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,12 +34,12 @@ import org.junit.Test;
  * @author Joe Osborn
  *
  */
-public class FileHandlerFactoryTest {
+public class IFileHandlerFactoryTest {
 
 	/**
 	 * A default factory with which to create FileHandler instances
 	 */
-	FileHandlerFactory factory = new FileHandlerFactory();
+	IFileHandlerFactory factory = new IFileHandlerFactory();
 
 	/**
 	 * A command factory test that is only useful for accessing some of its member
@@ -145,21 +146,19 @@ public class FileHandlerFactoryTest {
 	 */
 	@Test
 	public void testLocalFileHandlerFactoryCopyCommand() {
-		FileHandler handler = null;
-		String hostname = factorytest.getLocalHostname();
-
-		ConnectionConfiguration localConnection = new ConnectionConfiguration(hostname);
+		IFileHandler handler = null;
 
 		// Get the file transfer handler
 		try {
-			handler = factory.getFileHandler(localSource, localDestination, localConnection, localConnection);
+			handler = factory.getIFileHandler();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		// Now try to copy the file
 		try {
-			handler.copy();
+			CommandStatus status = handler.copy(localSource, localDestination);
+			assert (status == CommandStatus.SUCCESS);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -180,21 +179,19 @@ public class FileHandlerFactoryTest {
 	 */
 	@Test
 	public void testLocalFileHandlerFactoryMoveCommand() {
-		FileHandler handler = null;
-		String hostname = factorytest.getLocalHostname();
-
-		ConnectionConfiguration localConnection = new ConnectionConfiguration(hostname);
+		IFileHandler handler = null;
 
 		// Get the file transfer handler
 		try {
-			handler = factory.getFileHandler(localSource, localDestination, localConnection, localConnection);
+			handler = factory.getIFileHandler();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		// Now try to move the file
 		try {
-			handler.move();
+			CommandStatus status = handler.move(localSource, localDestination);
+			assert (status == CommandStatus.SUCCESS);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -208,7 +205,6 @@ public class FileHandlerFactoryTest {
 		}
 	}
 
-
 	/**
 	 * Test method for a source file that exists but a destination directory that
 	 * does not exist. Tests
@@ -217,24 +213,21 @@ public class FileHandlerFactoryTest {
 	@Test
 	public void testLocalFileHandlerFactoryDestinationNonExistant() {
 
-		FileHandler handler = null;
-		String hostname = factorytest.getLocalHostname();
-
-		ConnectionConfiguration localConnection = new ConnectionConfiguration(hostname);
+		IFileHandler handler = null;
 
 		String newDirectory = "/some/new/directory/";
 
 		// Get the file transfer handler with a nonexistent destination
 		try {
-			handler = factory.getFileHandler(localSource, localDestination + newDirectory, localConnection,
-					localConnection);
+			handler = factory.getIFileHandler();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		// Now try to move the file
 		try {
-			handler.move();
+			CommandStatus status = handler.move(localSource, localDestination + newDirectory);
+			assert (status == CommandStatus.SUCCESS);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * @author Joe Osborn
  *
  */
-public class FileHandlerFactory {
+public class IFileHandlerFactory {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -36,7 +36,7 @@ public class FileHandlerFactory {
 	/**
 	 * Default constructor
 	 */
-	public FileHandlerFactory() {
+	public IFileHandlerFactory() {
 	}
 
 	/**
@@ -45,38 +45,18 @@ public class FileHandlerFactory {
 	 * 
 	 * @return FileHandler - instance of FileHandler that does the transfer
 	 */
-	public FileHandler getFileHandler(String source, String destination, ConnectionConfiguration sourceConfig,
-			ConnectionConfiguration destinationConfig) throws IOException {
-		FileHandler handler = null;
+	public IFileHandler getIFileHandler() throws IOException {
+		IFileHandler handler = null;
 
-		if (sourceConfig.hostname == "" || destinationConfig.hostname == "") {
-			logger.error(
-					"You didn't provide a hostname in the ConnectionConfiguration for the files to be transfered to! Exiting.");
-			throw new IOException();
-		}
+		// TODO - determine how to identify local vs. remote FileHandler
+		boolean isLocal = true;
 
-		if (isLocal(sourceConfig.hostname) && isLocal(destinationConfig.hostname)) {
-			handler = new LocalFileHandler(source, destination);
+		if (isLocal) {
+			handler = new LocalFileHandler();
 		} else {
-			handler = new RemoteFileHandler(source, destination, sourceConfig, destinationConfig);
+			handler = new RemoteFileHandler();
 		}
 
-		// Check if the files exist. If they don't, and can be made, make them. If not,
-		// complain
-		if (!handler.exists(handler.getSource())) {
-			logger.error("Source file doesn't exist! Exiting.");
-			throw new IOException();
-		}
-
-		// If the destination doesn't exist, make a new directory
-		if (!handler.exists(handler.getDestination())) {
-			// If directory can't be made, throw an exception
-			if (!handler.createDirectories(handler.getDestination())) {
-				logger.error("Destination doesn't exist! Exiting.");
-				throw new IOException();
-			}
-		
-		}
 		return handler;
 	}
 
