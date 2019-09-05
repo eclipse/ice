@@ -22,7 +22,6 @@ import java.nio.file.Paths;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.FileHandlerFactory;
 import org.eclipse.ice.commands.IFileHandler;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -91,7 +90,8 @@ public class IFileHandlerFactoryTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@After
+	
+	//@After
 	public void tearDown() throws Exception {
 		System.out.println("Delete temporary files/directories that were created.");
 
@@ -143,7 +143,7 @@ public class IFileHandlerFactoryTest {
 	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler()}
 	 * and local file copying.
 	 */
-	@Test
+	//@Test
 	public void testLocalFileHandlerFactoryCopyCommand() {
 		IFileHandler handler = null;
 
@@ -209,7 +209,7 @@ public class IFileHandlerFactoryTest {
 	 * does not exist. Tests
 	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler()}
 	 */
-	@Test
+	//@Test
 	public void testLocalFileHandlerFactoryDestinationNonExistant() {
 
 		IFileHandler handler = null;
@@ -241,6 +241,48 @@ public class IFileHandlerFactoryTest {
 
 	}
 
+	/**
+	 * This method intends to test the functionality of moving a new file not to a new
+	 * directory but just to a new name in the same directory
+	 */
+	@Test
+	public void testLocalFileHandlerFactoryChangeName() {
+		IFileHandler handler = null;
+		
+		// Make the new file name be the same file in the same directory, just a new name
+		String[] tokens = localSource.split("/");
+		String localNewName = "";
+		for (int i = 0; i < tokens.length - 1; i++)
+			localNewName +=  tokens[i] + "/" ;
+		
+		localNewName += "NewFileName.txt";
+		
+		System.out.println("New file path: " + localNewName);
+		
+		try {
+			handler = factory.getFileHandler();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			CommandStatus status = handler.move(localSource, localNewName);
+			assert (status == CommandStatus.SUCCESS);
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		// Check that the file exists now
+		try {
+			boolean exist = handler.exists(localNewName);
+			assert (exist == true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
 	/**
 	 * A simple test method to recursively delete temporary files/directories
 	 * created in this test class

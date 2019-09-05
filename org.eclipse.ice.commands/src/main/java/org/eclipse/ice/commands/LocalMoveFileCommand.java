@@ -65,6 +65,13 @@ public class LocalMoveFileCommand extends LocalCommand{
 	 */
 	@Override
 	protected CommandStatus run() {
+		
+		// Get the directory structure to test if we are moving to a new directory
+		// or simply changing the name of a file
+		String[] sourceDirs = source.toString().split("/");
+		String[] destinationDirs = destination.toString().split("/");
+		
+		
 		try {
 			Files.move(source, destination.resolve(source.getFileName()));
 		} catch (IOException e) {
