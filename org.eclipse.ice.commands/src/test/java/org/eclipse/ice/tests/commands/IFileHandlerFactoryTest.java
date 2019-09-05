@@ -150,7 +150,7 @@ public class IFileHandlerFactoryTest {
 
 		// Get the file transfer handler
 		try {
-			handler = factory.getIFileHandler();
+			handler = factory.getFileHandler();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -183,7 +183,7 @@ public class IFileHandlerFactoryTest {
 
 		// Get the file transfer handler
 		try {
-			handler = factory.getIFileHandler();
+			handler = factory.getFileHandler();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -219,7 +219,7 @@ public class IFileHandlerFactoryTest {
 
 		// Get the file transfer handler with a nonexistent destination
 		try {
-			handler = factory.getIFileHandler();
+			handler = factory.getFileHandler();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

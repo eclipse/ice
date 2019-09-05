@@ -45,7 +45,7 @@ public class FileHandlerFactory {
 	 * 
 	 * @return FileHandler - instance of FileHandler that does the transfer
 	 */
-	public IFileHandler getIFileHandler() throws IOException {
+	public IFileHandler getFileHandler() throws IOException {
 		IFileHandler handler = null;
 
 		// TODO - determine how to identify local vs. remote FileHandler
