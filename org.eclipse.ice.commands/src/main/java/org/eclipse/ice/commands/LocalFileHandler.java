@@ -47,6 +47,7 @@ public class LocalFileHandler extends FileHandler {
 		// Check the file existence. If they don't exist, an exception is thrown
 		checkExistence(source, destination);
 	
+		
 		// Execute and process the file transfer
 		transferStatus = executeMove(destination);
 

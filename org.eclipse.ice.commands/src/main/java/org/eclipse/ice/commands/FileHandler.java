@@ -48,15 +48,6 @@ public abstract class FileHandler implements IFileHandler {
 	 */
 	Command copyCommand;
 
-	/**
-	 * The ConnectionConfiguration associated with the source file
-	 */
-	ConnectionConfiguration sourceConfiguration;
-
-	/**
-	 * The ConnectionConfiguration associated with the destination file
-	 */
-	ConnectionConfiguration destinationConfiguration;
 
 	/**
 	 * A status member variable that indicates the status of the file transfer. See
@@ -191,6 +182,8 @@ public abstract class FileHandler implements IFileHandler {
 	 * @return - CommandStatus indicating whether or not the transfer completed successfully
 	 */
 	protected CommandStatus executeMove(final String destination) {
+		
+	
 		// Execute the file transfer
 		transferStatus = moveCommand.execute();
 
