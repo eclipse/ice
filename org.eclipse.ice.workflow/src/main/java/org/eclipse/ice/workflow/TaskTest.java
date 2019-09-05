@@ -1,5 +1,6 @@
 package org.eclipse.ice.workflow;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.EnumSet;
 
@@ -49,9 +50,14 @@ public class TaskTest {
 
 	public static void moveFile(final String filePath, final String newFilePath)
 			throws IOException {
+
+		String home = System.getProperty("user.home");
+		String separator = String.valueOf(File.separatorChar);
+		String homePath = home + separator;
+
 		FileHandlerFactory factory = new FileHandlerFactory();
 		IFileHandler fileHandler = factory.getFileHandler();
-		fileHandler.move(filePath, newFilePath);
+		fileHandler.move(homePath + filePath, homePath + newFilePath);
 		return;
 	}
 
