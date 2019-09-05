@@ -61,9 +61,7 @@ public class CommandFactoryTest {
 	/**
 	 * This function tests with real files to test an actual job processing. For
 	 * this test to work, make sure you change the workingDirectory to your actual
-	 * workingDirectory where the Commands API lives. TODO - Could we make a
-	 * temporary directory to work in and put the shell script TODO - in so that the
-	 * test would run on any machine?
+	 * workingDirectory where the Commands API lives.
 	 */
 	@Test
 	public void testFunctionalLocalCommand() {

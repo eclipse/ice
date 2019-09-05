@@ -21,8 +21,8 @@ import java.nio.file.Paths;
 
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionConfiguration;
+import org.eclipse.ice.commands.FileHandlerFactory;
 import org.eclipse.ice.commands.IFileHandler;
-import org.eclipse.ice.commands.IFileHandlerFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +39,7 @@ public class IFileHandlerFactoryTest {
 	/**
 	 * A default factory with which to create FileHandler instances
 	 */
-	IFileHandlerFactory factory = new IFileHandlerFactory();
+	FileHandlerFactory factory = new FileHandlerFactory();
 
 	/**
 	 * A command factory test that is only useful for accessing some of its member
@@ -150,7 +150,7 @@ public class IFileHandlerFactoryTest {
 
 		// Get the file transfer handler
 		try {
-			handler = factory.getIFileHandler();
+			handler = factory.getFileHandler();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -183,7 +183,7 @@ public class IFileHandlerFactoryTest {
 
 		// Get the file transfer handler
 		try {
-			handler = factory.getIFileHandler();
+			handler = factory.getFileHandler();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -219,7 +219,7 @@ public class IFileHandlerFactoryTest {
 
 		// Get the file transfer handler with a nonexistent destination
 		try {
-			handler = factory.getIFileHandler();
+			handler = factory.getFileHandler();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -250,7 +250,7 @@ public class IFileHandlerFactoryTest {
 	 *                  underneath
 	 * @return - boolean - true if everything deleted, false if not
 	 */
-	boolean deleteDirectory(File directory) {
+	private boolean deleteDirectory(File directory) {
 		File[] contents = directory.listFiles();
 		if (contents != null) {
 			for (File file : contents) {

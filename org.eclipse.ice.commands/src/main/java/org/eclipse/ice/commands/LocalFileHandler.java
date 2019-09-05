@@ -30,6 +30,9 @@ public class LocalFileHandler extends FileHandler {
 	 */
 	public LocalFileHandler() {
 
+		// Make the command
+		moveCommand = new LocalMoveFileCommand();
+		copyCommand = new LocalCopyFileCommand();
 	}
 
 	/**
@@ -38,14 +41,14 @@ public class LocalFileHandler extends FileHandler {
 	@Override
 	public CommandStatus move(final String source, final String destination) throws IOException {
 
+		// Cast the Command as a LocalMoveFileCommand to set the source and destination paths
+		((LocalMoveFileCommand)moveCommand).setConfiguration(source, destination);
+		
 		// Check the file existence. If they don't exist, an exception is thrown
 		checkExistence(source, destination);
-
-		// Make the command
-		command = new LocalMoveFileCommand(source, destination);
-
+	
 		// Execute and process the file transfer
-		transferStatus = executeTransfer(destination);
+		transferStatus = executeMove(destination);
 
 		// Return whether or not it succeeded
 		return transferStatus;
@@ -56,14 +59,15 @@ public class LocalFileHandler extends FileHandler {
 	 */
 	@Override
 	public CommandStatus copy(final String source, final String destination) throws IOException {
+	
+		// Cast the Command as a LocalCopyFileCommand to set the source and destination paths
+		((LocalCopyFileCommand)copyCommand).setConfiguration(source, destination);
+		
 		// Check the file existence. If one or both don't exist, an exception is thrown
 		checkExistence(source, destination);
 
-		// Make the command
-		command = new LocalCopyFileCommand(source, destination);
-
 		// Execute and process the file transfer
-		transferStatus = executeTransfer(destination);
+		transferStatus = executeCopy(destination);
 
 		// Return whether or not it succeeded
 		return transferStatus;

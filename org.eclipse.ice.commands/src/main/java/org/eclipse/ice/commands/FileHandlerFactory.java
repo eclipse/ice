@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * @author Joe Osborn
  *
  */
-public class IFileHandlerFactory {
+public class FileHandlerFactory {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -36,7 +36,7 @@ public class IFileHandlerFactory {
 	/**
 	 * Default constructor
 	 */
-	public IFileHandlerFactory() {
+	public FileHandlerFactory() {
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class IFileHandlerFactory {
 	 * 
 	 * @return FileHandler - instance of FileHandler that does the transfer
 	 */
-	public IFileHandler getIFileHandler() throws IOException {
+	public IFileHandler getFileHandler() throws IOException {
 		IFileHandler handler = null;
 
 		// TODO - determine how to identify local vs. remote FileHandler

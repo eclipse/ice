@@ -44,19 +44,6 @@ public class LocalCopyFileCommand extends LocalCommand {
 	public LocalCopyFileCommand() {
 	}
 
-	/**
-	 * Constructor which sets the two paths, source and destination, to those given
-	 * by the arguments of the constructor. See
-	 * {@link org.eclipse.ice.tests.commands.CopyFileCommand} for member variable
-	 * descriptions.
-	 * 
-	 * @param src
-	 * @param dest
-	 */
-	public LocalCopyFileCommand(final String src, final String dest) {
-		source = Paths.get(src);
-		destination = Paths.get(dest);
-	}
 
 	/**
 	 * This function actually executes the copy file command. It checks that the
@@ -103,6 +90,18 @@ public class LocalCopyFileCommand extends LocalCommand {
 		return CommandStatus.CANCELED;
 	}
 
+	
+	/**
+	 * This function sets the Paths for source and destination to the given strings
+	 * @param src - string corresponding to the source file
+	 * @param dest - string corresponding to the destination file
+	 */
+	public void setConfiguration(String src, String dest) {
+		source = Paths.get(src);
+		destination = Paths.get(dest);
+		return;
+	}
+	
 	/**
 	 * A function that returns the source path in string form
 	 * 
@@ -111,7 +110,8 @@ public class LocalCopyFileCommand extends LocalCommand {
 	public String getSource() {
 		return source.toString();
 	}
-
+	
+	
 	/**
 	 * A function that returns the destination path in string form
 	 * 
@@ -120,4 +120,5 @@ public class LocalCopyFileCommand extends LocalCommand {
 	public String getDestination() {
 		return destination.toString();
 	}
+
 }

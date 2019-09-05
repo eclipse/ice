@@ -148,7 +148,8 @@ public class LocalCopyFileCommandTest {
 
 		System.out.println("Copying: " + source + " to destination: " + dest);
 		// Make the command
-		LocalCopyFileCommand command = new LocalCopyFileCommand(source, dest);
+		LocalCopyFileCommand command = new LocalCopyFileCommand();
+		command.setConfiguration(source, dest);
 		command.execute();
 		// Check if the path exists now
 		Path path = Paths.get(dest);
