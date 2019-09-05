@@ -20,7 +20,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.eclipse.ice.commands.CommandStatus;
-import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.FileHandlerFactory;
 import org.eclipse.ice.commands.IFileHandler;
 import org.junit.After;
@@ -141,7 +140,7 @@ public class IFileHandlerFactoryTest {
 
 	/**
 	 * Test method for
-	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler(String, String, ConnectionConfiguration, ConnectionConfiguration)}
+	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler()}
 	 * and local file copying.
 	 */
 	@Test
@@ -174,7 +173,7 @@ public class IFileHandlerFactoryTest {
 
 	/**
 	 * Test method for
-	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler(String, String, ConnectionConfiguration, ConnectionConfiguration)}
+	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler()}
 	 * and local file moving.
 	 */
 	@Test
@@ -208,7 +207,7 @@ public class IFileHandlerFactoryTest {
 	/**
 	 * Test method for a source file that exists but a destination directory that
 	 * does not exist. Tests
-	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler(String, String, ConnectionConfiguration, ConnectionConfiguration)}
+	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler()}
 	 */
 	@Test
 	public void testLocalFileHandlerFactoryDestinationNonExistant() {
