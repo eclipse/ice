@@ -20,7 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-
 /**
  * Child class for moving a file locally without a remote connection
  * 
@@ -69,41 +68,22 @@ public class LocalMoveFileCommand extends LocalCommand {
 	@Override
 	protected CommandStatus run() {
 
-		// Get the directory structure to test if we are moving to a new directory
-		// or simply changing the name of a file
-		String[] sourceDirs = source.toString().split("/");
+		// Check to see if the file paths are the same and if the filename has the same extension
+		// for determining whether or not it should be a move or change file name
+		boolean sameFileExtension = checkFileExtension();
+
+		// Split the destination by path delimiter to get the desired filename
 		String[] destinationDirs = destination.toString().split("/");
-		boolean different = false;
 		
-		// If the number of directories is different, then the source/destination are 
-		// definitely different
-		if(sourceDirs.length != destinationDirs.length)
-			different = true;
-		// Otherwise they are the same length and we can iterate over either happily
-		else {
-			for(int i = 0; i< sourceDirs.length-1; i++) {
-				if(!sourceDirs[i].equals(destinationDirs[i])) {
-					different = true;
-					break;
-				}
-			}
-		}
-		// If all of the directories are the same, check to see if the final entry in the path
-		// is either a filename or a directory by looking at its .* file extension
-		
-		String[] sourceFileNames = sourceDirs[sourceDirs.length-1].split("\\.");
-		String[] destinationFileNames = destinationDirs[destinationDirs.length-1].split("\\.");
-	
-		// Check if the file extensions are equal to one another
-		boolean sameFileExt = sourceFileNames[sourceFileNames.length-1].equals(destinationFileNames[destinationFileNames.length-1]);
-		
-		// If the directory paths are the same and the files have the same file extension
+		// If the directory paths are the same and the files have the same file
+		// extension
 		// type, then we are just changing a file name
-		if(!different && sameFileExt) {
+		if (sameFileExtension) {
 			try {
 				// destinationDirs will have the desired file name in the length-1 entry
-				Files.move(source, source.resolveSibling(destinationDirs[destinationDirs.length-1]), REPLACE_EXISTING);
-			}catch (IOException e) {
+				Files.move(source, source.resolveSibling(destinationDirs[destinationDirs.length - 1]),
+						REPLACE_EXISTING);
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -115,8 +95,57 @@ public class LocalMoveFileCommand extends LocalCommand {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return CommandStatus.RUNNING;
+	}
+
+	/**
+	 * This function determines whether or not the source and destination file path are the same
+	 * and whether or not to treat the file move as moving to different directories or simply
+	 * just a name change of the file. They have to be called differently in Files.move, hence
+	 * it is necessary to determine whether or not the filename is just changing in the same directory
+	 * or if it is actually moving to a new directory.
+	 * @return - boolean - if the directory path is the exact same and the file extension is the exact
+	 * same, then return true. Otherwise return false
+	 */
+	private boolean checkFileExtension() {
+		// Get the directory structure to test if we are moving to a new directory
+		// or simply changing the name of a file
+		String[] sourceDirs = source.toString().split("/");
+		String[] destinationDirs = destination.toString().split("/");
+		boolean different = false;
+
+		// If the number of directories is different, then the source/destination are
+		// definitely different
+		if (sourceDirs.length != destinationDirs.length)
+			different = true;
+		// Otherwise they are the same length and we can iterate over either happily
+		else {
+			for (int i = 0; i < sourceDirs.length - 1; i++) {
+				if (!sourceDirs[i].equals(destinationDirs[i])) {
+					different = true;
+					break;
+				}
+			}
+		}
+		// If all of the directories are the same, check to see if the final entry in
+		// the path is either a filename or a directory by looking at its .* file extension
+
+		String[] sourceFileNames = sourceDirs[sourceDirs.length - 1].split("\\.");
+		String[] destinationFileNames = destinationDirs[destinationDirs.length - 1].split("\\.");
+
+		// Check if the file extensions are equal to one another
+		boolean sameFileExt = sourceFileNames[sourceFileNames.length - 1]
+				.equals(destinationFileNames[destinationFileNames.length - 1]);
+
+		// If the source and destination have the same path and have the same file extension
+		// then we should treat this as a file name change, otherwise it is a file directory
+		// move
+		if(!different && sameFileExt)
+			return true;
+		else
+			return false;
+		
 	}
 
 	/**
