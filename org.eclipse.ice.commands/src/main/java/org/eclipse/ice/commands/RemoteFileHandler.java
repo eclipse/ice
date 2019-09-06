@@ -45,19 +45,23 @@ public class RemoteFileHandler extends FileHandler {
 	public void checkExistence(String source, String destination) throws IOException {
 	}
 
+	
 	/**
 	 * See
-	 * {@link org.eclipse.ice.commands.FileHandler#setMoveConfiguration(String, String)}
+	 * {@link org.eclipse.ice.commands.FileHandler#configureMoveCommand(String, String)}
 	 */
 	@Override
-	protected void setMoveConfiguration(String source, String destination) {
+	protected void configureMoveCommand(String source, String destination) {
+		// TODO Auto-generated method stub
+		
 	}
-
 	/**
 	 * See
-	 * {@link org.eclipse.ice.commands.FileHandler#setCopyConfiguration(String, String)}
+	 * {@link org.eclipse.ice.commands.FileHandler#configureCopyCommand(String, String)}
 	 */
 	@Override
-	protected void setCopyConfiguration(String source, String destination) {
+	protected void configureCopyCommand(String source, String destination) {
+		// TODO Auto-generated method stub
+		
 	}
 }

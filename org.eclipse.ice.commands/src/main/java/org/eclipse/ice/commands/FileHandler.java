@@ -68,7 +68,7 @@ public abstract class FileHandler implements IFileHandler {
 		checkExistence(source, destination);
 		
 		// Set the commands to have the appropriate properties
-		setMoveConfiguration(source, destination);
+		configureMoveCommand(source, destination);
 
 		// Execute and process the file transfer
 		transferStatus = executeTransfer(destination);
@@ -90,7 +90,7 @@ public abstract class FileHandler implements IFileHandler {
 		checkExistence(source, destination);
 		
 		// Set the commands to have the appropriate properties
-		setCopyConfiguration(source, destination);
+		configureCopyCommand(source, destination);
 	
 		// Execute and process the file transfer
 		transferStatus = executeTransfer(destination);
@@ -101,23 +101,23 @@ public abstract class FileHandler implements IFileHandler {
 
 	/**
 	 * This function sets the command member variables to have the source and
-	 * destination strings. It is delegated to the sublcasses so that the commands
+	 * destination strings. It is delegated to the subclasses so that the commands
 	 * can be cast appropriately
 	 * 
 	 * @param source
 	 * @param destination
 	 */
-	protected abstract void setMoveConfiguration(final String source, final String destination);
+	protected abstract void configureMoveCommand(final String source, final String destination);
 
 	/**
 	 * This function sets the command member variables to have the source and
-	 * destination strings. It is delegated to the sublcasses so that the commands
+	 * destination strings. It is delegated to the subclasses so that the commands
 	 * can be cast appropriately
 	 * 
 	 * @param source
 	 * @param destination
 	 */
-	protected abstract void setCopyConfiguration(final String source, final String destination);
+	protected abstract void configureCopyCommand(final String source, final String destination);
 
 	
 	/**
