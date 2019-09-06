@@ -80,10 +80,10 @@ public class CommandFactoryExample {
 		commandConfig.setOutFileName("someOutFile.txt");
 		commandConfig.setNumProcs("1");
 		commandConfig.setInstallDirectory("");
-		commandConfig.setOS(System.getProperty("os.name"));
 		commandConfig.setWorkingDirectory(pwd);
 		commandConfig.setAppendInput(true);
-
+		
+	
 		// Make a ConnectionConfiguration to indicate that we want to run locally
 		ConnectionConfiguration connectionConfig = new ConnectionConfiguration(hostname);
 
@@ -99,6 +99,11 @@ public class CommandFactoryExample {
 		CommandStatus status = localCommand.execute();
 		
 		System.out.println("Status of Command after execution: " + status);
+		
+		// Get a string of the output that is produced from the job
+		String output = commandConfig.getStdOutputString();
+		
+		
 		return;
 	}
 

@@ -114,7 +114,7 @@ public class FileHandlerExample {
 		try {
 			CommandStatus status = handler.move(localSource, localDestination + newName);
 			if (status != CommandStatus.SUCCESS)
-				System.out.println("Copy file failed! Check console for error messages");
+				System.out.println("Move file failed! Check console for error messages");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

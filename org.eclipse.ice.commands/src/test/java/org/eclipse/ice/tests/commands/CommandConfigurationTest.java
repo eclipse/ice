@@ -40,7 +40,6 @@ public class CommandConfigurationTest {
 		config.setExecutable("./some_executable.sh");
 		config.setErrFileName("errorFile.txt");
 		config.setOutFileName("outFile.txt");
-		config.setOS("osx");
 
 		// Assert whether or not things are/aren't set
 		assert (config.getOutFileName() != null);

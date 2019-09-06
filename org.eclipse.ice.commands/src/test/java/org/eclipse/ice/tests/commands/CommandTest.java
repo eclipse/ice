@@ -46,7 +46,6 @@ public class CommandTest {
 		commandConfig.setInstallDirectory("");
 		commandConfig.setWorkingDirectory("/Users/4jo/git/icefork2/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands");
 		commandConfig.setAppendInput(true);
-		commandConfig.setOS("osx");
 		commandConfig.setNumProcs("1");
 		
 		// Use the function already defined in the command factory to get the

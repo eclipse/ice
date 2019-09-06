@@ -87,7 +87,6 @@ public class CommandFactoryTest {
 		commandConfig.setOutFileName("someOutFile.txt");
 		commandConfig.setNumProcs("1");
 		commandConfig.setInstallDirectory("");
-		commandConfig.setOS(System.getProperty("os.name"));
 		commandConfig.setWorkingDirectory(pwd);
 		commandConfig.setAppendInput(true);
 
@@ -166,7 +165,6 @@ public class CommandFactoryTest {
 		commandConfiguration.setOutFileName("someOutFile.txt");
 		commandConfiguration.setNumProcs("1");
 		commandConfiguration.setInstallDirectory("~/installDir");
-		commandConfiguration.setOS("osx");
 		commandConfiguration.setWorkingDirectory("~/some_nonexistent_directory");
 		commandConfiguration.setAppendInput(true);
 
