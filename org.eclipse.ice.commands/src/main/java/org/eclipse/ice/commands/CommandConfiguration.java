@@ -88,6 +88,10 @@ public class CommandConfiguration {
 	private String workingDirectory;
 
 	/**
+	 * The operating system that the command will be run on. Set as a default to the local OS
+	 */
+	private String os;
+	/**
 	 * The hostname that the command will be executed on. This is the same as the
 	 * hostname in {@link org.eclipse.ice.commands.Connection} and is just used for
 	 * output file purposes.
@@ -131,6 +135,7 @@ public class CommandConfiguration {
 	public CommandConfiguration() {
 		// Assume some default variables
 		commandId = -999;
+		os = System.getProperty("os.name");
 	}
 
 	/**
@@ -447,14 +452,25 @@ public class CommandConfiguration {
 		return installDirectory;
 	}
 
-
 	/**
-	 * Getter for operating system on which job is running
+	 * Getter for os, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#os}
+	 * Note that this is set to the default of the local OS
 	 * 
 	 * @return os
 	 */
 	public String getOS() {
-		return System.getProperty("os.name");
+		return os;
+	}
+
+	/**
+	 * Setter for operating system, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#os}
+	 * 
+	 * @param OS
+	 */
+	public void setOS(String OS) {
+		os = OS;
 	}
 
 	/**

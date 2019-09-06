@@ -192,7 +192,7 @@ public abstract class Command {
 	protected CommandStatus setupProcessBuilder(String command) {
 
 		// Local declarations
-		String os = System.getProperty("os.name");
+		String os = commandConfig.getOS();
 		ArrayList<String> commandList = new ArrayList<String>();
 
 		// If the OS is anything other than Windows, then the process builder
@@ -226,7 +226,7 @@ public abstract class Command {
 	 */
 	protected CommandStatus runProcessBuilder() {
 
-		String os = System.getProperty("os.name");
+		String os = commandConfig.getOS();
 		List<String> commandList = jobBuilder.command();
 		String errMsg = "";
 
