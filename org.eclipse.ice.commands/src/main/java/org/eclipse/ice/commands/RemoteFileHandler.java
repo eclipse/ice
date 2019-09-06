@@ -30,22 +30,6 @@ public class RemoteFileHandler extends FileHandler {
 	}
 
 	/**
-	 * See {@link org.eclipse.ice.commands.FileHandler#move()}
-	 */
-	@Override
-	public CommandStatus move(final String source, final String destination) throws IOException {
-		return null;
-	}
-
-	/**
-	 * See {@link org.eclipse.ice.commands.FileHandler#copy()}
-	 */
-	@Override
-	public CommandStatus copy(final String source, final String destination) throws IOException {
-		return null;
-	}
-
-	/**
 	 * See {@link org.eclipse.ice.commands.FileHandler#exists(String)}
 	 */
 	@Override
@@ -59,8 +43,21 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	@Override
 	public void checkExistence(String source, String destination) throws IOException {
-		// TODO Auto-generated method stub
-
 	}
 
+	/**
+	 * See
+	 * {@link org.eclipse.ice.commands.FileHandler#setMoveConfiguration(String, String)}
+	 */
+	@Override
+	protected void setMoveConfiguration(String source, String destination) {
+	}
+
+	/**
+	 * See
+	 * {@link org.eclipse.ice.commands.FileHandler#setCopyConfiguration(String, String)}
+	 */
+	@Override
+	protected void setCopyConfiguration(String source, String destination) {
+	}
 }

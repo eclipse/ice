@@ -29,52 +29,30 @@ public class LocalFileHandler extends FileHandler {
 	 * Default constructor
 	 */
 	public LocalFileHandler() {
-
-		// Make the command
-		moveCommand = new LocalMoveFileCommand();
-		copyCommand = new LocalCopyFileCommand();
 	}
 
 	/**
-	 * See {@link org.eclipse.ice.commands.FileHandler#move()}
+	 * See {@link org.eclipse.ice.commands.FileHandler#setConfiguration(String, String)}
 	 */
 	@Override
-	public CommandStatus move(final String source, final String destination) throws IOException {
-
+	protected void setMoveConfiguration(final String source, final String destination) {
+		command = new LocalMoveFileCommand();
 		// Cast the Command as a LocalMoveFileCommand to set the source and destination paths
-		((LocalMoveFileCommand)moveCommand).setConfiguration(source, destination);
-		
-		// Check the file existence. If they don't exist, an exception is thrown
-		checkExistence(source, destination);
-	
-		
-		// Execute and process the file transfer
-		transferStatus = executeMove(destination);
-
-		// Return whether or not it succeeded
-		return transferStatus;
+		((LocalMoveFileCommand) command).setConfiguration(source, destination);
 	}
 
 	/**
-	 * See {@link org.eclipse.ice.commands.FileHandler#copy()}
+	 * See {@link org.eclipse.ice.commands.FileHandler#setConfiguration(String, String)}
 	 */
 	@Override
-	public CommandStatus copy(final String source, final String destination) throws IOException {
-	
+	protected void setCopyConfiguration(final String source, final String destination) {
+		command = new LocalCopyFileCommand();
 		// Cast the Command as a LocalCopyFileCommand to set the source and destination paths
-		((LocalCopyFileCommand)copyCommand).setConfiguration(source, destination);
-		
-		// Check the file existence. If one or both don't exist, an exception is thrown
-		checkExistence(source, destination);
-
-		// Execute and process the file transfer
-		transferStatus = executeCopy(destination);
-
-		// Return whether or not it succeeded
-		return transferStatus;
+		((LocalCopyFileCommand) command).setConfiguration(source, destination);
 
 	}
 
+	
 	/**
 	 * See {@link org.eclipse.ice.commands.FileHandler#exists(String)}
 	 */

@@ -37,17 +37,10 @@ public abstract class FileHandler implements IFileHandler {
 	protected static final Logger logger = LoggerFactory.getLogger(FileHandler.class);
 
 	/**
-	 * The command member variable that will actually execute the move that
-	 * was requested by the user
+	 * The command member variable that will actually execute the transfer that was
+	 * requested by the user
 	 */
-	Command moveCommand;
-	
-	/**
-	 * The command member variable that will actually execute the copy that
-	 * was requested by the user
-	 */
-	Command copyCommand;
-
+	Command command;
 
 	/**
 	 * A status member variable that indicates the status of the file transfer. See
@@ -69,7 +62,20 @@ public abstract class FileHandler implements IFileHandler {
 	 *         was successful
 	 * @throws IOException
 	 */
-	public abstract CommandStatus move(final String source, final String destination) throws IOException;
+	public CommandStatus move(final String source, final String destination) throws IOException {
+
+		// Check the file existence. If they don't exist, an exception is thrown
+		checkExistence(source, destination);
+		
+		// Set the commands to have the appropriate properties
+		setMoveConfiguration(source, destination);
+
+		// Execute and process the file transfer
+		transferStatus = executeTransfer(destination);
+
+		// Return whether or not it succeeded
+		return transferStatus;
+	}
 
 	/**
 	 * This method is responsible for copying a file from a source to a destination
@@ -79,8 +85,41 @@ public abstract class FileHandler implements IFileHandler {
 	 *         was successful
 	 * @throws IOException
 	 */
-	public abstract CommandStatus copy(final String source, final String destination) throws IOException;
+	public CommandStatus copy(final String source, final String destination) throws IOException {
+		// Check the file existence. If one or both don't exist, an exception is thrown
+		checkExistence(source, destination);
+		
+		// Set the commands to have the appropriate properties
+		setCopyConfiguration(source, destination);
+	
+		// Execute and process the file transfer
+		transferStatus = executeTransfer(destination);
 
+		// Return whether or not it succeeded
+		return transferStatus;
+	}
+
+	/**
+	 * This function sets the command member variables to have the source and
+	 * destination strings. It is delegated to the sublcasses so that the commands
+	 * can be cast appropriately
+	 * 
+	 * @param source
+	 * @param destination
+	 */
+	protected abstract void setMoveConfiguration(final String source, final String destination);
+
+	/**
+	 * This function sets the command member variables to have the source and
+	 * destination strings. It is delegated to the sublcasses so that the commands
+	 * can be cast appropriately
+	 * 
+	 * @param source
+	 * @param destination
+	 */
+	protected abstract void setCopyConfiguration(final String source, final String destination);
+
+	
 	/**
 	 * This method is responsible for determining whether or not a file or directory
 	 * already exists for a given path.
@@ -106,24 +145,15 @@ public abstract class FileHandler implements IFileHandler {
 	public abstract void checkExistence(final String source, final String destination) throws IOException;
 
 	/**
-	 * This function gets and returns the private member variable moveCommand of type
-	 * Command
+	 * This function gets and returns the private member variable command of
+	 * type Command
 	 * 
-	 * @return Command - the move command associated with this FileHandler
+	 * @return Command - the command associated with this FileHandler
 	 */
-	public Command getMoveCommand() {
-		return moveCommand;
+	public Command getCommand() {
+		return command;
 	}
-	
-	/**
-	 * This function gets and returns the private member variable copyCommand of type
-	 * Command
-	 * 
-	 * @return Command - the copy command associated with this FileHandler
-	 */
-	public Command getCopyCommand() {
-		return copyCommand;
-	}
+
 
 	/**
 	 * This operation creates all the directories that are parents of the
@@ -152,14 +182,16 @@ public abstract class FileHandler implements IFileHandler {
 	}
 
 	/**
-	 * This function actually executes the file transfer and then checks that it was 
+	 * This function actually executes the file transfer and then checks that it was
 	 * completed correctly
+	 * 
 	 * @param destination - destination for the file to go to
-	 * @return - CommandStatus indicating whether or not the transfer completed successfully
+	 * @return - CommandStatus indicating whether or not the transfer completed
+	 *         successfully
 	 */
-	protected CommandStatus executeCopy(final String destination) {
+	protected CommandStatus executeTransfer(final String destination) {
 		// Execute the file transfer
-		transferStatus = copyCommand.execute();
+		transferStatus = command.execute();
 
 		// Check that the move succeeded
 		boolean check = false;
@@ -176,49 +208,14 @@ public abstract class FileHandler implements IFileHandler {
 	}
 
 	/**
-	 * This function actually executes the file transfer and then checks that it was 
-	 * completed correctly
-	 * @param destination - destination for the file to go to
-	 * @return - CommandStatus indicating whether or not the transfer completed successfully
-	 */
-	protected CommandStatus executeMove(final String destination) {
-		
-	
-		// Execute the file transfer
-		transferStatus = moveCommand.execute();
-
-		// Check that the move succeeded
-		boolean check = false;
-		try {
-			check = exists(destination);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		if (check)
-			return CommandStatus.SUCCESS;
-		else
-			return CommandStatus.FAILED;
-
-	}
-	
-	/**
-	 * This function returns the current status of the copy, as it is given
-	 * by the member variable {@link org.eclipse.ice.commands.FileHandler#copyCommand}
+	 * This function returns the current status of the transfer, as it is given by the
+	 * member variable {@link org.eclipse.ice.commands.FileHandler#copyCommand}
 	 * 
 	 * @return - CommandStatus indicating the status of the file transfer
 	 */
-	public CommandStatus getCopyStatus() {
-		return copyCommand.getStatus();
+	public CommandStatus getStatus() {
+		return command.getStatus();
 	}
 
-	/**
-	 * This function returns the current status of the move, as it is given
-	 * by the member variable {@link org.eclipse.ice.commands.FileHandler#copyCommand}
-	 * 
-	 * @return - CommandStatus indicating the status of the file transfer
-	 */
-	public CommandStatus getMoveStatus() {
-		return moveCommand.getStatus();
 
-	}
 }
