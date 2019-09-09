@@ -29,47 +29,30 @@ public class LocalFileHandler extends FileHandler {
 	 * Default constructor
 	 */
 	public LocalFileHandler() {
-
 	}
 
 	/**
-	 * See {@link org.eclipse.ice.commands.FileHandler#move()}
+	 * See {@link org.eclipse.ice.commands.FileHandler#setConfiguration(String, String)}
 	 */
 	@Override
-	public CommandStatus move(final String source, final String destination) throws IOException {
-
-		// Check the file existence. If they don't exist, an exception is thrown
-		checkExistence(source, destination);
-
-		// Make the command
-		command = new LocalMoveFileCommand(source, destination);
-
-		// Execute and process the file transfer
-		transferStatus = executeTransfer(destination);
-
-		// Return whether or not it succeeded
-		return transferStatus;
+	protected void configureMoveCommand(final String source, final String destination) {
+		command = new LocalMoveFileCommand();
+		// Cast the Command as a LocalMoveFileCommand to set the source and destination paths
+		((LocalMoveFileCommand) command).setConfiguration(source, destination);
 	}
 
 	/**
-	 * See {@link org.eclipse.ice.commands.FileHandler#copy()}
+	 * See {@link org.eclipse.ice.commands.FileHandler#setConfiguration(String, String)}
 	 */
 	@Override
-	public CommandStatus copy(final String source, final String destination) throws IOException {
-		// Check the file existence. If one or both don't exist, an exception is thrown
-		checkExistence(source, destination);
-
-		// Make the command
-		command = new LocalCopyFileCommand(source, destination);
-
-		// Execute and process the file transfer
-		transferStatus = executeTransfer(destination);
-
-		// Return whether or not it succeeded
-		return transferStatus;
+	protected void configureCopyCommand(final String source, final String destination) {
+		command = new LocalCopyFileCommand();
+		// Cast the Command as a LocalCopyFileCommand to set the source and destination paths
+		((LocalCopyFileCommand) command).setConfiguration(source, destination);
 
 	}
 
+	
 	/**
 	 * See {@link org.eclipse.ice.commands.FileHandler#exists(String)}
 	 */

@@ -35,7 +35,6 @@ public class LocalCommandTest {
 	String outputFile = "someOutFile.txt";
 	String procs = "1";
 	String installDir = "~/install";
-	String os = "osx";
 	String workingDirectory = "/";
 
 	/**
@@ -72,7 +71,6 @@ public class LocalCommandTest {
 		commandConfig.setInstallDirectory(installDir);
 		commandConfig.setWorkingDirectory(workingDirectory);
 		commandConfig.setAppendInput(true);
-		commandConfig.setOS(os);
 		commandConfig.setNumProcs(procs);
 	}
 
@@ -117,7 +115,6 @@ public class LocalCommandTest {
 		badConfig.setInstallDirectory("installDir");
 		badConfig.setWorkingDirectory("somedirectory");
 		badConfig.setAppendInput(true);
-		badConfig.setOS("osx");
 		badConfig.setNumProcs("1");
 		
 		LocalCommand testCommand = new LocalCommand(connection, badConfig);

@@ -86,7 +86,6 @@ public class RemoteCommandTest {
 		commandConfig.setInstallDirectory("~/install");
 		commandConfig.setWorkingDirectory("/");
 		commandConfig.setAppendInput(true);
-		commandConfig.setOS("OSX");
 		commandConfig.setNumProcs("1");
 		
 		connectConfig = new ConnectionConfiguration(username, password, host);

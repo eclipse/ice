@@ -168,8 +168,7 @@ public abstract class Command {
 		// Check the info and return failure if something was not set
 		if (commandConfig.getExecutable() == null || commandConfig.getInputFile() == null
 				|| commandConfig.getOutFileName() == null || commandConfig.getErrFileName() == null
-				|| commandConfig.getNumProcs() == null || commandConfig.getOS() == null
-				|| commandConfig.getWorkingDirectory() == null)
+				|| commandConfig.getNumProcs() == null || commandConfig.getWorkingDirectory() == null)
 			return CommandStatus.INFOERROR;
 
 		// Set the command to actually run and execute
@@ -435,6 +434,8 @@ public abstract class Command {
 			// Write to the stdOut file
 			while ((nextLine = stdOutReader.readLine()) != null) {
 				commandConfig.getStdOut().write(nextLine);
+				
+				commandConfig.addToStdOutputString(nextLine);
 				// MUST put a new line for this type of writer. "\r\n" works on
 				// Windows and Unix-based systems.
 				commandConfig.getStdOut().write("\r\n");

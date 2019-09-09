@@ -20,9 +20,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.eclipse.ice.commands.CommandStatus;
-import org.eclipse.ice.commands.ConnectionConfiguration;
-import org.eclipse.ice.commands.IFileHandler;
 import org.eclipse.ice.commands.FileHandlerFactory;
+import org.eclipse.ice.commands.IFileHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,6 +91,7 @@ public class IFileHandlerFactoryTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
+	
 	@After
 	public void tearDown() throws Exception {
 		System.out.println("Delete temporary files/directories that were created.");
@@ -141,7 +141,7 @@ public class IFileHandlerFactoryTest {
 
 	/**
 	 * Test method for
-	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler(String, String, ConnectionConfiguration, ConnectionConfiguration)}
+	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler()}
 	 * and local file copying.
 	 */
 	@Test
@@ -174,7 +174,7 @@ public class IFileHandlerFactoryTest {
 
 	/**
 	 * Test method for
-	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler(String, String, ConnectionConfiguration, ConnectionConfiguration)}
+	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler()}
 	 * and local file moving.
 	 */
 	@Test
@@ -208,7 +208,7 @@ public class IFileHandlerFactoryTest {
 	/**
 	 * Test method for a source file that exists but a destination directory that
 	 * does not exist. Tests
-	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler(String, String, ConnectionConfiguration, ConnectionConfiguration)}
+	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler()}
 	 */
 	@Test
 	public void testLocalFileHandlerFactoryDestinationNonExistant() {
@@ -243,6 +243,55 @@ public class IFileHandlerFactoryTest {
 	}
 
 	/**
+	 * This method intends to test the functionality of moving a new file not to a new
+	 * directory but just to a new name in the same directory
+	 */
+	@Test
+	public void testLocalFileHandlerFactoryChangeName() {
+		IFileHandler handler = null;
+		
+		// Make the new file name be the same file in the same directory, just a new name
+		String[] tokens = localSource.split("/");
+		String localNewName = "";
+		for (int i = 0; i < tokens.length - 1; i++)
+			localNewName +=  tokens[i] + "/" ;
+		
+		localNewName += "NewFileName.txt";
+		
+		System.out.println("New file path: " + localNewName);
+		
+		try {
+			handler = factory.getFileHandler();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			CommandStatus status = handler.move(localSource, localNewName);
+			assert (status == CommandStatus.SUCCESS);
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		// Check that the file exists now
+		try {
+			boolean exist = handler.exists(localNewName);
+			assert (exist == true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		// If the file was successfully created, delete it here
+		// Needs a special delete since the filename was created in this function
+		File fileToDelete = new File(localNewName);
+		fileToDelete.delete();
+		
+	}
+	
+	
+	
+	/**
 	 * A simple test method to recursively delete temporary files/directories
 	 * created in this test class
 	 * 
@@ -250,7 +299,7 @@ public class IFileHandlerFactoryTest {
 	 *                  underneath
 	 * @return - boolean - true if everything deleted, false if not
 	 */
-	boolean deleteDirectory(File directory) {
+	private boolean deleteDirectory(File directory) {
 		File[] contents = directory.listFiles();
 		if (contents != null) {
 			for (File file : contents) {

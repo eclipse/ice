@@ -82,16 +82,15 @@ public class CommandConfiguration {
 	private String installDirectory;
 
 	/**
-	 * The operating system on which the job will run
-	 */
-	private String os;
-
-	/**
 	 * The working directory for the job to be executed in, and thus where e.g. the
 	 * output files will be located
 	 */
 	private String workingDirectory;
 
+	/**
+	 * The operating system that the command will be run on. Set as a default to the local OS
+	 */
+	private String os;
 	/**
 	 * The hostname that the command will be executed on. This is the same as the
 	 * hostname in {@link org.eclipse.ice.commands.Connection} and is just used for
@@ -103,6 +102,13 @@ public class CommandConfiguration {
 	 * Output streams for the job
 	 */
 	private BufferedWriter stdOut = null, stdErr = null;
+
+	/**
+	 * This is a string that contains all of the output of the job. This is the same
+	 * text that gets written out to
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOut}
+	 */
+	String stdOutput = "";
 
 	/**
 	 * A flag to mark whether or not the input file name should be appended to the
@@ -129,6 +135,7 @@ public class CommandConfiguration {
 	public CommandConfiguration() {
 		// Assume some default variables
 		commandId = -999;
+		os = System.getProperty("os.name");
 	}
 
 	/**
@@ -210,7 +217,7 @@ public class CommandConfiguration {
 		header += new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "\n";
 
 		// Add the point of origin
-		header += "# Launch host: " + localHostname + "\n";
+		header += "# Launch host: " + hostname + "\n";
 
 		// Add the target machine
 		header += "# Target host: " + hostname + "\n";
@@ -446,24 +453,24 @@ public class CommandConfiguration {
 	}
 
 	/**
-	 * Setter for operating system, see
+	 * Getter for os, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#os}
-	 * 
-	 * @param operatingSys
-	 */
-	public void setOS(String operatingSys) {
-		os = operatingSys;
-		return;
-	}
-
-	/**
-	 * Getter for operating system, see
-	 * {@link org.eclipse.ice.commands.CommandConfiguration#os}
+	 * Note that this is set to the default of the local OS
 	 * 
 	 * @return os
 	 */
 	public String getOS() {
 		return os;
+	}
+
+	/**
+	 * Setter for operating system, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#os}
+	 * 
+	 * @param OS
+	 */
+	public void setOS(String OS) {
+		os = OS;
 	}
 
 	/**
@@ -571,6 +578,36 @@ public class CommandConfiguration {
 	 */
 	public BufferedWriter getStdOut() {
 		return stdOut;
+	}
+
+	/**
+	 * Setter for stdOutput, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOutput}
+	 * 
+	 * @return stdOutput
+	 */
+	public void setStdOutputString(String out) {
+		stdOutput = out;
+	}
+
+	/**
+	 * This function adds the String string to the String
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOutput}
+	 * 
+	 * @param string
+	 */
+	public void addToStdOutputString(String string) {
+		stdOutput += " " + string;
+	}
+
+	/**
+	 * Getter for stdOutput, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOutput}
+	 * 
+	 * @return stdOutput
+	 */
+	public String getStdOutputString() {
+		return stdOutput;
 	}
 
 	/**
