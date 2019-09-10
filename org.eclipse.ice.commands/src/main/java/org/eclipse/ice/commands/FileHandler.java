@@ -26,6 +26,9 @@ import org.slf4j.LoggerFactory;
  * should be handled, and it can handle both local and remote files as sources
  * and destinations. Files can be moved, copied or checked for existence.
  * 
+ * TODO - this class is not thread safe at the moment. This needs to be updated 
+ * with either Atomic or synchronized thread safety.
+ * 
  * @author Jay Jay Billings, Joe Osborn
  *
  */

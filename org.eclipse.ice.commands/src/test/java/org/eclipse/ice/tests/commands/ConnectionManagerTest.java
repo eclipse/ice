@@ -11,13 +11,13 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import static org.junit.Assert.fail;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
+import org.eclipse.ice.commands.Connection;
+import org.eclipse.ice.commands.ConnectionConfiguration;
+import org.eclipse.ice.commands.ConnectionManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.jcraft.jsch.JSchException;
 
 /**
  * Test for class {@link org.eclipse.ice.commands.ConnectionManager}.
@@ -28,79 +28,84 @@ import org.junit.Test;
 public class ConnectionManagerTest {
 
 	/**
+	 * A dummy connection to perform a few tests with
+	 */
+	static Connection connect = null;
+	
+	/**
+	 * A name for the dummy connection
+	 */
+	static String connectionName = "TestConnection";
+	
+	/**
+	 * This function makes a test connection with which to play with
+	 * 
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		ConnectionConfiguration configuration = new ConnectionConfiguration();
+
+		
+
+		configuration.setHostname("denisovan");
+		configuration.setUsername("dummy");
+		configuration.promptPassword("Enter your password");
+		configuration.setName(connectionName);
+
+		try {
+			connect = ConnectionManager.openConnection(configuration);
+		} catch (JSchException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	/**
-	 * @throws java.lang.Exception
+	 * Function that performs all of the tests below to ensure that they are performed in order
 	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
 	@Test
 	public void test() {
-	}
-
-	/**
-	 * Test method for
-	 * {@link org.eclipse.ice.commands.ConnectionManager#ConnectionManager()}
-	 */
-	@Test
-	public void testConnectionManager() {
-		fail("Not yet implemented");
+		testOpenConnection();
+		
+		testGetConnection();
+		
+		testCloseConnection();
+		
 	}
 
 	/**
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.ConnectionManager#OpenConnection(String)}
 	 */
-	@Test
 	public void testOpenConnection() {
-		fail("Not yet implemented");
+
+		// If connect is not null and there was no error thrown, it was established
+		// correctly
+		assert (connect != null);
+
 	}
 
 	/**
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.ConnectionManager#GetConnection(String)}
 	 */
-	@Test
 	public void testGetConnection() {
-		fail("Not yet implemented");
+		Connection testConnection = ConnectionManager.getConnection(connectionName);
+		
+		assert(testConnection != null);
 	}
 
 	/**
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.ConnectionManager#CloseConnection(String)}
 	 */
-	@Test
 	public void testCloseConnection() {
-		fail("Not yet implemented");
+		// disconnect the session
+		ConnectionManager.closeConnection(connectionName);
+		
+		assert(!ConnectionManager.getConnection(connectionName).getSession().isConnected());
 	}
 
-	/**
-	 * Test method for
-	 * {@link org.eclipse.ice.commands.ConnectionManager#CloseAllConnections()}
-	 */
-	@Test
-	public void testCloseAllConnection() {
-		fail("Not yet implemented");
-	}
+	
 }

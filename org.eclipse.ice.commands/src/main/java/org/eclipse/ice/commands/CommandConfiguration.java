@@ -88,7 +88,8 @@ public class CommandConfiguration {
 	private String workingDirectory;
 
 	/**
-	 * The operating system that the command will be run on. Set as a default to the local OS
+	 * The operating system that the command will be run on. Set by default to the
+	 * local OS
 	 */
 	private String os;
 	/**
@@ -453,8 +454,7 @@ public class CommandConfiguration {
 	}
 
 	/**
-	 * Getter for os, see
-	 * {@link org.eclipse.ice.commands.CommandConfiguration#os}
+	 * Getter for os, see {@link org.eclipse.ice.commands.CommandConfiguration#os}
 	 * Note that this is set to the default of the local OS
 	 * 
 	 * @return os

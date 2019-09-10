@@ -12,6 +12,10 @@
 package org.eclipse.ice.commands;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
+
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
 
 /**
  * This factory class manages remote connections, and as such interfaces with
@@ -25,7 +29,7 @@ public class ConnectionManager {
 	/**
 	 * An ArrayList of available Connections to the ConnectionManager
 	 */
-	protected ArrayList<Connection> connectionList = new ArrayList<Connection>();
+	protected static ArrayList<Connection> connectionList = new ArrayList<Connection>();
 
 	/**
 	 * Default Constructor
@@ -35,24 +39,70 @@ public class ConnectionManager {
 	}
 
 	/**
-	 * Opens, and thus begins, a connection to either a remote system or process
+	 * Opens, and thus begins, a connection to a remote system
 	 * 
 	 * @param connection - connection to be opened
 	 * @return Connection - returns connection
 	 */
-	public static Connection openConnection(String connection) {
-		return null;
+	public static Connection openConnection(ConnectionConfiguration config) throws JSchException {
+		AtomicReference<ConnectionConfiguration> atomicConfig = new AtomicReference<ConnectionConfiguration>(config);
+
+		// The new connection to be opened
+		Connection newConnection = new Connection(atomicConfig);
+
+		// Create the shell
+		newConnection.setJShellSession(new JSch());
+
+		// Get the information necessary to open the connection
+		if (newConnection.getConfiguration() != null) {
+			String username = newConnection.getConfiguration().getUsername();
+			String hostname = newConnection.getConfiguration().getHostname();
+
+			// Try go get and open the new session
+			try {
+				newConnection.setSession(newConnection.getJShellSession().getSession(username, hostname));
+			} catch (JSchException e) {
+				throw new JSchException();
+			}
+			// Set the password
+			newConnection.getSession().setPassword(config.getPassword());
+
+			// Set the authentication requirements
+			newConnection.getSession().setConfig("StrictHostKeyChecking", "no");
+			newConnection.getSession().setConfig("PreferredAuthentications", "password");
+
+			// Connect the session
+			try {
+				newConnection.getSession().connect();
+			} catch (JSchException e) {
+				throw new JSchException();
+			}
+
+			// Add the connection to the list
+			connectionList.add(newConnection);
+
+			// Upon success, return the opened connection
+			return newConnection;
+		}
+		// If the connectionConfiguration was not properly specified, return null
+		else
+			return null;
 	}
 
 	/**
-	 * Gets the connection from an already opened connection.
+	 * This function finds the particular connection requested by name in the list
+	 * of all connections and returns it.
 	 * 
-	 * @param connection - connection to be returned having already been
-	 *                   instantiated
-	 * @return Connection - returns connection asked for
+	 * @param connectionName - name of connection to search for
+	 * @return
 	 */
-	public static Connection getConnection(String connection) {
-		return null;
+	public static Connection getConnection(String connectionName) {
+		Connection returnConnection = null;
+		for (int i = 0; i < connectionList.size(); i++) {
+			if (connectionList.get(i).getConfiguration().getName().equals(connectionName))
+				returnConnection = connectionList.get(i);
+		}
+		return returnConnection;
 	}
 
 	/**
@@ -62,9 +112,15 @@ public class ConnectionManager {
 	 * @return boolean - returns true if connection was successfully closed,
 	 *         otherwise false
 	 */
-	public boolean closeConnection(Connection connection) {
+	public static void closeConnection(String connectionName) {
 
-		return false;
+		// Get the connection that was passed
+		Connection connection = getConnection(connectionName);
+
+		// Disconnect the session. If the session was not connected in the first place,
+		// it does nothing
+		connection.getSession().disconnect();
+		return;
 	}
 
 	/**
@@ -72,8 +128,11 @@ public class ConnectionManager {
 	 * 
 	 * @return - true if successfully closed all connections, otherwise false
 	 */
-	public boolean closeAllConnections() {
-		return false;
+	public static void closeAllConnections() {
+		for (int i = 0; i < connectionList.size(); i++) {
+			connectionList.get(i).getSession().disconnect();
+		}
+		return;
 	}
 
 }

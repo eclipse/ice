@@ -112,7 +112,11 @@ public abstract class Command {
 	 * @return CommandStatus - indicates whether or not the Command was properly
 	 *         cancelled.
 	 */
-	public abstract CommandStatus cancel();
+	
+	public CommandStatus cancel() {
+		status = CommandStatus.CANCELED;
+		return status;
+	}
 
 	/**
 	 * This function returns the status for a particular command at a given time in

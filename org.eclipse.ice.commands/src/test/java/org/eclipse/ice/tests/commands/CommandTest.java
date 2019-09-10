@@ -36,6 +36,13 @@ public class CommandTest {
 	@Test
 	public void testLocalCommand() {
 
+		// Get the present working directory
+		String pwd = System.getProperty("user.dir");
+		
+		// Add the following directories where the tests live
+		pwd += "/src/test/java/org/eclipse/ice/tests/commands/";
+		
+		
 		// Set the CommandConfiguration class
 		CommandConfiguration commandConfig = new CommandConfiguration();
 		commandConfig.setCommandId(1);
@@ -44,10 +51,10 @@ public class CommandTest {
 		commandConfig.setErrFileName("someErrFile.txt");
 		commandConfig.setOutFileName("someOutFile.txt");
 		commandConfig.setInstallDirectory("");
-		commandConfig.setWorkingDirectory("/Users/4jo/git/icefork2/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands");
+		commandConfig.setWorkingDirectory(pwd);
 		commandConfig.setAppendInput(true);
 		commandConfig.setNumProcs("1");
-		
+		commandConfig.setOS("osx");
 		// Use the function already defined in the command factory to get the
 		// local host name
 		CommandFactoryTest factory = new CommandFactoryTest();

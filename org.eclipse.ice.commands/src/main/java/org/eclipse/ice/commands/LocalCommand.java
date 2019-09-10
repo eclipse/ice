@@ -42,6 +42,10 @@ public class LocalCommand extends Command {
 
 		status = CommandStatus.PROCESSING;
 
+		// If commandConfig wasn't set properly, the job can't run
+		if (commandConfig == null)
+			status = CommandStatus.FAILED;
+		
 		// Set the connection for the local command, which is only relevant for
 		// accessing the hostname of the local computer
 		connectionConfig = _connection;
@@ -54,9 +58,7 @@ public class LocalCommand extends Command {
 		// files (e.g. for debugging purposes).
 		commandConfig.setHostname(connectionConfig.getHostname());
 
-		// If commandConfig wasn't set properly, the job can't run
-		if (commandConfig == null)
-			status = CommandStatus.FAILED;
+		
 	}
 
 	/**

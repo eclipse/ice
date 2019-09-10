@@ -19,7 +19,7 @@ import org.junit.Test;
 /**
  * This class tests {@link org.eclipse.ice.commands.Connection}.
  * 
- * @author Jay Jay Billings
+ * @author Joe Osborn, Jay Jay Billings
  *
  */
 public class ConnectionTest {
@@ -36,7 +36,7 @@ public class ConnectionTest {
 	 */
 	@Test
 	public void testConnection() {
-		fail("Not yet implemented");
+		fail("not yet implemented");
 	}
 
 }

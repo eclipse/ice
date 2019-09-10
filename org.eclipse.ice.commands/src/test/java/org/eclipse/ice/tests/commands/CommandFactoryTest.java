@@ -89,7 +89,7 @@ public class CommandFactoryTest {
 		commandConfig.setInstallDirectory("");
 		commandConfig.setWorkingDirectory(pwd);
 		commandConfig.setAppendInput(true);
-
+		commandConfig.setOS("osx");
 		ConnectionConfiguration connectionConfig = new ConnectionConfiguration(hostname);
 
 		// Get the command
@@ -167,7 +167,7 @@ public class CommandFactoryTest {
 		commandConfiguration.setInstallDirectory("~/installDir");
 		commandConfiguration.setWorkingDirectory("~/some_nonexistent_directory");
 		commandConfiguration.setAppendInput(true);
-
+		commandConfiguration.setOS("osx");
 		ConnectionConfiguration connectConfig = new ConnectionConfiguration(hostname);
 		// Get the command
 		Command localCommand2 = null;

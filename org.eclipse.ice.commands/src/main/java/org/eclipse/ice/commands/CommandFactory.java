@@ -56,14 +56,14 @@ public class CommandFactory {
 		Command command = null;
 
 		// If no host was provided, we don't know where to run the job
-		if (connectionConfig.hostname == null) {
+		if (connectionConfig.getHostname() == null) {
 			logger.error(
 					"You didn't provide a hostname in the ConnectionConfiguration for the job to run on! Exiting.");
 			throw new IOException();
 		}
 
 		// If the host is local, get a LocalCommand. Otherwise, RemoteCommand
-		if (isLocal(connectionConfig.hostname)) {
+		if (isLocal(connectionConfig.getHostname())) {
 			command = new LocalCommand(connectionConfig, commandConfig);
 		} else {
 			command = new RemoteCommand(connectionConfig, commandConfig);

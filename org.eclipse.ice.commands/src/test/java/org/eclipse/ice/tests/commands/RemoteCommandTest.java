@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import static org.junit.Assert.fail;
-
 import java.util.HashMap;
 
 import org.eclipse.ice.commands.CommandConfiguration;
@@ -20,9 +18,7 @@ import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.RemoteCommand;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -37,7 +33,7 @@ public class RemoteCommandTest {
 	HashMap<String, String> executableDictionary;
 	
 	String host = "somehost";
-	String username = "someusername";
+	String username = "denisovan";
 	String password = "p@55w0rd";
 	
 	CommandConfiguration commandConfig; 
@@ -48,34 +44,10 @@ public class RemoteCommandTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		
-		// Set up some default instance variables
-		executableDictionary = new HashMap<String, String>();
-		executableDictionary.put("executable", "someExecutable.sh ${installDir}");
-		executableDictionary.put("inputFile", "someInputFile.txt");
-		executableDictionary.put("stdOutFileName", "someOutFile.txt");
-		executableDictionary.put("stdErrFileName", "someErrFile.txt");
-		executableDictionary.put("installDir", "~/install");
-		executableDictionary.put("numProcs", "1");
-		executableDictionary.put("os", "OSX");
-		executableDictionary.put("workingDirectory", "/");
-		
+	
 		commandConfig = new CommandConfiguration();
 		
 		commandConfig.setCommandId(0);
@@ -88,7 +60,7 @@ public class RemoteCommandTest {
 		commandConfig.setAppendInput(true);
 		commandConfig.setNumProcs("1");
 		
-		connectConfig = new ConnectionConfiguration(username, password, host);
+		connectConfig = new ConnectionConfiguration();
 	}
 
 	/**
@@ -98,13 +70,11 @@ public class RemoteCommandTest {
 	public void tearDown() throws Exception {
 	}
 
-	@Test
-	public void test() {
-	}
 
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.RemoteCommand()}
 	 */
+	@Test
 	public void testRemoteCommand() {
 		System.out.println("Testing remote command configuration");
 		
@@ -113,11 +83,28 @@ public class RemoteCommandTest {
 		
 		CommandStatus status = command.getStatus();
 		
-		assert ( status == CommandStatus.RUNNING );
+		assert ( status == CommandStatus.PROCESSING );
 		
 		System.out.println("Finished remote command configuration test.");
 	}
 
+	/**
+	 * This tests that the job status is set to failed if an incorrect connection is established.
+	 */
+	@Test
+	public void testFailedConnectionRemoteCommand() {
+		System.out.println("Testing remote command with a bad connection");
+		
+		connectConfig.setUsername("someBadUsername");
+		connectConfig.setHostname("someBadHostname");
+		connectConfig.setPassword("someBadPassword");
+		
+		RemoteCommand command = new RemoteCommand(connectConfig, commandConfig);
+
+		CommandStatus status = command.execute();
+		
+		assert(status == CommandStatus.INFOERROR);
+	}
 	
 	/**
 	 * Test method for executing remote command
@@ -134,19 +121,5 @@ public class RemoteCommandTest {
 		 System.out.println("Finished testing remote command execute");
 	}
 	
-	/**
-	 * Test method for
-	 * {@link org.eclipse.ice.commands.RemoteCommand#SetConnection(String)}
-	 */
-	public void testSetConnection() {
-		fail("Not yet implemented");
-	}
 
-	/**
-	 * Test method for
-	 * {@link org.eclipse.ice.commans.RemoteCommand#GetConnection(String)}
-	 */
-	public void testGetConnection() {
-		fail("Not yet implemented");
-	}
 }

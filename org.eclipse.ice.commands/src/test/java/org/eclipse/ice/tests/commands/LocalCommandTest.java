@@ -36,7 +36,7 @@ public class LocalCommandTest {
 	String procs = "1";
 	String installDir = "~/install";
 	String workingDirectory = "/";
-
+	String os = System.getProperty("os.name");
 	/**
 	 * Put these in a command configuration instance to use
 	 */
@@ -72,6 +72,7 @@ public class LocalCommandTest {
 		commandConfig.setWorkingDirectory(workingDirectory);
 		commandConfig.setAppendInput(true);
 		commandConfig.setNumProcs(procs);
+		commandConfig.setOS(os);
 	}
 
 	/**
@@ -116,6 +117,7 @@ public class LocalCommandTest {
 		badConfig.setWorkingDirectory("somedirectory");
 		badConfig.setAppendInput(true);
 		badConfig.setNumProcs("1");
+		badConfig.setOS(os);
 		
 		LocalCommand testCommand = new LocalCommand(connection, badConfig);
 

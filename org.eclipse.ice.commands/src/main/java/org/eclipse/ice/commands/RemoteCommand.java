@@ -12,6 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
+
 /**
  * This class inherits from Command and gives available functionality for remote
  * commands. These could be ssh connections or a remote process.
@@ -25,7 +34,7 @@ public class RemoteCommand extends Command {
 	 * The particular connection associated to a particular RemoteCommand. Declare
 	 * this up front since by definition a RemoteCommand must have a connection.
 	 */
-	Connection connection = new Connection();
+	protected Connection connection = new Connection();
 
 	/**
 	 * Default constructor
@@ -44,33 +53,57 @@ public class RemoteCommand extends Command {
 	 */
 	public RemoteCommand(ConnectionConfiguration connectConfig, CommandConfiguration _commandConfig) {
 		commandConfig = _commandConfig;
-		connection = new Connection(connectConfig);
+		// Open and set the connection
+		try {
+			connection = ConnectionManager.openConnection(connectConfig);
+		} catch (JSchException e) {
+			e.printStackTrace();
+		}
+
+		// Set the commandConfig hostname to that of the connectionConfig - only used
+		// for output info
+		commandConfig.setHostname(connectConfig.getHostname());
+		status = CommandStatus.PROCESSING;
 	}
 
-	@Override
 	/**
 	 * Method that overrides Commmand:Execute and actually implements the particular
 	 * RemoteCommand to be executed.
 	 */
+	@Override
 	public CommandStatus execute() {
-		return null;
-	}
+		// Check that the commandConfig and connectConfig were properly instantiated in
+		// the
+		// constructor
+		try {
+			checkStatus(status);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-	@Override
-	/**
-	 * Method that overrides Commmand:Cancel and actually implements the particular
-	 * RemoteCommand to be cancelled.
-	 */
-	public CommandStatus cancel() {
-		return null;
-	}
+		// Configure the command to be ready to run.
+		status = setConfiguration();
 
-	/**
-	 * See {@link org.eclipse.ice.commands.Command#launch()}
-	 */
-	@Override
-	protected CommandStatus setConfiguration(CommandConfiguration config) {
-		return null;
+		// Ensure that the command was properly configured
+		try {
+			checkStatus(status);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Ensure that the connection was properly configured
+		try {
+			checkStatus(status);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Now that all of the prerequisites have been set, start the job running
+		status = run();
+
+		// Confirm the job finished with some status
+		logger.info("The job finished with status: " + status);
+		return status;
 	}
 
 	/**
@@ -79,7 +112,65 @@ public class RemoteCommand extends Command {
 	@Override
 	protected CommandStatus run() {
 
+		logger.info("Transferring files to remote host");
+		try {
+			status = transferFiles();
+		} catch (SftpException e) {
+			logger.error("Could not upload the input file to the remote host");
+			e.printStackTrace();
+		} catch (JSchException e) {
+			logger.error("Session disconnected and could not upload the input file to the remote host");
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			logger.error("Input file not found! Could not upload to the remote host");
+			e.printStackTrace();
+		}
+
+		// Setup the list of all of the commands that will be launched. JSch can not
+		// launch multiple commands at once, so we need to take the splitCommand and 
+		// cd to the correct working directory in front and then actually perform 
+		// the execution. The commands are then split by the semi-colon
+		ArrayList<String> completeCommands = new ArrayList<String>();
+		for (String i : commandConfig.getSplitCommand()) {
+			completeCommands.add("cd " + commandConfig.getWorkingDirectory() + "; " + i);
+		}
+
+		// Now loop over all commands and run them via JSch
+		for (int i = 0; i < completeCommands.size(); i++) {
+			
+		}
+
 		return status;
+	}
+
+	/**
+	 * This function is responsible for transferring the files to the remote host
+	 * 
+	 * @return - CommandStatus indicating that the transfer was successful (or not)
+	 * @throws SftpException
+	 * @throws JSchException
+	 * @throws FileNotFoundException
+	 */
+	protected CommandStatus transferFiles() throws SftpException, JSchException, FileNotFoundException {
+
+		ChannelSftp sftpChannel = (ChannelSftp) connection.getSession().openChannel("sftp");
+		sftpChannel.connect();
+
+		logger.info("Make the working directory at: " + commandConfig.getWorkingDirectory());
+		sftpChannel.mkdir(commandConfig.getWorkingDirectory());
+		sftpChannel.cd(commandConfig.getWorkingDirectory());
+
+		// Fix the inputFile name for remote machines
+		String shortInputName = commandConfig.getInputFile();
+		if (shortInputName.contains("/"))
+			shortInputName = shortInputName.substring(shortInputName.lastIndexOf("/") + 1);
+		else if (shortInputName.contains("\\"))
+			shortInputName = shortInputName.substring(shortInputName.lastIndexOf("\\") + 1);
+
+		sftpChannel.put(new FileInputStream(commandConfig.getInputFile()), shortInputName);
+
+		sftpChannel.disconnect();
+		return CommandStatus.RUNNING;
 	}
 
 	/**
@@ -87,14 +178,14 @@ public class RemoteCommand extends Command {
 	 * 
 	 * @param connection - the connection for this command
 	 */
-	public void setConnection(String connection) {
-
+	public void setConnection(Connection _connection) {
+		connection = _connection;
 	}
 
 	/**
 	 * Return the connection associated to this RemoteCommand
 	 * 
-	 * @return - the connection for this command
+	 * @return - {@link org.eclipse.ice.commands.RemoteCommand#connection}
 	 */
 	public Connection getConnection() {
 

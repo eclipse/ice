@@ -82,7 +82,7 @@ public class CommandFactoryExample {
 		commandConfig.setInstallDirectory("");
 		commandConfig.setWorkingDirectory(pwd);
 		commandConfig.setAppendInput(true);
-		
+		commandConfig.setOS(System.getProperty("os.name"));
 	
 		// Make a ConnectionConfiguration to indicate that we want to run locally
 		ConnectionConfiguration connectionConfig = new ConnectionConfiguration(hostname);
