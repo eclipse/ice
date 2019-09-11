@@ -183,7 +183,7 @@ public class ConnectionManager {
 			// If we can't get the password from the console, warn the user
 			logger.warn(
 					"Warning: You are probably running in an IDE where the password input will be shown on your console. "
-					+ "\n Make sure nobody is looking over your shoulder!");
+							+ "\n Make sure nobody is looking over your shoulder!");
 
 			Scanner scanner = new Scanner(System.in);
 			pwd = scanner.nextLine().toCharArray();

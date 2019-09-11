@@ -73,8 +73,7 @@ public class RemoteCommand extends Command {
 	@Override
 	public CommandStatus execute() {
 		// Check that the commandConfig and connectConfig were properly instantiated in
-		// the
-		// constructor
+		// the constructor
 		try {
 			checkStatus(status);
 		} catch (IOException e) {
@@ -85,13 +84,6 @@ public class RemoteCommand extends Command {
 		status = setConfiguration();
 
 		// Ensure that the command was properly configured
-		try {
-			checkStatus(status);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Ensure that the connection was properly configured
 		try {
 			checkStatus(status);
 		} catch (IOException e) {

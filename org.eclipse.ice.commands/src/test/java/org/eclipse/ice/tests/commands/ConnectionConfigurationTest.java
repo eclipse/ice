@@ -11,7 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import org.eclipse.ice.commands.ConnectionConfiguration;
+import static org.junit.Assert.fail;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -30,18 +31,8 @@ public class ConnectionConfigurationTest {
 	public static void setUpBeforeClass() throws Exception {
 	}
 
-	/**
-	 * Test method for
-	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#promptPassword(String)}.
-	 */
 	@Test
-	public void testPromptPassword() {
-
-		ConnectionConfiguration config = new ConnectionConfiguration();
-
-		config.promptPassword("Enter the password, which is 'password'");
-
-		assert (config.getPassword().equals("password"));
-
+	public static void test() {
+		fail("not yet implemented");
 	}
 }

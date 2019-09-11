@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import java.io.File;
+import java.util.Scanner;
+
 import org.eclipse.ice.commands.Connection;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
@@ -20,7 +23,12 @@ import org.junit.Test;
 import com.jcraft.jsch.JSchException;
 
 /**
- * Test for class {@link org.eclipse.ice.commands.ConnectionManager}.
+ * Test for class {@link org.eclipse.ice.commands.ConnectionManager}. Note that
+ * in order to run the tests you need to create your own dummy config file which
+ * contains the username and hostname information for your own ssh connection.
+ * The config file should be a plain txt file with the first line as the
+ * hostname and the second line as the username. Your password will be prompted
+ * for when running the tests
  * 
  * @author Joe Osborn
  *
@@ -31,12 +39,12 @@ public class ConnectionManagerTest {
 	 * A dummy connection to perform a few tests with
 	 */
 	static Connection connect = null;
-	
+
 	/**
 	 * A name for the dummy connection
 	 */
 	static String connectionName = "TestConnection";
-	
+
 	/**
 	 * This function makes a test connection with which to play with
 	 * 
@@ -46,10 +54,14 @@ public class ConnectionManagerTest {
 	public static void setUpBeforeClass() throws Exception {
 		ConnectionConfiguration configuration = new ConnectionConfiguration();
 
-		
-
-		configuration.setHostname("denisovan");
-		configuration.setUsername("4jo");
+		// Read in a dummy configuration file that contains credentials
+		File file = new File("/Users/4jo/ssh_config.txt");
+		Scanner scanner = new Scanner(file);
+		scanner.useDelimiter("\n");
+		String hostname = scanner.next();
+		String username = scanner.next();
+		configuration.setHostname(hostname);
+		configuration.setUsername(username);
 		configuration.setName(connectionName);
 
 		try {
@@ -61,16 +73,17 @@ public class ConnectionManagerTest {
 	}
 
 	/**
-	 * Function that performs all of the tests below to ensure that they are performed in order
+	 * Function that performs all of the tests below to ensure that they are
+	 * performed in order
 	 */
 	@Test
 	public void test() {
 		testOpenConnection();
-		
+
 		testGetConnection();
-		
+
 		testCloseConnection();
-		
+
 	}
 
 	/**
@@ -91,8 +104,8 @@ public class ConnectionManagerTest {
 	 */
 	public void testGetConnection() {
 		Connection testConnection = ConnectionManager.getConnection(connectionName);
-		
-		assert(testConnection != null);
+
+		assert (testConnection != null);
 	}
 
 	/**
@@ -102,13 +115,8 @@ public class ConnectionManagerTest {
 	public void testCloseConnection() {
 		// disconnect the session
 		ConnectionManager.closeConnection(connectionName);
-		
-		assert(!ConnectionManager.getConnection(connectionName).getSession().isConnected());
+
+		assert (!ConnectionManager.getConnection(connectionName).getSession().isConnected());
 	}
 
-	
-	
-	
-	
-	
 }

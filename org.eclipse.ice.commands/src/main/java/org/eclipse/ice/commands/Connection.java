@@ -87,6 +87,7 @@ public class Connection {
 
 	/**
 	 * Set the JShell session {@link org.eclipse.ice.commands.Connection#jShell}
+	 * 
 	 * @param jsch
 	 */
 	public void setJShellSession(JSch jsch) {
@@ -95,6 +96,7 @@ public class Connection {
 
 	/**
 	 * Get the JShellSession {@link org.eclipse.ice.commands.Connection#jShell}
+	 * 
 	 * @return
 	 */
 	public JSch getJShellSession() {
@@ -103,6 +105,7 @@ public class Connection {
 
 	/**
 	 * Set the channel {@link org.eclipse.ice.commands.Connection#channel}
+	 * 
 	 * @param _channel
 	 */
 	public void setChannel(Channel _channel) {
@@ -111,6 +114,7 @@ public class Connection {
 
 	/**
 	 * Get the channel {@link org.eclipse.ice.commands.Connection#channel}
+	 * 
 	 * @return
 	 */
 	public Channel getChannel() {
@@ -128,6 +132,7 @@ public class Connection {
 
 	/**
 	 * Set the session {@link org.eclipse.ice.commands.Connection#session}
+	 * 
 	 * @param _session
 	 */
 	public void setSession(Session _session) {
