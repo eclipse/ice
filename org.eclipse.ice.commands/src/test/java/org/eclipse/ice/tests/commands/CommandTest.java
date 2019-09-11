@@ -59,8 +59,9 @@ public class CommandTest {
 		// local host name
 		CommandFactoryTest factory = new CommandFactoryTest();
 		String hostname = factory.getLocalHostname();
-		ConnectionConfiguration connection = new ConnectionConfiguration(hostname);
-
+		ConnectionConfiguration connection = new ConnectionConfiguration();
+		connection.setHostname(hostname);
+		
 		Command localCommand = new LocalCommand(connection, commandConfig);
 		CommandStatus status = localCommand.execute();
 

@@ -90,7 +90,8 @@ public class CommandFactoryTest {
 		commandConfig.setWorkingDirectory(pwd);
 		commandConfig.setAppendInput(true);
 		commandConfig.setOS("osx");
-		ConnectionConfiguration connectionConfig = new ConnectionConfiguration(hostname);
+		ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
+		connectionConfig.setHostname(hostname);
 
 		// Get the command
 		Command localCommand = null;
@@ -125,7 +126,8 @@ public class CommandFactoryTest {
 		// Set the CommandConfiguration class
 		CommandConfiguration commandConfig = new CommandConfiguration();
 
-		ConnectionConfiguration connectConfig = new ConnectionConfiguration(hostname);
+		ConnectionConfiguration connectConfig = new ConnectionConfiguration();
+		connectConfig.setHostname(hostname);
 		// Get the command
 		Command localCommand = null;
 		try {
@@ -168,7 +170,8 @@ public class CommandFactoryTest {
 		commandConfiguration.setWorkingDirectory("~/some_nonexistent_directory");
 		commandConfiguration.setAppendInput(true);
 		commandConfiguration.setOS("osx");
-		ConnectionConfiguration connectConfig = new ConnectionConfiguration(hostname);
+		ConnectionConfiguration connectConfig = new ConnectionConfiguration();
+		connectConfig.setHostname(hostname);
 		// Get the command
 		Command localCommand2 = null;
 		try {

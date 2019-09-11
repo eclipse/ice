@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
-import java.util.Scanner;
-
 import com.jcraft.jsch.UIKeyboardInteractive;
 import com.jcraft.jsch.UserInfo;
 
@@ -30,10 +28,6 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 	 */
 	private String username = "";
 
-	/**
-	 * The password for establishing a connection
-	 */
-	private String password = "";
 	/**
 	 * The hostname on which to host the particular session, or where the
 	 * RemoteCommand will eventually be run
@@ -53,16 +47,6 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 	}
 
 	/**
-	 * Constructor which takes a particular hostname. Useful for local command
-	 * execution since a username/password is unnecessary.
-	 * 
-	 * @param hname - hostname
-	 */
-	public ConnectionConfiguration(String hname) {
-		hostname = hname;
-	}
-
-	/**
 	 * Setter function for
 	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#username}
 	 * 
@@ -70,16 +54,6 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 	 */
 	public void setUsername(String uname) {
 		username = uname;
-	}
-
-	/**
-	 * Setter function for
-	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#password}
-	 * 
-	 * @param pwd
-	 */
-	public void setPassword(String pwd) {
-		password = pwd;
 	}
 
 	/**
@@ -140,7 +114,7 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 	 * Inherited function from UserInfo
 	 */
 	public String getPassword() {
-		return password;
+		return null;
 	}
 
 	/**
@@ -151,26 +125,10 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 	}
 
 	/**
-	 * Inherited function from UserInfo that prompts for the password to be entered
+	 * Inherited function from UserInfo
 	 */
 	public boolean promptPassword(String message) {
-		System.out.println(message);
-		String pass = "";
-
-		// Get a scanner to input the passphrase from the user
-		Scanner user_input = new Scanner(System.in);
-		pass = user_input.next();
-
-		// Set the password to the input
-		password = pass;
-
-		// Close the input stream
-		user_input.close();
-
-		// Return true. If the passphrase was input incorrectly from the user, then the
-		// connection will not be able to be established and the job will catch this in
-		// {@link org.eclipse.ice.commands.Connection#connectionSession()}
-		return true;
+		return false;
 	}
 
 	/**

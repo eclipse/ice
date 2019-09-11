@@ -49,8 +49,7 @@ public class ConnectionManagerTest {
 		
 
 		configuration.setHostname("denisovan");
-		configuration.setUsername("dummy");
-		configuration.promptPassword("Enter your password");
+		configuration.setUsername("4jo");
 		configuration.setName(connectionName);
 
 		try {
@@ -107,5 +106,9 @@ public class ConnectionManagerTest {
 		assert(!ConnectionManager.getConnection(connectionName).getSession().isConnected());
 	}
 
+	
+	
+	
+	
 	
 }

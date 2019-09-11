@@ -97,7 +97,6 @@ public class RemoteCommandTest {
 		
 		connectConfig.setUsername("someBadUsername");
 		connectConfig.setHostname("someBadHostname");
-		connectConfig.setPassword("someBadPassword");
 		
 		RemoteCommand command = new RemoteCommand(connectConfig, commandConfig);
 

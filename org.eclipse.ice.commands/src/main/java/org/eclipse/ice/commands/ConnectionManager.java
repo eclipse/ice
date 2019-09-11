@@ -11,8 +11,14 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
+import java.io.Console;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -30,6 +36,11 @@ public class ConnectionManager {
 	 * An ArrayList of available Connections to the ConnectionManager
 	 */
 	protected static ArrayList<Connection> connectionList = new ArrayList<Connection>();
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	protected static final Logger logger = LoggerFactory.getLogger(CommandFactory.class);
 
 	/**
 	 * Default Constructor
@@ -53,6 +64,7 @@ public class ConnectionManager {
 		// Create the shell
 		newConnection.setJShellSession(new JSch());
 
+		logger.info("Trying to open the connection");
 		// Get the information necessary to open the connection
 		if (newConnection.getConfiguration() != null) {
 			String username = newConnection.getConfiguration().getUsername();
@@ -62,10 +74,18 @@ public class ConnectionManager {
 			try {
 				newConnection.setSession(newConnection.getJShellSession().getSession(username, hostname));
 			} catch (JSchException e) {
+				logger.error("Couldn't open session with given username and hostname. Exiting.");
 				throw new JSchException();
 			}
-			// Set the password
-			newConnection.getSession().setPassword(config.getPassword());
+
+			// Get the password
+			char[] pwd = getPassword();
+
+			// Pass it to the session
+			newConnection.getSession().setPassword(String.valueOf(pwd));
+
+			// Erase contents of pwd and fill with null
+			Arrays.fill(pwd, Character.MIN_VALUE);
 
 			// Set the authentication requirements
 			newConnection.getSession().setConfig("StrictHostKeyChecking", "no");
@@ -75,12 +95,14 @@ public class ConnectionManager {
 			try {
 				newConnection.getSession().connect();
 			} catch (JSchException e) {
+				logger.error("Couldn't connect to session with given password. Exiting.");
 				throw new JSchException();
 			}
 
 			// Add the connection to the list
 			connectionList.add(newConnection);
 
+			logger.info("Connection at " + username + "@" + hostname + " established successfully");
 			// Upon success, return the opened connection
 			return newConnection;
 		}
@@ -133,6 +155,42 @@ public class ConnectionManager {
 			connectionList.get(i).getSession().disconnect();
 		}
 		return;
+	}
+
+	/**
+	 * This function gets the password from the user as a prompt. It tries to use
+	 * the Console class to get the password, but this does not work in an IDE. If
+	 * the code is being run in an IDE, it will get the password from the usual
+	 * input method but this will be displayed on the console screen, so make sure
+	 * that nobody looks over your shoulder while typing it in. The function also
+	 * encrypts the password and puts the encryption in ConnectionConfiguration
+	 * 
+	 * @param prompt - Message to display to prompt password
+	 * @return
+	 * @throws Exception
+	 */
+	private static final char[] getPassword() {
+
+		// Try to get the password with a console, if being run outside of an IDE
+		// This is superior since the readPassword function does not display the text to
+		// the console
+		logger.info("Enter your password. Connection won't proceed until you do so: ");
+		Console cnsl = System.console();
+		char[] pwd;
+		if (cnsl != null)
+			pwd = System.console().readPassword();
+		else {
+			// If we can't get the password from the console, warn the user
+			logger.warn(
+					"Warning: You are probably running in an IDE where the password input will be shown on your console. "
+					+ "\n Make sure nobody is looking over your shoulder!");
+
+			Scanner scanner = new Scanner(System.in);
+			pwd = scanner.nextLine().toCharArray();
+			scanner.close();
+		}
+
+		return pwd;
 	}
 
 }

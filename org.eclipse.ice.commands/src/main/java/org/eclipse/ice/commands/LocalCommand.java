@@ -42,17 +42,20 @@ public class LocalCommand extends Command {
 
 		status = CommandStatus.PROCESSING;
 
+		// Set the configuration for the command
+		commandConfig = _configuration;
+
 		// If commandConfig wasn't set properly, the job can't run
-		if (commandConfig == null)
+		if (commandConfig == null) 
 			status = CommandStatus.FAILED;
+		
 		
 		// Set the connection for the local command, which is only relevant for
 		// accessing the hostname of the local computer
 		connectionConfig = _connection;
 
-		// Set the configuration for the command
-		commandConfig = _configuration;
-
+	
+		
 		// Make sure both commandConfig and connectionConfig have the same
 		// hostname, since commandConfig needs the hostname for several output
 		// files (e.g. for debugging purposes).

@@ -61,8 +61,9 @@ public class LocalCommandTest {
 		CommandFactoryTest factory = new CommandFactoryTest();
 		String hostname = factory.getLocalHostname();
 
-		connection = new ConnectionConfiguration(hostname);
-
+		connection = new ConnectionConfiguration();
+		connection.setHostname(hostname);
+		
 		commandConfig.setCommandId(1);
 		commandConfig.setExecutable(executable);
 		commandConfig.setInputFile(inputFile);
@@ -89,7 +90,7 @@ public class LocalCommandTest {
 
 		LocalCommand realCommand = new LocalCommand(connection, commandConfig);
 		CommandStatus testStatus = realCommand.getStatus();
-
+		System.out.println(testStatus);
 		assert (testStatus == CommandStatus.PROCESSING);
 		System.out.println("Finished testConfiguration\n");
 
