@@ -80,13 +80,17 @@ public class CommandTest {
 		ConnectionConfiguration connectConfig = new ConnectionConfiguration();
 		connectConfig.setHostname(hostname);
 		connectConfig.setUsername(username);
-		// Set password to "" to force input of remote connection password at console line
+		// Set password to "" to force input of remote connection password at console
+		// line
 		// for example: connectConfig.setPassword("");
 		connectConfig.setPassword(password);
 		// Give the connection a name
 		connectConfig.setName("dummyConnection");
-		// Tell the connection where you want the executable to be run in the remote system
+		// Tell the connection where you want the executable to be run in the remote
+		// system
 		connectConfig.setWorkingDirectory("/tmp/remoteCommandTestDirectory");
+		// Delete remote working directory after job completion
+		connectConfig.setDeleteWorkingDirectory(true);
 
 		// Make the command and execute it
 		Command remoteCommand = new RemoteCommand(connectConfig, commandConfig);
@@ -94,7 +98,7 @@ public class CommandTest {
 
 		// Assert that it finished correctly
 		assert (status == CommandStatus.SUCCESS);
-	
+
 		// You can get the output in string form if desired
 		String output = remoteCommand.getCommandConfiguration().getStdOutputString();
 		System.out.println(output);

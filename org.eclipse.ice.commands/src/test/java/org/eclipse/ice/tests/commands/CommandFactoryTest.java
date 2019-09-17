@@ -11,9 +11,12 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 import org.eclipse.ice.commands.Command;
 import org.eclipse.ice.commands.CommandConfiguration;
@@ -47,6 +50,19 @@ public class CommandFactoryTest {
 	 */
 	String workingDirectory;
 
+	// Get the present working directory
+	String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
+
+	/**
+	 * A command configuration with which to test
+	 */
+	CommandConfiguration commandConfig = new CommandConfiguration();
+
+	/**
+	 * A connection configuration with which to test
+	 */
+	ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
+
 	public CommandFactoryTest() {
 	}
 
@@ -55,6 +71,23 @@ public class CommandFactoryTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+
+		/**
+		 * Create a CommandConfiguration with the necessary information to execute a
+		 * Command. See {@link org.eclipse.ice.commands.CommandConfiguration} for
+		 * relevant member variables/constructor.
+		 */
+
+		// Set the CommandConfiguration class with some default things that are relevant
+		// for all
+		// the test functions here
+		commandConfig.setExecutable("./test_code_execution.sh");
+		commandConfig.setInputFile("someInputFile.txt");
+		commandConfig.setNumProcs("1");
+		commandConfig.setInstallDirectory("");
+		commandConfig.setWorkingDirectory(pwd);
+		commandConfig.setAppendInput(true);
+		commandConfig.setOS("osx");
 
 	}
 
@@ -66,31 +99,10 @@ public class CommandFactoryTest {
 	@Test
 	public void testFunctionalLocalCommand() {
 
-		/**
-		 * Create a CommandConfiguration with the necessary information to execute a
-		 * Command. See {@link org.eclipse.ice.commands.CommandConfiguration} for
-		 * relevant member variables/constructor.
-		 */
-
-		// Get the present working directory
-		String pwd = System.getProperty("user.dir");
-		
-		// Add the following directories where the tests live
-		pwd += "/src/test/java/org/eclipse/ice/tests/commands/";
-		
-		// Set the CommandConfiguration class
-		CommandConfiguration commandConfig = new CommandConfiguration();
+		// Set some things specific to the local command
 		commandConfig.setCommandId(1);
-		commandConfig.setExecutable("./test_code_execution.sh");
-		commandConfig.setInputFile("someInputFile.txt");
-		commandConfig.setErrFileName("someErrFile.txt");
-		commandConfig.setOutFileName("someOutFile.txt");
-		commandConfig.setNumProcs("1");
-		commandConfig.setInstallDirectory("");
-		commandConfig.setWorkingDirectory(pwd);
-		commandConfig.setAppendInput(true);
-		commandConfig.setOS("osx");
-		ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
+		commandConfig.setErrFileName("someLocalErrFile.txt");
+		commandConfig.setOutFileName("someLocalOutFile.txt");
 		connectionConfig.setHostname(hostname);
 
 		// Get the command
@@ -124,14 +136,14 @@ public class CommandFactoryTest {
 		// Create a command configuration that doesn't have all the necessary
 		// information
 		// Set the CommandConfiguration class
-		CommandConfiguration commandConfig = new CommandConfiguration();
+		CommandConfiguration badCommandConfig = new CommandConfiguration();
 
-		ConnectionConfiguration connectConfig = new ConnectionConfiguration();
-		connectConfig.setHostname(hostname);
+		ConnectionConfiguration badConnectConfig = new ConnectionConfiguration();
+		badConnectConfig.setHostname(hostname);
 		// Get the command
 		Command localCommand = null;
 		try {
-			localCommand = factory.getCommand(commandConfig, connectConfig);
+			localCommand = factory.getCommand(badCommandConfig, badConnectConfig);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -158,24 +170,17 @@ public class CommandFactoryTest {
 
 		System.out.println("\nTesting a command where a nonexistent working directory was provided.");
 
-		// Set the CommandConfiguration class
-		CommandConfiguration commandConfiguration = new CommandConfiguration();
-		commandConfiguration.setCommandId(1);
-		commandConfiguration.setExecutable("./test_code_execution.sh");
-		commandConfiguration.setInputFile("someInputFile.txt");
-		commandConfiguration.setErrFileName("someErrFile.txt");
-		commandConfiguration.setOutFileName("someOutFile.txt");
-		commandConfiguration.setNumProcs("1");
-		commandConfiguration.setInstallDirectory("~/installDir");
-		commandConfiguration.setWorkingDirectory("~/some_nonexistent_directory");
-		commandConfiguration.setAppendInput(true);
-		commandConfiguration.setOS("osx");
-		ConnectionConfiguration connectConfig = new ConnectionConfiguration();
-		connectConfig.setHostname(hostname);
+		// Set the commandConfig class
+		commandConfig.setCommandId(3);
+		commandConfig.setErrFileName("someLocalErrFileDir.txt");
+		commandConfig.setOutFileName("someLocalOutFileDir.txt");
+		commandConfig.setWorkingDirectory("~/some_nonexistent_directory");
+
+		connectionConfig.setHostname(hostname);
 		// Get the command
 		Command localCommand2 = null;
 		try {
-			localCommand2 = factory.getCommand(commandConfiguration, connectConfig);
+			localCommand2 = factory.getCommand(commandConfig, connectionConfig);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -184,6 +189,58 @@ public class CommandFactoryTest {
 		CommandStatus status2 = localCommand2.execute();
 
 		assert (status2 == CommandStatus.FAILED);
+	}
+
+	@Test
+	public void testFunctionalRemoteCommand() {
+
+		// Set the CommandConfiguration class
+		commandConfig.setCommandId(4);
+		commandConfig.setErrFileName("someRemoteErrFile.txt");
+		commandConfig.setOutFileName("someRemoteOutFile.txt");
+
+		// Set the connection configuration to a dummy remote connection
+		// Read in a dummy configuration file that contains credentials
+		File file = new File("/tmp/ice-remote-creds.txt");
+		Scanner scanner = null;
+		try {
+			scanner = new Scanner(file);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		// Scan line by line
+		scanner.useDelimiter("\n");
+
+		// Get the credentials for the dummy remote account
+		String username = scanner.next();
+		String password = scanner.next();
+		String hostname = scanner.next();
+
+		// Make the connection configuration
+		connectionConfig.setHostname(hostname);
+		connectionConfig.setUsername(username);
+
+		// Note the password can be input at the console by just setting
+		// connectionConfig.setPassword(""); in the event that you don't want your
+		// password held in a string object
+		connectionConfig.setPassword(password);
+		connectionConfig.setName("dummyConnection");
+		connectionConfig.setWorkingDirectory("/tmp/remoteCommandTestDirectory");
+		connectionConfig.setDeleteWorkingDirectory(true);
+
+		// Get the command
+		Command remoteCommand = null;
+		try {
+			remoteCommand = factory.getCommand(commandConfig, connectionConfig);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Run it
+		CommandStatus status = remoteCommand.execute();
+
+		assert (status == CommandStatus.SUCCESS);
+
 	}
 
 	/**

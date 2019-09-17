@@ -93,6 +93,7 @@ public class RemoteCommandTest {
 		connectConfig.setPassword(password);
 		connectConfig.setName("dummyConnection");
 		connectConfig.setWorkingDirectory("/tmp/remoteCommandTestDirectory");
+		connectConfig.setDeleteWorkingDirectory(true);
 	}
 
 	/**
@@ -102,10 +103,13 @@ public class RemoteCommandTest {
 	public void testRemoteCommand() {
 		System.out.println("Testing remote command configuration");
 
+		// Get a command which just sets everything up
 		RemoteCommand command = new RemoteCommand(connectConfig, commandConfig);
 
+		// Get the status
 		CommandStatus status = command.getStatus();
 
+		// Check that the return is processing, i.e. we are ready to execute
 		assert (status == CommandStatus.PROCESSING);
 
 		System.out.println("Finished remote command configuration test.");
@@ -119,11 +123,14 @@ public class RemoteCommandTest {
 	public void testFailedConnectionRemoteCommand() {
 		System.out.println("Testing remote command with a bad connection");
 
+		// Make up some bad connection to test
 		connectConfig.setUsername("someBadUsername");
 		connectConfig.setHostname("someBadHostname");
 		connectConfig.setPassword("someBadPassword");
+		// Make a command with a bad connection
 		RemoteCommand command = new RemoteCommand(connectConfig, commandConfig);
 
+		// Check that the command gives an error in its status due to poor connection
 		assert (command.getStatus() == CommandStatus.INFOERROR);
 	}
 
@@ -134,10 +141,12 @@ public class RemoteCommandTest {
 	@Test
 	public void testExecute() {
 		System.out.println("\n\n\nTest remote command execute");
-		RemoteCommand command = new RemoteCommand(connectConfig, commandConfig);
 
+		// Make a command and execute the command
+		RemoteCommand command = new RemoteCommand(connectConfig, commandConfig);
 		CommandStatus status = command.execute();
 
+		// Check that the command was successfully completed
 		assert (status == CommandStatus.SUCCESS);
 
 		System.out.println("Finished testing remote command execute");

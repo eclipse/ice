@@ -109,8 +109,16 @@ public class CommandConfiguration {
 	 * text that gets written out to
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOut}, just in string form.
 	 */
-	String stdOutput = "";
+	private String stdOutput = "";
 
+	/**
+	 * This is a string that contains all of the error output from the job. This is the same
+	 * text that gets written out to {@link org.eclipse.ice.commands.CommandConfiguration#stdErr},
+	 * just in string form for easy access.
+	 */
+	private String errMsg = "";
+	
+	
 	/**
 	 * A flag to mark whether or not the input file name should be appended to the
 	 * executable command. Marked as true by default so that the user (by default)
@@ -647,4 +655,31 @@ public class CommandConfiguration {
 		return fullCommand;
 	}
 
+	/**
+	 * Add to error message string, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#errMsg}
+	 * @param
+	 */
+	public void addToErrString(String _err) {
+		errMsg += _err;
+	}
+	
+	/**
+	 * Setter for error message string, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#errMsg}
+	 * @param
+	 */
+	public void setErrString(String _err) {
+		errMsg = _err;
+	}
+	
+	/**
+	 * Getter for error message string, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#errMsg}
+	 * @return
+	 */
+	public String getErrString() {
+		return errMsg;
+	}
+	
 }

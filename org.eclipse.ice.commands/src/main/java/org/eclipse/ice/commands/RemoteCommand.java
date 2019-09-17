@@ -69,13 +69,15 @@ public class RemoteCommand extends Command {
 		try {
 			connection = ConnectionManager.openConnection(connectConfig);
 		} catch (JSchException e) {
+			// If the connection can't be opened, we can't be expected to execute a job
+			// remotely!
 			status = CommandStatus.INFOERROR;
 			e.printStackTrace();
 			return;
 		}
 
 		// Set the commandConfig hostname to that of the connectionConfig - only used
-		// for output info
+		// for output logging info
 		commandConfig.setHostname(connectConfig.getHostname());
 		status = CommandStatus.PROCESSING;
 	}
@@ -86,7 +88,7 @@ public class RemoteCommand extends Command {
 	 */
 	@Override
 	public CommandStatus execute() {
-		// Check that the commandConfig and connectConfig were properly instantiated in
+		// Check that the commandConfig and connectConfig were properly set in
 		// the constructor
 		try {
 			checkStatus(status);
@@ -107,7 +109,7 @@ public class RemoteCommand extends Command {
 		// Now that all of the prerequisites have been set, start the job running
 		status = run();
 
-		// Confirm the job finished with some status
+		// Confirm the job finished with successful status, useful for user
 		logger.info("The job finished with status: " + status);
 		return status;
 	}
@@ -118,7 +120,7 @@ public class RemoteCommand extends Command {
 	@Override
 	protected CommandStatus run() {
 
-		logger.debug("Transferring files to remote host");
+		// Transfer the necessary files to the remote host
 		try {
 			status = transferFiles();
 		} catch (SftpException e) {
@@ -131,50 +133,61 @@ public class RemoteCommand extends Command {
 			logger.error("Input file not found! Could not upload to the remote host");
 			e.printStackTrace();
 		}
-		logger.debug("Executing jobs");
-		status = loopCommands();
-
+		// Check the status to ensure file transfer was successful
 		try {
 			checkStatus(status);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		logger.debug("Monitoring job");
+
+		// Execute the commands on the remote host
+		status = runJob();
+
+		// Check the status to ensure nothing failed
+		try {
+			checkStatus(status);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Monitor the job to check its exit value and ensure it finishes correctly
 		status = monitorJob();
 
+		// Check the status to ensure job finished successfully
 		try {
 			checkStatus(status);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		logger.debug("Cleaning up");
+
+		// Clean up the remote directories created
 		status = cleanUpJob();
 
-		logger.debug("Finished run()");
 		return status;
 	}
 
 	/**
-	 * This function gets the output streams, logs them into the filenames, and then
-	 * disconnects the remote channel to finish up the job processing.
+	 * This function deletes the remote working directory if the user so desires and
+	 * then disconnects the remote channel to finish up the job processing.
 	 * 
 	 * @return
 	 */
+	@Override
 	protected CommandStatus cleanUpJob() {
-
-		logger.debug("Remove remote directories");
-		// Set a command to force remove the directory
-		((ChannelExec) connection.getChannel())
-				.setCommand("rm -rf " + connection.getConfiguration().getWorkingDirectory());
-		// Connect the channel to execute
-		try {
-			connection.getChannel().connect();
-		} catch (JSchException e) {
-			logger.error("Could not delete the remote working directory after completion!");
-			e.printStackTrace();
+		// If the user would like to delete the remote working directory, delete it
+		if (connection.getConfiguration().getDeleteWorkingDirectory()) {
+			logger.info("Removing remote working directory");
+			// Set a command to force remove the directory
+			((ChannelExec) connection.getChannel())
+					.setCommand("rm -rf " + connection.getConfiguration().getWorkingDirectory());
+			// Connect the channel to execute the removal
+			try {
+				connection.getChannel().connect();
+			} catch (JSchException e) {
+				logger.error("Could not delete the remote working directory after completion!");
+				e.printStackTrace();
+			}
 		}
-
-		logger.debug("Disconnect channels");
 
 		// Disconnect the session and return success
 		connection.getChannel().disconnect();
@@ -195,6 +208,7 @@ public class RemoteCommand extends Command {
 	protected CommandStatus monitorJob() {
 		// Poll until the command is complete. If it isn't finished, give it a second
 		// to try and finish up
+		// Set exitValue to an arbitrary number indicating job not finished
 		int exitValue = -1;
 		while (exitValue != 0) {
 			try {
@@ -203,13 +217,18 @@ public class RemoteCommand extends Command {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			// Query the exit status. 0 is normal completion, everything else is abnormal
 			exitValue = ((ChannelExec) connection.getChannel()).getExitStatus();
 
+			// If the connection was closed and the job didn't finish, something bad
+			// happened...
 			if (connection.getChannel().isClosed() && exitValue != 0) {
 				logger.error("Connection was closed before job was finished, failed " + exitValue);
 				return CommandStatus.FAILED;
 			}
 		}
+
+		// If the job finished correctly, return success. Otherwise return failure
 		if (exitValue == 0)
 			return CommandStatus.SUCCESS;
 		else
@@ -223,7 +242,8 @@ public class RemoteCommand extends Command {
 	 * 
 	 * @return
 	 */
-	protected CommandStatus loopCommands() {
+	@Override
+	protected CommandStatus runJob() {
 
 		// Setup the list of all of the commands that will be launched. JSch can not
 		// launch multiple commands at once, so we need to take the splitCommand and
@@ -240,6 +260,7 @@ public class RemoteCommand extends Command {
 			try {
 				connection.setChannel(connection.getSession().openChannel("exec"));
 			} catch (JSchException e) {
+				// If it can't be opened, puke
 				e.printStackTrace();
 			}
 
@@ -253,8 +274,10 @@ public class RemoteCommand extends Command {
 			// Set up the input stream
 			connection.getChannel().setInputStream(null);
 			try {
+				// Set the input stream for the connection object
 				connection.setInputStream(connection.getChannel().getInputStream());
 			} catch (IOException e) {
+				// If we can't set the input stream, puke
 				e.printStackTrace();
 			}
 
@@ -263,21 +286,23 @@ public class RemoteCommand extends Command {
 				stdErrStream = new FileOutputStream(commandConfig.getErrFileName(), true);
 				stdOutStream = new FileOutputStream(commandConfig.getOutFileName(), true);
 				BufferedOutputStream stdOutBufferedStream = new BufferedOutputStream(stdOutStream);
+				// Give the streams to the channel now that their names are appropriately set
 				connection.getChannel().setOutputStream(stdOutBufferedStream);
 				((ChannelExec) connection.getChannel()).setErrStream(stdErrStream);
 			} catch (FileNotFoundException e) {
+				// If logging streams can't be set, puke
 				e.printStackTrace();
-			} 
+			}
 
 			// Make sure the channel is connected
 			if (!connection.getChannel().isConnected()) {
 				try {
 					// Connect and run the executable
 					connection.getChannel().connect();
-					
+
 					// Log the output and error streams
-					logOutput(connection.getChannel().getInputStream(), 
-							((ChannelExec)connection.getChannel()).getErrStream());
+					logOutput(connection.getChannel().getInputStream(),
+							((ChannelExec) connection.getChannel()).getErrStream());
 				} catch (JSchException e) {
 					logger.error("Couldn't connect the channel to run the executable!");
 					e.printStackTrace();
@@ -296,7 +321,6 @@ public class RemoteCommand extends Command {
 		return CommandStatus.RUNNING;
 	}
 
-	
 	/**
 	 * This function is responsible for transferring the files to the remote host.
 	 * //TODO Change this to use FileHandler functionality once implemented?
@@ -323,20 +347,28 @@ public class RemoteCommand extends Command {
 			// If we can't, try making the directory and then cd-ing. If can't again,
 			// exception will be thrown
 			sftpChannel.mkdir(remoteWorkingDirectory);
-			sftpChannel.cd(remoteWorkingDirectory);
+			try {
+				sftpChannel.cd(remoteWorkingDirectory);
+			} catch (SftpException e1) {
+				logger.error("Tried making remote directory but couldn't. Bailing");
+				e1.printStackTrace();
+				return CommandStatus.FAILED;
+			}
 		}
 
-		// Fix the inputFile name for remote machines
+		// Fix the inputFile name for remote machines to remove any possible slashes
 		String shortInputName = commandConfig.getInputFile();
 		if (shortInputName.contains("/"))
 			shortInputName = shortInputName.substring(shortInputName.lastIndexOf("/") + 1);
 		else if (shortInputName.contains("\\"))
 			shortInputName = shortInputName.substring(shortInputName.lastIndexOf("\\") + 1);
 
+		// Get the source directory
 		String localSrc = commandConfig.getWorkingDirectory();
+		// Get the executable to concatenate
 		String exec = commandConfig.getExecutable();
 
-		// Fix the executable name by removing the ./ in front of it
+		// Get the executable filename only by removing the ./ in front of it
 		if (exec.contains("./"))
 			exec = exec.substring(2, exec.length());
 
@@ -351,6 +383,7 @@ public class RemoteCommand extends Command {
 		logger.info("Putting input file: " + localSrc + shortInputName + " in directory " + remoteWorkingDirectory
 				+ shortInputName);
 		sftpChannel.put(localSrc + shortInputName, remoteWorkingDirectory + shortInputName);
+
 		logger.info("Putting executable file: " + localSrc + exec + " in directory " + remoteWorkingDirectory + exec);
 		sftpChannel.put(localSrc + exec, remoteWorkingDirectory + exec);
 
@@ -363,6 +396,7 @@ public class RemoteCommand extends Command {
 
 		// Disconnect the sftp channel to stop moving files
 		sftpChannel.disconnect();
+
 		return CommandStatus.RUNNING;
 	}
 

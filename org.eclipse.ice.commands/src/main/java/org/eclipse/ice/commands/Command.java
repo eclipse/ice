@@ -13,12 +13,9 @@
 package org.eclipse.ice.commands;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,11 +96,21 @@ public abstract class Command {
 
 	/**
 	 * This function actually runs the particular command in question. It is called
-	 * in execute() after all of the setup for the job execution is finished.
+	 * in execute() after all of the setup for the job execution is finished. It
+	 * processes the several steps required to run the job, e.g. setting it up,
+	 * monitoring it, etc.
 	 * 
 	 * @return - CommandStatus indicating the result of the function.
 	 */
 	protected abstract CommandStatus run();
+
+	
+	/**
+	 * This function runs the job through the relevant API and executes the process.
+	 * 
+	 * @return - CommandStatus indicating the result of the function.
+	 */
+	protected abstract CommandStatus runJob();
 
 	/**
 	 * This operation is responsible for monitoring the exit value of the running
@@ -114,6 +121,14 @@ public abstract class Command {
 	 * value is, so the user can always see if their job finished successfully.
 	 */
 	protected abstract CommandStatus monitorJob();
+
+	/**
+	 * This function is responsible for cleaning up any remaining things from the job
+	 * after the commands API is finished monitoring the job. These are things related
+	 * to, for example, logging output. 
+	 * @return
+	 */
+	protected abstract CommandStatus cleanUpJob();
 
 	/**
 	 * This function cancels the already submitted command, if possible.
@@ -197,165 +212,6 @@ public abstract class Command {
 	}
 
 	/**
-	 * This function sets up the ProcessBuilder member variable to prepare for
-	 * actually submitting the job process to the command line from Java. The
-	 * function adjusts the command based on the OS on which it shall run, and then
-	 * creates the variables necessary for the command line execution.
-	 * 
-	 * @param command - Command to be prepared for shell execution
-	 */
-	protected CommandStatus setupProcessBuilder(String command) {
-
-		// Local declarations
-		String os = commandConfig.getOS();
-		ArrayList<String> commandList = new ArrayList<String>();
-
-		// If the OS is anything other than Windows, then the process builder
-		// needs to be configured to launch bash in command mode to avoid weird
-		// escape sequences.
-		if (!os.toLowerCase().contains("win")) {
-			commandList.add("/bin/bash");
-			commandList.add("-c");
-		}
-
-		// Now add the actual command to be processed, prepended with /bin/bash -c if
-		// the OS is not windows
-		commandList.add(command);
-
-		logger.info("Full command going to ProcessBuilder is: " + commandList);
-		// Make the ProcessBuilder to execute the command
-		jobBuilder = new ProcessBuilder(commandList);
-
-		// Set the directory to execute the job in
-		File directory = new File(commandConfig.getWorkingDirectory());
-		jobBuilder.directory(directory);
-		jobBuilder.redirectErrorStream(false);
-
-		return CommandStatus.RUNNING;
-	}
-
-	/**
-	 * This function is responsible for actually running the Process in the command
-	 * line. It catches exceptions in the event that the job can't be started.
-	 * 
-	 */
-	protected CommandStatus runProcessBuilder() {
-
-		String os = commandConfig.getOS();
-		List<String> commandList = jobBuilder.command();
-		String errMsg = "";
-
-		// Check that the job hasn't been canceled and is ready to run
-		try {
-			if (status != CommandStatus.CANCELED)
-				job = jobBuilder.start();
-		} catch (IOException e) {
-
-			// If not a windows machine, there was an error
-			if (!os.toLowerCase().contains("win")) {
-				// If there is an error, add it to errMsg
-				errMsg += e.getMessage() + "\n";
-			} else {
-				// If this is a windows machine, try to run in the command prompt
-				commandList.add(0, "CMD");
-				commandList.add(1, "/C");
-
-				// Reset the ProcessBuilder to reflect these changes
-				jobBuilder = new ProcessBuilder(commandList);
-				File directory = new File(commandConfig.getWorkingDirectory());
-				jobBuilder.directory(directory);
-				jobBuilder.redirectErrorStream(false);
-
-				// Now try again to start the job
-				try {
-					if (status != CommandStatus.CANCELED)
-						job = jobBuilder.start();
-				} catch (IOException e2) {
-					// If there is an error, add it to errMsg
-					errMsg += e2.getMessage() + "\n";
-				}
-			}
-		}
-
-		// Clean up and log the output of the job
-		status = cleanProcessBuilder(errMsg);
-
-		return status;
-
-	}
-
-	/**
-	 * This function cleans up the remaining tasks left after job processing. This
-	 * is mostly logging output files, and checking that the process actually
-	 * finished successfully according to the ProcessBuilder
-	 * 
-	 * @param errorMessage - A string of any potential errors that were thrown
-	 *                     during job execution
-	 * @return - CommandStatus indicating whether or not the function processed
-	 *         correctly
-	 */
-	protected CommandStatus cleanProcessBuilder(String errorMessage) {
-
-		InputStream stdOutStream = null, stdErrStream = null;
-		String stdErrFileName = null, stdOutFileName = null;
-
-		// Get the output file names
-		stdErrFileName = commandConfig.getErrFileName();
-		stdOutFileName = commandConfig.getOutFileName();
-
-		int exitValue = -1; // arbitrary value indicating not completed (yet)
-
-		// If errMsg is not an empty String, then there were some errors and they
-		// should be written out to the log file
-		if (errorMessage != "") {
-			try {
-				// Get the filenames so that they can be written to
-				commandConfig.setStdErr(commandConfig.getBufferedWriter(stdErrFileName));
-				commandConfig.setStdOut(commandConfig.getBufferedWriter(stdOutFileName));
-
-				// Write and close
-				commandConfig.getStdErr().write(errorMessage);
-				commandConfig.getStdOut().close();
-				commandConfig.getStdErr().close();
-			} catch (IOException e) {
-				logger.error("There were errors in the job running, but they could not write to the error log file!");
-				return CommandStatus.FAILED;
-			}
-
-			return CommandStatus.FAILED;
-		}
-
-		// Log the output of the job execution
-		stdOutStream = job.getInputStream();
-		stdErrStream = job.getErrorStream();
-
-		// Check that output was correctly logged. If not, return error
-		if (logOutput(stdOutStream, stdErrStream) == false) {
-			logger.error("Couldn't log output, marking job as failed");
-			return CommandStatus.FAILED;
-		}
-
-		// Try to get the exit value of the job
-		try {
-			exitValue = job.exitValue();
-		} catch (IllegalThreadStateException e) {
-			// The job is still running, so it should be watched by the
-			// {@link org.eclipse.ice.commands.Command.monitorJob()} function
-
-			logger.info("Job didn't finish, going to monitorJob now");
-			return CommandStatus.RUNNING;
-		}
-		// By convention exit values other than zero mean that the program
-		// failed. If it is not 0, mark the job as failed (since it finished).
-		if (exitValue == 0) {
-			return CommandStatus.SUCCESS;
-		} else {
-			return CommandStatus.FAILED;
-		}
-
-	}
-
-	/**
 	 * This function takes the given streams as parameters and logs them into an
 	 * output file. The function returns a boolean on whether or not the function
 	 * completed successfully (and thus the streams were correctly written out).
@@ -382,6 +238,12 @@ public abstract class Command {
 		commandConfig.setStdErr(commandConfig.getBufferedWriter(commandConfig.getErrFileName()));
 		commandConfig.setStdOut(commandConfig.getBufferedWriter(commandConfig.getOutFileName()));
 
+		// Make a new line for writing out the output
+		String newLine = "\n";
+		// Add a \r for Windows systems.
+		if(commandConfig.getOS().contains("windows"))
+			newLine = "\r\n";
+		
 		// Catch the stdout and stderr output
 		try {
 			// Write to the stdOut file
@@ -392,18 +254,21 @@ public abstract class Command {
 				if (!nextLine.startsWith("#")) {
 					commandConfig.addToStdOutputString(nextLine);
 				}
-				// MUST put a new line for this type of writer. "\r\n" works on
-				// Windows and Unix-based systems.
-				commandConfig.getStdOut().write("\r\n");
+				// MUST put a new line for this type of writer
+				commandConfig.getStdOut().write(newLine);
 				commandConfig.getStdOut().flush();
 			}
 
 			// Write to the stdErr file
 			while ((nextLine = stdErrReader.readLine()) != null) {
 				commandConfig.getStdErr().write(nextLine);
-				// MUST put a new line for this type of writer. "\r\n" works on
-				// Windows and Unix-based systems.
-				commandConfig.getStdErr().write("\r\n");
+				// If the next line isn't commented out, add it to the error string
+				if(!nextLine.startsWith("#")) {
+					commandConfig.addToErrString(nextLine);
+				}
+				
+				// MUST put a new line for this type of writer
+				commandConfig.getStdErr().write(newLine);
 				commandConfig.getStdErr().flush();
 			}
 		} catch (IOException e) {

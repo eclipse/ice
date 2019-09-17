@@ -12,7 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -23,6 +27,7 @@ import java.util.concurrent.TimeUnit;
  *
  */
 public class LocalCommand extends Command {
+
 
 	/**
 	 * Default constructor
@@ -47,22 +52,18 @@ public class LocalCommand extends Command {
 		commandConfig = _configuration;
 
 		// If commandConfig wasn't set properly, the job can't run
-		if (commandConfig == null) 
+		if (commandConfig == null)
 			status = CommandStatus.FAILED;
-		
-		
+
 		// Set the connection for the local command, which is only relevant for
 		// accessing the hostname of the local computer
 		connectionConfig = _connection;
 
-	
-		
 		// Make sure both commandConfig and connectionConfig have the same
 		// hostname, since commandConfig needs the hostname for several output
 		// files (e.g. for debugging purposes).
 		commandConfig.setHostname(connectionConfig.getHostname());
 
-		
 	}
 
 	/**
@@ -121,8 +122,12 @@ public class LocalCommand extends Command {
 			status = setupProcessBuilder(thisCommand);
 
 			// Run the job
-			status = runProcessBuilder();
+			status = runJob();
 
+			// Clean up and log the output of the job
+			status = cleanUpJob();
+
+			
 			// Check the status to ensure the job hasn't failed
 			try {
 				checkStatus(status);
@@ -160,11 +165,172 @@ public class LocalCommand extends Command {
 		return status;
 	}
 
+
+	/**
+	 * This function sets up the ProcessBuilder member variable to prepare for
+	 * actually submitting the job process to the command line from Java. The
+	 * function adjusts the command based on the OS on which it shall run, and then
+	 * creates the variables necessary for the command line execution.
+	 * 
+	 * @param command - Command to be prepared for shell execution
+	 */
+	protected CommandStatus setupProcessBuilder(String command) {
+
+		// Local declarations
+		String os = commandConfig.getOS();
+		ArrayList<String> commandList = new ArrayList<String>();
+
+		// If the OS is anything other than Windows, then the process builder
+		// needs to be configured to launch bash in command mode to avoid weird
+		// escape sequences.
+		if (!os.toLowerCase().contains("win")) {
+			commandList.add("/bin/bash");
+			commandList.add("-c");
+		}
+
+		// Now add the actual command to be processed, prepended with /bin/bash -c if
+		// the OS is not windows
+		commandList.add(command);
+
+		logger.info("Full command going to ProcessBuilder is: " + commandList);
+		// Make the ProcessBuilder to execute the command
+		jobBuilder = new ProcessBuilder(commandList);
+
+		// Set the directory to execute the job in
+		File directory = new File(commandConfig.getWorkingDirectory());
+		jobBuilder.directory(directory);
+		jobBuilder.redirectErrorStream(false);
+
+		return CommandStatus.RUNNING;
+	}
+	
+
+	/**
+	 * This function is responsible for actually running the Process in the command
+	 * line. It catches exceptions in the event that the job can't be started.
+	 * 
+	 */
+	@Override
+	protected CommandStatus runJob() {
+
+		String os = commandConfig.getOS();
+		List<String> commandList = jobBuilder.command();
+		
+
+		// Check that the job hasn't been canceled and is ready to run
+		try {
+			if (status != CommandStatus.CANCELED)
+				job = jobBuilder.start();
+		} catch (IOException e) {
+
+			// If not a windows machine, there was an error
+			if (!os.toLowerCase().contains("win")) {
+				// If there is an error, add it to errMsg
+				commandConfig.addToErrString(e.getMessage() + "\n");
+			} else {
+				// If this is a windows machine, try to run in the command prompt
+				commandList.add(0, "CMD");
+				commandList.add(1, "/C");
+
+				// Reset the ProcessBuilder to reflect these changes
+				jobBuilder = new ProcessBuilder(commandList);
+				File directory = new File(commandConfig.getWorkingDirectory());
+				jobBuilder.directory(directory);
+				jobBuilder.redirectErrorStream(false);
+
+				// Now try again to start the job
+				try {
+					if (status != CommandStatus.CANCELED)
+						job = jobBuilder.start();
+				} catch (IOException e2) {
+					// If there is an error, add it to errMsg
+					commandConfig.addToErrString(e2.getMessage() + "\n");
+				}
+			}
+		}
+
+	
+		return status;
+
+	}
+
+	/**
+	 * This function cleans up the remaining tasks left after job processing. This
+	 * is mostly logging output files, and checking that the process actually
+	 * finished successfully according to the ProcessBuilder
+	 * 
+	 * @param errorMessage - A string of any potential errors that were thrown
+	 *                     during job execution
+	 * @return - CommandStatus indicating whether or not the function processed
+	 *         correctly
+	 */
+	@Override
+	protected CommandStatus cleanUpJob() {
+
+		InputStream stdOutStream = null, stdErrStream = null;
+		String stdErrFileName = null, stdOutFileName = null;
+
+		// Get the output file names
+		stdErrFileName = commandConfig.getErrFileName();
+		stdOutFileName = commandConfig.getOutFileName();
+
+		int exitValue = -1; // arbitrary value indicating not completed (yet)
+
+		// If errMsg is not an empty String, then there were some errors and they
+		// should be written out to the log file
+		if (commandConfig.getErrString() != "") {
+			try {
+				// Get the filenames so that they can be written to
+				commandConfig.setStdErr(commandConfig.getBufferedWriter(stdErrFileName));
+				commandConfig.setStdOut(commandConfig.getBufferedWriter(stdOutFileName));
+
+				// Write and close
+				commandConfig.getStdErr().write(commandConfig.getErrString());
+				commandConfig.getStdOut().close();
+				commandConfig.getStdErr().close();
+			} catch (IOException e) {
+				logger.error("There were errors in the job running, but they could not write to the error log file!");
+				return CommandStatus.FAILED;
+			}
+
+			return CommandStatus.FAILED;
+		}
+
+		// Log the output of the job execution
+		stdOutStream = job.getInputStream();
+		stdErrStream = job.getErrorStream();
+
+		// Check that output was correctly logged. If not, return error
+		if (logOutput(stdOutStream, stdErrStream) == false) {
+			logger.error("Couldn't log output, marking job as failed");
+			return CommandStatus.FAILED;
+		}
+
+		// Try to get the exit value of the job
+		try {
+			exitValue = job.exitValue();
+		} catch (IllegalThreadStateException e) {
+			// The job is still running, so it should be watched by the
+			// {@link org.eclipse.ice.commands.Command.monitorJob()} function
+
+			logger.info("Job didn't finish, going to monitorJob now");
+			return CommandStatus.RUNNING;
+		}
+		// By convention exit values other than zero mean that the program
+		// failed. If it is not 0, mark the job as failed (since it finished).
+		if (exitValue == 0) {
+			return CommandStatus.SUCCESS;
+		} else {
+			return CommandStatus.FAILED;
+		}
+
+	}
+	
 	/**
 	 * See {@link org.eclipse.ice.commands.Command#monitorJob()}
 	 */
 	@Override
-	protected CommandStatus monitorJob(){
+	protected CommandStatus monitorJob() {
 
 		// Local Declarations
 		int exitValue = -1; // Totally arbitrary
@@ -221,8 +387,6 @@ public class LocalCommand extends Command {
 			return CommandStatus.FAILED;
 	}
 
-	
-	
 	/**
 	 * Method that overrides Commmand:Cancel and actually implements the particular
 	 * LocalCommand to be cancelled.

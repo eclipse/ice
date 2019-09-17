@@ -50,8 +50,8 @@ public class CommandFactory {
 	 *                                remote)
 	 * @return Command
 	 */
-	public Command getCommand(final CommandConfiguration commandConfig,
-			final ConnectionConfiguration connectionConfig) throws IOException {
+	public Command getCommand(final CommandConfiguration commandConfig, final ConnectionConfiguration connectionConfig)
+			throws IOException {
 
 		Command command = null;
 
