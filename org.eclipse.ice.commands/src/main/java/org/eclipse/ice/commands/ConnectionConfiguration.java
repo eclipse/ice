@@ -41,6 +41,18 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 	private String name = "";
 
 	/**
+	 * The password used to make the connection. Used for unit tests with the dummy
+	 * ssh account only
+	 */
+	private String password;
+
+	/**
+	 * A string which contains the directory in which to execute the job on the
+	 * remote system
+	 */
+	private String workingDirectory = "";
+
+	/**
 	 * Default constructor
 	 */
 	public ConnectionConfiguration() {
@@ -104,6 +116,26 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 	}
 
 	/**
+	 * Setter for the remote working directory
+	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#workingDirectory}
+	 * 
+	 * @param dir
+	 */
+	public void setWorkingDirectory(String dir) {
+		workingDirectory = dir;
+	}
+
+	/**
+	 * Getter for the remote working directory
+	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#workingDirectory}
+	 * 
+	 * @return
+	 */
+	public String getWorkingDirectory() {
+		return workingDirectory;
+	}
+
+	/**
 	 * Inherited function from UserInfo
 	 */
 	public String getPassphrase() {
@@ -114,7 +146,11 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 	 * Inherited function from UserInfo
 	 */
 	public String getPassword() {
-		return null;
+		return password.toString();
+	}
+
+	public void setPassword(String _pass) {
+		password = _pass;
 	}
 
 	/**

@@ -55,13 +55,18 @@ public class ConnectionManagerTest {
 		ConnectionConfiguration configuration = new ConnectionConfiguration();
 
 		// Read in a dummy configuration file that contains credentials
-		File file = new File("/Users/4jo/ssh_config.txt");
+		File file = new File("/tmp/ice-remote-creds.txt");
 		Scanner scanner = new Scanner(file);
 		scanner.useDelimiter("\n");
-		String hostname = scanner.next();
+		// Get the credentials for the dummy remote account
+		
 		String username = scanner.next();
+		String password = scanner.next();
+		String hostname = scanner.next();
+		
 		configuration.setHostname(hostname);
 		configuration.setUsername(username);
+		configuration.setPassword(password);
 		configuration.setName(connectionName);
 
 		try {

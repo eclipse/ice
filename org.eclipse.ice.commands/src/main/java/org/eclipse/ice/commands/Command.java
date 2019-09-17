@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +61,7 @@ public abstract class Command {
 	/**
 	 * Reference to the Java process that is the job to be executed
 	 */
-	private Process job;
+	protected Process job;
 
 	/**
 	 * The variable that actually handles the job execution at the command line
@@ -106,6 +105,17 @@ public abstract class Command {
 	 */
 	protected abstract CommandStatus run();
 
+	/**
+	 * This operation is responsible for monitoring the exit value of the running
+	 * job. If it does not finish after some time then the function will print a
+	 * message to the error output file. If the job has failed then it stops
+	 * monitoring and returns that the exit value of the job was unsuccessful. The
+	 * function also writes to the output logfile what the actual final job exit
+	 * value is, so the user can always see if their job finished successfully.
+	 */
+	protected abstract CommandStatus monitorJob(); 
+	
+	
 	/**
 	 * This function cancels the already submitted command, if possible.
 	 * 
@@ -320,6 +330,7 @@ public abstract class Command {
 
 		// Check that output was correctly logged. If not, return error
 		if (logOutput(stdOutStream, stdErrStream) == false) {
+			logger.error("Couldn't log output, marking job as failed");
 			return CommandStatus.FAILED;
 		}
 
@@ -343,71 +354,8 @@ public abstract class Command {
 
 	}
 
-	/**
-	 * This operation is responsible for monitoring the exit value of the running
-	 * job. If it does not finish after some time then the function will print a
-	 * message to the error output file. If the job has failed then it stops
-	 * monitoring and returns that the exit value of the job was unsuccessful. The
-	 * function also writes to the output logfile what the actual final job exit
-	 * value is, so the user can always see if their job finished successfully.
-	 */
-	protected CommandStatus monitorJob() {
 
-		// Local Declarations
-		int exitValue = -1; // Totally arbitrary
-
-		// Wait until the job exits. By convention an exit code of
-		// zero means that the job has succeeded. Watch it until it
-		// finishes.
-		while (exitValue != 0) {
-			// Try to get the exit value of the job
-			// If the job completed successfully this will be 0
-			try {
-				exitValue = job.exitValue();
-			} catch (IllegalThreadStateException e) {
-				// Complain, but keep watching
-				try {
-					commandConfig.getStdErr().write(getClass().getName() + "IllegalThreadStateException!: " + e);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-			// Give it a second
-			try {
-				job.waitFor(1000, TimeUnit.MILLISECONDS);
-				// Try again
-				exitValue = job.exitValue();
-			} catch (InterruptedException e) {
-				// Complain
-				try {
-					commandConfig.getStdErr().write(getClass().getName() + " InterruptedException!: " + e);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-
-			// If for some reason the job has failed,
-			// it shouldn't be alive and we should break;
-			if (!job.isAlive()) {
-				logger.info("Job is no longer alive, done monitoring");
-				break;
-			}
-		}
-
-		// Print the final exitValue of the job to the output log file
-		try {
-			commandConfig.getStdOut().write("INFO: Command::monitorJob Message: Exit value = " + exitValue + "\n");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		logger.info("Finished monitoring job with exit value: " + exitValue);
-		if (exitValue == 0)
-			return CommandStatus.SUCCESS;
-		else
-			return CommandStatus.FAILED;
-	}
-
+	
 	/**
 	 * This function takes the given streams as parameters and logs them into an
 	 * output file. The function returns a boolean on whether or not the function

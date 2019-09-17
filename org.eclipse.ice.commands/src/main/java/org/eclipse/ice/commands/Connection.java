@@ -139,4 +139,19 @@ public class Connection {
 		session = _session;
 	}
 
+	public void setInputStream(InputStream _stream) {
+		inputStream = _stream;
+	}
+	
+	public InputStream getInputStream() {
+		return inputStream;
+	}
+	
+	public void setOutputStream(OutputStream _stream) {
+		outputStream = _stream;
+	}
+	
+	public OutputStream getOutputStream() {
+		return outputStream;
+	}
 }

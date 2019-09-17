@@ -294,7 +294,7 @@ public class CommandConfiguration {
 		// Print launch stages so that user can confirm
 		for (int i = 0; i < splitCommand.size(); i++) {
 			String cmd = splitCommand.get(i);
-			logger.info("LocalCommand Message: Launch stage " + i + " = " + cmd);
+			logger.info("CommandConfiguration Message: Launch stage " + i + " = " + cmd);
 		}
 
 		return fixedExecutableName;
@@ -644,4 +644,5 @@ public class CommandConfiguration {
 	public String getFullCommand() {
 		return fullCommand;
 	}
+
 }

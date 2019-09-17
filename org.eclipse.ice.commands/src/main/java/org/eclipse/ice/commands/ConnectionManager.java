@@ -40,7 +40,7 @@ public class ConnectionManager {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	protected static final Logger logger = LoggerFactory.getLogger(CommandFactory.class);
+	protected static final Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
 
 	/**
 	 * Default Constructor
@@ -79,8 +79,13 @@ public class ConnectionManager {
 			}
 
 			// Get the password
-			char[] pwd = getPassword();
+			char[] pwd = null;
+			if (newConnection.getConfiguration().getPassword().equals(""))
+				pwd = getPassword();
 
+			else // The password is only stored for unit tests to the dummy ssh connection
+				pwd = newConnection.getConfiguration().getPassword().toCharArray();
+			
 			// Pass it to the session
 			newConnection.getSession().setPassword(String.valueOf(pwd));
 
@@ -176,7 +181,8 @@ public class ConnectionManager {
 		// the console
 		logger.info("Enter your password. Connection won't proceed until you do so: ");
 		Console cnsl = System.console();
-		char[] pwd;
+
+		char[] pwd = null;
 		if (cnsl != null)
 			pwd = System.console().readPassword();
 		else {
@@ -185,9 +191,9 @@ public class ConnectionManager {
 					"Warning: You are probably running in an IDE where the password input will be shown on your console. "
 							+ "\n Make sure nobody is looking over your shoulder!");
 
-			Scanner scanner = new Scanner(System.in);
-			pwd = scanner.nextLine().toCharArray();
-			scanner.close();
+			Scanner scan = new Scanner(System.in);
+			pwd = scan.nextLine().toCharArray();
+
 		}
 
 		return pwd;

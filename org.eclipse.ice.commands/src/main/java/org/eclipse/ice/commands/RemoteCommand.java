@@ -12,11 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
-import java.io.FileInputStream;
+import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
+import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
@@ -35,6 +38,16 @@ public class RemoteCommand extends Command {
 	 * this up front since by definition a RemoteCommand must have a connection.
 	 */
 	protected Connection connection = new Connection();
+
+	/**
+	 * A file output stream for error messages to be remotely logged to
+	 */
+	FileOutputStream stdErrFile = null;
+
+	/**
+	 * A file output stream for output messages to be remotely logged to
+	 */
+	FileOutputStream stdOutStream;
 
 	/**
 	 * Default constructor
@@ -57,7 +70,9 @@ public class RemoteCommand extends Command {
 		try {
 			connection = ConnectionManager.openConnection(connectConfig);
 		} catch (JSchException e) {
+			status = CommandStatus.INFOERROR;
 			e.printStackTrace();
+			return;
 		}
 
 		// Set the commandConfig hostname to that of the connectionConfig - only used
@@ -118,9 +133,83 @@ public class RemoteCommand extends Command {
 			e.printStackTrace();
 		}
 
+		status = loopCommands();
+
+		status = monitorJob();
+
+		status = cleanUpJob();
+
+		return status;
+	}
+
+	/**
+	 * This function gets the output streams, logs them into the filenames, and then
+	 * disconnects the remote channel to finish up the job processing.
+	 * 
+	 * @return
+	 */
+	protected CommandStatus cleanUpJob() {
+		InputStream input = null;
+		InputStream err = null;
+		try {
+			input = connection.getChannel().getInputStream();
+			err = ((ChannelExec) connection.getChannel()).getErrStream();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		if (logOutput(input, err) == false) {
+			logger.error("Couldn't log output, marking job as failed");
+			return CommandStatus.FAILED;
+		}
+
+		// Disconnect the session and return success
+		connection.getChannel().disconnect();
+		connection.getSession().disconnect();
+
+		return CommandStatus.SUCCESS;
+	}
+
+	/**
+	 * See {@link org.eclipse.ice.commands.Command#monitorJob()}
+	 */
+	@Override
+	protected CommandStatus monitorJob() {
+		// Poll until the command is complete. If it isn't finished, give it a second
+		// to try and finish up
+		int exitValue = -1;
+		while (exitValue != 0) {
+			try {
+				// Give it a second to finish up
+				Thread.currentThread().sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			exitValue = ((ChannelExec) connection.getChannel()).getExitStatus();
+
+			if (connection.getChannel().isClosed() && exitValue != 0) {
+				logger.error("Connection was closed before job was finished, failed");
+				return CommandStatus.FAILED;
+			}
+		}
+		if (exitValue == 0)
+			return CommandStatus.SUCCESS;
+		else
+			return CommandStatus.FAILED;
+	}
+
+	/**
+	 * This function loops over the various commands to be run on the JSch
+	 * connection. Since they can't be run all together they have to be run
+	 * individually.
+	 * 
+	 * @return
+	 */
+	protected CommandStatus loopCommands() {
+
 		// Setup the list of all of the commands that will be launched. JSch can not
-		// launch multiple commands at once, so we need to take the splitCommand and 
-		// cd to the correct working directory in front and then actually perform 
+		// launch multiple commands at once, so we need to take the splitCommand and
+		// cd to the correct working directory in front and then actually perform
 		// the execution. The commands are then split by the semi-colon
 		ArrayList<String> completeCommands = new ArrayList<String>();
 		for (String i : commandConfig.getSplitCommand()) {
@@ -129,10 +218,53 @@ public class RemoteCommand extends Command {
 
 		// Now loop over all commands and run them via JSch
 		for (int i = 0; i < completeCommands.size(); i++) {
-			
-		}
+			// Open the channel for the executable to be run on
+			try {
+				connection.setChannel(connection.getSession().openChannel("exec"));
+			} catch (JSchException e) {
+				e.printStackTrace();
+			}
 
-		return status;
+			// Give the command to the channel connection
+			String thisCommand = completeCommands.get(i);
+			((ChannelExec) connection.getChannel()).setCommand(thisCommand);
+
+			logger.info("Executing command: " + thisCommand + " remotely in the working direcotry "
+					+ commandConfig.getWorkingDirectory());
+
+			// Set up the input stream
+			connection.getChannel().setInputStream(null);
+			try {
+				connection.setInputStream(connection.getChannel().getInputStream());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			// Setup the output streams and pass them to the connection channel
+			try {
+				stdErrFile = new FileOutputStream(commandConfig.getErrFileName(), true);
+				stdOutStream = new FileOutputStream(commandConfig.getOutFileName(), true);
+				BufferedOutputStream stdOutBufferedStream = new BufferedOutputStream(stdOutStream);
+				connection.getChannel().setOutputStream(stdOutBufferedStream);
+				((ChannelExec) connection.getChannel()).setErrStream(stdErrFile);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+
+			// Make sure the channel is connected
+			if (!connection.getChannel().isConnected()) {
+				try {
+					connection.getChannel().connect();
+				} catch (JSchException e) {
+					e.printStackTrace();
+				}
+			} else {
+				logger.error("Channel is not connected! Can't execute remotely...");
+				return CommandStatus.FAILED;
+			}
+
+		}
+		return CommandStatus.RUNNING;
 	}
 
 	/**
@@ -144,13 +276,24 @@ public class RemoteCommand extends Command {
 	 * @throws FileNotFoundException
 	 */
 	protected CommandStatus transferFiles() throws SftpException, JSchException, FileNotFoundException {
-
+		// Open the sftp channel to transfer the files
 		ChannelSftp sftpChannel = (ChannelSftp) connection.getSession().openChannel("sftp");
 		sftpChannel.connect();
 
-		logger.info("Make the working directory at: " + commandConfig.getWorkingDirectory());
-		sftpChannel.mkdir(commandConfig.getWorkingDirectory());
-		sftpChannel.cd(commandConfig.getWorkingDirectory());
+		// Get the working directory to run everything in on the remote connection
+		String remoteWorkingDirectory = connection.getConfiguration().getWorkingDirectory();
+
+		logger.info("Make the working directory at: " + remoteWorkingDirectory);
+
+		// Try to cd to the directory if it already exists
+		try {
+			sftpChannel.cd(remoteWorkingDirectory);
+		} catch (SftpException e) {
+			// If we can't, try making the directory and then cd-ing. If can't again,
+			// exception will be thrown
+			sftpChannel.mkdir(remoteWorkingDirectory);
+			sftpChannel.cd(remoteWorkingDirectory);
+		}
 
 		// Fix the inputFile name for remote machines
 		String shortInputName = commandConfig.getInputFile();
@@ -159,8 +302,23 @@ public class RemoteCommand extends Command {
 		else if (shortInputName.contains("\\"))
 			shortInputName = shortInputName.substring(shortInputName.lastIndexOf("\\") + 1);
 
-		sftpChannel.put(new FileInputStream(commandConfig.getInputFile()), shortInputName);
+		String localSrc = commandConfig.getWorkingDirectory();
+		String exec = commandConfig.getExecutableName();
 
+		// If the working directory doesn't have a / at the end of it, add it
+		if (!localSrc.endsWith("/"))
+			localSrc += "/";
+		// Do the same for the destination
+		if (!remoteWorkingDirectory.endsWith("/"))
+			remoteWorkingDirectory += "/";
+		
+		// Now have the full paths, so transfer the files per the logger messages
+		logger.info("Putting input file: " + localSrc + shortInputName + " in directory " + remoteWorkingDirectory + shortInputName);
+		sftpChannel.put(localSrc + shortInputName, remoteWorkingDirectory + shortInputName);
+		logger.info("Putting executable file: " + localSrc + exec + " in directory " + remoteWorkingDirectory + exec);
+		sftpChannel.put(localSrc + exec, remoteWorkingDirectory + exec);
+		
+		// Disconnect the sftp channel to stop moving files
 		sftpChannel.disconnect();
 		return CommandStatus.RUNNING;
 	}

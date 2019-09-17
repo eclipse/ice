@@ -11,7 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.Scanner;
 
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandStatus;
@@ -29,38 +31,55 @@ import org.junit.Test;
  */
 public class RemoteCommandTest {
 
-	
 	HashMap<String, String> executableDictionary;
-	
-	String host = "somehost";
-	String username = "denisovan";
-	String password = "p@55w0rd";
-	
-	CommandConfiguration commandConfig; 
-	
-	ConnectionConfiguration connectConfig; 
-	
-	
+
+	CommandConfiguration commandConfig;
+
+	ConnectionConfiguration connectConfig;
+
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		
-	
+
+		// Get the present working directory
+		String pwd = System.getProperty("user.dir");
+
+		// Add the following directories where the tests live
+		pwd += "/src/test/java/org/eclipse/ice/tests/commands/";
+
 		commandConfig = new CommandConfiguration();
-		
+
+		// Set the command to confiugre to a dummy hello world command
 		commandConfig.setCommandId(0);
-		commandConfig.setExecutable("someExecutable.sh ${installDir}");
+		commandConfig.setExecutable("./someExecutable.sh ${installDir}");
 		commandConfig.setInputFile("someInputFile.txt");
 		commandConfig.setErrFileName("someErrFile.txt");
 		commandConfig.setOutFileName("someOutFile.txt");
 		commandConfig.setInstallDirectory("~/install");
-		commandConfig.setWorkingDirectory("/");
+		commandConfig.setWorkingDirectory(pwd);
 		commandConfig.setAppendInput(true);
 		commandConfig.setNumProcs("1");
-		
+
+		// Set the connection configuration to a dummy remote connection
+
+		// Read in a dummy configuration file that contains credentials
+		File file = new File("/tmp/ice-remote-creds.txt");
+		Scanner scanner = new Scanner(file);
+		scanner.useDelimiter("\n");
+		// Get the credentials for the dummy remote account
+
+		String username = scanner.next();
+		String password = scanner.next();
+		String hostname = scanner.next();
+
 		connectConfig = new ConnectionConfiguration();
+		connectConfig.setHostname(hostname);
+		connectConfig.setUsername(username);
+		connectConfig.setPassword(password);
+		connectConfig.setName("dummyConnection");
+		connectConfig.setWorkingDirectory("/tmp/remoteCommandTestDirectory");
 	}
 
 	/**
@@ -70,55 +89,52 @@ public class RemoteCommandTest {
 	public void tearDown() throws Exception {
 	}
 
-
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.RemoteCommand()}
 	 */
 	@Test
 	public void testRemoteCommand() {
 		System.out.println("Testing remote command configuration");
-		
-		
+
 		RemoteCommand command = new RemoteCommand(connectConfig, commandConfig);
-		
+
 		CommandStatus status = command.getStatus();
-		
-		assert ( status == CommandStatus.PROCESSING );
-		
+
+		assert (status == CommandStatus.PROCESSING);
+
 		System.out.println("Finished remote command configuration test.");
 	}
 
 	/**
-	 * This tests that the job status is set to failed if an incorrect connection is established.
+	 * This tests that the job status is set to failed if an incorrect connection is
+	 * established.
 	 */
 	@Test
 	public void testFailedConnectionRemoteCommand() {
 		System.out.println("Testing remote command with a bad connection");
-		
+
 		connectConfig.setUsername("someBadUsername");
 		connectConfig.setHostname("someBadHostname");
-		
+		connectConfig.setPassword("someBadPassword");
 		RemoteCommand command = new RemoteCommand(connectConfig, commandConfig);
 
-		CommandStatus status = command.execute();
-		
-		assert(status == CommandStatus.INFOERROR);
+		assert (command.getStatus() == CommandStatus.INFOERROR);
 	}
-	
+
 	/**
 	 * Test method for executing remote command
 	 * {@link org.eclipse.ice.commands.RemoteCommand#execute()}
 	 */
+	@Test
 	public void testExecute() {
-		System.out.println("Test remote command execute");
-		 RemoteCommand command = new RemoteCommand(connectConfig, commandConfig);
-		
-		 CommandStatus status = command.execute();
-		 
-		 assert ( status == CommandStatus.SUCCESS );
-		 
-		 System.out.println("Finished testing remote command execute");
+		System.out.println("\n\n\nTest remote command execute");
+		RemoteCommand command = new RemoteCommand(connectConfig, commandConfig);
+
+		CommandStatus status = command.execute();
+
+		assert (status == CommandStatus.SUCCESS);
+
+		System.out.println("Finished testing remote command execute");
 	}
-	
 
 }
