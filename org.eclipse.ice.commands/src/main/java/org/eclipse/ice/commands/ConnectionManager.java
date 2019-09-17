@@ -80,12 +80,14 @@ public class ConnectionManager {
 
 			// Get the password
 			char[] pwd = null;
-			if (newConnection.getConfiguration().getPassword().equals(""))
+			if (newConnection.getConfiguration().getPassword().equals("")) {
 				pwd = getPassword();
-
-			else // The password is only stored for unit tests to the dummy ssh connection
+			} else {
+				// The password is only stored for unit tests to the dummy ssh connection
 				pwd = newConnection.getConfiguration().getPassword().toCharArray();
-			
+				// Delete it since it is no longer needed
+				newConnection.getConfiguration().setPassword("");
+			}
 			// Pass it to the session
 			newConnection.getSession().setPassword(String.valueOf(pwd));
 

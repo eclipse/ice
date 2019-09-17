@@ -149,6 +149,14 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 		return password.toString();
 	}
 
+	/**
+	 * Setter for {@link org.eclipse.ice.commands.ConnectionConfiguration#password}
+	 * Use with caution, only if you are comfortable putting your password into a
+	 * String variable (which you rarely should be!!). This function is primarily
+	 * for unit testing with a dummy ssh account in CI.
+	 * 
+	 * @param _pass
+	 */
 	public void setPassword(String _pass) {
 		password = _pass;
 	}
@@ -178,7 +186,7 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 	 * Inherited from UserInfo
 	 */
 	public void showMessage(String arg0) {
-
+		return;
 	}
 
 	/**

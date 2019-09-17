@@ -107,7 +107,7 @@ public class CommandConfiguration {
 	/**
 	 * This is a string that contains all of the output of the job. This is the same
 	 * text that gets written out to
-	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOut}
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOut}, just in string form.
 	 */
 	String stdOutput = "";
 
@@ -156,7 +156,7 @@ public class CommandConfiguration {
 		// Now write them out
 		try {
 			stdOut.write(stdOutHeader);
-			stdOut.write("# Executable to be run is: " + fullCommand + "\n");
+			//stdOut.write("# Executable to be run is: " + fullCommand + "\n");
 			stdOut.close();
 			stdErr.write(stdErrHeader);
 			stdErr.close();
@@ -218,7 +218,7 @@ public class CommandConfiguration {
 		header += new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "\n";
 
 		// Add the point of origin
-		header += "# Launch host: " + hostname + "\n";
+		header += "# Launch host: " + localHostname + "\n";
 
 		// Add the target machine
 		header += "# Target host: " + hostname + "\n";
@@ -228,6 +228,8 @@ public class CommandConfiguration {
 
 		// Add the input file name
 		header += "# Input file: " + inputFile + "\n";
+		
+		header += "# Install directory: " + installDirectory + "\n";
 
 		// Add an empty line
 		header += "\n";

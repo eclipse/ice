@@ -12,14 +12,12 @@
 package org.eclipse.ice.tests.commands;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Scanner;
 
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.RemoteCommand;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,13 +29,20 @@ import org.junit.Test;
  */
 public class RemoteCommandTest {
 
-	HashMap<String, String> executableDictionary;
-
+	/**
+	 * A command configuration instance for testing
+	 */
 	CommandConfiguration commandConfig;
 
+	/**
+	 * A connect configuration instance for testing
+	 */
 	ConnectionConfiguration connectConfig;
 
 	/**
+	 * This function sets up the command and connection information to hand to the
+	 * command
+	 * 
 	 * @throws java.lang.Exception
 	 */
 	@Before
@@ -51,7 +56,9 @@ public class RemoteCommandTest {
 
 		commandConfig = new CommandConfiguration();
 
-		// Set the command to confiugre to a dummy hello world command
+		// Set the command to configure to a dummy hello world command
+		// See {@link org.eclipse.ice.commands.CommandConfiguration} for detailed info
+		// on each
 		commandConfig.setCommandId(0);
 		commandConfig.setExecutable("./test_code_execution.sh");
 		commandConfig.setInputFile("someInputFile.txt");
@@ -61,38 +68,37 @@ public class RemoteCommandTest {
 		commandConfig.setWorkingDirectory(pwd);
 		commandConfig.setAppendInput(true);
 		commandConfig.setNumProcs("1");
+		commandConfig.setOS("linux");
 
 		// Set the connection configuration to a dummy remote connection
-
 		// Read in a dummy configuration file that contains credentials
 		File file = new File("/tmp/ice-remote-creds.txt");
 		Scanner scanner = new Scanner(file);
+		// Scan line by line
 		scanner.useDelimiter("\n");
-		// Get the credentials for the dummy remote account
 
+		// Get the credentials for the dummy remote account
 		String username = scanner.next();
 		String password = scanner.next();
 		String hostname = scanner.next();
 
+		// Make the connection configuration
 		connectConfig = new ConnectionConfiguration();
 		connectConfig.setHostname(hostname);
 		connectConfig.setUsername(username);
+
+		// Note the password can be input at the console by just setting
+		// connectConfig.setPassword(""); in the event that you don't want your
+		// password held in a string object
 		connectConfig.setPassword(password);
 		connectConfig.setName("dummyConnection");
 		connectConfig.setWorkingDirectory("/tmp/remoteCommandTestDirectory");
 	}
 
 	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	/**
 	 * Test for method {@link org.eclipse.ice.commands.RemoteCommand()}
 	 */
-	//@Test
+	@Test
 	public void testRemoteCommand() {
 		System.out.println("Testing remote command configuration");
 
@@ -109,7 +115,7 @@ public class RemoteCommandTest {
 	 * This tests that the job status is set to failed if an incorrect connection is
 	 * established.
 	 */
-	//@Test
+	@Test
 	public void testFailedConnectionRemoteCommand() {
 		System.out.println("Testing remote command with a bad connection");
 

@@ -377,6 +377,8 @@ public abstract class Command {
 		// Setup the BufferedReader that will get stderr from the process.
 		stdErrStreamReader = new InputStreamReader(errors);
 		stdErrReader = new BufferedReader(stdErrStreamReader);
+
+		// Set the objects to the updated readers
 		commandConfig.setStdErr(commandConfig.getBufferedWriter(commandConfig.getErrFileName()));
 		commandConfig.setStdOut(commandConfig.getBufferedWriter(commandConfig.getOutFileName()));
 
@@ -384,14 +386,18 @@ public abstract class Command {
 		try {
 			// Write to the stdOut file
 			while ((nextLine = stdOutReader.readLine()) != null) {
-				commandConfig.getStdOut().write(nextLine);
 
-				commandConfig.addToStdOutputString(nextLine);
+				commandConfig.getStdOut().write(nextLine);
+				// Only add to the string if it is not a commented out line
+				if (!nextLine.startsWith("#")) {
+					commandConfig.addToStdOutputString(nextLine);
+				}
 				// MUST put a new line for this type of writer. "\r\n" works on
 				// Windows and Unix-based systems.
 				commandConfig.getStdOut().write("\r\n");
 				commandConfig.getStdOut().flush();
 			}
+
 			// Write to the stdErr file
 			while ((nextLine = stdErrReader.readLine()) != null) {
 				commandConfig.getStdErr().write(nextLine);

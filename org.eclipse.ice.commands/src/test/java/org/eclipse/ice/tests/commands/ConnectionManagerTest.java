@@ -24,11 +24,9 @@ import com.jcraft.jsch.JSchException;
 
 /**
  * Test for class {@link org.eclipse.ice.commands.ConnectionManager}. Note that
- * in order to run the tests you need to create your own dummy config file which
- * contains the username and hostname information for your own ssh connection.
- * The config file should be a plain txt file with the first line as the
- * hostname and the second line as the username. Your password will be prompted
- * for when running the tests
+ * as currently implemented, the ssh connection is a dummy account set up within
+ * gitlab that will be used in CI for testing. The test class reads from a txt 
+ * file the username, password, and hostname of the dummy account.
  * 
  * @author Joe Osborn
  *
@@ -57,18 +55,22 @@ public class ConnectionManagerTest {
 		// Read in a dummy configuration file that contains credentials
 		File file = new File("/tmp/ice-remote-creds.txt");
 		Scanner scanner = new Scanner(file);
-		scanner.useDelimiter("\n");
-		// Get the credentials for the dummy remote account
 		
+		// Scan line by line
+		scanner.useDelimiter("\n");
+
+		// Get the credentials for the dummy remote account
 		String username = scanner.next();
 		String password = scanner.next();
 		String hostname = scanner.next();
-		
+
+		// Set up the configuration with the necessary credentials
 		configuration.setHostname(hostname);
 		configuration.setUsername(username);
 		configuration.setPassword(password);
 		configuration.setName(connectionName);
 
+		// Try to open a connection
 		try {
 			connect = ConnectionManager.openConnection(configuration);
 		} catch (JSchException e) {
@@ -79,7 +81,8 @@ public class ConnectionManagerTest {
 
 	/**
 	 * Function that performs all of the tests below to ensure that they are
-	 * performed in order
+	 * performed in order, since e.g. one can't close a connection if it isn't
+	 * opened in the first place
 	 */
 	@Test
 	public void test() {

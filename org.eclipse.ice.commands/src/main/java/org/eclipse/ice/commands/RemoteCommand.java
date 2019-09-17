@@ -16,7 +16,6 @@ import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import com.jcraft.jsch.ChannelExec;
@@ -42,12 +41,12 @@ public class RemoteCommand extends Command {
 	/**
 	 * A file output stream for error messages to be remotely logged to
 	 */
-	FileOutputStream stdErrFile = null;
+	FileOutputStream stdErrStream = null;
 
 	/**
 	 * A file output stream for output messages to be remotely logged to
 	 */
-	FileOutputStream stdOutStream;
+	FileOutputStream stdOutStream = null;
 
 	/**
 	 * Default constructor
@@ -162,12 +161,11 @@ public class RemoteCommand extends Command {
 	 * @return
 	 */
 	protected CommandStatus cleanUpJob() {
-		InputStream input = null;
-		InputStream err = null;
-		
-		logger.debug("Remove directories remotely");
+
+		logger.debug("Remove remote directories");
 		// Set a command to force remove the directory
-		((ChannelExec) connection.getChannel()).setCommand("rm -rf " + connection.getConfiguration().getWorkingDirectory());
+		((ChannelExec) connection.getChannel())
+				.setCommand("rm -rf " + connection.getConfiguration().getWorkingDirectory());
 		// Connect the channel to execute
 		try {
 			connection.getChannel().connect();
@@ -175,22 +173,17 @@ public class RemoteCommand extends Command {
 			logger.error("Could not delete the remote working directory after completion!");
 			e.printStackTrace();
 		}
-		
-		logger.debug("Get output streams");
-		// Get the output streams from the remote host
-		try {
-			input = connection.getChannel().getInputStream();
-			err = ((ChannelExec) connection.getChannel()).getErrStream();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		// Note that output doesn't have to explicitly be logged - JSch takes care of this 
-		// for you in {@link org.eclipse.ice.commands.RemoteCommand#loopCommands}
+
+		logger.debug("Disconnect channels");
 
 		// Disconnect the session and return success
 		connection.getChannel().disconnect();
 		connection.getSession().disconnect();
+
+		/**
+		 * Note that output doesn't have to explicitly be logged - JSch takes care of
+		 * this for you in {@link org.eclipse.ice.commands.RemoteCommand#loopCommands}
+		 */
 
 		return CommandStatus.SUCCESS;
 	}
@@ -267,21 +260,32 @@ public class RemoteCommand extends Command {
 
 			// Setup the output streams and pass them to the connection channel
 			try {
-				stdErrFile = new FileOutputStream(commandConfig.getErrFileName(), true);
+				stdErrStream = new FileOutputStream(commandConfig.getErrFileName(), true);
 				stdOutStream = new FileOutputStream(commandConfig.getOutFileName(), true);
 				BufferedOutputStream stdOutBufferedStream = new BufferedOutputStream(stdOutStream);
 				connection.getChannel().setOutputStream(stdOutBufferedStream);
-				((ChannelExec) connection.getChannel()).setErrStream(stdErrFile);
+				((ChannelExec) connection.getChannel()).setErrStream(stdErrStream);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
-			}
+			} 
 
 			// Make sure the channel is connected
 			if (!connection.getChannel().isConnected()) {
 				try {
+					// Connect and run the executable
 					connection.getChannel().connect();
+					
+					// Log the output and error streams
+					logOutput(connection.getChannel().getInputStream(), 
+							((ChannelExec)connection.getChannel()).getErrStream());
 				} catch (JSchException e) {
+					logger.error("Couldn't connect the channel to run the executable!");
 					e.printStackTrace();
+					return CommandStatus.FAILED;
+				} catch (IOException e) {
+					logger.error("Couldn't log the output!");
+					e.printStackTrace();
+					return CommandStatus.FAILED;
 				}
 			} else {
 				logger.error("Channel is not connected! Can't execute remotely...");
@@ -292,6 +296,7 @@ public class RemoteCommand extends Command {
 		return CommandStatus.RUNNING;
 	}
 
+	
 	/**
 	 * This function is responsible for transferring the files to the remote host.
 	 * //TODO Change this to use FileHandler functionality once implemented?
@@ -361,7 +366,6 @@ public class RemoteCommand extends Command {
 		return CommandStatus.RUNNING;
 	}
 
-	
 	/**
 	 * Set a particular connection for a particular RemoteCommand
 	 * 

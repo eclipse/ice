@@ -85,7 +85,8 @@ public class CommandFactoryExample {
 		commandConfig.setOS(System.getProperty("os.name"));
 	
 		// Make a ConnectionConfiguration to indicate that we want to run locally
-		ConnectionConfiguration connectionConfig = new ConnectionConfiguration(hostname);
+		ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
+		connectionConfig.setHostname(hostname);
 
 		// Get the command
 		Command localCommand = null;

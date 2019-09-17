@@ -139,18 +139,40 @@ public class Connection {
 		session = _session;
 	}
 
+	/**
+	 * Set the input stream {@link org.eclipse.ice.commands.Connection#inputStream}
+	 * 
+	 * @param _stream
+	 */
 	public void setInputStream(InputStream _stream) {
 		inputStream = _stream;
 	}
-	
+
+	/**
+	 * Get the input stream {@link org.eclipse.ice.commands.Connection#inputStream}
+	 * 
+	 * @return
+	 */
 	public InputStream getInputStream() {
 		return inputStream;
 	}
-	
+
+	/**
+	 * Set the output stream
+	 * {@link org.eclipse.ice.commands.Connection#outputStream}
+	 * 
+	 * @param _stream
+	 */
 	public void setOutputStream(OutputStream _stream) {
 		outputStream = _stream;
 	}
-	
+
+	/**
+	 * Get the output stream
+	 * {@link org.eclipse.ice.commands.Connection#outputStream}
+	 * 
+	 * @return
+	 */
 	public OutputStream getOutputStream() {
 		return outputStream;
 	}
