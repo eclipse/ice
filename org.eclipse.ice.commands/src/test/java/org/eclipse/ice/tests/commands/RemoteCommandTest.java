@@ -53,11 +53,11 @@ public class RemoteCommandTest {
 
 		// Set the command to confiugre to a dummy hello world command
 		commandConfig.setCommandId(0);
-		commandConfig.setExecutable("./someExecutable.sh ${installDir}");
+		commandConfig.setExecutable("./test_code_execution.sh");
 		commandConfig.setInputFile("someInputFile.txt");
 		commandConfig.setErrFileName("someErrFile.txt");
 		commandConfig.setOutFileName("someOutFile.txt");
-		commandConfig.setInstallDirectory("~/install");
+		commandConfig.setInstallDirectory("");
 		commandConfig.setWorkingDirectory(pwd);
 		commandConfig.setAppendInput(true);
 		commandConfig.setNumProcs("1");
@@ -92,7 +92,7 @@ public class RemoteCommandTest {
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.RemoteCommand()}
 	 */
-	@Test
+	//@Test
 	public void testRemoteCommand() {
 		System.out.println("Testing remote command configuration");
 
@@ -109,7 +109,7 @@ public class RemoteCommandTest {
 	 * This tests that the job status is set to failed if an incorrect connection is
 	 * established.
 	 */
-	@Test
+	//@Test
 	public void testFailedConnectionRemoteCommand() {
 		System.out.println("Testing remote command with a bad connection");
 

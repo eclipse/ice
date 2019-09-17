@@ -119,7 +119,7 @@ public class RemoteCommand extends Command {
 	@Override
 	protected CommandStatus run() {
 
-		logger.info("Transferring files to remote host");
+		logger.debug("Transferring files to remote host");
 		try {
 			status = transferFiles();
 		} catch (SftpException e) {
@@ -132,13 +132,26 @@ public class RemoteCommand extends Command {
 			logger.error("Input file not found! Could not upload to the remote host");
 			e.printStackTrace();
 		}
-
+		logger.debug("Executing jobs");
 		status = loopCommands();
 
+		try {
+			checkStatus(status);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		logger.debug("Monitoring job");
 		status = monitorJob();
 
+		try {
+			checkStatus(status);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		logger.debug("Cleaning up");
 		status = cleanUpJob();
 
+		logger.debug("Finished run()");
 		return status;
 	}
 
@@ -151,17 +164,29 @@ public class RemoteCommand extends Command {
 	protected CommandStatus cleanUpJob() {
 		InputStream input = null;
 		InputStream err = null;
+		
+		logger.debug("Remove directories remotely");
+		// Set a command to force remove the directory
+		((ChannelExec) connection.getChannel()).setCommand("rm -rf " + connection.getConfiguration().getWorkingDirectory());
+		// Connect the channel to execute
+		try {
+			connection.getChannel().connect();
+		} catch (JSchException e) {
+			logger.error("Could not delete the remote working directory after completion!");
+			e.printStackTrace();
+		}
+		
+		logger.debug("Get output streams");
+		// Get the output streams from the remote host
 		try {
 			input = connection.getChannel().getInputStream();
 			err = ((ChannelExec) connection.getChannel()).getErrStream();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		if (logOutput(input, err) == false) {
-			logger.error("Couldn't log output, marking job as failed");
-			return CommandStatus.FAILED;
-		}
+		
+		// Note that output doesn't have to explicitly be logged - JSch takes care of this 
+		// for you in {@link org.eclipse.ice.commands.RemoteCommand#loopCommands}
 
 		// Disconnect the session and return success
 		connection.getChannel().disconnect();
@@ -188,7 +213,7 @@ public class RemoteCommand extends Command {
 			exitValue = ((ChannelExec) connection.getChannel()).getExitStatus();
 
 			if (connection.getChannel().isClosed() && exitValue != 0) {
-				logger.error("Connection was closed before job was finished, failed");
+				logger.error("Connection was closed before job was finished, failed " + exitValue);
 				return CommandStatus.FAILED;
 			}
 		}
@@ -213,7 +238,7 @@ public class RemoteCommand extends Command {
 		// the execution. The commands are then split by the semi-colon
 		ArrayList<String> completeCommands = new ArrayList<String>();
 		for (String i : commandConfig.getSplitCommand()) {
-			completeCommands.add("cd " + commandConfig.getWorkingDirectory() + "; " + i);
+			completeCommands.add("cd " + connection.getConfiguration().getWorkingDirectory() + "; " + i);
 		}
 
 		// Now loop over all commands and run them via JSch
@@ -230,7 +255,7 @@ public class RemoteCommand extends Command {
 			((ChannelExec) connection.getChannel()).setCommand(thisCommand);
 
 			logger.info("Executing command: " + thisCommand + " remotely in the working direcotry "
-					+ commandConfig.getWorkingDirectory());
+					+ connection.getConfiguration().getWorkingDirectory());
 
 			// Set up the input stream
 			connection.getChannel().setInputStream(null);
@@ -268,7 +293,8 @@ public class RemoteCommand extends Command {
 	}
 
 	/**
-	 * This function is responsible for transferring the files to the remote host
+	 * This function is responsible for transferring the files to the remote host.
+	 * //TODO Change this to use FileHandler functionality once implemented?
 	 * 
 	 * @return - CommandStatus indicating that the transfer was successful (or not)
 	 * @throws SftpException
@@ -303,7 +329,11 @@ public class RemoteCommand extends Command {
 			shortInputName = shortInputName.substring(shortInputName.lastIndexOf("\\") + 1);
 
 		String localSrc = commandConfig.getWorkingDirectory();
-		String exec = commandConfig.getExecutableName();
+		String exec = commandConfig.getExecutable();
+
+		// Fix the executable name by removing the ./ in front of it
+		if (exec.contains("./"))
+			exec = exec.substring(2, exec.length());
 
 		// If the working directory doesn't have a / at the end of it, add it
 		if (!localSrc.endsWith("/"))
@@ -311,18 +341,27 @@ public class RemoteCommand extends Command {
 		// Do the same for the destination
 		if (!remoteWorkingDirectory.endsWith("/"))
 			remoteWorkingDirectory += "/";
-		
+
 		// Now have the full paths, so transfer the files per the logger messages
-		logger.info("Putting input file: " + localSrc + shortInputName + " in directory " + remoteWorkingDirectory + shortInputName);
+		logger.info("Putting input file: " + localSrc + shortInputName + " in directory " + remoteWorkingDirectory
+				+ shortInputName);
 		sftpChannel.put(localSrc + shortInputName, remoteWorkingDirectory + shortInputName);
 		logger.info("Putting executable file: " + localSrc + exec + " in directory " + remoteWorkingDirectory + exec);
 		sftpChannel.put(localSrc + exec, remoteWorkingDirectory + exec);
-		
+
+		// Change the permission of the executable so that it can be executed
+		// Give user read execute permissions, all other users no permissions
+		// NOTE: JSch takes a decimal number, not an octal number like one would
+		// normally expect with
+		// chmod. So 320 here in decimal corresponds to 500 in octal, i.e. -r-x------
+		sftpChannel.chmod(320, remoteWorkingDirectory + exec);
+
 		// Disconnect the sftp channel to stop moving files
 		sftpChannel.disconnect();
 		return CommandStatus.RUNNING;
 	}
 
+	
 	/**
 	 * Set a particular connection for a particular RemoteCommand
 	 * 

@@ -113,16 +113,15 @@ public abstract class Command {
 	 * function also writes to the output logfile what the actual final job exit
 	 * value is, so the user can always see if their job finished successfully.
 	 */
-	protected abstract CommandStatus monitorJob(); 
-	
-	
+	protected abstract CommandStatus monitorJob();
+
 	/**
 	 * This function cancels the already submitted command, if possible.
 	 * 
 	 * @return CommandStatus - indicates whether or not the Command was properly
 	 *         cancelled.
 	 */
-	
+
 	public CommandStatus cancel() {
 		status = CommandStatus.CANCELED;
 		return status;
@@ -182,8 +181,10 @@ public abstract class Command {
 		// Check the info and return failure if something was not set
 		if (commandConfig.getExecutable() == null || commandConfig.getInputFile() == null
 				|| commandConfig.getOutFileName() == null || commandConfig.getErrFileName() == null
-				|| commandConfig.getNumProcs() == null || commandConfig.getWorkingDirectory() == null)
+				|| commandConfig.getNumProcs() == null || commandConfig.getWorkingDirectory() == null) {
+			logger.error("An important piece of information is missing from the CommandConfiguration. Exiting.");
 			return CommandStatus.INFOERROR;
+		}
 
 		// Set the command to actually run and execute
 		commandConfig.setFullCommand(commandConfig.getExecutableName());
@@ -354,8 +355,6 @@ public abstract class Command {
 
 	}
 
-
-	
 	/**
 	 * This function takes the given streams as parameters and logs them into an
 	 * output file. The function returns a boolean on whether or not the function
@@ -386,7 +385,7 @@ public abstract class Command {
 			// Write to the stdOut file
 			while ((nextLine = stdOutReader.readLine()) != null) {
 				commandConfig.getStdOut().write(nextLine);
-				
+
 				commandConfig.addToStdOutputString(nextLine);
 				// MUST put a new line for this type of writer. "\r\n" works on
 				// Windows and Unix-based systems.
