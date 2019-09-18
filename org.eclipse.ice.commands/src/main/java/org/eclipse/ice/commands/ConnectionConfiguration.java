@@ -44,7 +44,7 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 	 * The password used to make the connection. Used for unit tests with the dummy
 	 * ssh account only
 	 */
-	private String password;
+	private String password = "";
 
 	/**
 	 * A string which contains the directory in which to execute the job on the

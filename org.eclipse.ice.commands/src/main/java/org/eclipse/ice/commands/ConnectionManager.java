@@ -11,10 +11,11 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
-import java.io.Console;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
@@ -165,40 +166,35 @@ public class ConnectionManager {
 	}
 
 	/**
-	 * This function gets the password from the user as a prompt. It tries to use
-	 * the Console class to get the password, but this does not work in an IDE. If
-	 * the code is being run in an IDE, it will get the password from the usual
-	 * input method but this will be displayed on the console screen, so make sure
-	 * that nobody looks over your shoulder while typing it in. The function also
-	 * encrypts the password and puts the encryption in ConnectionConfiguration
+	 * This function gets the password from the user as a prompt. It uses the
+	 * {@link org.eclipse.ice.commands.ConsoleEraser#run} method to "erase" the
+	 * characters at the console prompt as they are typed in, so that the 
+	 * password isn't shown. The prompt is terminated by a carriage return.
 	 * 
-	 * @param prompt - Message to display to prompt password
-	 * @return
-	 * @throws Exception
+	 * @return - char array of password chars
 	 */
 	private static final char[] getPassword() {
 
-		// Try to get the password with a console, if being run outside of an IDE
-		// This is superior since the readPassword function does not display the text to
-		// the console
-		logger.info("Enter your password. Connection won't proceed until you do so: ");
-		Console cnsl = System.console();
+		String password = "";
+		ConsoleEraser eraser = new ConsoleEraser();
 
-		char[] pwd = null;
-		if (cnsl != null)
-			pwd = System.console().readPassword();
-		else {
-			// If we can't get the password from the console, warn the user
-			logger.warn(
-					"Warning: You are probably running in an IDE where the password input will be shown on your console. "
-							+ "\n Make sure nobody is looking over your shoulder!");
+		logger.info("Please enter your password: ");
 
-			Scanner scan = new Scanner(System.in);
-			pwd = scan.nextLine().toCharArray();
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
+		eraser.start();
+		try {
+			password = in.readLine();
+			in.close();
+		} catch (IOException e) {
+			logger.error("Couldn't read the password...");
+			return null;
 		}
 
-		return pwd;
+		eraser.stopErasing();
+		System.out.print("\b");
+
+		return password.toCharArray();
 	}
 
 }

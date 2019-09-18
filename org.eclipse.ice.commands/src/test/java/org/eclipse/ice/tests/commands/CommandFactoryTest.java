@@ -219,11 +219,9 @@ public class CommandFactoryTest {
 		// Make the connection configuration
 		connectionConfig.setHostname(hostname);
 		connectionConfig.setUsername(username);
-
-		// Note the password can be input at the console by just setting
-		// connectionConfig.setPassword(""); in the event that you don't want your
-		// password held in a string object
 		connectionConfig.setPassword(password);
+		// Note the password can be input at the console by not setting the
+		// the password explicitly in the connection configuration
 		connectionConfig.setName("dummyConnection");
 		connectionConfig.setWorkingDirectory("/tmp/remoteCommandTestDirectory");
 		connectionConfig.setDeleteWorkingDirectory(true);

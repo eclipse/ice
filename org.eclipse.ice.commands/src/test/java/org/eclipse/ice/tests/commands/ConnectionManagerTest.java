@@ -33,6 +33,8 @@ import com.jcraft.jsch.JSchException;
  */
 public class ConnectionManagerTest {
 
+	static boolean require_password = false;
+	
 	/**
 	 * A dummy connection to perform a few tests with
 	 */
@@ -67,7 +69,8 @@ public class ConnectionManagerTest {
 		// Set up the configuration with the necessary credentials
 		configuration.setHostname(hostname);
 		configuration.setUsername(username);
-		configuration.setPassword(password);
+		if(!require_password)
+			configuration.setPassword(password);
 		configuration.setName(connectionName);
 
 		// Try to open a connection
