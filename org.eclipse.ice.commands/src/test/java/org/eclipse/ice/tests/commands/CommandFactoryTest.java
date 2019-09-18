@@ -92,6 +92,38 @@ public class CommandFactoryTest {
 	}
 
 	/**
+	 * This function tests a more boring command, e.g. just executing "ls" at the
+	 * command prompt This shows that the API can be used to execute basic command
+	 * line prompts.
+	 */
+	@Test
+	public void testBoringCommand() {
+
+		CommandConfiguration cmdCfg = new CommandConfiguration();
+		cmdCfg.setExecutable("ls -lrt");
+		cmdCfg.setInputFile("");
+		cmdCfg.setNumProcs("1");
+		cmdCfg.setInstallDirectory("");
+		cmdCfg.setWorkingDirectory(pwd);
+		cmdCfg.setAppendInput(false);
+		cmdCfg.setOS("osx");
+		cmdCfg.setCommandId(1);
+		cmdCfg.setErrFileName("someLsErrFile.txt");
+		cmdCfg.setOutFileName("someLsOutFile.txt");
+		ConnectionConfiguration ctCfg = new ConnectionConfiguration();
+		ctCfg.setHostname(hostname);
+
+		Command cmd = null;
+		try {
+			cmd = factory.getCommand(cmdCfg, ctCfg);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		CommandStatus status = cmd.execute();
+		assert (status == CommandStatus.SUCCESS);
+	}
+
+	/**
 	 * This function tests with real files to test an actual job processing. For
 	 * this test to work, make sure you change the workingDirectory to your actual
 	 * workingDirectory where the Commands API lives.
@@ -192,7 +224,8 @@ public class CommandFactoryTest {
 	}
 
 	/**
-	 * This function tests a functional remote command with the full command factory implementation
+	 * This function tests a functional remote command with the full command factory
+	 * implementation
 	 */
 	@Test
 	public void testFunctionalRemoteCommand() {

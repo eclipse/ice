@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +35,7 @@ public class ConnectionManager {
 	/**
 	 * An ArrayList of available Connections to the ConnectionManager
 	 */
-	protected static ArrayList<Connection> connectionList = new ArrayList<Connection>();
+	private static ArrayList<Connection> connectionList = new ArrayList<Connection>();
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -57,10 +56,9 @@ public class ConnectionManager {
 	 * @return Connection - returns connection
 	 */
 	public static Connection openConnection(ConnectionConfiguration config) throws JSchException {
-		AtomicReference<ConnectionConfiguration> atomicConfig = new AtomicReference<ConnectionConfiguration>(config);
 
 		// The new connection to be opened
-		Connection newConnection = new Connection(atomicConfig);
+		Connection newConnection = new Connection(config);
 
 		// Create the shell
 		newConnection.setJShellSession(new JSch());
@@ -165,11 +163,16 @@ public class ConnectionManager {
 		return;
 	}
 
+	public static boolean isConnectionOpen(String connectionName) {
+		Connection connection = getConnection(connectionName);
+		return connection.getSession().isConnected();
+	}
+
 	/**
 	 * This function gets the password from the user as a prompt. It uses the
 	 * {@link org.eclipse.ice.commands.ConsoleEraser#run} method to "erase" the
-	 * characters at the console prompt as they are typed in, so that the 
-	 * password isn't shown. The prompt is terminated by a carriage return.
+	 * characters at the console prompt as they are typed in, so that the password
+	 * isn't shown. The prompt is terminated by a carriage return.
 	 * 
 	 * @return - char array of password chars
 	 */
@@ -195,6 +198,26 @@ public class ConnectionManager {
 		System.out.print("\b");
 
 		return password.toCharArray();
+	}
+
+	/**
+	 * Setter function for
+	 * {@link org.eclipse.ice.commands.ConnectionManager#connectionList}
+	 * 
+	 * @param connections
+	 */
+	public static void setConnectionList(ArrayList<Connection> connections) {
+		connectionList = connections;
+	}
+
+	/**
+	 * Getter function for
+	 * {@link org.eclipse.ice.commands.ConnectionManager#connectionList}
+	 * 
+	 * @return
+	 */
+	public static ArrayList<Connection> getConnectionList() {
+		return connectionList;
 	}
 
 }

@@ -53,11 +53,11 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 	private String workingDirectory = "";
 
 	/**
-	 * A boolean indicating whether or not the files/directories created on the remote host
-	 * should be deleted or not. Default set to false
+	 * A boolean indicating whether or not the files/directories created on the
+	 * remote host should be deleted or not. Default set to false
 	 */
 	private boolean deleteWorkingDirectory = false;
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -142,23 +142,27 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 	}
 
 	/**
-	 * Getter for whether or not to delete the remote working directory upon completion
+	 * Getter for whether or not to delete the remote working directory upon
+	 * completion
 	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#deleteWorkingDirectory}
+	 * 
 	 * @return
 	 */
 	public boolean getDeleteWorkingDirectory() {
 		return deleteWorkingDirectory;
 	}
-	
+
 	/**
-	 * Setter for whether or not to delete the remote working directory upon completion
+	 * Setter for whether or not to delete the remote working directory upon
+	 * completion
 	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#deleteWorkingDirectory}
+	 * 
 	 * @param
 	 */
 	public void setDeleteWorkingDirectory(boolean _delete) {
 		deleteWorkingDirectory = _delete;
 	}
-	
+
 	/**
 	 * Inherited function from UserInfo
 	 */

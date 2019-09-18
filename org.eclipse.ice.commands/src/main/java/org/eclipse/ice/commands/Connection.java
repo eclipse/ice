@@ -72,8 +72,8 @@ public class Connection {
 	 * 
 	 * @param config
 	 */
-	public Connection(AtomicReference<ConnectionConfiguration> config) {
-		configuration = config;
+	public Connection(ConnectionConfiguration config) {
+		configuration = new AtomicReference<ConnectionConfiguration>(config);
 	}
 
 	/**

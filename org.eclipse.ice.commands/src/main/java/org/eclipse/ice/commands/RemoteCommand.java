@@ -128,7 +128,7 @@ public class RemoteCommand extends Command {
 			e.printStackTrace();
 		}
 
-		// Clean up the remote directories created
+		// Finish the job by cleaning up the remote directories created
 		status = finishJob();
 
 		return status;

@@ -56,7 +56,6 @@ public abstract class Command {
 	 */
 	protected static final Logger logger = LoggerFactory.getLogger(Command.class);
 
-
 	/**
 	 * Default constructor
 	 */
@@ -95,7 +94,7 @@ public abstract class Command {
 		// Confirm the job finished with some status
 		logger.info("The job finished with status: " + status);
 		return status;
-		
+
 	}
 
 	/**
@@ -108,7 +107,6 @@ public abstract class Command {
 	 */
 	protected abstract CommandStatus run();
 
-	
 	/**
 	 * This function runs the job through the relevant API and executes the process.
 	 * 
@@ -127,13 +125,13 @@ public abstract class Command {
 	protected abstract CommandStatus monitorJob();
 
 	/**
-	 * This function is responsible for cleaning up any remaining things from the job
-	 * after the commands API is finished monitoring the job. These are things related
-	 * to, for example, logging output. 
+	 * This function is responsible for cleaning up any remaining things from the
+	 * job after the process builder or JSch API has submitted the job to be
+	 * processed. These are things related to, for example, logging output.
+	 * 
 	 * @return
 	 */
 	protected abstract CommandStatus finishJob();
-
 
 	/**
 	 * This function cancels the already submitted command, if possible.
@@ -208,20 +206,16 @@ public abstract class Command {
 
 		// Check that the directory exists
 		File workDir = new File(commandConfig.getWorkingDirectory());
-		
-		if(!workDir.exists())
+
+		if (!workDir.exists())
 			return CommandStatus.INFOERROR;
-		
+
 		// Get a string of the executable to manipulate
 		String exec = commandConfig.getExecutable();
 		// If the executable contains a prefix, remove it
-		if(exec.contains("./"))
+		if (exec.contains("./"))
 			exec = exec.substring(2, exec.length());
-		// Check that the executable exists
-		File execFile = new File(commandConfig.getWorkingDirectory() + "/" + exec);
-		if(!execFile.exists())
-			return CommandStatus.INFOERROR;
-		
+
 		// Set the command to actually run and execute
 		commandConfig.setFullCommand(commandConfig.getExecutableName());
 
@@ -262,9 +256,9 @@ public abstract class Command {
 		// Make a new line for writing out the output
 		String newLine = "\n";
 		// Add a \r for Windows systems.
-		if(commandConfig.getOS().contains("windows"))
+		if (commandConfig.getOS().contains("windows"))
 			newLine = "\r\n";
-		
+
 		// Catch the stdout and stderr output
 		try {
 			// Write to the stdOut file
@@ -284,10 +278,10 @@ public abstract class Command {
 			while ((nextLine = stdErrReader.readLine()) != null) {
 				commandConfig.getStdErr().write(nextLine);
 				// If the next line isn't commented out, add it to the error string
-				if(!nextLine.startsWith("#")) {
+				if (!nextLine.startsWith("#")) {
 					commandConfig.addToErrString(nextLine);
 				}
-				
+
 				// MUST put a new line for this type of writer
 				commandConfig.getStdErr().write(newLine);
 				commandConfig.getStdErr().flush();
@@ -320,6 +314,5 @@ public abstract class Command {
 		}
 
 	}
-
 
 }
