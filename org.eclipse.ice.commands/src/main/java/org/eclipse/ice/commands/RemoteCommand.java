@@ -83,38 +83,6 @@ public class RemoteCommand extends Command {
 	}
 
 	/**
-	 * Method that overrides Commmand:Execute and actually implements the particular
-	 * RemoteCommand to be executed.
-	 */
-	@Override
-	public CommandStatus execute() {
-		// Check that the commandConfig and connectConfig were properly set in
-		// the constructor
-		try {
-			checkStatus(status);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Configure the command to be ready to run.
-		status = setConfiguration();
-
-		// Ensure that the command was properly configured
-		try {
-			checkStatus(status);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Now that all of the prerequisites have been set, start the job running
-		status = run();
-
-		// Confirm the job finished with successful status, useful for user
-		logger.info("The job finished with status: " + status);
-		return status;
-	}
-
-	/**
 	 * See {@link org.eclipse.ice.commands.Command#run()}
 	 */
 	@Override
@@ -141,7 +109,7 @@ public class RemoteCommand extends Command {
 		}
 
 		// Execute the commands on the remote host
-		status = runJob();
+		status = processJob();
 
 		// Check the status to ensure nothing failed
 		try {
@@ -161,7 +129,7 @@ public class RemoteCommand extends Command {
 		}
 
 		// Clean up the remote directories created
-		status = cleanUpJob();
+		status = finishJob();
 
 		return status;
 	}
@@ -173,7 +141,7 @@ public class RemoteCommand extends Command {
 	 * @return
 	 */
 	@Override
-	protected CommandStatus cleanUpJob() {
+	protected CommandStatus finishJob() {
 		// If the user would like to delete the remote working directory, delete it
 		if (connection.getConfiguration().getDeleteWorkingDirectory()) {
 			logger.info("Removing remote working directory");
@@ -243,7 +211,7 @@ public class RemoteCommand extends Command {
 	 * @return
 	 */
 	@Override
-	protected CommandStatus runJob() {
+	protected CommandStatus processJob() {
 
 		// Setup the list of all of the commands that will be launched. JSch can not
 		// launch multiple commands at once, so we need to take the splitCommand and

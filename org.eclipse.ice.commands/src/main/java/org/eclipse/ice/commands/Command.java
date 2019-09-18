@@ -13,6 +13,7 @@
 package org.eclipse.ice.commands;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -55,15 +56,6 @@ public abstract class Command {
 	 */
 	protected static final Logger logger = LoggerFactory.getLogger(Command.class);
 
-	/**
-	 * Reference to the Java process that is the job to be executed
-	 */
-	protected Process job;
-
-	/**
-	 * The variable that actually handles the job execution at the command line
-	 */
-	protected ProcessBuilder jobBuilder;
 
 	/**
 	 * Default constructor
@@ -78,20 +70,32 @@ public abstract class Command {
 	 * @return CommandStatus - indicating whether or not the Command was properly
 	 *         executed
 	 */
-	public abstract CommandStatus execute();
+	public CommandStatus execute() {
+		// Check that the commandConfig file was properly instantiated in the
+		// constructor
+		try {
+			checkStatus(status);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-	/**
-	 * This function sets the CommandConfiguration for a particular command. It also
-	 * prepares various files for job launch (e.g. logfiles) and is called at
-	 * construction time. It is overriden by LocalCommand and RemoteCommand
-	 * 
-	 * @param config - the configuration to be used for a particular command.
-	 * @return CommandStatus - status indicating whether the configuration was
-	 *         properly set
-	 */
-	protected CommandStatus setConfiguration(CommandConfiguration config) {
-		commandConfig = config;
-		return CommandStatus.PROCESSING;
+		// Configure the command to be ready to run.
+		status = setConfiguration();
+
+		// Ensure that the command was properly configured
+		try {
+			checkStatus(status);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Now that all of the prerequisites have been set, start the job running
+		status = run();
+
+		// Confirm the job finished with some status
+		logger.info("The job finished with status: " + status);
+		return status;
+		
 	}
 
 	/**
@@ -110,7 +114,7 @@ public abstract class Command {
 	 * 
 	 * @return - CommandStatus indicating the result of the function.
 	 */
-	protected abstract CommandStatus runJob();
+	protected abstract CommandStatus processJob();
 
 	/**
 	 * This operation is responsible for monitoring the exit value of the running
@@ -128,7 +132,8 @@ public abstract class Command {
 	 * to, for example, logging output. 
 	 * @return
 	 */
-	protected abstract CommandStatus cleanUpJob();
+	protected abstract CommandStatus finishJob();
+
 
 	/**
 	 * This function cancels the already submitted command, if possible.
@@ -201,6 +206,22 @@ public abstract class Command {
 			return CommandStatus.INFOERROR;
 		}
 
+		// Check that the directory exists
+		File workDir = new File(commandConfig.getWorkingDirectory());
+		
+		if(!workDir.exists())
+			return CommandStatus.INFOERROR;
+		
+		// Get a string of the executable to manipulate
+		String exec = commandConfig.getExecutable();
+		// If the executable contains a prefix, remove it
+		if(exec.contains("./"))
+			exec = exec.substring(2, exec.length());
+		// Check that the executable exists
+		File execFile = new File(commandConfig.getWorkingDirectory() + "/" + exec);
+		if(!execFile.exists())
+			return CommandStatus.INFOERROR;
+		
 		// Set the command to actually run and execute
 		commandConfig.setFullCommand(commandConfig.getExecutableName());
 
@@ -299,5 +320,6 @@ public abstract class Command {
 		}
 
 	}
+
 
 }

@@ -162,7 +162,7 @@ public class CommandFactoryTest {
 	 * intended to test some of the exception catching, thus it is expected to
 	 * "fail."
 	 */
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void testIncorrectWorkingDirectory() {
 		/**
 		 * Run another non functional command, with a non existing working directory
@@ -188,9 +188,12 @@ public class CommandFactoryTest {
 		// Run it and expect that it fails
 		CommandStatus status2 = localCommand2.execute();
 
-		assert (status2 == CommandStatus.FAILED);
+		assert (status2 == CommandStatus.INFOERROR);
 	}
 
+	/**
+	 * This function tests a functional remote command with the full command factory implementation
+	 */
 	@Test
 	public void testFunctionalRemoteCommand() {
 

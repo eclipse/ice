@@ -28,6 +28,15 @@ import java.util.concurrent.TimeUnit;
  */
 public class LocalCommand extends Command {
 
+	/**
+	 * Reference to the Java process that is the job to be executed
+	 */
+	protected Process job;
+
+	/**
+	 * The variable that actually handles the job execution at the command line
+	 */
+	protected ProcessBuilder jobBuilder;
 
 	/**
 	 * Default constructor
@@ -67,39 +76,6 @@ public class LocalCommand extends Command {
 	}
 
 	/**
-	 * Method that overrides {@link org.eclipse.ice.commands.Command#execute()} and
-	 * actually implements the particular LocalCommand to be executed.
-	 */
-	@Override
-	public CommandStatus execute() {
-
-		// Check that the commandConfig file was properly instantiated in the
-		// constructor
-		try {
-			checkStatus(status);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Configure the command to be ready to run.
-		status = setConfiguration();
-
-		// Ensure that the command was properly configured
-		try {
-			checkStatus(status);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Now that all of the prerequisites have been set, start the job running
-		status = run();
-
-		// Confirm the job finished with some status
-		logger.info("The job finished with status: " + status);
-		return status;
-	}
-
-	/**
 	 * See {@link org.eclipse.ice.commands.Command#run()}
 	 */
 	@Override
@@ -122,12 +98,12 @@ public class LocalCommand extends Command {
 			status = setupProcessBuilder(thisCommand);
 
 			// Run the job
-			status = runJob();
+			status = processJob();
 
-			// Clean up and log the output of the job
-			status = cleanUpJob();
+			// Finish the job by logging output. If the job is not completed, then
+			// it will be monitored in monitorJob
+			status = finishJob();
 
-			
 			// Check the status to ensure the job hasn't failed
 			try {
 				checkStatus(status);
@@ -164,7 +140,6 @@ public class LocalCommand extends Command {
 		// Return the result
 		return status;
 	}
-
 
 	/**
 	 * This function sets up the ProcessBuilder member variable to prepare for
@@ -203,7 +178,6 @@ public class LocalCommand extends Command {
 
 		return CommandStatus.RUNNING;
 	}
-	
 
 	/**
 	 * This function is responsible for actually running the Process in the command
@@ -211,11 +185,10 @@ public class LocalCommand extends Command {
 	 * 
 	 */
 	@Override
-	protected CommandStatus runJob() {
+	protected CommandStatus processJob() {
 
 		String os = commandConfig.getOS();
 		List<String> commandList = jobBuilder.command();
-		
 
 		// Check that the job hasn't been canceled and is ready to run
 		try {
@@ -249,7 +222,6 @@ public class LocalCommand extends Command {
 			}
 		}
 
-	
 		return status;
 
 	}
@@ -265,7 +237,7 @@ public class LocalCommand extends Command {
 	 *         correctly
 	 */
 	@Override
-	protected CommandStatus cleanUpJob() {
+	protected CommandStatus finishJob() {
 
 		InputStream stdOutStream = null, stdErrStream = null;
 		String stdErrFileName = null, stdOutFileName = null;
@@ -273,8 +245,6 @@ public class LocalCommand extends Command {
 		// Get the output file names
 		stdErrFileName = commandConfig.getErrFileName();
 		stdOutFileName = commandConfig.getOutFileName();
-
-		int exitValue = -1; // arbitrary value indicating not completed (yet)
 
 		// If errMsg is not an empty String, then there were some errors and they
 		// should be written out to the log file
@@ -307,6 +277,8 @@ public class LocalCommand extends Command {
 		}
 
 		// Try to get the exit value of the job
+		int exitValue = -1; // arbitrary value indicating not completed (yet)
+
 		try {
 			exitValue = job.exitValue();
 		} catch (IllegalThreadStateException e) {
@@ -325,7 +297,7 @@ public class LocalCommand extends Command {
 		}
 
 	}
-	
+
 	/**
 	 * See {@link org.eclipse.ice.commands.Command#monitorJob()}
 	 */
