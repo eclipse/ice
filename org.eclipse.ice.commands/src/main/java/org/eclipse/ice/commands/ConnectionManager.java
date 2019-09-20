@@ -148,9 +148,19 @@ public class ConnectionManager {
 		// Disconnect the session. If the session was not connected in the first place,
 		// it does nothing
 		connection.getSession().disconnect();
+		
 		return;
 	}
 
+	/**
+	 * This function removes a particular connection from the manager's connection list
+	 * @param connectionName
+	 */
+	public static void removeConnection(String connectionName) {
+		// Get the connection, and remove it
+		connectionList.remove(getConnection(connectionName));
+	}
+	
 	/**
 	 * Closes all connections that remain open.
 	 * 

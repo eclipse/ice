@@ -90,7 +90,7 @@ public class ConnectionManagerTest {
 	 * performed in order, since e.g. one can't close a connection if it isn't
 	 * opened in the first place
 	 */
-	// @Test
+	@Test
 	public void test() {
 		testOpenConnection();
 
@@ -137,6 +137,11 @@ public class ConnectionManagerTest {
 		ConnectionManager.closeConnection(connectionName);
 
 		assert (!ConnectionManager.getConnection(connectionName).getSession().isConnected());
+		
+		// Remove the connection from the connection manager
+		ConnectionManager.removeConnection(connectionName);
+		
+		assert(ConnectionManager.getConnection(connectionName) == null);
 	}
 
 	/**
@@ -202,7 +207,7 @@ public class ConnectionManagerTest {
 		ArrayList<Connection> connections = new ArrayList<Connection>();
 		connections = ConnectionManager.getConnectionList();
 
-		// Exepct only two connections since one of the connections is not good (i.e.
+		// Expect only two connections since one of the connections is not good (i.e.
 		// conn3 has a bad password)
 		assert (connections.size() == 2);
 

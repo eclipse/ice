@@ -124,8 +124,8 @@ public class LocalCommandTest {
 
 		CommandStatus testStatus = testCommand.execute();
 
-		assert (testStatus == CommandStatus.FAILED);
-		System.out.println("Example incorrect executable status should be FAILED and is: " + testStatus);
+		assert (testStatus == CommandStatus.INFOERROR);
+		System.out.println("Example incorrect executable status should be INFOERROR and is: " + testStatus);
 		System.out.println("Finished testExecute\n");
 	}
 

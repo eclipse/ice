@@ -79,6 +79,7 @@ public class RemoteCommand extends Command {
 		// Set the commandConfig hostname to that of the connectionConfig - only used
 		// for output logging info
 		commandConfig.setHostname(connectConfig.getHostname());
+		
 		status = CommandStatus.PROCESSING;
 	}
 
@@ -89,23 +90,29 @@ public class RemoteCommand extends Command {
 	protected CommandStatus run() {
 
 		// Transfer the necessary files to the remote host
+		// If the transfer fails for some reason, print stack trace and return an info error
 		try {
 			status = transferFiles();
 		} catch (SftpException e) {
 			logger.error("Could not upload the input file to the remote host");
 			e.printStackTrace();
+			return CommandStatus.INFOERROR;
 		} catch (JSchException e) {
 			logger.error("Session disconnected and could not upload the input file to the remote host");
 			e.printStackTrace();
+			return CommandStatus.INFOERROR;
 		} catch (FileNotFoundException e) {
 			logger.error("Input file not found! Could not upload to the remote host");
 			e.printStackTrace();
+			return CommandStatus.INFOERROR;
 		}
 		// Check the status to ensure file transfer was successful
 		try {
 			checkStatus(status);
 		} catch (IOException e) {
+			// If it wasn't successful, return
 			e.printStackTrace();
+			return CommandStatus.INFOERROR;
 		}
 
 		// Execute the commands on the remote host
@@ -115,7 +122,9 @@ public class RemoteCommand extends Command {
 		try {
 			checkStatus(status);
 		} catch (IOException e) {
+			// If it failed, return so
 			e.printStackTrace();
+			return CommandStatus.FAILED;
 		}
 
 		// Monitor the job to check its exit value and ensure it finishes correctly
@@ -125,7 +134,9 @@ public class RemoteCommand extends Command {
 		try {
 			checkStatus(status);
 		} catch (IOException e) {
+			// If it failed, return so
 			e.printStackTrace();
+			return CommandStatus.FAILED;
 		}
 
 		// Finish the job by cleaning up the remote directories created
@@ -324,43 +335,43 @@ public class RemoteCommand extends Command {
 			}
 		}
 
+		String workingDirectory = commandConfig.getWorkingDirectory();
+		
 		// Fix the inputFile name for remote machines to remove any possible slashes
 		String shortInputName = commandConfig.getInputFile();
+
 		if (shortInputName.contains("/"))
 			shortInputName = shortInputName.substring(shortInputName.lastIndexOf("/") + 1);
 		else if (shortInputName.contains("\\"))
 			shortInputName = shortInputName.substring(shortInputName.lastIndexOf("\\") + 1);
 
-		// Get the source directory
-		String localSrc = commandConfig.getWorkingDirectory();
+		
 		// Get the executable to concatenate
-		String exec = commandConfig.getExecutable();
-
+		String shortExecName = commandConfig.getExecutable();
 		// Get the executable filename only by removing the ./ in front of it
-		if (exec.contains("./"))
-			exec = exec.substring(2, exec.length());
+		if (shortExecName.contains("/"))
+			shortExecName = shortExecName.substring(shortExecName.lastIndexOf("/") + 1);
+		else if (shortExecName.contains("\\"))
+			shortExecName = shortExecName.substring(shortExecName.lastIndexOf("\\") + 1);
 
-		// If the working directory doesn't have a / at the end of it, add it
-		if (!localSrc.endsWith("/"))
-			localSrc += "/";
 		// Do the same for the destination
 		if (!remoteWorkingDirectory.endsWith("/"))
 			remoteWorkingDirectory += "/";
 
 		// Now have the full paths, so transfer the files per the logger messages
-		logger.info("Putting input file: " + localSrc + shortInputName + " in directory " + remoteWorkingDirectory
+		logger.info("Putting input file: " + workingDirectory + shortInputName + " in directory " + remoteWorkingDirectory
 				+ shortInputName);
-		sftpChannel.put(localSrc + shortInputName, remoteWorkingDirectory + shortInputName);
-
-		logger.info("Putting executable file: " + localSrc + exec + " in directory " + remoteWorkingDirectory + exec);
-		sftpChannel.put(localSrc + exec, remoteWorkingDirectory + exec);
+		sftpChannel.put(workingDirectory + shortInputName, remoteWorkingDirectory + shortInputName);
+	
+		logger.info("Putting executable file: " + workingDirectory + shortExecName + " in directory " + remoteWorkingDirectory + shortExecName);
+		sftpChannel.put(workingDirectory + shortExecName, remoteWorkingDirectory + shortExecName);
 
 		// Change the permission of the executable so that it can be executed
 		// Give user read execute permissions, all other users no permissions
 		// NOTE: JSch takes a decimal number, not an octal number like one would
 		// normally expect with
 		// chmod. So 320 here in decimal corresponds to 500 in octal, i.e. -r-x------
-		sftpChannel.chmod(320, remoteWorkingDirectory + exec);
+		sftpChannel.chmod(320, remoteWorkingDirectory + shortExecName);
 
 		// Disconnect the sftp channel to stop moving files
 		sftpChannel.disconnect();

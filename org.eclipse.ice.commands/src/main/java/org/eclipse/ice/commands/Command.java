@@ -76,16 +76,17 @@ public abstract class Command {
 			checkStatus(status);
 		} catch (IOException e) {
 			e.printStackTrace();
+			return CommandStatus.INFOERROR;
 		}
 
 		// Configure the command to be ready to run.
 		status = setConfiguration();
-
 		// Ensure that the command was properly configured
 		try {
 			checkStatus(status);
 		} catch (IOException e) {
 			e.printStackTrace();
+			return CommandStatus.INFOERROR;
 		}
 
 		// Now that all of the prerequisites have been set, start the job running
@@ -207,9 +208,10 @@ public abstract class Command {
 		// Check that the directory exists
 		File workDir = new File(commandConfig.getWorkingDirectory());
 
-		if (!workDir.exists())
+		if (!workDir.exists()) {
+			logger.error("Directory containing files doesn't exist! Check it!!");
 			return CommandStatus.INFOERROR;
-
+		}
 		// Get a string of the executable to manipulate
 		String exec = commandConfig.getExecutable();
 		// If the executable contains a prefix, remove it

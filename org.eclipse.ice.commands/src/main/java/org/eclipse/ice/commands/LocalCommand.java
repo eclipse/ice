@@ -108,7 +108,9 @@ public class LocalCommand extends Command {
 			try {
 				checkStatus(status);
 			} catch (IOException e) {
+				// If not, return failed
 				e.printStackTrace();
+				return CommandStatus.FAILED;
 			}
 
 			// Monitor the job to ensure it finished successfully or to watch it
@@ -122,7 +124,9 @@ public class LocalCommand extends Command {
 			try {
 				checkStatus(status);
 			} catch (IOException e) {
+				// If not, return failed
 				e.printStackTrace();
+				return CommandStatus.FAILED;
 			}
 
 		}

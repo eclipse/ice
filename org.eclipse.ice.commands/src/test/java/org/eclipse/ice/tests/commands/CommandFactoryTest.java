@@ -160,7 +160,7 @@ public class CommandFactoryTest {
 	 * "fail." It expect a null pointer exception, since the hostname is not given
 	 * and thus the hostname string is null
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testNonFunctionalLocalCommand() {
 
 		System.out.println("\nTesting some commands where not enough command information was provided.");
@@ -194,7 +194,7 @@ public class CommandFactoryTest {
 	 * intended to test some of the exception catching, thus it is expected to
 	 * "fail."
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testIncorrectWorkingDirectory() {
 		/**
 		 * Run another non functional command, with a non existing working directory
@@ -229,7 +229,8 @@ public class CommandFactoryTest {
 	 */
 	@Test
 	public void testFunctionalRemoteCommand() {
-
+		
+		System.out.println("\n\n\n Testing a functional remote command");
 		// Set the CommandConfiguration class
 		commandConfig.setCommandId(4);
 		commandConfig.setErrFileName("someRemoteErrFile.txt");
