@@ -79,7 +79,7 @@ public class RemoteCommand extends Command {
 		// Set the commandConfig hostname to that of the connectionConfig - only used
 		// for output logging info
 		commandConfig.setHostname(connectConfig.getHostname());
-		
+
 		status = CommandStatus.PROCESSING;
 	}
 
@@ -90,21 +90,22 @@ public class RemoteCommand extends Command {
 	protected CommandStatus run() {
 
 		// Transfer the necessary files to the remote host
-		// If the transfer fails for some reason, print stack trace and return an info error
+		// If the transfer fails for some reason, print stack trace and return an info
+		// error
 		try {
 			status = transferFiles();
 		} catch (SftpException e) {
 			logger.error("Could not upload the input file to the remote host");
 			e.printStackTrace();
-			return CommandStatus.INFOERROR;
+			return CommandStatus.FAILED;
 		} catch (JSchException e) {
 			logger.error("Session disconnected and could not upload the input file to the remote host");
 			e.printStackTrace();
-			return CommandStatus.INFOERROR;
+			return CommandStatus.FAILED;
 		} catch (FileNotFoundException e) {
 			logger.error("Input file not found! Could not upload to the remote host");
 			e.printStackTrace();
-			return CommandStatus.INFOERROR;
+			return CommandStatus.FAILED;
 		}
 		// Check the status to ensure file transfer was successful
 		try {
@@ -336,7 +337,7 @@ public class RemoteCommand extends Command {
 		}
 
 		String workingDirectory = commandConfig.getWorkingDirectory();
-		
+
 		// Fix the inputFile name for remote machines to remove any possible slashes
 		String shortInputName = commandConfig.getInputFile();
 
@@ -345,7 +346,6 @@ public class RemoteCommand extends Command {
 		else if (shortInputName.contains("\\"))
 			shortInputName = shortInputName.substring(shortInputName.lastIndexOf("\\") + 1);
 
-		
 		// Get the executable to concatenate
 		String shortExecName = commandConfig.getExecutable();
 		// Get the executable filename only by removing the ./ in front of it
@@ -359,19 +359,28 @@ public class RemoteCommand extends Command {
 			remoteWorkingDirectory += "/";
 
 		// Now have the full paths, so transfer the files per the logger messages
-		logger.info("Putting input file: " + workingDirectory + shortInputName + " in directory " + remoteWorkingDirectory
-				+ shortInputName);
+		logger.info("Putting input file: " + workingDirectory + shortInputName + " in directory "
+				+ remoteWorkingDirectory + shortInputName);
+		// Put the inputfile to the remote directory. Use a null object for receiving
+		// notifications about
+		// the progress of the transfer and use 0 to overwrite the files if they exist
+		// there already
 		sftpChannel.put(workingDirectory + shortInputName, remoteWorkingDirectory + shortInputName);
-	
-		logger.info("Putting executable file: " + workingDirectory + shortExecName + " in directory " + remoteWorkingDirectory + shortExecName);
-		sftpChannel.put(workingDirectory + shortExecName, remoteWorkingDirectory + shortExecName);
 
-		// Change the permission of the executable so that it can be executed
-		// Give user read execute permissions, all other users no permissions
-		// NOTE: JSch takes a decimal number, not an octal number like one would
-		// normally expect with
-		// chmod. So 320 here in decimal corresponds to 500 in octal, i.e. -r-x------
-		sftpChannel.chmod(320, remoteWorkingDirectory + shortExecName);
+		logger.info("Putting executable file: " + workingDirectory + shortExecName + " in directory "
+				+ remoteWorkingDirectory + shortExecName);
+		sftpChannel.put(workingDirectory + shortExecName, remoteWorkingDirectory + shortExecName);
+		
+		/**
+		 * Change the permission of the executable so that it can be executed. Give user
+		 * read write execute permissions, all other users no permissions NOTE: JSch takes a
+		 * decimal number, not an octal number like one would normally expect with
+		 * chmod. So 448 here in decimal corresponds to 700 in octal, i.e. -rwx------ We
+		 * give write permissions also so that the file can be deleted at the end of
+		 * processing if desired, or e.g. overwritten if the job fails for whatever
+		 * reason and needs to be run again.
+		 */
+		sftpChannel.chmod(448, remoteWorkingDirectory + shortExecName);
 
 		// Disconnect the sftp channel to stop moving files
 		sftpChannel.disconnect();

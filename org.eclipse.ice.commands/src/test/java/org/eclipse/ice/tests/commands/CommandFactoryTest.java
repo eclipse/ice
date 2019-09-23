@@ -230,7 +230,7 @@ public class CommandFactoryTest {
 	@Test
 	public void testFunctionalRemoteCommand() {
 		
-		System.out.println("\n\n\n Testing a functional remote command");
+		System.out.println("\n\n\nTesting a functional remote command");
 		// Set the CommandConfiguration class
 		commandConfig.setCommandId(4);
 		commandConfig.setErrFileName("someRemoteErrFile.txt");
