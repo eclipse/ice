@@ -235,7 +235,7 @@ public class CommandFactoryTest {
 		commandConfig.setCommandId(4);
 		commandConfig.setErrFileName("someRemoteErrFile.txt");
 		commandConfig.setOutFileName("someRemoteOutFile.txt");
-
+		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
 		// Set the connection configuration to a dummy remote connection
 		// Read in a dummy configuration file that contains credentials
 		File file = new File("/tmp/ice-remote-creds.txt");
@@ -260,7 +260,7 @@ public class CommandFactoryTest {
 		// Note the password can be input at the console by not setting the
 		// the password explicitly in the connection configuration
 		connectionConfig.setName("dummyConnection");
-		connectionConfig.setWorkingDirectory("/tmp/remoteCommandTestDirectory");
+		
 		connectionConfig.setDeleteWorkingDirectory(true);
 
 		// Get the command

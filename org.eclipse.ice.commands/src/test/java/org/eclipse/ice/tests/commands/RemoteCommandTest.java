@@ -69,7 +69,8 @@ public class RemoteCommandTest {
 		commandConfig.setAppendInput(true);
 		commandConfig.setNumProcs("1");
 		commandConfig.setOS("linux");
-
+		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
+		
 		// Set the connection configuration to a dummy remote connection
 		// Read in a dummy configuration file that contains credentials
 		File file = new File("/tmp/ice-remote-creds.txt");
@@ -92,7 +93,6 @@ public class RemoteCommandTest {
 		// password held in a string object
 		connectConfig.setPassword(password);
 		connectConfig.setName("dummyConnection");
-		connectConfig.setWorkingDirectory("/tmp/remoteCommandTestDirectory");
 		connectConfig.setDeleteWorkingDirectory(true);
 	}
 

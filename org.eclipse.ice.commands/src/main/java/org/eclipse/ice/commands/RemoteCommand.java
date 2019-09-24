@@ -48,6 +48,7 @@ public class RemoteCommand extends Command {
 	 */
 	FileOutputStream stdOutStream = null;
 
+
 	/**
 	 * Default constructor
 	 */
@@ -159,7 +160,7 @@ public class RemoteCommand extends Command {
 			logger.info("Removing remote working directory");
 			// Set a command to force remove the directory
 			((ChannelExec) connection.getChannel())
-					.setCommand("rm -rf " + connection.getConfiguration().getWorkingDirectory());
+					.setCommand("rm -rf " + commandConfig.getRemoteWorkingDirectory());
 			// Connect the channel to execute the removal
 			try {
 				connection.getChannel().connect();
@@ -231,7 +232,7 @@ public class RemoteCommand extends Command {
 		// the execution. The commands are then split by the semi-colon
 		ArrayList<String> completeCommands = new ArrayList<String>();
 		for (String i : commandConfig.getSplitCommand()) {
-			completeCommands.add("cd " + connection.getConfiguration().getWorkingDirectory() + "; " + i);
+			completeCommands.add("cd " + commandConfig.getRemoteWorkingDirectory() + "; " + i);
 		}
 
 		// Now loop over all commands and run them via JSch
@@ -249,7 +250,7 @@ public class RemoteCommand extends Command {
 			((ChannelExec) connection.getChannel()).setCommand(thisCommand);
 
 			logger.info("Executing command: " + thisCommand + " remotely in the working direcotry "
-					+ connection.getConfiguration().getWorkingDirectory());
+					+ commandConfig.getRemoteWorkingDirectory());
 
 			// Set up the input stream
 			connection.getChannel().setInputStream(null);
@@ -314,10 +315,9 @@ public class RemoteCommand extends Command {
 		// Open the sftp channel to transfer the files
 		ChannelSftp sftpChannel = (ChannelSftp) connection.getSession().openChannel("sftp");
 		sftpChannel.connect();
-
-		// Get the working directory to run everything in on the remote connection
-		String remoteWorkingDirectory = connection.getConfiguration().getWorkingDirectory();
-
+		
+		// Get the remote working directory to move files to
+		String remoteWorkingDirectory = commandConfig.getRemoteWorkingDirectory();
 		logger.info("Make the working directory at: " + remoteWorkingDirectory);
 
 		// Try to cd to the directory if it already exists
@@ -388,6 +388,8 @@ public class RemoteCommand extends Command {
 		return CommandStatus.RUNNING;
 	}
 
+
+	
 	/**
 	 * Set a particular connection for a particular RemoteCommand
 	 * 

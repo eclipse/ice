@@ -46,11 +46,6 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 	 */
 	private String password = "";
 
-	/**
-	 * A string which contains the directory in which to execute the job on the
-	 * remote system
-	 */
-	private String workingDirectory = "";
 
 	/**
 	 * A boolean indicating whether or not the files/directories created on the
@@ -121,25 +116,7 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 		return username;
 	}
 
-	/**
-	 * Setter for the remote working directory
-	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#workingDirectory}
-	 * 
-	 * @param dir
-	 */
-	public void setWorkingDirectory(String dir) {
-		workingDirectory = dir;
-	}
 
-	/**
-	 * Getter for the remote working directory
-	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#workingDirectory}
-	 * 
-	 * @return
-	 */
-	public String getWorkingDirectory() {
-		return workingDirectory;
-	}
 
 	/**
 	 * Getter for whether or not to delete the remote working directory upon

@@ -59,6 +59,7 @@ public class CommandTest {
 		commandConfig.setNumProcs("1"); // number of processes is 1
 		commandConfig.setOS("osx"); // running on osx
 
+		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
 		// Set the connection configuration to a dummy remote connection
 		// Read in a dummy configuration file that contains credentials
 		File file = new File("/tmp/ice-remote-creds.txt");
@@ -88,7 +89,6 @@ public class CommandTest {
 		connectConfig.setName("dummyConnection");
 		// Tell the connection where you want the executable to be run in the remote
 		// system
-		connectConfig.setWorkingDirectory("/tmp/remoteCommandTestDirectory");
 		// Delete remote working directory after job completion
 		connectConfig.setDeleteWorkingDirectory(true);
 

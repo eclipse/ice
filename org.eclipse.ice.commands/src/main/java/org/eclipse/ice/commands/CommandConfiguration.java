@@ -88,6 +88,13 @@ public class CommandConfiguration {
 	private String workingDirectory;
 
 	/**
+	 * A string which contains the directory in which to execute the job on the
+	 * remote system, if necessary
+	 */
+	private String remoteWorkingDirectory = "";
+	
+	
+	/**
 	 * The operating system that the command will be run on. Set by default to the
 	 * local OS
 	 */
@@ -686,4 +693,24 @@ public class CommandConfiguration {
 		return errMsg;
 	}
 
+	/**
+	 * Setter for the remote working directory
+	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#workingDirectory}
+	 * 
+	 * @param dir
+	 */
+	public void setRemoteWorkingDirectory(String dir) {
+		remoteWorkingDirectory = dir;
+	}
+
+	/**
+	 * Getter for the remote working directory
+	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#workingDirectory}
+	 * 
+	 * @return
+	 */
+	public String getRemoteWorkingDirectory() {
+		return remoteWorkingDirectory;
+	}
+	
 }
