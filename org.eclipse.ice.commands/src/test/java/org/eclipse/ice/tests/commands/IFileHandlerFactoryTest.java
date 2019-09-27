@@ -72,6 +72,64 @@ public class IFileHandlerFactoryTest {
 	static Connection dummyConnection = new Connection();
 
 	/**
+	 * Create some getters and setters so that other tests can take advantage of the
+	 * functions here for making and deleting local and remote files
+	 */
+	/**
+	 * Getter for the connection
+	 * 
+	 * @return
+	 */
+	public Connection getConnection() {
+		return dummyConnection;
+	}
+
+	/**
+	 * Getter for the source file string
+	 * 
+	 * @return
+	 */
+	public String getSource() {
+		return theSource;
+	}
+
+	/**
+	 * Getter for the destination file string
+	 * 
+	 * @return
+	 */
+	public String getDestination() {
+		return theDestination;
+	}
+
+	/**
+	 * Setter for the connection
+	 * 
+	 * @return
+	 */
+	public void setConnection(Connection _conn) {
+		dummyConnection = _conn;
+	}
+
+	/**
+	 * Setter for the source file string
+	 * 
+	 * @return
+	 */
+	public void setSource(String src) {
+		theSource = src;
+	}
+
+	/**
+	 * Setter for the destination file string
+	 * 
+	 * @return
+	 */
+	public void setDestination(String dest) {
+		theDestination = dest;
+	}
+
+	/**
 	 * This function runs before the class execution, and it's primary use is to
 	 * establish the remote connection for remote file handling tests
 	 * 
@@ -295,7 +353,7 @@ public class IFileHandlerFactoryTest {
 		deleteRemoteDirectory(sftpChannel, sourcePath);
 
 		System.out.println("Deleted remote source directory at : " + sourcePath);
-		
+
 		// Disconnect the channel
 		sftpChannel.disconnect();
 	}
@@ -329,7 +387,7 @@ public class IFileHandlerFactoryTest {
 		theDestination = remoteDest;
 
 		System.out.println("Created remote destination at : " + theDestination);
-		
+
 		// Disconnect channel
 		sftpChannel.disconnect();
 
@@ -348,7 +406,7 @@ public class IFileHandlerFactoryTest {
 		System.out.println("Deleting remote destination at : " + theDestination);
 		// Recurisvely delete the directory and its contents
 		deleteRemoteDirectory(sftpChannel, theDestination);
-		
+
 		// Disconnect channel
 		sftpChannel.disconnect();
 	}
@@ -598,15 +656,14 @@ public class IFileHandlerFactoryTest {
 		try {
 			CommandStatus status = handler.copy(theSource, theDestination);
 			assert (status == CommandStatus.SUCCESS);
-			
+
 			// Check that the file exists now
 			boolean exist = handler.exists(theDestination);
 			assert (exist == true);
-		
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 
 		// Delete the test file/directory now that the test is finished
 		try {
@@ -646,15 +703,14 @@ public class IFileHandlerFactoryTest {
 		try {
 			CommandStatus status = handler.move(theSource, theDestination);
 			assert (status == CommandStatus.SUCCESS);
-			
+
 			// Check that the file exists now
 			boolean exist = handler.exists(theDestination);
 			assert (exist == true);
-		
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 
 		// Delete the test file/directory now that the test is finished
 		try {
@@ -697,15 +753,14 @@ public class IFileHandlerFactoryTest {
 		try {
 			CommandStatus status = handler.move(theSource, theDestination + newDirectory);
 			assert (status == CommandStatus.SUCCESS);
-			
+
 			// Check that the file exists now
 			boolean exist = handler.exists(theDestination);
 			assert (exist == true);
-		
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 
 		// Delete the test file/directory now that the test is finished
 		try {
@@ -715,8 +770,6 @@ public class IFileHandlerFactoryTest {
 			e.printStackTrace();
 		}
 	}
-
-
 
 	private void deleteRemoteDirectory(ChannelSftp sftpChannel, String path) throws SftpException {
 
@@ -733,7 +786,7 @@ public class IFileHandlerFactoryTest {
 				try {
 					// remove the sub directory
 					sftpChannel.rmdir(path + "/" + file.getFilename());
-				} catch (Exception e) { 
+				} catch (Exception e) {
 					// If the subdirectory is not empty, then iterate with this
 					// subdirectory to remove the contents
 					deleteRemoteDirectory(sftpChannel, path + "/" + file.getFilename());
