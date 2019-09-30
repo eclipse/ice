@@ -212,7 +212,7 @@ public abstract class Command {
 			logger.error("Directory containing files doesn't exist! Check it!!");
 			return CommandStatus.INFOERROR;
 		}
-		
+
 		// Get a string of the executable to manipulate
 		String exec = commandConfig.getExecutable();
 		// If the executable contains a prefix, remove it

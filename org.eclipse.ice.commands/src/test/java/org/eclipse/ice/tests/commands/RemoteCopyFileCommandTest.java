@@ -54,11 +54,11 @@ public class RemoteCopyFileCommandTest {
 	Connection dummyConnection = null;
 
 	/**
-	 * Make a IFileHandlerFactoryTest to take advantage of much of the code
-	 * which makes/deletes local/remote files
+	 * Make a IFileHandlerFactoryTest to take advantage of much of the code which
+	 * makes/deletes local/remote files
 	 */
 	IFileHandlerFactoryTest factory = new IFileHandlerFactoryTest();
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -105,7 +105,7 @@ public class RemoteCopyFileCommandTest {
 	public void tearDown() throws Exception {
 		// Delete the test file
 		factory.deleteRemoteDestination();
-		
+
 		// Delete the source file
 		factory.deleteLocalSource();
 	}
@@ -121,7 +121,11 @@ public class RemoteCopyFileCommandTest {
 		command.setConfiguration(source, dest, connectionConfig);
 		command.execute();
 
-		assert (pathExists());
+		try {
+			assert (pathExists());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -131,7 +135,7 @@ public class RemoteCopyFileCommandTest {
 	 * @throws Exception
 	 */
 	public boolean pathExists() throws Exception {
-		
+
 		// Connect the channel from the connection
 		ChannelSftp sftpChannel = (ChannelSftp) dummyConnection.getSession().openChannel("sftp");
 		sftpChannel.connect();

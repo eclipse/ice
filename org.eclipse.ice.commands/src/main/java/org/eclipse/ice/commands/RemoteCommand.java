@@ -48,7 +48,6 @@ public class RemoteCommand extends Command {
 	 */
 	FileOutputStream stdOutStream = null;
 
-
 	/**
 	 * Default constructor
 	 */
@@ -95,19 +94,12 @@ public class RemoteCommand extends Command {
 		// error
 		try {
 			status = transferFiles();
-		} catch (SftpException e) {
-			logger.error("Could not upload the input file to the remote host");
+		} catch (SftpException | FileNotFoundException | JSchException e) {
+			logger.error("File transfer error, could not complete file transfers to remote host. Exiting.");
 			e.printStackTrace();
-			return CommandStatus.FAILED;
-		} catch (JSchException e) {
-			logger.error("Session disconnected and could not upload the input file to the remote host");
-			e.printStackTrace();
-			return CommandStatus.FAILED;
-		} catch (FileNotFoundException e) {
-			logger.error("Input file not found! Could not upload to the remote host");
-			e.printStackTrace();
-			return CommandStatus.FAILED;
+			return CommandStatus.INFOERROR;
 		}
+
 		// Check the status to ensure file transfer was successful
 		try {
 			checkStatus(status);
@@ -159,8 +151,7 @@ public class RemoteCommand extends Command {
 		if (connection.getConfiguration().getDeleteWorkingDirectory()) {
 			logger.info("Removing remote working directory");
 			// Set a command to force remove the directory
-			((ChannelExec) connection.getChannel())
-					.setCommand("rm -rf " + commandConfig.getRemoteWorkingDirectory());
+			((ChannelExec) connection.getChannel()).setCommand("rm -rf " + commandConfig.getRemoteWorkingDirectory());
 			// Connect the channel to execute the removal
 			try {
 				connection.getChannel().connect();
@@ -315,8 +306,9 @@ public class RemoteCommand extends Command {
 		// Open the sftp channel to transfer the files
 		ChannelSftp sftpChannel = (ChannelSftp) connection.getSession().openChannel("sftp");
 		sftpChannel.connect();
-		
+
 		// Get the remote working directory to move files to
+		// This way there is a clean remote directory with which to operate in
 		String remoteWorkingDirectory = commandConfig.getRemoteWorkingDirectory();
 		logger.info("Make the working directory at: " + remoteWorkingDirectory);
 
@@ -348,7 +340,8 @@ public class RemoteCommand extends Command {
 
 		// Get the executable to concatenate
 		String shortExecName = commandConfig.getExecutable();
-		// Get the executable filename only by removing the ./ in front of it
+		// Get the executable filename only by removing the all the junk in front of it
+		// e.g. directory names, slashes, etc.
 		if (shortExecName.contains("/"))
 			shortExecName = shortExecName.substring(shortExecName.lastIndexOf("/") + 1);
 		else if (shortExecName.contains("\\"))
@@ -370,15 +363,15 @@ public class RemoteCommand extends Command {
 		logger.info("Putting executable file: " + workingDirectory + shortExecName + " in directory "
 				+ remoteWorkingDirectory + shortExecName);
 		sftpChannel.put(workingDirectory + shortExecName, remoteWorkingDirectory + shortExecName);
-		
+
 		/**
 		 * Change the permission of the executable so that it can be executed. Give user
-		 * read write execute permissions, all other users no permissions NOTE: JSch takes a
-		 * decimal number, not an octal number like one would normally expect with
-		 * chmod. So 448 here in decimal corresponds to 700 in octal, i.e. -rwx------ We
-		 * give write permissions also so that the file can be deleted at the end of
-		 * processing if desired, or e.g. overwritten if the job fails for whatever
-		 * reason and needs to be run again.
+		 * read write execute permissions, all other users no permissions NOTE: JSch
+		 * takes a decimal number, not an octal number like one would normally expect
+		 * with chmod. So 448 here in decimal corresponds to 700 in octal, i.e.
+		 * -rwx------ We give write permissions also so that the file can be deleted at
+		 * the end of processing if desired, or e.g. overwritten if the job fails for
+		 * whatever reason and needs to be run again.
 		 */
 		sftpChannel.chmod(448, remoteWorkingDirectory + shortExecName);
 
@@ -388,8 +381,6 @@ public class RemoteCommand extends Command {
 		return CommandStatus.RUNNING;
 	}
 
-
-	
 	/**
 	 * Set a particular connection for a particular RemoteCommand
 	 * 

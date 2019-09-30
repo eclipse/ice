@@ -92,13 +92,13 @@ public class CommandConfiguration {
 	 * remote system, if necessary
 	 */
 	private String remoteWorkingDirectory = "";
-	
-	
+
 	/**
 	 * The operating system that the command will be run on. Set by default to the
 	 * local OS
 	 */
 	private String os;
+	
 	/**
 	 * The hostname that the command will be executed on. This is the same as the
 	 * hostname in {@link org.eclipse.ice.commands.Connection} and is just used for
@@ -712,5 +712,5 @@ public class CommandConfiguration {
 	public String getRemoteWorkingDirectory() {
 		return remoteWorkingDirectory;
 	}
-	
+
 }

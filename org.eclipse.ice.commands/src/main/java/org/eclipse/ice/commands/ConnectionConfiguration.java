@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
-import com.jcraft.jsch.UIKeyboardInteractive;
-import com.jcraft.jsch.UserInfo;
-
 /**
  * This class provides the complete configuration for a remote
  * {@link org.eclipse.ice.commands.Connection}.
@@ -21,7 +18,7 @@ import com.jcraft.jsch.UserInfo;
  * @author Jay Jay Billings, Joe Osborn
  *
  */
-public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo {
+public class ConnectionConfiguration {
 
 	/**
 	 * Username to configure a particular connection
@@ -68,7 +65,16 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 	public void setUsername(String uname) {
 		username = uname;
 	}
-
+	
+	/**
+	 * Getter for the username for a connection
+	 * 
+	 * @return username
+	 */
+	public String getUsername() {
+		return username;
+	}
+	
 	/**
 	 * Setter function for
 	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#hostname}
@@ -106,18 +112,7 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 	public void setName(String _name) {
 		name = _name;
 	}
-
-	/**
-	 * Getter for the username for a connection
-	 * 
-	 * @return username
-	 */
-	public String getUsername() {
-		return username;
-	}
-
-
-
+	
 	/**
 	 * Getter for whether or not to delete the remote working directory upon
 	 * completion
@@ -140,19 +135,6 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 		deleteWorkingDirectory = _delete;
 	}
 
-	/**
-	 * Inherited function from UserInfo
-	 */
-	public String getPassphrase() {
-		return null;
-	}
-
-	/**
-	 * Inherited function from UserInfo
-	 */
-	public String getPassword() {
-		return password.toString();
-	}
 
 	/**
 	 * Setter for {@link org.eclipse.ice.commands.ConnectionConfiguration#password}
@@ -165,40 +147,14 @@ public class ConnectionConfiguration implements UIKeyboardInteractive, UserInfo 
 	public void setPassword(String _pass) {
 		password = _pass;
 	}
-
+	
 	/**
-	 * Inherited function from UserInfo
+	 * Getter for obtaining password string. Protected so that it cannot be
+	 * publicly accessed, only by classes within this package.
+	 * @return
 	 */
-	public boolean promptPassphrase(String message) {
-		return false;
-	}
-
-	/**
-	 * Inherited function from UserInfo
-	 */
-	public boolean promptPassword(String message) {
-		return false;
-	}
-
-	/**
-	 * Inherited from UserInfo
-	 */
-	public boolean promptYesNo(String arg0) {
-		return false;
-	}
-
-	/**
-	 * Inherited from UserInfo
-	 */
-	public void showMessage(String arg0) {
-		return;
-	}
-
-	/**
-	 * Inherited from UserInfo
-	 */
-	public String[] promptKeyboardInteractive(String arg0, String arg1, String arg2, String[] arg3, boolean[] arg4) {
-		return null;
+	protected String getPassword() {
+		return password;
 	}
 
 }

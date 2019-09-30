@@ -13,8 +13,7 @@
 
 package org.eclipse.ice.commands;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import com.jcraft.jsch.JSchException;
 
 /**
  * Child class for copying a file remotely over some connection.
@@ -28,12 +27,12 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	/**
 	 * The path to the source file which is to be copied
 	 */
-	Path source;
+	String source;
 
 	/**
 	 * The path of the destination for which the source file will be copied to
 	 */
-	Path destination;
+	String destination;
 
 	
 	/**
@@ -42,20 +41,27 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	public RemoteCopyFileCommand() {
 	}
 
-	/**
-	 * Constructor which sets the two paths, source and destination, to those given
-	 * by the arguments of the constructor. See
-	 * {@link org.eclipse.ice.tests.commands.CopyFileCommand} for member variable
-	 * descriptions.
-	 * 
-	 * @param src
-	 * @param dest
-	 */
-	public RemoteCopyFileCommand(String src, String dest) {
-		source = Paths.get(src);
-		destination = Paths.get(dest);
-	}
 
+	/**
+	 * Function which sets the two paths, source and destination, to those given by
+	 * the arguments. The ConnectionConfiguration also gives the remote connection
+	 * configuration for setting up the ssh and sftp channels.
+	 * 
+	 * @param src  - source file to be moved
+	 * @param dest - destination for source file to be moved to
+	 */
+	public void setConfiguration(String src, String dest, ConnectionConfiguration config) {
+		source = src;
+		destination = dest;
+		try {
+			ConnectionManager.openConnection(config);
+		} catch (JSchException e) {
+			status = CommandStatus.INFOERROR;
+			e.printStackTrace();
+			return;
+		}
+	}
+	
 	@Override
 	public CommandStatus execute() {
 		// TODO Auto-generated method stub

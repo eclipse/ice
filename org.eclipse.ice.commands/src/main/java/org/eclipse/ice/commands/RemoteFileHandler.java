@@ -23,6 +23,8 @@ import java.io.IOException;
  */
 public class RemoteFileHandler extends FileHandler {
 
+	private ConnectionConfiguration connectionConfiguration = null;
+	
 	/**
 	 * Default constructor
 	 */
@@ -43,6 +45,8 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	@Override
 	public void checkExistence(String source, String destination) throws IOException {
+		
+		
 	}
 
 	
@@ -52,7 +56,10 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	@Override
 	protected void configureMoveCommand(String source, String destination) {
-		// TODO Auto-generated method stub
+		command = new RemoteMoveFileCommand();
+		// Cast the command as a remote command 
+		((RemoteMoveFileCommand) command).setConfiguration(source, destination, connectionConfiguration);
+		
 		
 	}
 	/**
@@ -61,7 +68,9 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	@Override
 	protected void configureCopyCommand(String source, String destination) {
-		// TODO Auto-generated method stub
+		command = new RemoteCopyFileCommand();
+		// Cast the command as a remote command
+		((RemoteCopyFileCommand) command).setConfiguration(source, destination, connectionConfiguration);
 		
 	}
 }

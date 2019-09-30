@@ -68,13 +68,14 @@ public class LocalMoveFileCommand extends LocalCommand {
 	@Override
 	protected CommandStatus run() {
 
-		// Check to see if the file paths are the same and if the filename has the same extension
+		// Check to see if the file paths are the same and if the filename has the same
+		// extension
 		// for determining whether or not it should be a move or change file name
 		boolean sameFileExtension = checkFileExtension();
 
 		// Split the destination by path delimiter to get the desired filename
 		String[] destinationDirs = destination.toString().split("/");
-		
+
 		// If the directory paths are the same and the files have the same file
 		// extension
 		// type, then we are just changing a file name
@@ -100,13 +101,15 @@ public class LocalMoveFileCommand extends LocalCommand {
 	}
 
 	/**
-	 * This function determines whether or not the source and destination file path are the same
-	 * and whether or not to treat the file move as moving to different directories or simply
-	 * just a name change of the file. They have to be called differently in Files.move, hence
-	 * it is necessary to determine whether or not the filename is just changing in the same directory
-	 * or if it is actually moving to a new directory.
-	 * @return - boolean - if the directory path is the exact same and the file extension is the exact
-	 * same, then return true. Otherwise return false
+	 * This function determines whether or not the source and destination file path
+	 * are the same and whether or not to treat the file move as moving to different
+	 * directories or simply just a name change of the file. They have to be called
+	 * differently in Files.move, hence it is necessary to determine whether or not
+	 * the filename is just changing in the same directory or if it is actually
+	 * moving to a new directory.
+	 * 
+	 * @return - boolean - if the directory path is the exact same and the file
+	 *         extension is the exact same, then return true. Otherwise return false
 	 */
 	private boolean checkFileExtension() {
 		// Get the directory structure to test if we are moving to a new directory
@@ -129,7 +132,8 @@ public class LocalMoveFileCommand extends LocalCommand {
 			}
 		}
 		// If all of the directories are the same, check to see if the final entry in
-		// the path is either a filename or a directory by looking at its .* file extension
+		// the path is either a filename or a directory by looking at its .* file
+		// extension
 
 		String[] sourceFileNames = sourceDirs[sourceDirs.length - 1].split("\\.");
 		String[] destinationFileNames = destinationDirs[destinationDirs.length - 1].split("\\.");
@@ -138,24 +142,16 @@ public class LocalMoveFileCommand extends LocalCommand {
 		boolean sameFileExt = sourceFileNames[sourceFileNames.length - 1]
 				.equals(destinationFileNames[destinationFileNames.length - 1]);
 
-		// If the source and destination have the same path and have the same file extension
-		// then we should treat this as a file name change, otherwise it is a file directory
+		// If the source and destination have the same path and have the same file
+		// extension
+		// then we should treat this as a file name change, otherwise it is a file
+		// directory
 		// move
-		if(!different && sameFileExt)
+		if (!different && sameFileExt)
 			return true;
 		else
 			return false;
-		
-	}
 
-	/**
-	 * This function cancels the command when called. See also
-	 * {@link org.eclipse.ice.commands.Command#cancel()}
-	 */
-	@Override
-	public CommandStatus cancel() {
-		status = CommandStatus.CANCELED;
-		return CommandStatus.CANCELED;
 	}
 
 	/**

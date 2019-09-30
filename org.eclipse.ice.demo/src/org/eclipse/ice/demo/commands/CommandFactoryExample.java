@@ -70,14 +70,14 @@ public class CommandFactoryExample {
 		String scriptDir = pwd + "/../org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands/";
 
 		String script = "./test_code_execution.sh";
-		
+
 		String inputFile = "someInputFile.txt";
-	
+
 		// Set the CommandConfiguration class
 		CommandConfiguration commandConfig = new CommandConfiguration();
 		commandConfig.setCommandId(1); // Give an ID to the job for tracking
 		// Set the executable. Alternatively one could type setExecutable("ls -lrt")
-		// for example, to list the directories in the remote host	
+		// for example, to list the directories in the remote host
 		commandConfig.setExecutable(script);
 		commandConfig.setInputFile(inputFile); // Set the input file for the script to run
 		commandConfig.setErrFileName("someRemoteErrFile.txt"); // Give an error file name
@@ -87,6 +87,9 @@ public class CommandFactoryExample {
 		commandConfig.setWorkingDirectory(scriptDir); // Set the working directory where the scripts live
 		commandConfig.setAppendInput(true); // Append the input file to the script
 		commandConfig.setOS(System.getProperty("os.name")); // Get the OS
+		// Set the remote working directory for the process to be performed
+		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
+
 		System.out.println(scriptDir);
 		/**
 		 * Create a ConnectionConfiguration with the necessary information to open a
@@ -127,26 +130,25 @@ public class CommandFactoryExample {
 		connectionConfig.setHostname(hostname);
 		connectionConfig.setUsername(username);
 		connectionConfig.setPassword(password);
-		// Give the connection a name 
+		// Give the connection a name
 		connectionConfig.setName("dummyConnection");
-		// Set the remote working directory for the process to be performed
-		connectionConfig.setWorkingDirectory("/tmp/remoteCommandTestDirectory");
+
 		// Delete the remote working directory once we are finished running the job
 		connectionConfig.setDeleteWorkingDirectory(true);
-		
+
 		// Get the command
 		Command command = null;
 		try {
 			command = factory.getCommand(commandConfig, connectionConfig);
-		} catch(IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		// Run the command
 		CommandStatus status = command.execute();
-		
+
 		// Ensure it finished properly
-		assert(status == CommandStatus.SUCCESS);
+		assert (status == CommandStatus.SUCCESS);
 	}
 
 	/**

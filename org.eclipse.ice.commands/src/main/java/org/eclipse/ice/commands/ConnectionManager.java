@@ -52,8 +52,8 @@ public class ConnectionManager {
 	/**
 	 * Opens, and thus begins, a connection to a remote system
 	 * 
-	 * @param connection - connection to be opened
-	 * @return Connection - returns connection
+	 * @param config - ConnectionConfiguration to be used to open connection
+	 * @return Connection - returns connection if successful, null otherwise
 	 */
 	public static Connection openConnection(ConnectionConfiguration config) throws JSchException {
 
@@ -64,6 +64,7 @@ public class ConnectionManager {
 		newConnection.setJShellSession(new JSch());
 
 		logger.info("Trying to open the connection");
+
 		// Get the information necessary to open the connection
 		if (newConnection.getConfiguration() != null) {
 			String username = newConnection.getConfiguration().getUsername();
@@ -79,14 +80,19 @@ public class ConnectionManager {
 
 			// Get the password
 			char[] pwd = null;
+			// If it is not in the configuration, then we need to prompt the user for the
+			// password
 			if (newConnection.getConfiguration().getPassword().equals("")) {
 				pwd = getPassword();
 			} else {
 				// The password is only stored for unit tests to the dummy ssh connection
+				// Users can also store it, but this generally isn't recommended for security
+				// reasons
 				pwd = newConnection.getConfiguration().getPassword().toCharArray();
 				// Delete it since it is no longer needed
 				newConnection.getConfiguration().setPassword("");
 			}
+
 			// Pass it to the session
 			newConnection.getSession().setPassword(String.valueOf(pwd));
 
@@ -101,14 +107,15 @@ public class ConnectionManager {
 			try {
 				newConnection.getSession().connect();
 			} catch (JSchException e) {
-				logger.error("Couldn't connect to session with given password. Exiting.");
+				logger.error("Couldn't connect to session with given username and/or password. Exiting.");
 				throw new JSchException();
 			}
 
-			// Add the connection to the list
+			// Add the connection to the list since it was successfully created
 			connectionList.add(newConnection);
 
 			logger.info("Connection at " + username + "@" + hostname + " established successfully");
+
 			// Upon success, return the opened connection
 			return newConnection;
 		}
@@ -122,23 +129,24 @@ public class ConnectionManager {
 	 * of all connections and returns it.
 	 * 
 	 * @param connectionName - name of connection to search for
-	 * @return
+	 * @return - Connection instance which was requested
 	 */
 	public static Connection getConnection(String connectionName) {
 		Connection returnConnection = null;
+		// Iterate over the entire list
 		for (int i = 0; i < connectionList.size(); i++) {
+			// If the names match, then return this connection
 			if (connectionList.get(i).getConfiguration().getName().equals(connectionName))
 				returnConnection = connectionList.get(i);
 		}
+
 		return returnConnection;
 	}
 
 	/**
 	 * Closes a particular connection as specified
 	 * 
-	 * @param connection - Connection to be closed
-	 * @return boolean - returns true if connection was successfully closed,
-	 *         otherwise false
+	 * @param connectionName - name of connection to be closed
 	 */
 	public static void closeConnection(String connectionName) {
 
@@ -148,31 +156,93 @@ public class ConnectionManager {
 		// Disconnect the session. If the session was not connected in the first place,
 		// it does nothing
 		connection.getSession().disconnect();
-		
+
 		return;
 	}
 
 	/**
-	 * This function removes a particular connection from the manager's connection list
-	 * @param connectionName
+	 * This function removes a particular connection from the manager's connection
+	 * list
+	 * 
+	 * @param connectionName - name of connection to remove
 	 */
 	public static void removeConnection(String connectionName) {
-		// Get the connection, and remove it
+		// Get the connection, and remove it from the list of connections
 		connectionList.remove(getConnection(connectionName));
 	}
-	
+
+	/**
+	 * This function removes all particular connections from the connection list
+	 */
+	public static void removeAllConnections() {
+		// Iterate over the list of functions
+		for (int i = 0; i < connectionList.size(); i++) {
+			// Remove each connection
+			removeConnection(connectionList.get(i).getConfiguration().getName());
+		}
+
+		/**
+		 * Since ArrayList.remove() changes the index and pushes every item to the left,
+		 * check if the connection list is really size 0. If it isn't, iterate again
+		 * until all of the connections have been removed.
+		 */
+		if (connectionList.size() != 0)
+			removeAllConnections();
+		else
+			return;
+	}
+
 	/**
 	 * Closes all connections that remain open.
-	 * 
-	 * @return - true if successfully closed all connections, otherwise false
 	 */
 	public static void closeAllConnections() {
+		// Iterate over all available connections in the list
 		for (int i = 0; i < connectionList.size(); i++) {
+			// Disconnect each one
 			connectionList.get(i).getSession().disconnect();
 		}
 		return;
 	}
 
+	/**
+	 * This function lists all the connections (and their statuses, i.e. if open or
+	 * not) to the logger, if so desired. Useful for checking the connections and
+	 * their statuses.
+	 */
+	public static void listAllConnections() {
+		// Iterate over all available connections
+		for (int i = 0; i < connectionList.size(); i++) {
+			// Build a message
+			String msg = null;
+			// Get the name of the connection
+			String name = connectionList.get(i).getConfiguration().getName();
+			// Get the host for the connection
+			String host = connectionList.get(i).getConfiguration().getHostname();
+			// Get the username for the connection
+			String username = connectionList.get(i).getConfiguration().getUsername();
+			// Check the status. If it is open or closed (i.e. connected or disconnected)
+			String status = "";
+			if (isConnectionOpen(name))
+				status = "open";
+			else
+				status = "closed";
+
+			// Build a message to send to the logger
+			msg = "Connection " + i + ": " + name + " at " + username + "@" + host + " is " + status;
+
+			logger.info(msg);
+		}
+
+	}
+
+	/**
+	 * This function checks whether or not a particular connection is currently
+	 * connected.
+	 * 
+	 * @param connectionName - name of connection to check
+	 * @return - boolean indicating whether or not it is connected (true) or not
+	 *         (false)
+	 */
 	public static boolean isConnectionOpen(String connectionName) {
 		Connection connection = getConnection(connectionName);
 		return connection.getSession().isConnected();

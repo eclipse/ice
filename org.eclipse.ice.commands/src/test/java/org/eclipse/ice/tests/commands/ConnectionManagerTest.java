@@ -37,7 +37,8 @@ public class ConnectionManagerTest {
 
 	/**
 	 * A boolean indicating whether or not the prompt should require the user to
-	 * input the password or just read from a dummy text file
+	 * input the password or just read from a dummy text file. Default to false to
+	 * use the dummy ssh connection
 	 */
 	static boolean require_password = false;
 
@@ -88,10 +89,11 @@ public class ConnectionManagerTest {
 	/**
 	 * Function that performs all of the tests below to ensure that they are
 	 * performed in order, since e.g. one can't close a connection if it isn't
-	 * opened in the first place
+	 * opened in the first place. This is to test a valid opening and closing of a
+	 * real connection, in the case where no exceptions are to be thrown.
 	 */
 	@Test
-	public void test() {
+	public void testValidConnection() {
 		testOpenConnection();
 
 		testGetConnection();
@@ -137,11 +139,11 @@ public class ConnectionManagerTest {
 		ConnectionManager.closeConnection(connectionName);
 
 		assert (!ConnectionManager.getConnection(connectionName).getSession().isConnected());
-		
+
 		// Remove the connection from the connection manager
 		ConnectionManager.removeConnection(connectionName);
-		
-		assert(ConnectionManager.getConnection(connectionName) == null);
+
+		assert (ConnectionManager.getConnection(connectionName) == null);
 	}
 
 	/**
@@ -211,13 +213,31 @@ public class ConnectionManagerTest {
 		// conn3 has a bad password)
 		assert (connections.size() == 2);
 
+		// List all available connections to the console screen
+		ConnectionManager.listAllConnections();
+
+		// Check that get name returns the appropriate connection in the list
 		assert (connections.get(1).getConfiguration().getName().equals("someOtherConnection"));
 
-		Connection connection = ConnectionManager.getConnection("FirstConnection");
+		// Check that the name returns the appropriate connection from ConnectionManager
 		assert (ConnectionManager.getConnection("FirstConnection").getConfiguration().getName()
 				.equals("FirstConnection"));
 
+		// Check that the connection is actually open, since FirstConnection is a good
+		// connection
 		assert (ConnectionManager.isConnectionOpen("FirstConnection"));
+
+		// Test closing all of the connections
+		ConnectionManager.closeAllConnections();
+
+		// Check that the connection is closed
+		assert (!ConnectionManager.isConnectionOpen("FirstConnection"));
+
+		// Test removing all connections from the list in ConnectionManager
+		ConnectionManager.removeAllConnections();
+
+		// Assert that there are no more connections in the list
+		assert (ConnectionManager.getConnectionList().size() == 0);
 
 	}
 

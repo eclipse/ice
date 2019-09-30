@@ -13,8 +13,7 @@
 
 package org.eclipse.ice.commands;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import com.jcraft.jsch.JSchException;
 
 /**
  * Child class for remotely moving a file over some connection
@@ -27,12 +26,12 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 	/**
 	 * The path to the source file which is to be copied
 	 */
-	Path source;
+	String source;
 
 	/**
 	 * The path of the destination for which the source file will be copied to
 	 */
-	Path destination;
+	String destination;
 
 	/**
 	 * Default constructor
@@ -41,35 +40,79 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 	}
 
 	/**
-	 * Constructor which sets the two paths, source and destination, to those given
-	 * by the arguments of the constructor. See
-	 * {@link org.eclipse.ice.tests.commands.MoveFileCommand} for member variable
-	 * descriptions.
+	 * Function which sets the two paths, source and destination, to those given by
+	 * the arguments. The ConnectionConfiguration also gives the remote connection
+	 * configuration for setting up the ssh and sftp channels.
 	 * 
-	 * @param src
-	 * @param dest
+	 * @param src  - source file to be moved
+	 * @param dest - destination for source file to be moved to
 	 */
-	public RemoteMoveFileCommand(String src, String dest) {
-		source = Paths.get(src);
-		destination = Paths.get(dest);
+	public void setConfiguration(String src, String dest, ConnectionConfiguration config) {
+		source = src;
+		destination = dest;
+		try {
+			ConnectionManager.openConnection(config);
+		} catch (JSchException e) {
+			status = CommandStatus.INFOERROR;
+			e.printStackTrace();
+			return;
+		}
 	}
 
+	/**
+	 * See {@link org.eclipse.ice.commands.Command#execute()}
+	 */
 	@Override
 	public CommandStatus execute() {
-		// TODO Auto-generated method stub
-		return null;
+		status = run();
+		return status;
 	}
 
+	/**
+	 * See {@link org.eclipse.ice.commands.Command#run()}
+	 */
 	@Override
 	protected CommandStatus run() {
-		// TODO Auto-generated method stub
+		
+		// Determine if the source file is on the local machine or on the remote machine
+		
+		
 		return null;
 	}
 
-	@Override
-	public CommandStatus cancel() {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * Get the source file string
+	 * 
+	 * @return
+	 */
+	public String getSource() {
+		return source;
 	}
 
+	/**
+	 * Get the destination file string
+	 * 
+	 * @return
+	 */
+	public String getDestination() {
+		return destination;
+	}
+
+	/**
+	 * Set the source file string
+	 * 
+	 * @param src
+	 */
+	public void setSource(String src) {
+		source = src;
+	}
+
+	/**
+	 * Set the destination file string
+	 * 
+	 * @param dest
+	 */
+	public void setDestination(String dest) {
+		destination = dest;
+	}
 }

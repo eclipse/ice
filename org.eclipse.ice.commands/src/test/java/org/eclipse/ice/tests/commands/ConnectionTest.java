@@ -32,7 +32,6 @@ public class ConnectionTest {
 
 		// Check that the default connection leaves the configuration empty
 		assert (connection.getConfiguration().getName().equals(""));
-		assert (connection.getConfiguration().getPassword().equals(""));
 
 		assert (connection.getSession() == null);
 	}

@@ -87,7 +87,7 @@ public class CommandFactoryTest {
 		commandConfig.setInstallDirectory("");
 		commandConfig.setWorkingDirectory(pwd);
 		commandConfig.setAppendInput(true);
-		commandConfig.setOS("osx");
+		commandConfig.setOS(System.getProperty("os.name"));
 
 	}
 
@@ -106,7 +106,7 @@ public class CommandFactoryTest {
 		cmdCfg.setInstallDirectory("");
 		cmdCfg.setWorkingDirectory(pwd);
 		cmdCfg.setAppendInput(false);
-		cmdCfg.setOS("osx");
+		cmdCfg.setOS(System.getProperty("os.name"));
 		cmdCfg.setCommandId(1);
 		cmdCfg.setErrFileName("someLsErrFile.txt");
 		cmdCfg.setOutFileName("someLsOutFile.txt");
@@ -124,9 +124,8 @@ public class CommandFactoryTest {
 	}
 
 	/**
-	 * This function tests with real files to test an actual job processing. For
-	 * this test to work, make sure you change the workingDirectory to your actual
-	 * workingDirectory where the Commands API lives.
+	 * This function tests with real files to test an actual job processing. The job
+	 * executes a script with some hello world commands in it.
 	 */
 	@Test
 	public void testFunctionalLocalCommand() {
@@ -155,10 +154,10 @@ public class CommandFactoryTest {
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.CommandFactory#getCommand()}
 	 * and for the whole {@link org.eclipse.ice.commands.LocalCommand#execute()}
-	 * execution chain with an uncompleted Command dictionary. This is function is
-	 * intended to test some of the exception catching, thus it is expected to
-	 * "fail." It expect a null pointer exception, since the hostname is not given
-	 * and thus the hostname string is null
+	 * execution chain with an incomplete Command dictionary. This function is
+	 * intended to catch the "exception" catching of the API, where the exception is
+	 * in quotes due to the return of a bad CommandStatus rather than e.g. a true
+	 * java Exception.
 	 */
 	@Test
 	public void testNonFunctionalLocalCommand() {
@@ -229,7 +228,7 @@ public class CommandFactoryTest {
 	 */
 	@Test
 	public void testFunctionalRemoteCommand() {
-		
+
 		System.out.println("\n\n\nTesting a functional remote command");
 		// Set the CommandConfiguration class
 		commandConfig.setCommandId(4);
@@ -260,7 +259,7 @@ public class CommandFactoryTest {
 		// Note the password can be input at the console by not setting the
 		// the password explicitly in the connection configuration
 		connectionConfig.setName("dummyConnection");
-		
+
 		connectionConfig.setDeleteWorkingDirectory(true);
 
 		// Get the command
@@ -274,6 +273,7 @@ public class CommandFactoryTest {
 		// Run it
 		CommandStatus status = remoteCommand.execute();
 
+		// assert that it was successful
 		assert (status == CommandStatus.SUCCESS);
 
 	}

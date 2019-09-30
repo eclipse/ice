@@ -38,6 +38,7 @@ import com.jcraft.jsch.SftpException;
 /**
  * This class implements several test methods for
  * {@link org.eclipse.ice.commands.FileHandlerFactory} and its use for file
+ * transfers. The test methods are split up between local and remote file
  * transfers.
  * 
  * @author Joe Osborn
@@ -70,64 +71,6 @@ public class IFileHandlerFactoryTest {
 	 * A connection for remote file handling tests
 	 */
 	static Connection dummyConnection = new Connection();
-
-	/**
-	 * Create some getters and setters so that other tests can take advantage of the
-	 * functions here for making and deleting local and remote files
-	 */
-	/**
-	 * Getter for the connection
-	 * 
-	 * @return
-	 */
-	public Connection getConnection() {
-		return dummyConnection;
-	}
-
-	/**
-	 * Getter for the source file string
-	 * 
-	 * @return
-	 */
-	public String getSource() {
-		return theSource;
-	}
-
-	/**
-	 * Getter for the destination file string
-	 * 
-	 * @return
-	 */
-	public String getDestination() {
-		return theDestination;
-	}
-
-	/**
-	 * Setter for the connection
-	 * 
-	 * @return
-	 */
-	public void setConnection(Connection _conn) {
-		dummyConnection = _conn;
-	}
-
-	/**
-	 * Setter for the source file string
-	 * 
-	 * @return
-	 */
-	public void setSource(String src) {
-		theSource = src;
-	}
-
-	/**
-	 * Setter for the destination file string
-	 * 
-	 * @return
-	 */
-	public void setDestination(String dest) {
-		theDestination = dest;
-	}
 
 	/**
 	 * This function runs before the class execution, and it's primary use is to
@@ -812,6 +755,64 @@ public class IFileHandlerFactoryTest {
 			}
 		}
 		return directory.delete();
+	}
+
+	/**
+	 * Create some getters and setters so that other tests can take advantage of the
+	 * functions here for making and deleting local and remote files
+	 */
+	/**
+	 * Getter for the connection
+	 * 
+	 * @return
+	 */
+	public Connection getConnection() {
+		return dummyConnection;
+	}
+
+	/**
+	 * Getter for the source file string
+	 * 
+	 * @return
+	 */
+	public String getSource() {
+		return theSource;
+	}
+
+	/**
+	 * Getter for the destination file string
+	 * 
+	 * @return
+	 */
+	public String getDestination() {
+		return theDestination;
+	}
+
+	/**
+	 * Setter for the connection
+	 * 
+	 * @return
+	 */
+	public void setConnection(Connection _conn) {
+		dummyConnection = _conn;
+	}
+
+	/**
+	 * Setter for the source file string
+	 * 
+	 * @return
+	 */
+	public void setSource(String src) {
+		theSource = src;
+	}
+
+	/**
+	 * Setter for the destination file string
+	 * 
+	 * @return
+	 */
+	public void setDestination(String dest) {
+		theDestination = dest;
 	}
 
 }
