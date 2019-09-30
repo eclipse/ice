@@ -461,7 +461,6 @@ public class IFileHandlerFactoryTest {
 	 */
 	@Test
 	public void testLocalFileHandlerFactoryDestinationNonExistant() {
-
 		// Make a local test file to play with
 		try {
 			createLocalSource();
