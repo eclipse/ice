@@ -23,6 +23,7 @@ import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandFactory;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionConfiguration;
+import org.eclipse.ice.commands.ConnectionManager;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -273,6 +274,93 @@ public class CommandFactoryTest {
 		CommandStatus status = remoteCommand.execute();
 
 		// assert that it was successful
+		assert (status == CommandStatus.SUCCESS);
+
+		// Delete the connections
+		ConnectionManager.removeAllConnections();
+
+	}
+
+	/**
+	 * This tests a command which requires multiple input files to run remotely
+	 */
+	@Test
+	public void testMultipleInputFilesRemotely() {
+		// Set the CommandConfiguration class
+		commandConfig.setCommandId(5);
+		commandConfig.setErrFileName("someMultRemoteErrFile.txt");
+		commandConfig.setOutFileName("someMultRemoteOutFile.txt");
+		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectoryMult");
+		// Add another input file to the list of input files already started 
+		commandConfig.setInputFile("someOtherInputFile.txt");
+		// Set the connection configuration to a dummy remote connection
+		// Read in a dummy configuration file that contains credentials
+		File file = new File("/tmp/ice-remote-creds.txt");
+		Scanner scanner = null;
+		try {
+			scanner = new Scanner(file);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		// Scan line by line
+		scanner.useDelimiter("\n");
+
+		// Get the credentials for the dummy remote account
+		String username = scanner.next();
+		String password = scanner.next();
+		String hostname = scanner.next();
+
+		// Make the connection configuration
+		connectionConfig.setHostname(hostname);
+		connectionConfig.setUsername(username);
+		connectionConfig.setPassword(password);
+		// Note the password can be input at the console by not setting the
+		// the password explicitly in the connection configuration
+		connectionConfig.setName("dummyConnection");
+
+		connectionConfig.setDeleteWorkingDirectory(true);
+
+		// Get the command
+		Command remoteCommand = null;
+		try {
+			remoteCommand = factory.getCommand(commandConfig, connectionConfig);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Run it
+		CommandStatus status = remoteCommand.execute();
+
+		// assert that it was successful
+		assert (status == CommandStatus.SUCCESS);
+
+	}
+
+	/**
+	 * This tests a command which requires multiple input files to run locally
+	 */
+	@Test
+	public void testMultipleInputFilesLocally() {
+
+		// Set some things specific to the local command
+		commandConfig.setCommandId(6);
+		commandConfig.setErrFileName("someMultLocalErrFile.txt");
+		commandConfig.setOutFileName("someMultLocalOutFile.txt");
+		// Add another input file
+		commandConfig.setInputFile("someOtherInputFile.txt");
+		connectionConfig.setHostname(hostname);
+
+		// Get the command
+		Command localCommand = null;
+		try {
+			localCommand = factory.getCommand(commandConfig, connectionConfig);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Run it
+		CommandStatus status = localCommand.execute();
+
 		assert (status == CommandStatus.SUCCESS);
 
 	}

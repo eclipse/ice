@@ -330,14 +330,7 @@ public class RemoteCommand extends Command {
 
 		String workingDirectory = commandConfig.getWorkingDirectory();
 
-		// Fix the inputFile name for remote machines to remove any possible slashes
-		String shortInputName = commandConfig.getInputFile();
-
-		if (shortInputName.contains("/"))
-			shortInputName = shortInputName.substring(shortInputName.lastIndexOf("/") + 1);
-		else if (shortInputName.contains("\\"))
-			shortInputName = shortInputName.substring(shortInputName.lastIndexOf("\\") + 1);
-
+	
 		// Get the executable to concatenate
 		String shortExecName = commandConfig.getExecutable();
 		// Get the executable filename only by removing the all the junk in front of it
@@ -350,15 +343,6 @@ public class RemoteCommand extends Command {
 		// Do the same for the destination
 		if (!remoteWorkingDirectory.endsWith("/"))
 			remoteWorkingDirectory += "/";
-
-		// Now have the full paths, so transfer the files per the logger messages
-		logger.info("Putting input file: " + workingDirectory + shortInputName + " in directory "
-				+ remoteWorkingDirectory + shortInputName);
-		// Put the inputfile to the remote directory. Use a null object for receiving
-		// notifications about
-		// the progress of the transfer and use 0 to overwrite the files if they exist
-		// there already
-		sftpChannel.put(workingDirectory + shortInputName, remoteWorkingDirectory + shortInputName);
 
 		logger.info("Putting executable file: " + workingDirectory + shortExecName + " in directory "
 				+ remoteWorkingDirectory + shortExecName);
@@ -375,6 +359,32 @@ public class RemoteCommand extends Command {
 		 */
 		sftpChannel.chmod(448, remoteWorkingDirectory + shortExecName);
 
+		// Now move the input files after moving the executable file
+		// Fix the inputFile name for remote machines to remove any possible slashes
+		ArrayList<String> inputFiles = commandConfig.getInputFileList();
+
+		// Iterate over each input file
+		for(int i = 0; i < inputFiles.size(); i++) {
+			String shortInputName = inputFiles.get(i);
+			if (shortInputName.contains("/"))
+				shortInputName = shortInputName.substring(shortInputName.lastIndexOf("/") + 1);
+			else if (shortInputName.contains("\\"))
+				shortInputName = shortInputName.substring(shortInputName.lastIndexOf("\\") + 1);
+
+			
+			// Now have the full paths, so transfer the files per the logger messages
+			logger.info("Putting input file: " + workingDirectory + shortInputName + " in directory "
+					+ remoteWorkingDirectory + shortInputName);
+			// Put the inputfile to the remote directory. Use a null object for receiving
+			// notifications about
+			// the progress of the transfer and use 0 to overwrite the files if they exist
+			// there already
+			sftpChannel.put(workingDirectory + shortInputName, remoteWorkingDirectory + shortInputName);
+
+		}
+		
+		
+		
 		// Disconnect the sftp channel to stop moving files
 		sftpChannel.disconnect();
 

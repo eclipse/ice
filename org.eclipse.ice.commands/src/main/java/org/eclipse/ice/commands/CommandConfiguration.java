@@ -57,7 +57,7 @@ public class CommandConfiguration {
 	 * The input file that the executable needs or takes as an argument in its
 	 * processing
 	 */
-	private String inputFile;
+	private ArrayList<String> inputFiles = new ArrayList<String>();
 
 	/**
 	 * The name of the file that will contain the output of the job
@@ -98,7 +98,7 @@ public class CommandConfiguration {
 	 * local OS
 	 */
 	private String os;
-	
+
 	/**
 	 * The hostname that the command will be executed on. This is the same as the
 	 * hostname in {@link org.eclipse.ice.commands.Connection} and is just used for
@@ -172,7 +172,6 @@ public class CommandConfiguration {
 		// Now write them out
 		try {
 			stdOut.write(stdOutHeader);
-			// stdOut.write("# Executable to be run is: " + fullCommand + "\n");
 			stdOut.close();
 			stdErr.write(stdErrHeader);
 			stdErr.close();
@@ -243,7 +242,7 @@ public class CommandConfiguration {
 		header += "# Command Executed: " + fullCommand + "\n";
 
 		// Add the input file name
-		header += "# Input file: " + inputFile + "\n";
+		header += "# Input files: " + getInputFiles() + "\n";
 
 		header += "# Install directory: " + installDirectory + "\n";
 
@@ -272,7 +271,7 @@ public class CommandConfiguration {
 
 		// If the input file should be appended, append it
 		if (appendInput)
-			fixedExecutableName += " " + inputFile;
+			fixedExecutableName += " " + getInputFiles();
 
 		fullCommand = fixedExecutableName;
 
@@ -286,7 +285,7 @@ public class CommandConfiguration {
 
 		// Search for and replace the ${inputFile} to properly configure the input file
 		if (fixedExecutableName.contains("${inputFile}") && !appendInput)
-			fixedExecutableName = fixedExecutableName.replace("${inputFile}", inputFile);
+			fixedExecutableName = fixedExecutableName.replace("${inputFile}", getInputFiles());
 
 		if (fixedExecutableName.contains("${installDir}") && installDirectory != null)
 			fixedExecutableName = fixedExecutableName.replace("${installDir}", installDirectory);
@@ -373,20 +372,34 @@ public class CommandConfiguration {
 	 * @param input
 	 */
 	public void setInputFile(String input) {
-		inputFile = input;
+		inputFiles.add(input);
 		return;
 	}
 
 	/**
-	 * Getter for inputFile, see
+	 * Getter for a string of inputFiles, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#inputFile}
 	 * 
 	 * @return inputFile
 	 */
-	public String getInputFile() {
-		return inputFile;
+	public String getInputFiles() {
+		String files = "";
+		for (int i = 0; i < inputFiles.size(); i++) {
+			files += inputFiles.get(i) + " ";
+		}
+		return files;
 	}
 
+	/**
+	 * Getter for the inputFile arraylist itself, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#inputFile}
+	 * 
+	 * @return inputFile
+	 */
+	public ArrayList<String> getInputFileList(){
+		return inputFiles;
+	}
+	
 	/**
 	 * Setter for stdErrFileName, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdErrFileName}
