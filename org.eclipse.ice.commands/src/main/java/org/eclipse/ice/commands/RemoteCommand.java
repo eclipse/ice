@@ -36,17 +36,17 @@ public class RemoteCommand extends Command {
 	 * The particular connection associated to a particular RemoteCommand. Declare
 	 * this up front since by definition a RemoteCommand must have a connection.
 	 */
-	protected Connection connection = new Connection();
+	private Connection connection = new Connection();
 
 	/**
 	 * A file output stream for error messages to be remotely logged to
 	 */
-	FileOutputStream stdErrStream = null;
+	private FileOutputStream stdErrStream = null;
 
 	/**
 	 * A file output stream for output messages to be remotely logged to
 	 */
-	FileOutputStream stdOutStream = null;
+	private FileOutputStream stdOutStream = null;
 
 	/**
 	 * Default constructor

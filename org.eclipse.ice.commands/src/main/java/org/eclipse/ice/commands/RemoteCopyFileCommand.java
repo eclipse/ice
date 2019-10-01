@@ -27,12 +27,12 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	/**
 	 * The path to the source file which is to be copied
 	 */
-	String source;
+	private String source;
 
 	/**
 	 * The path of the destination for which the source file will be copied to
 	 */
-	String destination;
+	private String destination;
 
 	
 	/**

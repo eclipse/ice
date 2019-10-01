@@ -43,13 +43,13 @@ public abstract class FileHandler implements IFileHandler {
 	 * The command member variable that will actually execute the transfer that was
 	 * requested by the user
 	 */
-	Command command;
+	protected Command command;
 
 	/**
 	 * A status member variable that indicates the status of the file transfer. See
 	 * also {@link org.eclipse.ice.commands.CommandStatus}
 	 */
-	CommandStatus transferStatus;
+	protected CommandStatus transferStatus;
 
 	/**
 	 * Default constructor
@@ -65,6 +65,7 @@ public abstract class FileHandler implements IFileHandler {
 	 *         was successful
 	 * @throws IOException
 	 */
+	@Override
 	public CommandStatus move(final String source, final String destination) throws IOException {
 
 		// Check the file existence. If they don't exist, an exception is thrown
@@ -88,6 +89,7 @@ public abstract class FileHandler implements IFileHandler {
 	 *         was successful
 	 * @throws IOException
 	 */
+	@Override
 	public CommandStatus copy(final String source, final String destination) throws IOException {
 		// Check the file existence. If one or both don't exist, an exception is thrown
 		checkExistence(source, destination);
@@ -133,6 +135,7 @@ public abstract class FileHandler implements IFileHandler {
 	 *         does not exist (returns false)
 	 * @throws IOException
 	 */
+	@Override
 	public abstract boolean exists(final String file) throws IOException;
 
 	/**
@@ -145,6 +148,7 @@ public abstract class FileHandler implements IFileHandler {
 	 * @return
 	 * @throws IOException
 	 */
+	@Override
 	public abstract void checkExistence(final String source, final String destination) throws IOException;
 
 	/**

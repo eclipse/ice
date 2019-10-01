@@ -41,7 +41,7 @@ public class CommandConfiguration {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	protected static final Logger logger = LoggerFactory.getLogger(CommandConfiguration.class);
+	private static final Logger logger = LoggerFactory.getLogger(CommandConfiguration.class);
 
 	/**
 	 * An integer ID to associate with a job

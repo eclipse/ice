@@ -42,7 +42,7 @@ public class ConnectionManager {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	protected static final Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
+	private static final Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
 
 	/**
 	 * Default Constructor

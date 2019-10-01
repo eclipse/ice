@@ -31,12 +31,12 @@ public class LocalMoveFileCommand extends LocalCommand {
 	/**
 	 * The path to the source file which is to be copied
 	 */
-	Path source;
+	private Path source;
 
 	/**
 	 * The path of the destination for which the source file will be copied to
 	 */
-	Path destination;
+	private Path destination;
 
 	/**
 	 * Default constructor

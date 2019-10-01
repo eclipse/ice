@@ -31,7 +31,7 @@ public class FileHandlerFactory {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	protected static final Logger logger = LoggerFactory.getLogger(CommandFactory.class);
+	protected static final Logger logger = LoggerFactory.getLogger(FileHandlerFactory.class);
 
 	/**
 	 * Default constructor

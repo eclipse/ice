@@ -31,12 +31,12 @@ public class LocalCommand extends Command {
 	/**
 	 * Reference to the Java process that is the job to be executed
 	 */
-	protected Process job;
+	private Process job;
 
 	/**
 	 * The variable that actually handles the job execution at the command line
 	 */
-	protected ProcessBuilder jobBuilder;
+	private ProcessBuilder jobBuilder;
 
 	/**
 	 * Default constructor
