@@ -101,7 +101,6 @@ public class CommandFactoryTest {
 
 		CommandConfiguration cmdCfg = new CommandConfiguration();
 		cmdCfg.setExecutable("ls -lrt");
-		cmdCfg.setInputFile("");
 		cmdCfg.setNumProcs("1");
 		cmdCfg.setInstallDirectory("");
 		cmdCfg.setWorkingDirectory(pwd);

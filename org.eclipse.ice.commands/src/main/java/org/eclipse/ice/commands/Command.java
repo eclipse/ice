@@ -198,9 +198,9 @@ public abstract class Command {
 	protected CommandStatus setConfiguration() {
 
 		// Check the info and return failure if something was not set
-		if (commandConfig.getExecutable() == null || commandConfig.getInputFile() == null
-				|| commandConfig.getOutFileName() == null || commandConfig.getErrFileName() == null
-				|| commandConfig.getNumProcs() == null || commandConfig.getWorkingDirectory() == null) {
+		if (commandConfig.getExecutable() == null || commandConfig.getOutFileName() == null
+				|| commandConfig.getErrFileName() == null || commandConfig.getNumProcs() == null
+				|| commandConfig.getWorkingDirectory() == null) {
 			logger.error("An important piece of information is missing from the CommandConfiguration. Exiting.");
 			return CommandStatus.INFOERROR;
 		}
