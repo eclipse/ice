@@ -269,7 +269,7 @@ public class CommandConfiguration {
 		String fixedExecutableName = executable;
 		String separator = "/";
 
-		// If the input file should be appended, append it
+		// If the input files should be appended, append it
 		if (appendInput)
 			fixedExecutableName += " " + getInputFiles();
 
@@ -284,9 +284,10 @@ public class CommandConfiguration {
 			installDirectory = installDirectory + separator;
 
 		// Search for and replace the ${inputFile} to properly configure the input file
-		if (fixedExecutableName.contains("${inputFile}") && !appendInput)
-			fixedExecutableName = fixedExecutableName.replace("${inputFile}", getInputFiles());
-
+		for(int i = 0; i < inputFiles.size(); i++) {
+			if (fixedExecutableName.contains("${inputFile"+i+"}") && !appendInput)
+				fixedExecutableName = fixedExecutableName.replace("${inputFile"+i+"}", inputFiles.get(i));
+		}
 		if (fixedExecutableName.contains("${installDir}") && installDirectory != null)
 			fixedExecutableName = fixedExecutableName.replace("${installDir}", installDirectory);
 

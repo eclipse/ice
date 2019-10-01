@@ -291,7 +291,7 @@ public class CommandFactoryTest {
 		commandConfig.setErrFileName("someMultRemoteErrFile.txt");
 		commandConfig.setOutFileName("someMultRemoteOutFile.txt");
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectoryMult");
-		// Add another input file to the list of input files already started 
+		// Add another input file to the list of input files already started
 		commandConfig.setInputFile("someOtherInputFile.txt");
 		// Set the connection configuration to a dummy remote connection
 		// Read in a dummy configuration file that contains credentials
@@ -348,8 +348,10 @@ public class CommandFactoryTest {
 		commandConfig.setOutFileName("someMultLocalOutFile.txt");
 		// Add another input file
 		commandConfig.setInputFile("someOtherInputFile.txt");
+		commandConfig.setExecutable("./test_code_execution.sh ${inputFile0} ${inputFile1}");
+		commandConfig.setAppendInput(false);
 		connectionConfig.setHostname(hostname);
-
+		
 		// Get the command
 		Command localCommand = null;
 		try {
@@ -371,7 +373,7 @@ public class CommandFactoryTest {
 	 * 
 	 * @return - String - local hostname
 	 */
-	protected String getLocalHostname() {
+	protected static String getLocalHostname() {
 		// Get the hostname for your local computer
 		InetAddress addr = null;
 		try {
