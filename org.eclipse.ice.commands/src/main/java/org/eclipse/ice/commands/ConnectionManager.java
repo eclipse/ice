@@ -14,8 +14,8 @@ package org.eclipse.ice.commands;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +33,11 @@ import com.jcraft.jsch.JSchException;
 public class ConnectionManager {
 
 	/**
-	 * An ArrayList of available Connections to the ConnectionManager
+	 * An HashMap of available Connections to the ConnectionManager, organized by
+	 * the name of the connection and the connection itself.
+	 * 
 	 */
-	private static ArrayList<Connection> connectionList = new ArrayList<Connection>();
+	private static HashMap<String, Connection> connectionList = new HashMap<String, Connection>();
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -112,7 +114,7 @@ public class ConnectionManager {
 			}
 
 			// Add the connection to the list since it was successfully created
-			connectionList.add(newConnection);
+			connectionList.put(newConnection.getConfiguration().getName(),newConnection);
 
 			logger.info("Connection at " + username + "@" + hostname + " established successfully");
 
@@ -132,13 +134,8 @@ public class ConnectionManager {
 	 * @return - Connection instance which was requested
 	 */
 	public static Connection getConnection(String connectionName) {
-		Connection returnConnection = null;
-		// Iterate over the entire list
-		for (int i = 0; i < connectionList.size(); i++) {
-			// If the names match, then return this connection
-			if (connectionList.get(i).getConfiguration().getName().equals(connectionName))
-				returnConnection = connectionList.get(i);
-		}
+		// Find the hashmap instance, and return it
+		Connection returnConnection = connectionList.get(connectionName);
 
 		return returnConnection;
 	}
@@ -167,41 +164,26 @@ public class ConnectionManager {
 	 * @param connectionName - name of connection to remove
 	 */
 	public static void removeConnection(String connectionName) {
-		// Get the connection, and remove it from the list of connections
-		connectionList.remove(getConnection(connectionName));
+		// Remove it from the list of connections
+		connectionList.remove(connectionName);
 	}
 
 	/**
 	 * This function removes all particular connections from the connection list
 	 */
 	public static void removeAllConnections() {
-		// Iterate over the list of functions
-		for (int i = 0; i < connectionList.size(); i++) {
-			// Remove each connection
-			removeConnection(connectionList.get(i).getConfiguration().getName());
-		}
-
-		/**
-		 * Since ArrayList.remove() changes the index and pushes every item to the left,
-		 * check if the connection list is really size 0. If it isn't, iterate again
-		 * until all of the connections have been removed.
-		 */
-		if (connectionList.size() != 0)
-			removeAllConnections();
-		else
-			return;
+		// Remove all of the items from the hashmap
+		connectionList.clear();
 	}
 
 	/**
 	 * Closes all connections that remain open.
 	 */
 	public static void closeAllConnections() {
-		// Iterate over all available connections in the list
-		for (int i = 0; i < connectionList.size(); i++) {
-			// Disconnect each one
-			connectionList.get(i).getSession().disconnect();
+		// Iterate over all available connections in the list and disconnect
+		for (String name : connectionList.keySet()) {
+			connectionList.get(name).getSession().disconnect();
 		}
-		return;
 	}
 
 	/**
@@ -211,15 +193,13 @@ public class ConnectionManager {
 	 */
 	public static void listAllConnections() {
 		// Iterate over all available connections
-		for (int i = 0; i < connectionList.size(); i++) {
+		for (String name : connectionList.keySet()) {
 			// Build a message
 			String msg = null;
-			// Get the name of the connection
-			String name = connectionList.get(i).getConfiguration().getName();
 			// Get the host for the connection
-			String host = connectionList.get(i).getConfiguration().getHostname();
+			String host = connectionList.get(name).getConfiguration().getHostname();
 			// Get the username for the connection
-			String username = connectionList.get(i).getConfiguration().getUsername();
+			String username = connectionList.get(name).getConfiguration().getUsername();
 			// Check the status. If it is open or closed (i.e. connected or disconnected)
 			String status = "";
 			if (isConnectionOpen(name))
@@ -228,7 +208,7 @@ public class ConnectionManager {
 				status = "closed";
 
 			// Build a message to send to the logger
-			msg = "Connection " + i + ": " + name + " at " + username + "@" + host + " is " + status;
+			msg = "Connection " + name + ": " + username + "@" + host + " is " + status;
 
 			logger.info(msg);
 		}
@@ -286,7 +266,7 @@ public class ConnectionManager {
 	 * 
 	 * @param connections
 	 */
-	public static void setConnectionList(ArrayList<Connection> connections) {
+	public static void setConnectionList(HashMap<String,Connection> connections) {
 		connectionList = connections;
 	}
 
@@ -296,7 +276,7 @@ public class ConnectionManager {
 	 * 
 	 * @return
 	 */
-	public static ArrayList<Connection> getConnectionList() {
+	public static HashMap<String,Connection> getConnectionList() {
 		return connectionList;
 	}
 

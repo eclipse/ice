@@ -13,7 +13,7 @@ package org.eclipse.ice.tests.commands;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import org.eclipse.ice.commands.Connection;
@@ -65,6 +65,7 @@ public class ConnectionManagerTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 
+		
 		// Read in a dummy configuration file that contains credentials
 		File file = new File("/tmp/ice-remote-creds.txt");
 		Scanner scanner = new Scanner(file);
@@ -99,7 +100,6 @@ public class ConnectionManagerTest {
 		testGetConnection();
 
 		testCloseConnection();
-
 	}
 
 	/**
@@ -206,7 +206,7 @@ public class ConnectionManagerTest {
 		}
 
 		// Get the connection list from the manager to test some things
-		ArrayList<Connection> connections = new ArrayList<Connection>();
+		HashMap<String,Connection> connections = new HashMap<String,Connection>();
 		connections = ConnectionManager.getConnectionList();
 
 		// Expect only two connections since one of the connections is not good (i.e.
@@ -217,7 +217,7 @@ public class ConnectionManagerTest {
 		ConnectionManager.listAllConnections();
 
 		// Check that get name returns the appropriate connection in the list
-		assert (connections.get(1).getConfiguration().getName().equals("someOtherConnection"));
+		assert (connections.get("someOtherConnection").getConfiguration().getHostname().equals(hostname));
 
 		// Check that the name returns the appropriate connection from ConnectionManager
 		assert (ConnectionManager.getConnection("FirstConnection").getConfiguration().getName()
