@@ -136,7 +136,9 @@ public class ConnectionManager {
 	public static Connection getConnection(String connectionName) {
 		// Find the hashmap instance, and return it
 		Connection returnConnection = connectionList.get(connectionName);
-
+		if(returnConnection == null) {
+			logger.warn("The connection is null! Couldn't get a connection with the name " + connectionName);
+		}
 		return returnConnection;
 	}
 

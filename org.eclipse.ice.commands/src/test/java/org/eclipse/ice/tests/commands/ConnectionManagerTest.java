@@ -128,6 +128,10 @@ public class ConnectionManagerTest {
 		Connection testConnection = ConnectionManager.getConnection(connectionName);
 
 		assert (testConnection != null);
+		
+		// test a bad connection that doesn't exist in the connection list
+		Connection badConnection = ConnectionManager.getConnection("nonexistent_connection");
+		assert(badConnection == null);
 	}
 
 	/**
@@ -143,6 +147,7 @@ public class ConnectionManagerTest {
 		// Remove the connection from the connection manager
 		ConnectionManager.removeConnection(connectionName);
 
+		// Assert that this connection no longer exists, so when you try to get it it is null
 		assert (ConnectionManager.getConnection(connectionName) == null);
 	}
 
@@ -169,8 +174,7 @@ public class ConnectionManagerTest {
 		String password = scanner.next();
 		String hostname = scanner.next();
 
-		System.out.println(username + " " + password + " " + hostname);
-
+		
 		// Set the credentials since they were deleted after closing the previous
 		// connection
 		configuration.setUsername(username);
