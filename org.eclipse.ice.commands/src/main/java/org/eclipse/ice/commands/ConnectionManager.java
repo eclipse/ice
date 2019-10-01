@@ -183,9 +183,10 @@ public class ConnectionManager {
 	 */
 	public static void closeAllConnections() {
 		// Iterate over all available connections in the list and disconnect
-		for (String name : connectionList.keySet()) {
-			connectionList.get(name).getSession().disconnect();
+		for (Connection connection : connectionList.values()) {
+			connection.getSession().disconnect();
 		}
+		
 	}
 
 	/**
