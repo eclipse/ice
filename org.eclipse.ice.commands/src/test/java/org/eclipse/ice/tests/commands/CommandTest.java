@@ -57,7 +57,7 @@ public class CommandTest {
 		commandConfig.setWorkingDirectory(pwd); // working directory which contains the files
 		commandConfig.setAppendInput(true); // append the input file name to the script executable command
 		commandConfig.setNumProcs("1"); // number of processes is 1
-		commandConfig.setOS("osx"); // running on osx
+		commandConfig.setOS(System.getProperty("os.name"));
 
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
 		// Set the connection configuration to a dummy remote connection
@@ -82,8 +82,7 @@ public class CommandTest {
 		connectConfig.setHostname(hostname);
 		connectConfig.setUsername(username);
 		// Set password to "" to force input of remote connection password at console
-		// line
-		// for example: connectConfig.setPassword("");
+		// line, for example: connectConfig.setPassword("");
 		connectConfig.setPassword(password);
 		// Give the connection a name
 		connectConfig.setName("dummyConnection");
@@ -93,7 +92,7 @@ public class CommandTest {
 		connectConfig.setDeleteWorkingDirectory(true);
 
 		// Make the command and execute it
-		Command remoteCommand = new RemoteCommand(connectConfig, commandConfig);
+		Command remoteCommand = new RemoteCommand(commandConfig, connectConfig, null);
 		CommandStatus status = remoteCommand.execute();
 
 		// Assert that it finished correctly

@@ -94,7 +94,7 @@ public class CommandConfigurationTest {
 		CommandConfiguration splitConfig = new CommandConfiguration();
 		splitConfig.setCommandId(2);
 		splitConfig
-				.setExecutable("./dummy.sh ${inputFile}; ./next_file.sh ${inputFile}; ./other_file.sh ${installDir}");
+				.setExecutable("./dummy.sh ${inputFile0}; ./next_file.sh ${inputFile0}; ./other_file.sh ${installDir}");
 		// Test if the user falsifies append input whether or not the environment
 		// variable is replaced
 		splitConfig.setAppendInput(false);

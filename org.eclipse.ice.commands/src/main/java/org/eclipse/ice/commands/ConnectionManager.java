@@ -114,7 +114,7 @@ public class ConnectionManager {
 			}
 
 			// Add the connection to the list since it was successfully created
-			connectionList.put(newConnection.getConfiguration().getName(),newConnection);
+			connectionList.put(newConnection.getConfiguration().getName(), newConnection);
 
 			logger.info("Connection at " + username + "@" + hostname + " established successfully");
 
@@ -136,7 +136,7 @@ public class ConnectionManager {
 	public static Connection getConnection(String connectionName) {
 		// Find the hashmap instance, and return it
 		Connection returnConnection = connectionList.get(connectionName);
-		if(returnConnection == null) {
+		if (returnConnection == null) {
 			logger.warn("The connection is null! Couldn't get a connection with the name " + connectionName);
 		}
 		return returnConnection;
@@ -186,7 +186,7 @@ public class ConnectionManager {
 		for (Connection connection : connectionList.values()) {
 			connection.getSession().disconnect();
 		}
-		
+
 	}
 
 	/**
@@ -269,7 +269,7 @@ public class ConnectionManager {
 	 * 
 	 * @param connections
 	 */
-	public static void setConnectionList(HashMap<String,Connection> connections) {
+	public static void setConnectionList(HashMap<String, Connection> connections) {
 		connectionList = connections;
 	}
 
@@ -279,7 +279,7 @@ public class ConnectionManager {
 	 * 
 	 * @return
 	 */
-	public static HashMap<String,Connection> getConnectionList() {
+	public static HashMap<String, Connection> getConnectionList() {
 		return connectionList;
 	}
 

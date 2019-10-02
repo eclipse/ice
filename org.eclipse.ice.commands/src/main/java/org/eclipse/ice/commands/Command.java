@@ -47,7 +47,8 @@ public abstract class Command {
 	 * The connection configuration parameters of the command - this will contain
 	 * information about whether or not the command should be run locally or
 	 * remotely. If remote, it contains all of the necessary ssh information for
-	 * opening the remote connection.
+	 * opening the remote connection. This is the configuration to connect to the
+	 * host that will ultimately perform the job.
 	 */
 	protected ConnectionConfiguration connectionConfig;
 
@@ -70,8 +71,8 @@ public abstract class Command {
 	 *         executed
 	 */
 	public CommandStatus execute() {
-		// Check that the commandConfig file was properly instantiated in the
-		// constructor
+		// Check that the commandConfig and connectionConfig(s) file was properly
+		// instantiated in the constructor
 		try {
 			checkStatus(status);
 		} catch (IOException e) {
@@ -206,6 +207,7 @@ public abstract class Command {
 		}
 
 		// Check that the directory exists
+		// TODO - should use the file handler to check for file existence
 		File workDir = new File(commandConfig.getWorkingDirectory());
 
 		if (!workDir.exists()) {

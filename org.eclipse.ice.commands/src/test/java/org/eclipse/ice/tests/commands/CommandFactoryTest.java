@@ -93,6 +93,85 @@ public class CommandFactoryTest {
 	}
 
 	/**
+	 * This function tests a multi-hop remote command, where the command logs into a
+	 * remote host and then executes on a different remote host.
+	 */
+	@Test
+	public void testMultiHopRemoteCommand() {
+		System.out.println("\n\n\nTesting a multi-hop remote command");
+		// Set the CommandConfiguration class
+		commandConfig.setCommandId(99);
+		commandConfig.setErrFileName("hopRemoteErrFile.txt");
+		commandConfig.setOutFileName("hopRemoteOutFile.txt");
+		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
+		// Just put in a dummy directory for now
+		commandConfig.setWorkingDirectory("/home/user/somedirectory");
+		// Set the connection configuration to a dummy remote connection
+		// This is the connection where the job will be executed
+		File file = new File("/tmp/ice-remote-creds.txt");
+		Scanner scanner = null;
+		try {
+			scanner = new Scanner(file);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		// Scan line by line
+		scanner.useDelimiter("\n");
+
+		// Get the credentials for the dummy remote account
+		String username = scanner.next();
+		String password = scanner.next();
+		String hostname = scanner.next();
+
+		// Make the connection configuration
+		connectionConfig.setHostname(hostname);
+		connectionConfig.setUsername(username);
+		connectionConfig.setPassword(password);
+		// Note the password can be input at the console by not setting the
+		// the password explicitly in the connection configuration
+		connectionConfig.setName("executeConnection");
+		connectionConfig.setDeleteWorkingDirectory(false);
+
+		// Make another connection which we will log into first, and then execute from
+		// there
+		File secondFile = new File("/tmp/denisovan.txt");
+		try {
+			scanner = new Scanner(secondFile);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		scanner.useDelimiter("\n");
+		hostname = scanner.next();
+		username = scanner.next();
+
+		ConnectionConfiguration intermConnection = new ConnectionConfiguration();
+		intermConnection.setHostname(hostname);
+		intermConnection.setUsername(username);
+		intermConnection.setPassword("some_password");
+		intermConnection.setName("intermediateConnection");
+		intermConnection.setDeleteWorkingDirectory(false);
+
+		// Get the command
+		Command remoteCommand = null;
+		try {
+			remoteCommand = factory.getCommand(commandConfig, intermConnection, connectionConfig);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Run it
+		CommandStatus status = remoteCommand.execute();
+
+		// assert that it was successful
+		assert (status == CommandStatus.SUCCESS);
+
+		// Delete the connections
+		ConnectionManager.removeAllConnections();
+
+	}
+
+	/**
 	 * This function tests a more boring command, e.g. just executing "ls" at the
 	 * command prompt This shows that the API can be used to execute basic command
 	 * line prompts.
@@ -351,7 +430,7 @@ public class CommandFactoryTest {
 		commandConfig.setExecutable("./test_code_execution.sh ${inputFile0} ${inputFile1}");
 		commandConfig.setAppendInput(false);
 		connectionConfig.setHostname(hostname);
-		
+
 		// Get the command
 		Command localCommand = null;
 		try {

@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * should be handled, and it can handle both local and remote files as sources
  * and destinations. Files can be moved, copied or checked for existence.
  * 
- * TODO - this class is not thread safe at the moment. This needs to be updated 
+ * TODO - this class is not thread safe at the moment. This needs to be updated
  * with either Atomic or synchronized thread safety.
  * 
  * @author Jay Jay Billings, Joe Osborn
@@ -70,7 +70,7 @@ public abstract class FileHandler implements IFileHandler {
 
 		// Check the file existence. If they don't exist, an exception is thrown
 		checkExistence(source, destination);
-		
+
 		// Set the commands to have the appropriate properties
 		configureMoveCommand(source, destination);
 
@@ -93,10 +93,10 @@ public abstract class FileHandler implements IFileHandler {
 	public CommandStatus copy(final String source, final String destination) throws IOException {
 		// Check the file existence. If one or both don't exist, an exception is thrown
 		checkExistence(source, destination);
-		
+
 		// Set the commands to have the appropriate properties
 		configureCopyCommand(source, destination);
-	
+
 		// Execute and process the file transfer
 		transferStatus = executeTransfer(destination);
 
@@ -124,7 +124,6 @@ public abstract class FileHandler implements IFileHandler {
 	 */
 	protected abstract void configureCopyCommand(final String source, final String destination);
 
-	
 	/**
 	 * This method is responsible for determining whether or not a file or directory
 	 * already exists for a given path.
@@ -152,15 +151,14 @@ public abstract class FileHandler implements IFileHandler {
 	public abstract void checkExistence(final String source, final String destination) throws IOException;
 
 	/**
-	 * This function gets and returns the private member variable command of
-	 * type Command
+	 * This function gets and returns the private member variable command of type
+	 * Command
 	 * 
 	 * @return Command - the command associated with this FileHandler
 	 */
 	public Command getCommand() {
 		return command;
 	}
-
 
 	/**
 	 * This operation creates all the directories that are parents of the
@@ -215,14 +213,13 @@ public abstract class FileHandler implements IFileHandler {
 	}
 
 	/**
-	 * This function returns the current status of the transfer, as it is given by the
-	 * member variable {@link org.eclipse.ice.commands.FileHandler#copyCommand}
+	 * This function returns the current status of the transfer, as it is given by
+	 * the member variable {@link org.eclipse.ice.commands.FileHandler#copyCommand}
 	 * 
 	 * @return - CommandStatus indicating the status of the file transfer
 	 */
 	public CommandStatus getStatus() {
 		return command.getStatus();
 	}
-
 
 }

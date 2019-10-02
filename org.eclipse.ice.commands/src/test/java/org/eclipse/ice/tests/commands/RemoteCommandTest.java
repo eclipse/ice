@@ -70,7 +70,7 @@ public class RemoteCommandTest {
 		commandConfig.setNumProcs("1");
 		commandConfig.setOS("linux");
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
-		
+
 		// Set the connection configuration to a dummy remote connection
 		// Read in a dummy configuration file that contains credentials
 		File file = new File("/tmp/ice-remote-creds.txt");
@@ -104,7 +104,7 @@ public class RemoteCommandTest {
 		System.out.println("Testing remote command configuration");
 
 		// Get a command which just sets everything up
-		RemoteCommand command = new RemoteCommand(connectConfig, commandConfig);
+		RemoteCommand command = new RemoteCommand(commandConfig, connectConfig, null);
 
 		// Get the status
 		CommandStatus status = command.getStatus();
@@ -128,7 +128,7 @@ public class RemoteCommandTest {
 		connectConfig.setHostname("someBadHostname");
 		connectConfig.setPassword("someBadPassword");
 		// Make a command with a bad connection
-		RemoteCommand command = new RemoteCommand(connectConfig, commandConfig);
+		RemoteCommand command = new RemoteCommand(commandConfig, connectConfig, null);
 
 		// Check that the command gives an error in its status due to poor connection
 		assert (command.getStatus() == CommandStatus.INFOERROR);
@@ -143,7 +143,7 @@ public class RemoteCommandTest {
 		System.out.println("\n\n\nTest remote command execute");
 
 		// Make a command and execute the command
-		RemoteCommand command = new RemoteCommand(connectConfig, commandConfig);
+		RemoteCommand command = new RemoteCommand(commandConfig, connectConfig, null);
 		CommandStatus status = command.execute();
 
 		// Check that the command was successfully completed

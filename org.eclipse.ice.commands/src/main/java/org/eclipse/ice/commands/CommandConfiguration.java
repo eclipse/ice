@@ -284,9 +284,9 @@ public class CommandConfiguration {
 			installDirectory = installDirectory + separator;
 
 		// Search for and replace the ${inputFile} to properly configure the input file
-		for(int i = 0; i < inputFiles.size(); i++) {
-			if (fixedExecutableName.contains("${inputFile"+i+"}") && !appendInput)
-				fixedExecutableName = fixedExecutableName.replace("${inputFile"+i+"}", inputFiles.get(i));
+		for (int i = 0; i < inputFiles.size(); i++) {
+			if (fixedExecutableName.contains("${inputFile" + i + "}") && !appendInput)
+				fixedExecutableName = fixedExecutableName.replace("${inputFile" + i + "}", inputFiles.get(i));
 		}
 		if (fixedExecutableName.contains("${installDir}") && installDirectory != null)
 			fixedExecutableName = fixedExecutableName.replace("${installDir}", installDirectory);
@@ -397,10 +397,10 @@ public class CommandConfiguration {
 	 * 
 	 * @return inputFile
 	 */
-	public ArrayList<String> getInputFileList(){
+	public ArrayList<String> getInputFileList() {
 		return inputFiles;
 	}
-	
+
 	/**
 	 * Setter for stdErrFileName, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdErrFileName}
@@ -550,8 +550,8 @@ public class CommandConfiguration {
 	/**
 	 * Setter for hostname, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#hostname}. Make the
-	 * setter protected so that only ConnectionConfiguration can modify this member
-	 * variable.
+	 * setter protected with the intent that only ConnectionConfiguration can modify
+	 * this member variable.
 	 * 
 	 * @param host
 	 */

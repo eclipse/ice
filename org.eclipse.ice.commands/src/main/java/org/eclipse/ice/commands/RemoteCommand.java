@@ -39,6 +39,13 @@ public class RemoteCommand extends Command {
 	private Connection connection = new Connection();
 
 	/**
+	 * An additional connection that is used for multi-hop connections, where a user
+	 * connects to an intermediary machine (with connection, above) and then uses
+	 * that machine to connect to a second machine.
+	 */
+	private Connection secondConnection = new Connection();
+
+	/**
 	 * A file output stream for error messages to be remotely logged to
 	 */
 	private FileOutputStream stdErrStream = null;
@@ -59,26 +66,41 @@ public class RemoteCommand extends Command {
 	 * Constructor to instantiate the remote command with a particular
 	 * CommandConfiguration and ConnectionConfiguration.
 	 * 
-	 * @param - ConnectionConfiguration which corresponds to the particular
-	 *          connection
+	 * @param - ConnectionConfiguration connectConfig which corresponds to the
+	 *          particular connection
+	 * @param - ConnectionConfiguration extraConnection which corresponds to an
+	 *          additional connection, if the command is meant to multi-hop where
+	 *          one remote host is used to execute a job on another remote host
 	 * @param - CommandConfiguration which corresponds to the particular command
 	 */
-	public RemoteCommand(ConnectionConfiguration connectConfig, CommandConfiguration _commandConfig) {
+	public RemoteCommand(CommandConfiguration _commandConfig, ConnectionConfiguration connectConfig,
+			ConnectionConfiguration extraConnection) {
+		// Set the command and connection configurations
 		commandConfig = _commandConfig;
-		// Open and set the connection
+		connectionConfig = connectConfig;
+
+		// Open and set the connection(s)
 		try {
 			connection = ConnectionManager.openConnection(connectConfig);
+			// Set the commandConfig hostname to that of the connectionConfig - only used
+			// for output logging info
+			commandConfig.setHostname(connectConfig.getHostname());
+
+			// If there is an extra connection so that we are multi-hopping, then open it
+			// too
+			if (extraConnection != null) {
+				secondConnection = ConnectionManager.openConnection(extraConnection);
+				// Set the commandConfig hostname to be the extra connection, since this is
+				// really where the job will run
+				commandConfig.setHostname(extraConnection.getHostname());
+			}
 		} catch (JSchException e) {
-			// If the connection can't be opened, we can't be expected to execute a job
+			// If the connection(s) can't be opened, we can't be expected to execute a job
 			// remotely!
 			status = CommandStatus.INFOERROR;
 			e.printStackTrace();
 			return;
 		}
-
-		// Set the commandConfig hostname to that of the connectionConfig - only used
-		// for output logging info
-		commandConfig.setHostname(connectConfig.getHostname());
 
 		status = CommandStatus.PROCESSING;
 	}
@@ -330,7 +352,6 @@ public class RemoteCommand extends Command {
 
 		String workingDirectory = commandConfig.getWorkingDirectory();
 
-	
 		// Get the executable to concatenate
 		String shortExecName = commandConfig.getExecutable();
 		// Get the executable filename only by removing the all the junk in front of it
@@ -363,7 +384,7 @@ public class RemoteCommand extends Command {
 		ArrayList<String> inputFiles = commandConfig.getInputFileList();
 
 		// Iterate over each input file
-		for(int i = 0; i < inputFiles.size(); i++) {
+		for (int i = 0; i < inputFiles.size(); i++) {
 			String shortInputName = inputFiles.get(i);
 
 			// Fix the inputFile name for remote machines to remove any possible slashes
@@ -382,7 +403,7 @@ public class RemoteCommand extends Command {
 			sftpChannel.put(workingDirectory + shortInputName, remoteWorkingDirectory + shortInputName);
 
 		}
-		
+
 		// Disconnect the sftp channel to stop moving files
 		sftpChannel.disconnect();
 
