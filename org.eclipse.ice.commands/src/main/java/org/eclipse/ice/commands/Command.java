@@ -176,6 +176,14 @@ public abstract class Command {
 	public CommandConfiguration getCommandConfiguration() {
 		return commandConfig;
 	}
+	
+	/**
+	 * This function sets the command configuration for a particular command
+	 * @param config
+	 */
+	public void setCommandConfiguration(CommandConfiguration config) {
+		commandConfig = config;
+	}
 
 	/**
 	 * This function returns to the user the configuration that was used to set up a
@@ -185,6 +193,16 @@ public abstract class Command {
 	 */
 	public ConnectionConfiguration getConnectionConfiguration() {
 		return connectionConfig;
+	}
+
+	/**
+	 * This function sets the configuration that is to be used to set up a
+	 * particular connection.
+	 * 
+	 * @param connect
+	 */
+	public void setConnectionConfiguration(ConnectionConfiguration connect) {
+		connectionConfig = connect;
 	}
 
 	/**

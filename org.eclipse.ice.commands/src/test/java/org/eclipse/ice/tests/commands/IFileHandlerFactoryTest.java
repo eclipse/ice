@@ -14,6 +14,7 @@ package org.eclipse.ice.tests.commands;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -73,6 +74,11 @@ public class IFileHandlerFactoryTest {
 	static Connection dummyConnection = new Connection();
 
 	/**
+	 * A connection configuration for remote file handling tests
+	 */
+	static ConnectionConfiguration config = new ConnectionConfiguration();
+
+	/**
 	 * This function runs before the class execution, and it's primary use is to
 	 * establish the remote connection for remote file handling tests
 	 * 
@@ -80,7 +86,7 @@ public class IFileHandlerFactoryTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		ConnectionConfiguration config = new ConnectionConfiguration();
+
 		// Set the connection configuration to a dummy remote connection
 		// Read in a dummy configuration file that contains credentials
 		File file = new File("/tmp/ice-remote-creds.txt");
@@ -370,10 +376,11 @@ public class IFileHandlerFactoryTest {
 		}
 
 		IFileHandler handler = null;
-
+		// set the config hostname
+		config.setHostname(getLocalHostname());
 		// Get the file transfer handler
 		try {
-			handler = factory.getFileHandler();
+			handler = factory.getFileHandler(config);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -424,7 +431,7 @@ public class IFileHandlerFactoryTest {
 
 		// Get the file transfer handler
 		try {
-			handler = factory.getFileHandler();
+			handler = factory.getFileHandler(config);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -475,7 +482,7 @@ public class IFileHandlerFactoryTest {
 
 		// Get the file transfer handler with a nonexistent destination
 		try {
-			handler = factory.getFileHandler();
+			handler = factory.getFileHandler(config);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -534,7 +541,7 @@ public class IFileHandlerFactoryTest {
 		System.out.println("New file path: " + localNewName);
 
 		try {
-			handler = factory.getFileHandler();
+			handler = factory.getFileHandler(config);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -587,9 +594,11 @@ public class IFileHandlerFactoryTest {
 
 		IFileHandler handler = null;
 
+		config.setHostname("dummy");
+
 		// Get the file transfer handler
 		try {
-			handler = factory.getFileHandler();
+			handler = factory.getFileHandler(config);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -634,9 +643,36 @@ public class IFileHandlerFactoryTest {
 
 		IFileHandler handler = null;
 
+		// Set the connection configuration to a dummy remote connection
+		// Read in a dummy configuration file that contains credentials
+		File file = new File("/tmp/ice-remote-creds.txt");
+		Scanner scanner = null;
+		try {
+			scanner = new Scanner(file);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		// Scan line by line
+		scanner.useDelimiter("\n");
+
+		// Get the credentials for the dummy remote account
+		String username = scanner.next();
+		String password = scanner.next();
+		String hostname = scanner.next();
+
+		// Make the connection configuration
+		config.setHostname(hostname);
+		config.setUsername(username);
+		config.setPassword(password);
+		// Note the password can be input at the console by not setting the
+		// the password explicitly in the connection configuration
+		config.setName("dummyConnection");
+
+		config.setDeleteWorkingDirectory(true);
+
 		// Get the file transfer handler
 		try {
-			handler = factory.getFileHandler();
+			handler = factory.getFileHandler(config);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -683,9 +719,10 @@ public class IFileHandlerFactoryTest {
 
 		IFileHandler handler = null;
 
+		config.setHostname("dummy");
 		// Get the file transfer handler
 		try {
-			handler = factory.getFileHandler();
+			handler = factory.getFileHandler(config);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -754,6 +791,23 @@ public class IFileHandlerFactoryTest {
 			}
 		}
 		return directory.delete();
+	}
+
+	/**
+	 * A small function to get and return the local hostname for testing purposes
+	 * 
+	 * @return
+	 */
+	private String getLocalHostname() {
+		InetAddress addr = null;
+		try {
+			addr = InetAddress.getLocalHost();
+		} catch (java.net.UnknownHostException e) {
+			e.printStackTrace();
+		}
+		String hostname = addr.getHostName();
+
+		return hostname;
 	}
 
 	/**

@@ -74,6 +74,7 @@ public class LocalFileHandler extends FileHandler {
 	 */
 	@Override
 	public void checkExistence(final String source, final String destination) throws IOException {
+		// Check that the source file exists
 		if (!exists(source)) {
 			logger.error("Source doesn't exist! Exiting.");
 			throw new IOException();

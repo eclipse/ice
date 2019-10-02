@@ -13,8 +13,6 @@
 
 package org.eclipse.ice.commands;
 
-import com.jcraft.jsch.JSchException;
-
 /**
  * Child class for copying a file remotely over some connection.
  * 
@@ -50,16 +48,9 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	 * @param src  - source file to be moved
 	 * @param dest - destination for source file to be moved to
 	 */
-	public void setConfiguration(String src, String dest, ConnectionConfiguration config) {
+	public void setConfiguration(String src, String dest) {
 		source = src;
 		destination = dest;
-		try {
-			ConnectionManager.openConnection(config);
-		} catch (JSchException e) {
-			status = CommandStatus.INFOERROR;
-			e.printStackTrace();
-			return;
-		}
 	}
 	
 	@Override

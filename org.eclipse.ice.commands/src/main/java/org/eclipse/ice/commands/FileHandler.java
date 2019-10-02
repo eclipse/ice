@@ -212,14 +212,5 @@ public abstract class FileHandler implements IFileHandler {
 
 	}
 
-	/**
-	 * This function returns the current status of the transfer, as it is given by
-	 * the member variable {@link org.eclipse.ice.commands.FileHandler#copyCommand}
-	 * 
-	 * @return - CommandStatus indicating the status of the file transfer
-	 */
-	public CommandStatus getStatus() {
-		return command.getStatus();
-	}
 
 }

@@ -45,18 +45,22 @@ public class FileHandlerFactory {
 	 * 
 	 * @return FileHandler - instance of FileHandler that does the transfer
 	 */
-	public IFileHandler getFileHandler() throws IOException {
-		IFileHandler handler = null;
+	public FileHandler getFileHandler(ConnectionConfiguration connectionConfig) throws IOException {
+		FileHandler handler = null;
 
-		// TODO - determine how to identify local vs. remote FileHandler
-		boolean isLocal = true;
+		// Determine if the hostname in the config is local or not
+		boolean isLocal = isLocal(connectionConfig.getHostname());
 
+		// If it is, return a local file handler, otherwise remote
 		if (isLocal) {
 			handler = new LocalFileHandler();
 		} else {
 			handler = new RemoteFileHandler();
 		}
-
+		handler.getCommand().setConnectionConfiguration(connectionConfig);
+	
+		
+		
 		return handler;
 	}
 
