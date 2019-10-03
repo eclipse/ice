@@ -79,6 +79,11 @@ public class IFileHandlerFactoryTest {
 	static ConnectionConfiguration config = new ConnectionConfiguration();
 
 	/**
+	 * A connection manager for opening/closing connections
+	 */
+	static ConnectionManager manager = new ConnectionManager();
+	
+	/**
 	 * This function runs before the class execution, and it's primary use is to
 	 * establish the remote connection for remote file handling tests
 	 * 
@@ -114,7 +119,7 @@ public class IFileHandlerFactoryTest {
 		// We'll delete the files manually since there will be many directories involved
 		config.setDeleteWorkingDirectory(false);
 
-		dummyConnection = ConnectionManager.openConnection(config);
+		dummyConnection = manager.openConnection(config);
 	}
 
 	/**

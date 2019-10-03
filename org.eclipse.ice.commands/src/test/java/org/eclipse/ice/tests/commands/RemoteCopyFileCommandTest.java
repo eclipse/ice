@@ -119,7 +119,7 @@ public class RemoteCopyFileCommandTest {
 
 		// Make a command and execute it
 		RemoteCopyFileCommand command = new RemoteCopyFileCommand();
-		command.setConfiguration(source, dest, connectionConfig);
+		command.setConfiguration(source, dest);
 		command.execute();
 		// Check that the path exists
 		try {

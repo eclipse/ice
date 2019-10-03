@@ -115,7 +115,7 @@ public class RemoteMoveFileCommandTest {
 		System.out.println("Moving " + source + " to destination " + dest);
 
 		RemoteMoveFileCommand command = new RemoteMoveFileCommand();
-		command.setConfiguration(source, dest, connectionConfig);
+		command.setConfiguration(source, dest);
 		command.execute();
 
 		try {

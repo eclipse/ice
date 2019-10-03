@@ -141,8 +141,9 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	private void openConnection() {
 		try {
+			ConnectionManager manager = new ConnectionManager();
 			// Open the connection
-			ConnectionManager.openConnection(command.getConnectionConfiguration());
+			manager.openConnection(command.getConnectionConfiguration());
 			// Get the sftp channel to check existence
 			ChannelSftp sftpChannel = (ChannelSftp) ((RemoteCommand) command).getConnection().getSession()
 					.openChannel("sftp");

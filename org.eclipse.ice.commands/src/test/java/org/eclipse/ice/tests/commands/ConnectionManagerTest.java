@@ -58,6 +58,11 @@ public class ConnectionManagerTest {
 	static ConnectionConfiguration configuration = new ConnectionConfiguration();
 
 	/**
+	 * A connection manager to deal with the dummy test connections
+	 */
+	ConnectionManager manager = new ConnectionManager();
+	
+	/**
 	 * This function makes a test connection with which to play with
 	 * 
 	 * @throws java.lang.Exception
@@ -110,7 +115,7 @@ public class ConnectionManagerTest {
 
 		// Try to open a connection
 		try {
-			connect = ConnectionManager.openConnection(configuration);
+			connect = manager.openConnection(configuration);
 		} catch (JSchException e) {
 			e.printStackTrace();
 		}
@@ -125,12 +130,12 @@ public class ConnectionManagerTest {
 	 * {@link org.eclipse.ice.commands.ConnectionManager#GetConnection(String)}
 	 */
 	public void testGetConnection() {
-		Connection testConnection = ConnectionManager.getConnection(connectionName);
+		Connection testConnection = manager.getConnection(connectionName);
 
 		assert (testConnection != null);
 		
 		// test a bad connection that doesn't exist in the connection list
-		Connection badConnection = ConnectionManager.getConnection("nonexistent_connection");
+		Connection badConnection = manager.getConnection("nonexistent_connection");
 		assert(badConnection == null);
 	}
 
@@ -140,15 +145,15 @@ public class ConnectionManagerTest {
 	 */
 	public void testCloseConnection() {
 		// disconnect the session
-		ConnectionManager.closeConnection(connectionName);
+		manager.closeConnection(connectionName);
 
-		assert (!ConnectionManager.getConnection(connectionName).getSession().isConnected());
+		assert (!manager.getConnection(connectionName).getSession().isConnected());
 
 		// Remove the connection from the connection manager
-		ConnectionManager.removeConnection(connectionName);
+		manager.removeConnection(connectionName);
 
 		// Assert that this connection no longer exists, so when you try to get it it is null
-		assert (ConnectionManager.getConnection(connectionName) == null);
+		assert (manager.getConnection(connectionName) == null);
 	}
 
 	/**
@@ -199,11 +204,11 @@ public class ConnectionManagerTest {
 		Connection conn1 = null, conn2 = null, conn3 = null;
 		// Open some configurations
 		try {
-			conn1 = ConnectionManager.openConnection(configuration);
+			conn1 = manager.openConnection(configuration);
 
-			conn2 = ConnectionManager.openConnection(conf2);
+			conn2 = manager.openConnection(conf2);
 
-			conn3 = ConnectionManager.openConnection(conf3);
+			conn3 = manager.openConnection(conf3);
 
 		} catch (JSchException e) {
 			e.printStackTrace();
@@ -211,37 +216,37 @@ public class ConnectionManagerTest {
 
 		// Get the connection list from the manager to test some things
 		HashMap<String,Connection> connections = new HashMap<String,Connection>();
-		connections = ConnectionManager.getConnectionList();
+		connections = manager.getConnectionList();
 
 		// Expect only two connections since one of the connections is not good (i.e.
 		// conn3 has a bad password)
 		assert (connections.size() == 2);
 
 		// List all available connections to the console screen
-		ConnectionManager.listAllConnections();
+		manager.listAllConnections();
 
 		// Check that get name returns the appropriate connection in the list
 		assert (connections.get("someOtherConnection").getConfiguration().getHostname().equals(hostname));
 
 		// Check that the name returns the appropriate connection from ConnectionManager
-		assert (ConnectionManager.getConnection("FirstConnection").getConfiguration().getName()
+		assert (manager.getConnection("FirstConnection").getConfiguration().getName()
 				.equals("FirstConnection"));
 
 		// Check that the connection is actually open, since FirstConnection is a good
 		// connection
-		assert (ConnectionManager.isConnectionOpen("FirstConnection"));
+		assert (manager.isConnectionOpen("FirstConnection"));
 
 		// Test closing all of the connections
-		ConnectionManager.closeAllConnections();
+		manager.closeAllConnections();
 
 		// Check that the connection is closed
-		assert (!ConnectionManager.isConnectionOpen("FirstConnection"));
+		assert (!manager.isConnectionOpen("FirstConnection"));
 
 		// Test removing all connections from the list in ConnectionManager
-		ConnectionManager.removeAllConnections();
+		manager.removeAllConnections();
 
 		// Assert that there are no more connections in the list
-		assert (ConnectionManager.getConnectionList().size() == 0);
+		assert (manager.getConnectionList().size() == 0);
 
 	}
 

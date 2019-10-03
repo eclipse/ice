@@ -37,12 +37,12 @@ public class ConnectionManager {
 	 * the name of the connection and the connection itself.
 	 * 
 	 */
-	private static HashMap<String, Connection> connectionList = new HashMap<String, Connection>();
+	private HashMap<String, Connection> connectionList = new HashMap<String, Connection>();
 
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
+	private final Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
 
 	/**
 	 * Default Constructor
@@ -57,7 +57,7 @@ public class ConnectionManager {
 	 * @param config - ConnectionConfiguration to be used to open connection
 	 * @return Connection - returns connection if successful, null otherwise
 	 */
-	public static Connection openConnection(ConnectionConfiguration config) throws JSchException {
+	public Connection openConnection(ConnectionConfiguration config) throws JSchException {
 
 		// The new connection to be opened
 		Connection newConnection = new Connection(config);
@@ -133,7 +133,7 @@ public class ConnectionManager {
 	 * @param connectionName - name of connection to search for
 	 * @return - Connection instance which was requested
 	 */
-	public static Connection getConnection(String connectionName) {
+	public Connection getConnection(String connectionName) {
 		// Find the hashmap instance, and return it
 		Connection returnConnection = connectionList.get(connectionName);
 		if (returnConnection == null) {
@@ -147,7 +147,7 @@ public class ConnectionManager {
 	 * 
 	 * @param connectionName - name of connection to be closed
 	 */
-	public static void closeConnection(String connectionName) {
+	public void closeConnection(String connectionName) {
 
 		// Get the connection that was passed
 		Connection connection = getConnection(connectionName);
@@ -165,7 +165,7 @@ public class ConnectionManager {
 	 * 
 	 * @param connectionName - name of connection to remove
 	 */
-	public static void removeConnection(String connectionName) {
+	public void removeConnection(String connectionName) {
 		// Remove it from the list of connections
 		connectionList.remove(connectionName);
 	}
@@ -173,7 +173,7 @@ public class ConnectionManager {
 	/**
 	 * This function removes all particular connections from the connection list
 	 */
-	public static void removeAllConnections() {
+	public void removeAllConnections() {
 		// Remove all of the items from the hashmap
 		connectionList.clear();
 	}
@@ -181,7 +181,7 @@ public class ConnectionManager {
 	/**
 	 * Closes all connections that remain open.
 	 */
-	public static void closeAllConnections() {
+	public void closeAllConnections() {
 		// Iterate over all available connections in the list and disconnect
 		for (Connection connection : connectionList.values()) {
 			connection.getSession().disconnect();
@@ -194,7 +194,7 @@ public class ConnectionManager {
 	 * not) to the logger, if so desired. Useful for checking the connections and
 	 * their statuses.
 	 */
-	public static void listAllConnections() {
+	public void listAllConnections() {
 		// Iterate over all available connections
 		for (String name : connectionList.keySet()) {
 			// Build a message
@@ -226,7 +226,7 @@ public class ConnectionManager {
 	 * @return - boolean indicating whether or not it is connected (true) or not
 	 *         (false)
 	 */
-	public static boolean isConnectionOpen(String connectionName) {
+	public boolean isConnectionOpen(String connectionName) {
 		Connection connection = getConnection(connectionName);
 		return connection.getSession().isConnected();
 	}
@@ -239,7 +239,7 @@ public class ConnectionManager {
 	 * 
 	 * @return - char array of password chars
 	 */
-	private static final char[] getPassword() {
+	private final char[] getPassword() {
 
 		String password = "";
 		ConsoleEraser eraser = new ConsoleEraser();
@@ -269,7 +269,7 @@ public class ConnectionManager {
 	 * 
 	 * @param connections
 	 */
-	public static void setConnectionList(HashMap<String, Connection> connections) {
+	public void setConnectionList(HashMap<String, Connection> connections) {
 		connectionList = connections;
 	}
 
@@ -279,7 +279,7 @@ public class ConnectionManager {
 	 * 
 	 * @return
 	 */
-	public static HashMap<String, Connection> getConnectionList() {
+	public HashMap<String, Connection> getConnectionList() {
 		return connectionList;
 	}
 

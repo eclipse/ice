@@ -79,9 +79,11 @@ public class RemoteCommand extends Command {
 		commandConfig = _commandConfig;
 		connectionConfig = connectConfig;
 
+		ConnectionManager manager = new ConnectionManager();
+		
 		// Open and set the connection(s)
 		try {
-			connection = ConnectionManager.openConnection(connectConfig);
+			connection = manager.openConnection(connectConfig);
 			// Set the commandConfig hostname to that of the connectionConfig - only used
 			// for output logging info
 			commandConfig.setHostname(connectConfig.getHostname());
@@ -89,7 +91,7 @@ public class RemoteCommand extends Command {
 			// If there is an extra connection so that we are multi-hopping, then open it
 			// too
 			if (extraConnection != null) {
-				secondConnection = ConnectionManager.openConnection(extraConnection);
+				secondConnection = manager.openConnection(extraConnection);
 				// Set the commandConfig hostname to be the extra connection, since this is
 				// really where the job will run
 				commandConfig.setHostname(extraConnection.getHostname());

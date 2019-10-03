@@ -63,6 +63,11 @@ public class CommandFactoryTest {
 	 * A connection configuration with which to test
 	 */
 	ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
+	
+	/**
+	 * A connection manager to manage the dummy connections for testing
+	 */
+	ConnectionManager manager = new ConnectionManager();
 
 	public CommandFactoryTest() {
 	}
@@ -167,7 +172,7 @@ public class CommandFactoryTest {
 		assert (status == CommandStatus.SUCCESS);
 
 		// Delete the connections
-		ConnectionManager.removeAllConnections();
+		manager.removeAllConnections();
 
 	}
 
@@ -356,7 +361,7 @@ public class CommandFactoryTest {
 		assert (status == CommandStatus.SUCCESS);
 
 		// Delete the connections
-		ConnectionManager.removeAllConnections();
+		manager.removeAllConnections();
 
 	}
 
