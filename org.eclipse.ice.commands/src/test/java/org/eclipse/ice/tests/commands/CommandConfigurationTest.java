@@ -68,7 +68,7 @@ public class CommandConfigurationTest {
 		// Test that if one wants to append inputfile, it is appended
 		config.setCommandId(1);
 		config.setExecutable("./test_code_execution.sh");
-		config.setInputFile("someInputFile.txt");
+		config.addInputFile("someInputFile", "someInputFile.txt");
 		config.setNumProcs("1");
 		config.setAppendInput(true);
 		config.setOS("osx");
@@ -94,17 +94,18 @@ public class CommandConfigurationTest {
 		CommandConfiguration splitConfig = new CommandConfiguration();
 		splitConfig.setCommandId(2);
 		splitConfig
-				.setExecutable("./dummy.sh ${inputFile0}; ./next_file.sh ${inputFile0}; ./other_file.sh ${installDir}");
+				.setExecutable("./dummy.sh ${inputfile}; ./next_file.sh ${otherinputfile}; ./other_file.sh ${installDir}");
 		// Test if the user falsifies append input whether or not the environment
 		// variable is replaced
 		splitConfig.setAppendInput(false);
 		splitConfig.setNumProcs("1");
-		splitConfig.setInputFile("inputfile.txt");
+		splitConfig.addInputFile("inputfile", "inputfile.txt");
+		splitConfig.addInputFile("otherinputfile", "/some/dummy/path/to/an/inputfile.txt");
 		splitConfig.setInstallDirectory("~/install_dir");
-		splitConfig.setOS("osx");
+		splitConfig.setOS(System.getProperty("os.name"));
 		String executable = splitConfig.getExecutableName();
 		assert (executable
-				.equals("./dummy.sh inputfile.txt; ./next_file.sh inputfile.txt; ./other_file.sh ~/install_dir/"));
+				.equals("./dummy.sh inputfile.txt; ./next_file.sh /some/dummy/path/to/an/inputfile.txt; ./other_file.sh ~/install_dir/"));
 
 		ArrayList<String> split = new ArrayList<String>();
 		split = splitConfig.getSplitCommand();
@@ -112,7 +113,7 @@ public class CommandConfigurationTest {
 		// Create an array list to check the split command against
 		ArrayList<String> checkSplit = new ArrayList<String>();
 		checkSplit.add("./dummy.sh inputfile.txt");
-		checkSplit.add("./next_file.sh inputfile.txt");
+		checkSplit.add("./next_file.sh /some/dummy/path/to/an/inputfile.txt");
 		checkSplit.add("./other_file.sh ~/install_dir/");
 
 		for (int i = 0; i < split.size(); i++) {

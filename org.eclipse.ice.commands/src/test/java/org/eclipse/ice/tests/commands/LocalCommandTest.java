@@ -42,7 +42,6 @@ public class LocalCommandTest {
 	 */
 	CommandConfiguration commandConfig = new CommandConfiguration();
 
-
 	/**
 	 * The connection used (in this case, it is a local connection)
 	 */
@@ -63,10 +62,10 @@ public class LocalCommandTest {
 
 		connection = new ConnectionConfiguration();
 		connection.setHostname(hostname);
-		
+
 		commandConfig.setCommandId(1);
 		commandConfig.setExecutable(executable);
-		commandConfig.setInputFile(inputFile);
+		commandConfig.addInputFile("inputFile", inputFile);
 		commandConfig.setErrFileName(errorFile);
 		commandConfig.setOutFileName(outputFile);
 		commandConfig.setInstallDirectory(installDir);
@@ -97,6 +96,40 @@ public class LocalCommandTest {
 	}
 
 	/**
+	 * This test tests the execute method in local command, which is responsible for
+	 * actually processing and running a job.
+	 */
+	@Test
+	public void testExecute() {
+
+		String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
+		
+		// Set the CommandConfiguration class
+		// See {@link org.eclipse.ice.commands.CommandConfiguration} for detailed info
+		// on each
+		CommandConfiguration commandConfig = new CommandConfiguration();
+		commandConfig.setCommandId(1);
+		commandConfig.setExecutable("./test_code_execution.sh");
+		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
+		commandConfig.setErrFileName("someLocalErrFile.txt");
+		commandConfig.setOutFileName("someLocalOutFile.txt");
+		commandConfig.setInstallDirectory("");
+		commandConfig.setWorkingDirectory(pwd);
+		commandConfig.setAppendInput(true);
+		commandConfig.setNumProcs("1");
+		commandConfig.setOS(System.getProperty("os.name"));
+	
+		// Make the command and execute it
+		LocalCommand localCommand = new LocalCommand(connection, commandConfig);
+		CommandStatus status = localCommand.execute();
+
+		// Check that it completed correctly
+		System.out.println("Command finished with: " + status);
+		assert (status == CommandStatus.SUCCESS);
+
+	}
+
+	/**
 	 * Test method for {@link org.eclipse.ice.commands.LocalCommand#Execute()}. This
 	 * test should "fail" by default since the CommandConfiguration
 	 * executableDictionary does not point to a real executable. This is a test of
@@ -104,14 +137,14 @@ public class LocalCommandTest {
 	 * functional command, see {@link org.eclipse.ice.commands.testCommandFactory()}
 	 */
 	@Test
-	public void testExecute() {
+	public void testBadExecute() {
 		System.out.println("Starting testExecute with a non-existant executable.\n");
 
-		CommandConfiguration badConfig = new CommandConfiguration(); 
-				
+		CommandConfiguration badConfig = new CommandConfiguration();
+
 		badConfig.setCommandId(2);
 		badConfig.setExecutable("fake_exec.sh");
-		badConfig.setInputFile("inputfile");
+		badConfig.addInputFile("inputfile", "inputfile");
 		badConfig.setErrFileName("errfile.txt");
 		badConfig.setOutFileName("outfile.txt");
 		badConfig.setInstallDirectory("installDir");
@@ -119,7 +152,7 @@ public class LocalCommandTest {
 		badConfig.setAppendInput(true);
 		badConfig.setNumProcs("1");
 		badConfig.setOS(os);
-		
+
 		LocalCommand testCommand = new LocalCommand(connection, badConfig);
 
 		CommandStatus testStatus = testCommand.execute();

@@ -17,6 +17,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
@@ -383,11 +385,12 @@ public class RemoteCommand extends Command {
 		sftpChannel.chmod(448, remoteWorkingDirectory + shortExecName);
 
 		// Now move the input files after moving the executable file
-		ArrayList<String> inputFiles = commandConfig.getInputFileList();
+		HashMap<String, String> inputFiles = commandConfig.getInputFileList();
 
 		// Iterate over each input file
-		for (int i = 0; i < inputFiles.size(); i++) {
-			String shortInputName = inputFiles.get(i);
+		for (Map.Entry<String, String> entry: inputFiles.entrySet()) {
+			// Get the filepath
+			String shortInputName = entry.getValue();
 
 			// Fix the inputFile name for remote machines to remove any possible slashes
 			if (shortInputName.contains("/"))

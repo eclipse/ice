@@ -61,7 +61,7 @@ public class RemoteCommandTest {
 		// on each
 		commandConfig.setCommandId(0);
 		commandConfig.setExecutable("./test_code_execution.sh");
-		commandConfig.setInputFile("someInputFile.txt");
+		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
 		commandConfig.setErrFileName("someErrFile.txt");
 		commandConfig.setOutFileName("someOutFile.txt");
 		commandConfig.setInstallDirectory("");

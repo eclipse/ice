@@ -50,7 +50,7 @@ public class CommandTest {
 		CommandConfiguration commandConfig = new CommandConfiguration();
 		commandConfig.setCommandId(2); // an id indicating the job number
 		commandConfig.setExecutable("./test_code_execution.sh"); // the shell script to execute
-		commandConfig.setInputFile("someInputFile.txt"); // an input file needed by the script
+		commandConfig.addInputFile("someInputFile","someInputFile.txt"); // an input file needed by the script
 		commandConfig.setErrFileName("someRemoteErrFile.txt"); // a file to contain errors thrown
 		commandConfig.setOutFileName("someRemoteOutFile.txt"); // a file to contain the output
 		commandConfig.setInstallDirectory(""); // no install dir needed for this script
@@ -117,14 +117,14 @@ public class CommandTest {
 		CommandConfiguration commandConfig = new CommandConfiguration();
 		commandConfig.setCommandId(1);
 		commandConfig.setExecutable("./test_code_execution.sh");
-		commandConfig.setInputFile("someInputFile.txt");
+		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
 		commandConfig.setErrFileName("someLocalErrFile.txt");
 		commandConfig.setOutFileName("someLocalOutFile.txt");
 		commandConfig.setInstallDirectory("");
 		commandConfig.setWorkingDirectory(pwd);
 		commandConfig.setAppendInput(true);
 		commandConfig.setNumProcs("1");
-		commandConfig.setOS("osx");
+		commandConfig.setOS(System.getProperty("os.name"));
 
 		// Use the function already defined in the command factory to get the
 		// local host name

@@ -21,6 +21,8 @@ import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,9 +57,10 @@ public class CommandConfiguration {
 
 	/**
 	 * The input file that the executable needs or takes as an argument in its
-	 * processing
+	 * processing. The first string is the name of the file as in the executable string,
+	 * while the second string is the path to that file
 	 */
-	private ArrayList<String> inputFiles = new ArrayList<String>();
+	private HashMap<String, String> inputFiles = new HashMap<String,String>();
 
 	/**
 	 * The name of the file that will contain the output of the job
@@ -284,9 +287,9 @@ public class CommandConfiguration {
 			installDirectory = installDirectory + separator;
 
 		// Search for and replace the ${inputFile} to properly configure the input file
-		for (int i = 0; i < inputFiles.size(); i++) {
-			if (fixedExecutableName.contains("${inputFile" + i + "}") && !appendInput)
-				fixedExecutableName = fixedExecutableName.replace("${inputFile" + i + "}", inputFiles.get(i));
+		for (Map.Entry<String, String> entry: inputFiles.entrySet()) {
+			if (fixedExecutableName.contains("${" + entry.getKey() + "}") && !appendInput)
+				fixedExecutableName = fixedExecutableName.replace("${" + entry.getKey() + "}", entry.getValue());
 		}
 		if (fixedExecutableName.contains("${installDir}") && installDirectory != null)
 			fixedExecutableName = fixedExecutableName.replace("${installDir}", installDirectory);
@@ -372,8 +375,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param input
 	 */
-	public void setInputFile(String input) {
-		inputFiles.add(input);
+	public void addInputFile(String name, String path) {
+		inputFiles.put(name, path);
 		return;
 	}
 
@@ -385,19 +388,19 @@ public class CommandConfiguration {
 	 */
 	public String getInputFiles() {
 		String files = "";
-		for (int i = 0; i < inputFiles.size(); i++) {
-			files += inputFiles.get(i) + " ";
+		for (Map.Entry<String,String> entry : inputFiles.entrySet()) {
+			files += entry.getValue() + " ";
 		}
 		return files;
 	}
 
 	/**
-	 * Getter for the inputFile arraylist itself, see
+	 * Getter for the inputFile hashmap itself, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#inputFile}
 	 * 
 	 * @return inputFile
 	 */
-	public ArrayList<String> getInputFileList() {
+	public HashMap<String,String> getInputFileList() {
 		return inputFiles;
 	}
 
