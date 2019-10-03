@@ -101,7 +101,7 @@ public class CommandFactoryTest {
 	 * This function tests a multi-hop remote command, where the command logs into a
 	 * remote host and then executes on a different remote host.
 	 */
-	//@Test
+	@Test
 	public void testMultiHopRemoteCommand() {
 		System.out.println("\n\n\nTesting a multi-hop remote command");
 		// Set the CommandConfiguration class
@@ -181,7 +181,7 @@ public class CommandFactoryTest {
 	 * command prompt This shows that the API can be used to execute basic command
 	 * line prompts.
 	 */
-	//@Test
+	@Test
 	public void testBoringCommand() {
 
 		CommandConfiguration cmdCfg = new CommandConfiguration();
@@ -211,7 +211,7 @@ public class CommandFactoryTest {
 	 * This function tests with real files to test an actual job processing. The job
 	 * executes a script with some hello world commands in it.
 	 */
-	//@Test
+	@Test
 	public void testFunctionalLocalCommand() {
 
 		// Set some things specific to the local command
@@ -243,7 +243,7 @@ public class CommandFactoryTest {
 	 * in quotes due to the return of a bad CommandStatus rather than e.g. a true
 	 * java Exception.
 	 */
-	//@Test
+	@Test
 	public void testNonFunctionalLocalCommand() {
 
 		System.out.println("\nTesting some commands where not enough command information was provided.");
@@ -277,7 +277,7 @@ public class CommandFactoryTest {
 	 * intended to test some of the exception catching, thus it is expected to
 	 * "fail."
 	 */
-	//@Test
+	@Test
 	public void testIncorrectWorkingDirectory() {
 		/**
 		 * Run another non functional command, with a non existing working directory
@@ -310,7 +310,7 @@ public class CommandFactoryTest {
 	 * This function tests a functional remote command with the full command factory
 	 * implementation
 	 */
-	//@Test
+	@Test
 	public void testFunctionalRemoteCommand() {
 
 		System.out.println("\n\n\nTesting a functional remote command");
@@ -423,7 +423,7 @@ public class CommandFactoryTest {
 	/**
 	 * This tests a command which requires multiple input files to run locally
 	 */
-	//@Test
+	@Test
 	public void testMultipleInputFilesLocally() {
 
 		// Set some things specific to the local command
