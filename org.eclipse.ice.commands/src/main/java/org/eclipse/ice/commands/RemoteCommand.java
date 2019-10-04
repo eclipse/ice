@@ -58,6 +58,11 @@ public class RemoteCommand extends Command {
 	private FileOutputStream stdOutStream = null;
 
 	/**
+	 * A connection manager instance to handle various connections for the remote commands
+	 */
+	private ConnectionManager manager = new ConnectionManager();
+	
+	/**
 	 * Default constructor
 	 */
 	public RemoteCommand() {
@@ -80,8 +85,6 @@ public class RemoteCommand extends Command {
 		// Set the command and connection configurations
 		commandConfig = _commandConfig;
 		connectionConfig = connectConfig;
-
-		ConnectionManager manager = new ConnectionManager();
 		
 		// Open and set the connection(s)
 		try {
@@ -432,6 +435,21 @@ public class RemoteCommand extends Command {
 	public Connection getConnection() {
 
 		return connection;
+	}
+	
+	/**
+	 * Getter for connection manager 
+	 * @return - {@link org.eclipse.ice.commands.RemoteCommand#manager}
+	 */
+	public ConnectionManager getConnectionManager() {
+		return manager;
+	}
+	/**
+	 * Setter for connection manager 
+	 * @param _manager
+	 */
+	public void setConnectionManager(ConnectionManager _manager) {
+		manager = _manager;
 	}
 
 }

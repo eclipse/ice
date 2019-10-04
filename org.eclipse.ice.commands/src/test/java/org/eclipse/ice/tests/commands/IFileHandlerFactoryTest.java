@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -257,21 +259,18 @@ public class IFileHandlerFactoryTest {
 		// Create a local source file since JSch doesn't have a way to make a dummy
 		// file
 		createLocalSource();
-
+		
 		// Get the filename by splitting the path by "/"
 		String[] tokens = theSource.split("/");
 
 		// Get the last index of tokens, which will be the filename
 		String filename = tokens[tokens.length - 1];
-
+		
 		// Move it to the remote host
 		sftpChannel.put(theSource, remoteDest);
-
-		// Now set the source file name to the new location at the remote destination
-		theSource = remoteDest + filename;
-
+	
 		// Delete the local directory that was created since it is no longer needed
-		Path path = Paths.get(remoteDest);
+		Path path = Paths.get(theSource);
 		try {
 			Files.deleteIfExists(path);
 		} catch (NoSuchFileException e) {
@@ -279,8 +278,9 @@ public class IFileHandlerFactoryTest {
 			System.err.format("%s: somehow this path doesn't exist... no such" + " file or directory%n", path);
 			e.printStackTrace();
 		}
-
-		System.out.println("Created remote source file at : " + theSource);
+		// Now set the source file name to the new location at the remote destination
+		theSource = remoteDest + filename;
+		
 		// Disconnect the channel when finished
 		sftpChannel.disconnect();
 
@@ -590,6 +590,7 @@ public class IFileHandlerFactoryTest {
 	public void testRemoteFileHandlerCopyCommand() {
 		// Make a local test file to play with
 		// Make a remote destination directory to copy to
+		fail("src not implemented");
 		try {
 			createLocalSource();
 			createRemoteDestination();
@@ -639,6 +640,7 @@ public class IFileHandlerFactoryTest {
 	public void testRemoteFileHandlerMoveCommand() {
 		// Make a local test file to play with
 		// Make a remote destination directory to move to
+		fail("src not implemented");
 		try {
 			createLocalSource();
 			createRemoteDestination();
@@ -716,6 +718,7 @@ public class IFileHandlerFactoryTest {
 	@Test
 	public void testRemoteFileHandlerFactoryDestinationNonExistant() {
 		// Make a local test file to play with
+		fail("src not implemented");
 		try {
 			createLocalSource();
 		} catch (Exception e1) {
@@ -755,6 +758,12 @@ public class IFileHandlerFactoryTest {
 		}
 	}
 
+	/**
+	 * Recurisve function that deletes a remote directory and its contents
+	 * @param sftpChannel
+	 * @param path
+	 * @throws SftpException
+	 */
 	private void deleteRemoteDirectory(ChannelSftp sftpChannel, String path) throws SftpException {
 
 		// Get the path's directory structure

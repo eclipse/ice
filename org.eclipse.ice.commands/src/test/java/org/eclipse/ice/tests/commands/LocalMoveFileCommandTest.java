@@ -18,6 +18,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.LocalMoveFileCommand;
 import org.junit.After;
 import org.junit.Before;
@@ -140,8 +141,8 @@ public class LocalMoveFileCommandTest {
 		// Make the command
 		LocalMoveFileCommand command = new LocalMoveFileCommand();
 		command.setConfiguration(source, dest);
-		command.execute();
-
+		CommandStatus status = command.execute();
+		
 		// Check if the path exists now
 		Path path = Paths.get(dest);
 		assert (Files.exists(path));

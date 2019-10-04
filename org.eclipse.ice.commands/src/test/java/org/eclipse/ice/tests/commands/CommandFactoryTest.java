@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -103,6 +105,7 @@ public class CommandFactoryTest {
 	 */
 	@Test
 	public void testMultiHopRemoteCommand() {
+		fail("src not implemented");
 		System.out.println("\n\n\nTesting a multi-hop remote command");
 		// Set the CommandConfiguration class
 		commandConfig.setCommandId(99);
