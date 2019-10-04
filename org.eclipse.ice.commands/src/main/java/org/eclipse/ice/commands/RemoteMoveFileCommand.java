@@ -13,6 +13,11 @@
 
 package org.eclipse.ice.commands;
 
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
+
 /**
  * Child class for remotely moving a file over some connection
  * 
@@ -32,6 +37,12 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 	private String destination;
 
 	/**
+	 * The type of move being performed, i.e. local-->remote, remote-->local, or
+	 * remote-->remote
+	 */
+	private int moveType;
+
+	/**
 	 * Default constructor
 	 */
 	public RemoteMoveFileCommand() {
@@ -48,7 +59,7 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 	public void setConfiguration(String src, String dest) {
 		source = src;
 		destination = dest;
-	
+
 	}
 
 	/**
@@ -65,11 +76,64 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 	 */
 	@Override
 	protected CommandStatus run() {
+		// Try to open the channel to transfer the file first
+		ChannelSftp channel = null;
+		try {
+			channel = (ChannelSftp) getConnection().getSession().openChannel("sftp");
+			channel.connect();
+			
+			// Determine the move type and, thus, how to move the file
+			if (moveType == 0) { // If move type is local -> remote, use put
+				logger.info("Putting file: " + source + " to destination " + destination);
+				channel.put(source, destination);
+			} else if (moveType == 1) { // if move type is remote -> local, use get
+				logger.info("Getting file: " + source + " to destination " + destination);
+				channel.get(source, destination);
+			} else if(moveType == 2) { // if move type is remote -> remote, call function
+				logger.info("Executing mv: " + source + " to destination " + destination);
+				moveRemoteToRemote();
+			}
+			else {
+				logger.error("Unknown move type...");
+				status = CommandStatus.FAILED;
+				return status;
+			}
+		} catch (JSchException | SftpException e) {
+			logger.error("Remote move failed. Exiting.");
+			e.printStackTrace();
+			status = CommandStatus.FAILED;
+			return status;
+		}
 		
-		// Determine if the source file is on the local machine or on the remote machine
-		
-		
-		return null;
+
+		status = CommandStatus.SUCCESS;
+		return status;
+	}
+
+	/**
+	 * This is a function that contains the logic to move a file from a remote
+	 * destination to another remote destination, where the remote destination is
+	 * the same
+	 * 
+	 * @throws JSchException
+	 */
+	private void moveRemoteToRemote() throws JSchException {
+		// Open an executable channel
+		getConnection().setChannel(getConnection().getSession().openChannel("exec"));
+		// TODO - test with windows, mv probably won't work
+		// Make a move command
+		String command = "mv " + source + " " + destination;
+		// Set the command
+		((ChannelExec) getConnection().getChannel()).setCommand(command);
+		// If the channel isn't connected, connect and run the command
+		if (!getConnection().getChannel().isConnected()) {
+			getConnection().getChannel().connect();
+		}
+		else {
+			logger.error("Channel isn't connected and can't move remote to remote...");
+			throw new JSchException();
+		}
+
 	}
 
 	/**
@@ -106,5 +170,14 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 	 */
 	public void setDestination(String dest) {
 		destination = dest;
+	}
+
+	/**
+	 * Set the move type variable
+	 * 
+	 * @param type
+	 */
+	public void setMoveType(int type) {
+		moveType = type;
 	}
 }

@@ -11,18 +11,18 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.fail;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.DirectoryNotEmptyException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Scanner;
 
 import org.eclipse.ice.commands.CommandStatus;
+import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.FileHandler;
 import org.eclipse.ice.commands.LocalFileHandler;
-import org.junit.After;
-import org.junit.Before;
+import org.eclipse.ice.commands.RemoteFileHandler;
 import org.junit.Test;
 
 /**
@@ -32,140 +32,65 @@ import org.junit.Test;
  *
  */
 public class FileHandlerTest {
-
+	/**
+	 * A local source string to play with
+	 */
 	String localSource = null;
+	/**
+	 * a local destination string to play with
+	 */
 	String localDestination = null;
+
+	/**
+	 * A FileHandlerFactoryTest instance to take advantage of all the file
+	 * creation/deletion functionality available
+	 */
+	IFileHandlerFactoryTest factory = new IFileHandlerFactoryTest();
 
 	/**
 	 * Set up some dummy local files to work with
 	 * 
 	 * @throws java.lang.Exception
 	 */
-	@Before
-	public void setUp() throws Exception {
+	public void createLocalTempFile() throws Exception {
 
-		// First create a dummy text file to test
-		String source = "dummyfile.txt";
-		Path sourcePath = null;
-		try {
-			sourcePath = Files.createTempFile(null, source);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Turn the path into a string to pass to the command
-		localSource = sourcePath.toString();
+		factory.createLocalSource();
+		factory.createLocalDestination();
+		localSource = factory.getSource();
+		localDestination = factory.getDestination();
 		System.out.println("Created source file at: " + localSource);
-		// Do the same for the destination
-		Path destinationPath = null;
-		String dest = "testCopyDirectory";
-		try {
-			destinationPath = Files.createTempDirectory(dest);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Turn the path into a string to give to the command
-		localDestination = destinationPath.toString();
 		System.out.println("Created destination file at: " + localDestination);
 	}
 
 	/**
-	 * Deletes the temporarily made files since they are not useful
+	 * Deletes the temporarily made local files since they are not useful
 	 * 
 	 * @throws java.lang.Exception
 	 */
-	@After
-	public void tearDown() throws Exception {
+	public void deleteLocalTempFile() throws Exception {
 		System.out.println("Delete temporary files/directories that were created.");
-
-		// Get the paths
-		Path sourcePath = Paths.get(localSource);
-		Path destPath = Paths.get(localDestination);
-
-		// Delete the files
-		try {
-			Files.deleteIfExists(sourcePath);
-		} catch (NoSuchFileException e) {
-			System.err.format("%s: no such" + " file or directory%n", sourcePath);
-			e.printStackTrace();
-		} catch (DirectoryNotEmptyException e) {
-			System.err.format("%s not empty%n", sourcePath);
-			e.printStackTrace();
-		} catch (IOException e) {
-			System.err.println(e);
-			e.printStackTrace();
-		}
-		try {
-			Files.deleteIfExists(destPath);
-		} catch (NoSuchFileException e) {
-			System.err.format("%s: no such" + " file or directory%n", destPath);
-			e.printStackTrace();
-		} catch (DirectoryNotEmptyException e) {
-			// If the directory is not empty, that is because it was a move command
-			// and the moved file is in there. So delete the file first and then
-			// delete the directory
-
-			// Need to get the filename individually
-			String delims = "[/]";
-			String[] tokens = localSource.split(delims);
-			String filename = tokens[tokens.length - 1];
-
-			// Make the destination path + the filename
-			String fullDestination = localDestination + "/" + filename;
-
-			// Get the paths
-			Path destFile = Paths.get(fullDestination);
-			Path destDir = Paths.get(localDestination);
-
-			// Try to delete the destination file. If it can't be deleted, then
-			// there is really a problem now and it will complain
-			try {
-				Files.deleteIfExists(destFile);
-			} catch (NoSuchFileException e1) {
-				System.err.format("%s: no such" + " file or directory%n", destFile);
-				e1.printStackTrace();
-			} catch (DirectoryNotEmptyException e1) {
-				System.err.format("%s not empty%n", destFile);
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				System.err.println(e1);
-				e1.printStackTrace();
-			}
-
-			// Try to delete the destination directory. If it can't be deleted, then
-			// there is really a problem now and it will complain
-			try {
-				Files.deleteIfExists(destDir);
-			} catch (NoSuchFileException e1) {
-				System.err.format("%s: no such" + " file or directory%n", destDir);
-				e1.printStackTrace();
-			} catch (DirectoryNotEmptyException e1) {
-				System.err.format("%s not empty%n", destDir);
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				System.err.println(e);
-				e1.printStackTrace();
-			}
-
-		} catch (IOException e) {
-			System.err.println(e);
-			e.printStackTrace();
-		}
+		factory.deleteLocalSource();
+		factory.deleteLocalDestination();
 	}
 
 	/**
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.FileHandler#copy(java.lang.String, java.lang.String)}.
+	 * 
+	 * @throws Exception
 	 */
 	@Test
-	public void testLocalCopy() {
+	public void testLocalCopy() throws Exception {
 		System.out.println("Testing testLocalCopy() function.");
+
+		// Try to make a local temp file to play with
+		createLocalTempFile();
+
 		FileHandler handler = null;
 		try {
 			handler = new LocalFileHandler();
 			CommandStatus status = handler.copy(localSource, localDestination);
-			assert(status == CommandStatus.SUCCESS);
+			assert (status == CommandStatus.SUCCESS);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -177,22 +102,31 @@ public class FileHandlerTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		// Delete the local dummy file
+		deleteLocalTempFile();
+
 		System.out.println("Finished testing testLocalCopy() function.");
 	}
 
 	/**
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.FileHandler#move(java.lang.String, java.lang.String)}.
+	 * 
+	 * @throws Exception
 	 */
 	@Test
-	public void testLocalMove() {
+	public void testLocalMove() throws Exception {
 		System.out.println("Testing testLocalMove() function.");
+
+		// Try to make a local temp file to play with
+		createLocalTempFile();
 
 		FileHandler handler = null;
 		try {
 			handler = new LocalFileHandler();
 			CommandStatus status = handler.move(localSource, localDestination);
-			assert(status == CommandStatus.SUCCESS);
+			assert (status == CommandStatus.SUCCESS);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -205,7 +139,56 @@ public class FileHandlerTest {
 			e.printStackTrace();
 		}
 
+		// Delete the local dummy file
+		deleteLocalTempFile();
+
 		System.out.println("Finished testing testLocalMove() function.");
+
+	}
+
+	/**
+	 * Test method for testing remote moving capabilities
+	 */
+	@Test
+	public void testRemoteMove() {
+		fail("src not implemented");
+		// Make a local test file to play with
+		// Make a remote destination directory to move to
+		try {
+			factory.createLocalSource();
+			factory.createRemoteDestination();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+	
+		// Get the dummy connection configuration
+		ConnectionConfiguration config = makeConnectionConfiguration();
+		// Get the remote file handler
+		RemoteFileHandler handler = new RemoteFileHandler(config);
+
+		String theSource = factory.getSource();
+		String theDestination = factory.getDestination();
+		
+		// Now try to move the file
+		try {
+			CommandStatus status = handler.move(theSource, theDestination);
+			assert (status == CommandStatus.SUCCESS);
+
+			// Check that the file exists now
+			boolean exist = handler.exists(theDestination);
+			assert (exist == true);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Delete the test file/directory now that the test is finished
+		try {
+			// Source file is already "deleted" since it was moved
+			factory.deleteRemoteDestination();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -214,12 +197,21 @@ public class FileHandlerTest {
 	 * {@link org.eclipse.ice.commands.FileHandler#exists(java.lang.String)}.
 	 */
 	@Test
-	public void testExists() {
+	public void testLocalExists() {
 		System.out.println("Testing testExists() function.");
 
 		/**
 		 * Test a temp file that was created
 		 */
+
+		// Create the temp file
+		try {
+			factory.createLocalSource();
+			localSource = factory.getSource();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+
 		FileHandler handler = new LocalFileHandler();
 		try {
 			assert (handler.exists(localSource));
@@ -234,7 +226,87 @@ public class FileHandlerTest {
 			e.printStackTrace();
 		}
 
+		// delete the dummy file
+		try {
+			factory.deleteLocalSource();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		System.out.println("Finished testing testExists()");
+	}
+
+	/**
+	 * Test the exists function for remote file handlers
+	 */
+	@Test
+	public void testRemoteExists() {
+		System.out.println("Testing remote exists function");
+
+		try {
+			// Set up the connection first to create the file
+			IFileHandlerFactoryTest.setUpBeforeClass();
+			factory.createRemoteSource();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		String theSource = factory.getSource();
+
+		ConnectionConfiguration config = makeConnectionConfiguration();
+		
+		FileHandler handler = new RemoteFileHandler(config);
+
+		try {
+			assert (handler.exists(theSource));
+			assert (!handler.exists("/some/nonexistent/path/file.txt"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			factory.deleteRemoteSource();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Dummy function which makes the connection configuration for the dummy remote
+	 * ssh connection. This way functions can grab the configuration at will with 
+	 * one line of code.
+	 * @return
+	 */
+	private ConnectionConfiguration makeConnectionConfiguration() {
+		// Set the connection configuration to a dummy remote connection
+		// Read in a dummy configuration file that contains credentials
+		File file = new File("/tmp/ice-remote-creds.txt");
+		Scanner scanner = null;
+		try {
+			scanner = new Scanner(file);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		// Scan line by line
+		scanner.useDelimiter("\n");
+
+		// Get the credentials for the dummy remote account
+		String username = scanner.next();
+		String password = scanner.next();
+		String hostname = scanner.next();
+
+		ConnectionConfiguration config = new ConnectionConfiguration();
+		// Make the connection configuration
+		config.setHostname(hostname);
+		config.setUsername(username);
+		config.setPassword(password);
+		// Note the password can be input at the console by not setting the
+		// the password explicitly in the connection configuration
+		config.setName("dummyConnection");
+
+		config.setDeleteWorkingDirectory(true);
+		
+		return config;
 	}
 
 }

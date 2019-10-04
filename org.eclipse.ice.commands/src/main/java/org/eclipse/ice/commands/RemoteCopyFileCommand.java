@@ -13,6 +13,11 @@
 
 package org.eclipse.ice.commands;
 
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
+
 /**
  * Child class for copying a file remotely over some connection.
  * 
@@ -20,7 +25,6 @@ package org.eclipse.ice.commands;
  *
  */
 public class RemoteCopyFileCommand extends RemoteCommand {
-	
 
 	/**
 	 * The path to the source file which is to be copied
@@ -32,13 +36,18 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	 */
 	private String destination;
 
-	
+	/**
+	 * An int which determines what kind of file handle type it is, e.g.
+	 * local->remote, remote->local, or remote->remote
+	 */
+
+	private int copyType;
+
 	/**
 	 * Default constructor
 	 */
 	public RemoteCopyFileCommand() {
 	}
-
 
 	/**
 	 * Function which sets the two paths, source and destination, to those given by
@@ -52,23 +61,103 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 		source = src;
 		destination = dest;
 	}
-	
+
+	/**
+	 * See {@link org.eclipse.ice.commands.Command#execute()}
+	 */
 	@Override
 	public CommandStatus execute() {
-		// TODO Auto-generated method stub
-		return null;
+		status = run();
+		return status;
 	}
 
+	/**
+	 * See {@link org.eclipse.ice.commands.Command#run()}
+	 */
 	@Override
 	protected CommandStatus run() {
-		// TODO Auto-generated method stub
-		return null;
+		ChannelSftp channel = null;
+		try {
+			channel = (ChannelSftp) getConnection().getSession().openChannel("sftp");
+			logger.info("Copying file " + source + " to " + destination);
+			if (copyType == 0) { // If move type is local -> remote, use put
+				channel.put(source, destination);
+			} else if (copyType == 1) { // if move type is remote -> local, use get
+				channel.get(source, destination);
+			} else { // if move type is remote -> remote, call function
+				copyRemoteToRemote();
+			}
+
+		} catch (JSchException | SftpException e) {
+			logger.error("Failed to connect to remote host. Exiting.");
+			e.printStackTrace();
+			status = CommandStatus.FAILED;
+			return status;
+		}
+
+		status = CommandStatus.SUCCESS;
+		return status;
 	}
 
-	@Override
-	public CommandStatus cancel() {
-		// TODO Auto-generated method stub
-		return null;
+	private void copyRemoteToRemote() throws JSchException {
+		getConnection().setChannel(getConnection().getSession().openChannel("exec"));
+		// TODO - test with windows, cp probably won't work
+		// Make a copy command to execute
+		String command = "cp " + source + " " + destination;
+		// Set the command for the JSch connection
+		((ChannelExec) getConnection().getChannel()).setCommand(command);
+		// If the channel isn't connected, connect and run the command
+		if (!getConnection().getChannel().isConnected()) {
+			getConnection().getChannel().connect();
+		} else {
+			logger.error("Channel isn't connected and can't copy remote to remote...");
+			throw new JSchException();
+		}
+	}
+
+	/**
+	 * Get the source file string
+	 * 
+	 * @return
+	 */
+	public String getSource() {
+		return source;
+	}
+
+	/**
+	 * Get the destination file string
+	 * 
+	 * @return
+	 */
+	public String getDestination() {
+		return destination;
+	}
+
+	/**
+	 * Set the source file string
+	 * 
+	 * @param src
+	 */
+	public void setSource(String src) {
+		source = src;
+	}
+
+	/**
+	 * Set the destination file string
+	 * 
+	 * @param dest
+	 */
+	public void setDestination(String dest) {
+		destination = dest;
+	}
+
+	/**
+	 * Set the copy type variable
+	 * 
+	 * @param type
+	 */
+	public void setCopyType(int type) {
+		copyType = type;
 	}
 
 }

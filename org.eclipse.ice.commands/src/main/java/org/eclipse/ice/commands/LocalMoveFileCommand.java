@@ -69,8 +69,8 @@ public class LocalMoveFileCommand extends LocalCommand {
 	protected CommandStatus run() {
 
 		// Check to see if the file paths are the same and if the filename has the same
-		// extension
-		// for determining whether or not it should be a move or change file name
+		// extension for determining whether or not it should be a move or change file
+		// name
 		boolean sameFileExtension = checkFileExtension();
 
 		// Split the destination by path delimiter to get the desired filename
@@ -81,23 +81,28 @@ public class LocalMoveFileCommand extends LocalCommand {
 		// type, then we are just changing a file name
 		if (sameFileExtension) {
 			try {
+				status = CommandStatus.RUNNING;
 				// destinationDirs will have the desired file name in the length-1 entry
 				Files.move(source, source.resolveSibling(destinationDirs[destinationDirs.length - 1]),
 						REPLACE_EXISTING);
 			} catch (IOException e) {
 				e.printStackTrace();
+				status = CommandStatus.FAILED;
+				return status;
 			}
 		}
 		// All other cases the file is moving directory
 		else {
 			try {
+				status = CommandStatus.RUNNING;
 				Files.move(source, destination.resolve(source.getFileName()));
 			} catch (IOException e) {
 				e.printStackTrace();
+				return CommandStatus.FAILED;
 			}
 		}
 
-		return CommandStatus.RUNNING;
+		return CommandStatus.SUCCESS;
 	}
 
 	/**

@@ -67,10 +67,9 @@ public abstract class FileHandler implements IFileHandler {
 	 */
 	@Override
 	public CommandStatus move(final String source, final String destination) throws IOException {
-
 		// Check the file existence. If they don't exist, an exception is thrown
 		checkExistence(source, destination);
-
+		
 		// Set the commands to have the appropriate properties
 		configureMoveCommand(source, destination);
 
@@ -93,9 +92,10 @@ public abstract class FileHandler implements IFileHandler {
 	public CommandStatus copy(final String source, final String destination) throws IOException {
 		// Check the file existence. If one or both don't exist, an exception is thrown
 		checkExistence(source, destination);
-
+		
 		// Set the commands to have the appropriate properties
 		configureCopyCommand(source, destination);
+	
 
 		// Execute and process the file transfer
 		transferStatus = executeTransfer(destination);
