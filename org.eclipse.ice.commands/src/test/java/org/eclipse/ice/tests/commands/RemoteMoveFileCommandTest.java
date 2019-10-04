@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
@@ -107,16 +105,39 @@ public class RemoteMoveFileCommandTest {
 
 	}
 
-/**
- * Test for moving a file only on the remote system
- */
+	/**
+	 * Test for moving a file only on the remote system
+	 */
 	@Test
-	public void testRemoteMoveFileCommand() {
-		fail("not yet implemented");
+	public void testRemoteMoveFileCommand() throws Exception {
+		
+		factory.createRemoteSource();
+		factory.createRemoteDestination();
+		source = factory.getSource();
+		dest = factory.getDestination();
+		
+		RemoteMoveFileCommand command = new RemoteMoveFileCommand();
+		// These functions are nominally handled by the FileHandler. But, when testing
+		// this class alone, we need to set them individually
+		command.setMoveType(3);
+		command.setConnection(dummyConnection);
+		command.setConfiguration(source, dest);
+		CommandStatus status = command.execute();
+
+		// Assert that the command status was properly configured
+		assert (status == CommandStatus.SUCCESS);
+
+		// Assert that the command was actually successful and that command status
+		// wasn't inadvertently set to successful
+		assert (remotePathExists());
+
+		// Delete the temporary files that were created to test
+		factory.deleteRemoteSource();
+		factory.deleteRemoteDestination();
+		
+		
 	}
-	
-	
-	
+
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.RemoteMoveFileCommand()}
 	 * where the file is downloaded from the remote host
@@ -136,7 +157,7 @@ public class RemoteMoveFileCommandTest {
 		RemoteMoveFileCommand command = new RemoteMoveFileCommand();
 		// These functions are nominally handled by the FileHandler. But, when testing
 		// this class alone, we need to set them individually
-		command.setMoveType(1);
+		command.setMoveType(2);
 		command.setConnection(dummyConnection);
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();
@@ -160,7 +181,7 @@ public class RemoteMoveFileCommandTest {
 	 * 
 	 * @throws Exception
 	 */
-	// @Test
+	@Test
 	public void testRemoteMoveFileCommandUpload() throws Exception {
 		// Create a local source file to move
 		factory.createLocalSource();
@@ -173,7 +194,7 @@ public class RemoteMoveFileCommandTest {
 		RemoteMoveFileCommand command = new RemoteMoveFileCommand();
 		// These functions are nominally handled by the FileHandler. But, when testing
 		// this class alone, we need to set them individually
-		command.setMoveType(0);
+		command.setMoveType(1);
 		command.setConnection(dummyConnection);
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();

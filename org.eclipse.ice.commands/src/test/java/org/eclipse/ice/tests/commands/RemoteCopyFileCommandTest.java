@@ -11,18 +11,20 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
+import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.Connection;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.RemoteCopyFileCommand;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
@@ -103,53 +105,137 @@ public class RemoteCopyFileCommandTest {
 		dummyConnection = manager.openConnection(connectionConfig);
 		factory.setConnection(dummyConnection);
 
+	
+	}
+
+
+	/**
+	 * Test for copying a file only on the remote system
+	 */
+	@Test
+	public void testRemoteCopyFileCommand() throws Exception {
+		
+		factory.createRemoteSource();
+		factory.createRemoteDestination();
+		source = factory.getSource();
+		dest = factory.getDestination();
+		
+		RemoteCopyFileCommand command = new RemoteCopyFileCommand();
+		// These functions are nominally handled by the FileHandler. But, when testing
+		// this class alone, we need to set them individually
+		command.setCopyType(3);
+		command.setConnection(dummyConnection);
+		command.setConfiguration(source, dest);
+		CommandStatus status = command.execute();
+
+		// Assert that the command status was properly configured
+		assert (status == CommandStatus.SUCCESS);
+
+		// Assert that the command was actually successful and that command status
+		// wasn't inadvertently set to successful
+		assert (remotePathExists());
+
+		// Delete the temporary files that were created to test
+		factory.deleteRemoteSource();
+		factory.deleteRemoteDestination();
+		
+		
+	}
+
+	
+	/**
+	 * Test for method {@link org.eclipse.ice.commands.RemoteMoveFileCommand()}
+	 * where the file is downloaded from the remote host
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testRemoteCopyFileCommandDownload() throws Exception {
+		// Create a remote source to download
+		factory.createRemoteSource();
+		source = factory.getSource();
+
+		// Create a local destination to put that source
+		factory.createLocalDestination();
+		dest = factory.getDestination();
+
+		RemoteCopyFileCommand command = new RemoteCopyFileCommand();
+		// These functions are nominally handled by the FileHandler. But, when testing
+		// this class alone, we need to set them individually
+		command.setCopyType(2);
+		command.setConnection(dummyConnection);
+		command.setConfiguration(source, dest);
+		CommandStatus status = command.execute();
+
+		// Assert that the command status was properly configured
+		assert (status == CommandStatus.SUCCESS);
+
+		// Assert that the command was actually successful and that command status
+		// wasn't inadvertently set to successful
+		assert (localPathExists());
+
+		// Delete the temporary files that were created to test
+		factory.deleteRemoteSource();
+		factory.deleteLocalDestination();
+
+	}
+
+	/**
+	 * Test for method {@link org.eclipse.ice.commands.RemoteMoveFileCommand()}
+	 * for uploading a file to the remote host
+	 */
+	@Test
+	public void testRemoteCopyFileCommandUpload() throws Exception {
+		
 		// Create a local source file to move
 		factory.createLocalSource();
 		source = factory.getSource();
 		// Create a remote destination to move it to
 		factory.createRemoteDestination();
 		dest = factory.getDestination();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-		// Delete the test file
-		factory.deleteRemoteDestination();
-
-		// Delete the source file
-		factory.deleteLocalSource();
-	}
-
-	/**
-	 * Test for method {@link org.eclipse.ice.commands.RemoteMoveFileCommand()}
-	 */
-	//@Test
-	public void testRemoteCopyFileCommand() {
-		fail("src not implemented");
-		System.out.println("Moving " + source + " to destination " + dest);
-
+		
 		// Make a command and execute it
 		RemoteCopyFileCommand command = new RemoteCopyFileCommand();
+		// These functions are nominally handled by the FileHandler. But, when testing
+		// this class alone, we need to set them individually
+		command.setConnection(dummyConnection);
+		command.setCopyType(1);
 		command.setConfiguration(source, dest);
-		command.execute();
+
+		// execute the command
+		CommandStatus status = command.execute();
+		
+		assert (status == CommandStatus.SUCCESS);
+		
 		// Check that the path exists
 		try {
-			assert (pathExists());
+			assert (remotePathExists());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		factory.deleteLocalSource();
+		factory.deleteRemoteDestination();
 	}
 
+	
+	/**
+	 * This function checks if a local path exists on the host
+	 * 
+	 * @return
+	 */
+	public boolean localPathExists() {
+		Path path = Paths.get(dest);
+		return Files.exists(path);
+	}
+	
 	/**
 	 * This function checks if a remote file exists on the host
 	 * 
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean pathExists() throws Exception {
+	public boolean remotePathExists() throws Exception {
 
 		// Connect the channel from the connection
 		ChannelSftp sftpChannel = (ChannelSftp) dummyConnection.getSession().openChannel("sftp");

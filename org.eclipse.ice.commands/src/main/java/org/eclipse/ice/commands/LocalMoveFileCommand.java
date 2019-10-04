@@ -148,10 +148,8 @@ public class LocalMoveFileCommand extends LocalCommand {
 				.equals(destinationFileNames[destinationFileNames.length - 1]);
 
 		// If the source and destination have the same path and have the same file
-		// extension
-		// then we should treat this as a file name change, otherwise it is a file
-		// directory
-		// move
+		// extension then we should treat this as a file name change, otherwise it is a
+		// file directory move
 		if (!different && sameFileExt)
 			return true;
 		else

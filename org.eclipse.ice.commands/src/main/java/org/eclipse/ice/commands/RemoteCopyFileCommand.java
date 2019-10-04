@@ -78,14 +78,24 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	protected CommandStatus run() {
 		ChannelSftp channel = null;
 		try {
+			// Open the channel and connect it
 			channel = (ChannelSftp) getConnection().getSession().openChannel("sftp");
-			logger.info("Copying file " + source + " to " + destination);
-			if (copyType == 0) { // If move type is local -> remote, use put
+			channel.connect();
+			
+			// Determine how to proceed given what kind of copy it is
+			if (copyType == 1) { // If move type is local -> remote, use put
+				logger.info("Copying file " + source + " to " + destination);
 				channel.put(source, destination);
-			} else if (copyType == 1) { // if move type is remote -> local, use get
+			} else if (copyType == 2) { // if move type is remote -> local, use get
+				logger.info("Copying file " + source + " to " + destination);
 				channel.get(source, destination);
-			} else { // if move type is remote -> remote, call function
+			} else if(copyType == 3) { // if move type is remote -> remote, call function
+				logger.info("Executing cp " + source + " to " + destination);
 				copyRemoteToRemote();
+			} else {
+				logger.info("Unknown handle type...");
+				status = CommandStatus.FAILED;
+				return status;
 			}
 
 		} catch (JSchException | SftpException e) {
