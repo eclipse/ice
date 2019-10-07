@@ -57,10 +57,7 @@ public class RemoteCommand extends Command {
 	 */
 	private FileOutputStream stdOutStream = null;
 
-	/**
-	 * A connection manager instance to handle various connections for the remote commands
-	 */
-	private ConnectionManager manager = new ConnectionManager();
+
 	
 	/**
 	 * Default constructor
@@ -72,19 +69,21 @@ public class RemoteCommand extends Command {
 	/**
 	 * Constructor to instantiate the remote command with a particular
 	 * CommandConfiguration and ConnectionConfiguration.
-	 * 
+	 * @param - CommandConfiguration which corresponds to the particular command
 	 * @param - ConnectionConfiguration connectConfig which corresponds to the
 	 *          particular connection
+	 *          
 	 * @param - ConnectionConfiguration extraConnection which corresponds to an
 	 *          additional connection, if the command is meant to multi-hop where
 	 *          one remote host is used to execute a job on another remote host
-	 * @param - CommandConfiguration which corresponds to the particular command
 	 */
 	public RemoteCommand(CommandConfiguration _commandConfig, ConnectionConfiguration connectConfig,
 			ConnectionConfiguration extraConnection) {
 		// Set the command and connection configurations
 		commandConfig = _commandConfig;
 		connectionConfig = connectConfig;
+		
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 		
 		// Open and set the connection(s)
 		try {
@@ -436,20 +435,6 @@ public class RemoteCommand extends Command {
 
 		return connection;
 	}
-	
-	/**
-	 * Getter for connection manager 
-	 * @return - {@link org.eclipse.ice.commands.RemoteCommand#manager}
-	 */
-	public ConnectionManager getConnectionManager() {
-		return manager;
-	}
-	/**
-	 * Setter for connection manager 
-	 * @param _manager
-	 */
-	public void setConnectionManager(ConnectionManager _manager) {
-		manager = _manager;
-	}
+
 
 }

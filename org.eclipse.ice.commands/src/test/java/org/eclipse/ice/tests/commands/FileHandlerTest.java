@@ -18,9 +18,12 @@ import java.util.Scanner;
 
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionConfiguration;
+import org.eclipse.ice.commands.ConnectionManager;
+import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.FileHandler;
 import org.eclipse.ice.commands.LocalFileHandler;
 import org.eclipse.ice.commands.RemoteFileHandler;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -43,7 +46,33 @@ public class FileHandlerTest {
 	 * A FileHandlerFactoryTest instance to take advantage of all the file
 	 * creation/deletion functionality available
 	 */
-	IFileHandlerFactoryTest factory = new IFileHandlerFactoryTest();
+	static private IFileHandlerFactoryTest factory = new IFileHandlerFactoryTest();
+
+	/**
+	 * Run before the class to setup the connection information for the
+	 * IFileHandlerFactoryTest, so that we can take advantage of all of the file
+	 * creation/deletion code
+	 * 
+	 * @throws Exception
+	 */
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		// Set up the dummy connection
+		ConnectionConfiguration config = makeConnectionConfiguration();
+
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+
+		// Open the connection
+		manager.openConnection(config);
+
+		// Give the IFileHandlerFactoryTest class the connection information
+		// so that we can use all of the file creation/deletion code that is in
+		// there already. This way we can use the same connection throughout
+		// the test code
+		factory.setConnection(manager.getConnection(config.getName()));
+		factory.setConnectionConfiguration(config);
+
+	}
 
 	/**
 	 * Set up some dummy local files to work with
@@ -77,7 +106,7 @@ public class FileHandlerTest {
 	 * 
 	 * @throws Exception
 	 */
-	//@Test
+	@Test
 	public void testLocalCopy() throws Exception {
 		System.out.println("Testing testLocalCopy() function.");
 
@@ -113,7 +142,7 @@ public class FileHandlerTest {
 	 * 
 	 * @throws Exception
 	 */
-	//@Test
+	@Test
 	public void testLocalMove() throws Exception {
 		System.out.println("Testing testLocalMove() function.");
 
@@ -145,18 +174,98 @@ public class FileHandlerTest {
 	}
 
 	/**
-	 * Test method for testing remote moving capabilities
+	 * This function tests remote to remote file handling
 	 */
 	@Test
-	public void testRemoteMove() throws Exception {
+	public void testRemoteToRemoteMove() throws Exception {
+		factory.createRemoteSource();
+		factory.createRemoteDestination();
+
+		ConnectionConfiguration config = makeConnectionConfiguration();
+		RemoteFileHandler handler = new RemoteFileHandler(config);
+
+		String src = factory.getSource();
+		String dest = factory.getDestination();
+		// Get the filename to check for existence
+		String filename = src.substring(src.lastIndexOf("/"));
+
+		// Now try to move the file
+		CommandStatus status = handler.move(src, dest);
+
+		assert (status == CommandStatus.SUCCESS);
+
+		// Check that the file exists now
+		assert (handler.exists(dest + filename));
+		
+		factory.deleteRemoteDestination();
+		factory.deleteRemoteSource();
+
+		
+	}
+
+	/**
+	 * Test method for testing remote moving capabilities when moving a remote file
+	 * to the local host. Also tests throwing an exception for a nonexistent local
+	 * directory
+	 */
+	@Test
+	public void testRemoteToLocalMove() throws Exception {
+
+		// Make a remote file to play with and a local directory to move it to
+		factory.createRemoteSource();
+		factory.createLocalDestination();
+
+		ConnectionConfiguration config = makeConnectionConfiguration();
+		RemoteFileHandler handler = new RemoteFileHandler(config);
+
+		String src = factory.getSource();
+		String dest = factory.getDestination();
+		// Get the filename to check for existence
+		String filename = src.substring(src.lastIndexOf("/"));
+
+		// Now try to move the file
+		CommandStatus status = handler.move(src, dest);
+
+		assert (status == CommandStatus.SUCCESS);
+
+		// Check that the file exists now
+		assert (handler.exists(dest + filename));
+
+		factory.deleteLocalDestination();
+
+		// Keep the same source, but add a new subdirectory and file name for the
+		// destination.
+		// This test checks if an error is thrown for a nonexistent local directory
+		// The API can't just make the local directory if it isn't found, because
+		// otherwise there is no way to differentiate between a remote --> local and
+		// remote --> remote move. Thus, it is up to the user to ensure that their
+		// local destination directory exists
+		dest = factory.getDestination() + "/newDirectory/newFilename.txt";
+		try {
+			status = handler.move(src, dest);
+		} catch (IOException e) {
+			System.out.println("Expected exception thrown. Continue test.");
+		}
+
+		factory.deleteRemoteSource();
+
+	}
+
+	/**
+	 * Test method for testing remote moving capabilities when moving a local file
+	 * to a remote host
+	 */
+	@Test
+	public void testLocalToRemoteMove() throws Exception {
 
 		// Make a local test file to play with
 		// Make a remote destination directory to move to
-		IFileHandlerFactoryTest.setUpBeforeClass(); // Setup the connection
+
 		factory.createLocalSource();
 		factory.createRemoteDestination();
 
-		// Get the dummy connection configuration
+		// Get the dummy connection configuration from the helper function
+		// which allows reusing the dummy config code
 		ConnectionConfiguration config = makeConnectionConfiguration();
 		// Get the remote file handler
 		RemoteFileHandler handler = new RemoteFileHandler(config);
@@ -172,13 +281,14 @@ public class FileHandlerTest {
 		assert (handler.exists(theDestination));
 
 		// Lets try a file move also where we change the name of the file
-		theDestination = factory.getDestination() + "newFileName.txt";
+		// and add an additional directory
+		theDestination = factory.getDestination() + "newDirectory/newFileName.txt";
 		status = handler.move(theSource, theDestination);
-		
+
 		assert (status == CommandStatus.SUCCESS);
-		
+
 		assert (handler.exists(theDestination));
-		
+
 		// Delete the test file/directory now that the test is finished
 		factory.deleteLocalSource();
 		factory.deleteRemoteDestination();
@@ -189,7 +299,7 @@ public class FileHandlerTest {
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.FileHandler#exists(java.lang.String)}.
 	 */
-	//@Test
+	@Test
 	public void testLocalExists() throws Exception {
 		System.out.println("Testing testExists() function.");
 
@@ -216,25 +326,36 @@ public class FileHandlerTest {
 	/**
 	 * Test the exists function for remote file handlers
 	 */
-	//@Test
+	@Test
 	public void testRemoteExists() throws Exception {
 		System.out.println("Testing remote exists function");
 
 		// Set up the connection first to create the file
-		IFileHandlerFactoryTest.setUpBeforeClass();
 		factory.createRemoteSource();
 
 		String theSource = factory.getSource();
 
+		// Get the dummy configuration
 		ConnectionConfiguration config = makeConnectionConfiguration();
 
+		// Make the remote file handler with the dummy configuration
 		FileHandler handler = new RemoteFileHandler(config);
 
+		// Check two asserts - that the created file exists, and that
+		// some other nonexistent file throws an error
 		assert (handler.exists(theSource));
 		assert (!handler.exists("/some/nonexistent/path/file.txt"));
-
+		// Done with the remote source, delete it
 		factory.deleteRemoteSource();
 
+		// check and see if a nonexistent file remotely, which does exist locally,
+		// returns true
+		factory.createLocalSource();
+		theSource = factory.getSource();
+		assert (handler.exists(theSource));
+
+		// Done with the local source, delete it
+		factory.deleteLocalSource();
 	}
 
 	/**
@@ -244,7 +365,7 @@ public class FileHandlerTest {
 	 * 
 	 * @return
 	 */
-	private ConnectionConfiguration makeConnectionConfiguration() {
+	private static ConnectionConfiguration makeConnectionConfiguration() {
 		// Set the connection configuration to a dummy remote connection
 		// Read in a dummy configuration file that contains credentials
 		File file = new File("/tmp/ice-remote-creds.txt");

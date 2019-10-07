@@ -12,9 +12,6 @@
 package org.eclipse.ice.commands;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 
 import com.jcraft.jsch.ChannelSftp;
@@ -37,7 +34,7 @@ public class RemoteFileHandler extends FileHandler {
 	 * Map keys for identifying what kind of "remote" file move is happening
 	 */
 	HashMap<String, Integer> handleType = new HashMap<String, Integer>();
-	
+
 	/**
 	 * An integer to determine what the actual handle type is to set for the command
 	 */
@@ -56,38 +53,31 @@ public class RemoteFileHandler extends FileHandler {
 	protected boolean localDest;
 
 	/**
-	 * A connection manager for managing the various remote file handling connections
+	 * A connection configuration that is associated with this remote file handler
 	 */
-	ConnectionManager manager = new ConnectionManager();
-	
-	
+	private ConnectionConfiguration connectionConfig;
+
 	/**
 	 * Default constructor
 	 */
 	public RemoteFileHandler(ConnectionConfiguration config) {
-		// Command needs to be instantiated in the constructor so that the connection
-		// can be set and thus established to avoid a null pointer when checking the
-		// existence of the files in checkExistence, the first step in a move/copy
-		command = new RemoteCommand();
-		command.setConnectionConfiguration(config);
-
 		// Get the connection manager and open the connection in constructor so that it
 		// is only performed once, thus the connection isn't constantly re-requiring
 		// password authentication
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 		// Open the connection
 		try {
-			((RemoteCommand) command).setConnection(manager.openConnection(command.getConnectionConfiguration()));
+			manager.openConnection(config);
 		} catch (JSchException e) {
 			logger.error("Connection could not be established.");
 			e.printStackTrace();
 		}
-		
-		
+
+		// Set the member variable for access later
+		connectionConfig = config;
+
 	}
 
-	
-	
 	/**
 	 * See {@link org.eclipse.ice.commands.FileHandler#exists(String)}
 	 */
@@ -96,31 +86,50 @@ public class RemoteFileHandler extends FileHandler {
 		ChannelSftp sftpChannel = getConnection();
 		try {
 			sftpChannel.connect();
-		} catch (JSchException e) {
-			logger.error("Couldn't connect to remote host, exiting.");
+			// Try to lstat the path. If an exception is thrown, it means it does not exist
+			SftpATTRS attrs = sftpChannel.lstat(file);
+		} catch (JSchException | SftpException e) {
+			logger.info("Couldn't find " + file + " remotely. Seeing if it exists locally.");
+			if(isLocal(file)) {
+				logger.info("File " + file + " exists locally.");
+				return true;
+			}
 			e.printStackTrace();
 			return false;
-		}
-		// Try to lstat the path. If an exception is thrown, it means it does not exist
-		try {
-			SftpATTRS attrs = sftpChannel.lstat(file);
-		} catch (SftpException e) {
-			logger.error("Path doesn't exist on the remote host, trying to make it.");
-			try {
-				// Try to make the directory on the remote host
-				sftpChannel.mkdir(file);
-			} catch (SftpException e1) {
-				// If directory can't be made, puke, disconnect the channel, and return false
-				e1.printStackTrace();
-				sftpChannel.disconnect();
-				return false;
-			}
 		}
 
 		sftpChannel.disconnect();
 		// If an exception is not thrown when lstat is performed, the path exists
 		return true;
 
+	}
+
+	/**
+	 * This is a helper function for exists which attempts to make a remote
+	 * directory. It is called if the remote directory doesn't initially exist on
+	 * the remote host.
+	 * 
+	 * @param file - file path to try and make
+	 * @return - boolean indicating whether or not directory was successfully
+	 *         created (true) or false if otherwise
+	 */
+	private boolean makeRemoteDirectory(String file) {
+		logger.warn("Path doesn't exist on the remote host, trying to make it.");
+		ChannelSftp sftpChannel = getConnection();
+		try {
+			// Connect the channel to try making the directory
+			sftpChannel.connect();
+			// Try to make the directory on the remote host
+			sftpChannel.mkdir(file);
+		} catch (JSchException | SftpException e) {
+			logger.error("Couldn't make nonexistent remote directory, exiting.");
+			e.printStackTrace();
+			return false;
+		}
+		// Disconnect the channel when finished
+		sftpChannel.disconnect();
+		// If the try was successful, then directory was made
+		return true;
 	}
 
 	/**
@@ -136,27 +145,33 @@ public class RemoteFileHandler extends FileHandler {
 	@Override
 	public void checkExistence(String source, String destination) throws IOException {
 		// Set the hash map for the different type of file handles
-		handleType.put("localRemote" , 1);
-		handleType.put("remoteLocal" , 2);
+		handleType.put("localRemote", 1);
+		handleType.put("remoteLocal", 2);
 		handleType.put("remoteRemote", 3);
-		
+
 		// We need to determine what kind of remote move this is, i.e. if it is moving
 		// from the remote host to the local host, vice versa, or moving on the remote
 		// host to a new place on the remote host
 
-	
+		// The destination could have a full path plus a new file name, so we need
+		// to get just the path for several existence checks
+		String destinationPath = destination.substring(0, destination.lastIndexOf("/"));
+		logger.info("Checking existence of source " + source);
+		logger.info("Checking existence of destination path " + destinationPath);
 		// If the source is local, then we know it must be a local --> remote handle
 		if (isLocal(source)) {
 			// Now check that the destination exists at the remote host
-			if (exists(destination)) {
+			if (exists(destinationPath)) {
 				HANDLE_TYPE = handleType.get("localRemote");
 			}
-			// If remote directory doesn't exist and couldn't be made, something bad
-			// happened
+			// If remote directory doesn't exist, try to make it
 			else {
-				logger.error("Couldn't make remote destination, exiting.");
-				command.setStatus(CommandStatus.FAILED);
-				throw new IOException();
+				// If we can't, throw an error
+				if (!makeRemoteDirectory(destinationPath)) {
+					logger.error("Couldn't make remote destination, exiting.");
+					command.setStatus(CommandStatus.FAILED);
+					throw new IOException();
+				}
 			}
 
 		}
@@ -171,43 +186,46 @@ public class RemoteFileHandler extends FileHandler {
 				command.setStatus(CommandStatus.FAILED);
 				throw new IOException();
 			}
-
-			// Now check if the destination is local or remote
-			// destination could have a full path plus a new file name, so we need
-			// to get the path first and check if that exists
-			String destinationPath = destination.substring(0, destination.lastIndexOf("/"));
+			// Confirmed the remote source exists, so
+			// now check if the destination is local or remote
 			if (isLocal(destinationPath)) {
+				// If the destination path exists locally, then it we'll download it
 				HANDLE_TYPE = handleType.get("remoteLocal");
 			} else {
-				// If the local destination doesn't exist, then it is a remote --> remote move
-				// so check to make sure the remote destination exists
-				if(!exists(destination)) {
-					logger.error("The destination is remote, and doesn't exist and couldn't be made.");
-					command.setStatus(CommandStatus.FAILED);
-					throw new IOException();
+				// If the local destination path doesn't exist, then it is a remote --> remote
+				// move so check to make sure the remote destination exists
+				if (!exists(destinationPath)) {
+					// Try and make the destination path. If we can't, throw an error
+					if (!makeRemoteDirectory(destinationPath)) {
+						logger.error("The destination is remote, and doesn't exist and couldn't be made.");
+						command.setStatus(CommandStatus.FAILED);
+						throw new IOException();
+					}
 				}
 				// Otherwise the destination was made and we are ready to move
 				HANDLE_TYPE = handleType.get("remoteRemote");
 			}
 		}
 
-		// If the handle type is still 0, then it was never set and thus couldn't be found
+		// If the handle type is still 0, then it was never set and thus couldn't be
+		// found
 		if (HANDLE_TYPE == 0) {
 			logger.error("Can't find the source and/or destination file! Exiting.");
 			command.setStatus(CommandStatus.INFOERROR);
 			throw new IOException();
 		}
-		
+
 		// Print out the determined handle type for informational purposes
 		String handle = "";
 		// Loop over the entries in the map and find the one that matches
 		for (String type : handleType.keySet()) {
-			if(handleType.get(type) == HANDLE_TYPE) {
+			if (handleType.get(type) == HANDLE_TYPE) {
 				handle = type;
 			}
 		}
-		
-		logger.info("Handle type is : " + handle);
+
+		logger.info("FileHandler is moving/copying " + source + " to " 
+				    + destination + " with the handle type " + handle);
 
 	}
 
@@ -217,22 +235,21 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	@Override
 	protected void configureMoveCommand(String source, String destination) {
-		// At the moment, the command is a RemoteCommand. We need to get the
-		// connection information and recast it as a RemoteMoveFileCommand
-		// command has to be set as a remote command in the constructor since we
-		// don't know the type yet (move vs copy) and the connection information has
-		// to be establish up front at the beginning of the process.
-
+		// We need to get the connection information with this file handler
+		// and pass this information to the remote command in order for the
+		// command to be run on the remote host.
 		// First get the manager to get the connection
-		ConnectionManager manager = ((RemoteCommand) command).getConnectionManager();
-		String connectionName = ((RemoteCommand) command).getConnectionConfiguration().getName();
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		String connectionName = connectionConfig.getName();
 		Connection connection = manager.getConnection(connectionName);
-		logger.info("Connection name is " + connectionName);
-		logger.info(connection.getConfiguration().getHostname());
-		// Now re-instantiate the command as a RemoteMoveFileCommand
+
+		// Log some information
+		logger.info("Configuring handle connection with name " + connectionName);
+
+		// Now instantiate the command as a RemoteMoveFileCommand
 		command = new RemoteMoveFileCommand();
 
-		// Set the command to have this connection
+		// Set the command to have this connection and connection configuration
 		command.setConnectionConfiguration(connection.getConfiguration());
 		((RemoteCommand) command).setConnection(connection);
 
@@ -252,20 +269,7 @@ public class RemoteFileHandler extends FileHandler {
 		((RemoteCopyFileCommand) command).setCopyType(HANDLE_TYPE);
 	}
 
-	/**
-	 * Function to determine whether or not a given string is located on the local
-	 * machine
-	 * 
-	 * @param file
-	 * @return
-	 */
-	private boolean isLocal(String file) {
-		// Get the path
-		Path path = Paths.get(file);
-		// Return whether or not it exists on the local machine
-		return Files.exists(path);
 
-	}
 
 	/**
 	 * This function opens the connection, and keeps this code condensed and out of
@@ -273,11 +277,12 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	private ChannelSftp getConnection() {
 		try {
-			Connection connection = ((RemoteCommand) command).getConnection();
-			((RemoteCommand) command).setConnection(connection);
+			// Get the connection associated with this configuration
+			Connection connection = ConnectionManagerFactory.getConnectionManager()
+					.getConnection(connectionConfig.getName());
+
 			// Get the sftp channel to check existence
-			ChannelSftp sftpChannel = (ChannelSftp) ((RemoteCommand) command).getConnection().getSession()
-					.openChannel("sftp");
+			ChannelSftp sftpChannel = (ChannelSftp) connection.getSession().openChannel("sftp");
 			// Connect the channel
 			return sftpChannel;
 		} catch (JSchException e) {
@@ -291,11 +296,11 @@ public class RemoteFileHandler extends FileHandler {
 
 	/**
 	 * A getter function to return the list of possible remote file transfers
+	 * 
 	 * @return
 	 */
-	public HashMap<String, Integer> getHandleType(){
+	public HashMap<String, Integer> getHandleType() {
 		return handleType;
 	}
-	
-	
+
 }

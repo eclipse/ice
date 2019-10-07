@@ -29,6 +29,7 @@ import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.Connection;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
+import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.FileHandlerFactory;
 import org.eclipse.ice.commands.IFileHandler;
 import org.junit.BeforeClass;
@@ -83,8 +84,8 @@ public class IFileHandlerFactoryTest {
 	/**
 	 * A connection manager for opening/closing connections
 	 */
-	static ConnectionManager manager = new ConnectionManager();
-	
+	static ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+
 	/**
 	 * This function runs before the class execution, and it's primary use is to
 	 * establish the remote connection for remote file handling tests
@@ -259,16 +260,16 @@ public class IFileHandlerFactoryTest {
 		// Create a local source file since JSch doesn't have a way to make a dummy
 		// file
 		createLocalSource();
-		
+
 		// Get the filename by splitting the path by "/"
 		String[] tokens = theSource.split("/");
 
 		// Get the last index of tokens, which will be the filename
 		String filename = tokens[tokens.length - 1];
-		
+
 		// Move it to the remote host
 		sftpChannel.put(theSource, remoteDest);
-	
+
 		// Delete the local directory that was created since it is no longer needed
 		Path path = Paths.get(theSource);
 		try {
@@ -280,7 +281,8 @@ public class IFileHandlerFactoryTest {
 		}
 		// Now set the source file name to the new location at the remote destination
 		theSource = remoteDest + filename;
-		
+
+		System.out.println("Moved source file to new remote source destination " + theSource);
 		// Disconnect the channel when finished
 		sftpChannel.disconnect();
 
@@ -760,6 +762,7 @@ public class IFileHandlerFactoryTest {
 
 	/**
 	 * Recurisve function that deletes a remote directory and its contents
+	 * 
 	 * @param sftpChannel
 	 * @param path
 	 * @throws SftpException
@@ -858,16 +861,21 @@ public class IFileHandlerFactoryTest {
 	/**
 	 * Setter for the connection
 	 * 
-	 * @return
 	 */
 	public void setConnection(Connection _conn) {
 		dummyConnection = _conn;
 	}
 
 	/**
+	 * Setter for the connection configuration
+	 */
+	public void setConnectionConfiguration(ConnectionConfiguration _config) {
+	config = _config;
+		
+	}
+	/**
 	 * Setter for the source file string
 	 * 
-	 * @return
 	 */
 	public void setSource(String src) {
 		theSource = src;

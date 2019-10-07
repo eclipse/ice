@@ -12,9 +12,6 @@
 package org.eclipse.ice.commands;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * This class inherits from FileHandler and deals with the processing of local
@@ -58,13 +55,8 @@ public class LocalFileHandler extends FileHandler {
 	 */
 	@Override
 	public boolean exists(final String file) throws IOException {
-
-		// Get the path from the passed string
-		Path path = Paths.get(file);
-
-		// Check if the path exists or not. Symbolic links are followed
-		// by default, see {@link java.nio.file.Files#exists}
-		return Files.exists(path);
+		// See {@link org.eclipse.ice.commands.FileHandler#isLocal(String)}
+		return isLocal(file);
 
 	}
 
