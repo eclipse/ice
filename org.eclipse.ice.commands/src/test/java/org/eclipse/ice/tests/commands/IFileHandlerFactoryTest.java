@@ -30,7 +30,6 @@ import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.FileHandlerFactory;
 import org.eclipse.ice.commands.IFileHandler;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.jcraft.jsch.ChannelSftp;
@@ -79,48 +78,7 @@ public class IFileHandlerFactoryTest {
 	 */
 	static ConnectionConfiguration config = new ConnectionConfiguration();
 
-	/**
-	 * A connection manager for opening/closing connections
-	 */
-	static ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 
-	/**
-	 * This function runs before the class execution, and it's primary use is to
-	 * establish the remote connection for remote file handling tests
-	 * 
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-
-		// Set the connection configuration to a dummy remote connection
-		// Read in a dummy configuration file that contains credentials
-		File file = new File("/tmp/ice-remote-creds.txt");
-		Scanner scanner = null;
-		try {
-			scanner = new Scanner(file);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		// Scan line by line
-		scanner.useDelimiter("\n");
-
-		// Get the credentials for the dummy remote account
-		String username = scanner.next();
-		String password = scanner.next();
-		String hostname = scanner.next();
-
-		// Make the connection configuration
-		config.setHostname(hostname);
-		config.setUsername(username);
-		config.setPassword(password);
-		// Note the password can be input at the console by not setting the
-		// the password explicitly in the connection configuration
-		config.setName("dummyConnection");
-		// We'll delete the files manually since there will be many directories involved
-		config.setDeleteWorkingDirectory(false);
-
-	}
 
 	/**
 	 * This setup creates a test dummy file to transfer around. It creates the file
@@ -369,49 +327,29 @@ public class IFileHandlerFactoryTest {
 	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler()} and
 	 * local file copying.
 	 */
-	// @Test
-	public void testLocalFileHandlerFactoryCopyCommand() {
+	@Test
+	public void testLocalFileHandlerFactoryCopyCommand() throws Exception {
 		// Make a local test file to play with
-		try {
-			createLocalSource();
-			createLocalDestination();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
+		createLocalSource();
+		createLocalDestination();
 
 		IFileHandler handler = null;
 		// set the config hostname
 		config.setHostname(getLocalHostname());
 		// Get the file transfer handler
-		try {
-			handler = factory.getFileHandler(config);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		handler = factory.getFileHandler(config);
 
 		// Now try to copy the file
-		try {
-			CommandStatus status = handler.copy(theSource, theDestination);
-			assert (status == CommandStatus.SUCCESS);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		CommandStatus status = handler.copy(theSource, theDestination);
+		assert (status == CommandStatus.SUCCESS);
 
 		// Check that the file exists now
-		try {
-			boolean exist = handler.exists(theDestination);
-			assert (exist == true);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		boolean exist = handler.exists(theDestination);
+		assert (exist == true);
 
 		// Delete the test file/directory now that the test is finished
-		try {
-			deleteLocalSource();
-			deleteLocalDestination();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		deleteLocalSource();
+		deleteLocalDestination();
 
 	}
 
@@ -420,49 +358,31 @@ public class IFileHandlerFactoryTest {
 	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler()} and
 	 * local file moving.
 	 */
-	// @Test
-	public void testLocalFileHandlerFactoryMoveCommand() {
+	@Test
+	public void testLocalFileHandlerFactoryMoveCommand() throws Exception {
 
 		// Make a local test file to play with
-		try {
-			createLocalSource();
-			createLocalDestination();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
+
+		createLocalSource();
+		createLocalDestination();
 
 		IFileHandler handler = null;
 
 		// Get the file transfer handler
-		try {
-			handler = factory.getFileHandler(config);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		handler = factory.getFileHandler(config);
 
 		// Now try to move the file
-		try {
-			CommandStatus status = handler.move(theSource, theDestination);
-			assert (status == CommandStatus.SUCCESS);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		CommandStatus status = handler.move(theSource, theDestination);
+		assert (status == CommandStatus.SUCCESS);
 
 		// Check that the file exists now
-		try {
-			boolean exist = handler.exists(theDestination);
-			assert (exist == true);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		boolean exist = handler.exists(theDestination);
+		assert (exist == true);
 
 		// Delete the test file/directory now that the test is finished
-		try {
-			deleteLocalSource();
-			deleteLocalDestination();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		deleteLocalSource();
+		deleteLocalDestination();
+
 	}
 
 	/**
@@ -470,50 +390,30 @@ public class IFileHandlerFactoryTest {
 	 * does not exist. Tests
 	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler()}
 	 */
-	// @Test
-	public void testLocalFileHandlerFactoryDestinationNonexistent() {
+	@Test
+	public void testLocalFileHandlerFactoryDestinationNonexistent() throws Exception {
 		// Make a local test file to play with
-		try {
-			createLocalSource();
-			createLocalDestination();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
+		createLocalSource();
+		createLocalDestination();
 
 		IFileHandler handler = null;
 		// Make a new subdirectory to put the file into
 		String newDirectory = "/some/new/directory/";
 
 		// Get the file transfer handler with a nonexistent destination
-		try {
-			handler = factory.getFileHandler(config);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		handler = factory.getFileHandler(config);
 
 		// Now try to move the file
-		try {
-			CommandStatus status = handler.move(theSource, theDestination + newDirectory);
-			assert (status == CommandStatus.SUCCESS);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		CommandStatus status = handler.move(theSource, theDestination + newDirectory);
+		assert (status == CommandStatus.SUCCESS);
 
 		// Check that the file exists now
-		try {
-			boolean exist = handler.exists(theDestination + newDirectory);
-			assert (exist == true);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		boolean exist = handler.exists(theDestination + newDirectory);
+		assert (exist == true);
 
 		// Delete the test file/directory now that the test is finished
-		try {
-			deleteLocalSource();
-			deleteLocalDestination();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		deleteLocalSource();
+		deleteLocalDestination();
 
 	}
 
@@ -521,15 +421,11 @@ public class IFileHandlerFactoryTest {
 	 * This method intends to test the functionality of moving a new file not to a
 	 * new directory but just to a new name in the same directory
 	 */
-	// @Test
-	public void testLocalFileHandlerFactoryChangeName() {
+	@Test
+	public void testLocalFileHandlerFactoryChangeName() throws Exception {
 		// Make a local test file to play with
-		try {
-			createLocalSource();
-			createLocalDestination();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
+		createLocalSource();
+		createLocalDestination();
 
 		IFileHandler handler = null;
 
@@ -544,26 +440,14 @@ public class IFileHandlerFactoryTest {
 
 		System.out.println("New file path: " + localNewName);
 
-		try {
-			handler = factory.getFileHandler(config);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		handler = factory.getFileHandler(config);
 
-		try {
-			CommandStatus status = handler.move(theSource, localNewName);
-			assert (status == CommandStatus.SUCCESS);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		CommandStatus status = handler.move(theSource, localNewName);
+		assert (status == CommandStatus.SUCCESS);
 
 		// Check that the file exists now
-		try {
-			boolean exist = handler.exists(localNewName);
-			assert (exist == true);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		boolean exist = handler.exists(localNewName);
+		assert (exist == true);
 
 		// If the file was successfully created, delete it here
 		// Needs a special delete since the filename was created in this function
@@ -571,12 +455,8 @@ public class IFileHandlerFactoryTest {
 		fileToDelete.delete();
 
 		// Delete the remaining directory now that the test is finished
-		try {
-			deleteLocalSource();
-			deleteLocalDestination();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		deleteLocalSource();
+		deleteLocalDestination();
 
 	}
 
@@ -589,12 +469,18 @@ public class IFileHandlerFactoryTest {
 	public void testRemoteFileHandlerCopyCommand() throws Exception {
 		// Make a local test file to play with
 		// Make a remote destination directory to copy to
-		dummyConnection = manager.openConnection(config);
+		ConnectionConfiguration configuration = makeConnectionConfiguration();
+		// Get the manager to give it the dummy configuration for making the files
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		dummyConnection = manager.openConnection(configuration);
 		createLocalSource();
 		createRemoteDestination();
 
+		// Get another config, and give it a new name so that they don't get confused
+		ConnectionConfiguration transferConfig = makeConnectionConfiguration();
+		transferConfig.setName("transfer");
 		// Get the file transfer handler
-		IFileHandler handler = factory.getFileHandler(makeConnectionConfiguration());
+		IFileHandler handler = factory.getFileHandler(transferConfig);
 		String filename = theSource.substring(theSource.lastIndexOf("/"));
 		// Now try to copy the file
 
@@ -605,9 +491,12 @@ public class IFileHandlerFactoryTest {
 		boolean exist = handler.exists(theDestination + filename);
 		assert (exist == true);
 
+		
 		// Delete the test file/directory now that the test is finished
 		deleteLocalSource();
 		deleteRemoteDestination();
+		
+		manager.closeAllConnections();
 
 	}
 
@@ -620,12 +509,18 @@ public class IFileHandlerFactoryTest {
 	public void testRemoteFileHandlerMoveCommand() throws Exception {
 		// Make a local test file to play with
 		// Make a remote destination directory to move to
-
+		ConnectionConfiguration configuration = makeConnectionConfiguration();
+		// Get the manager to give it the dummy configuration for making the files
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		dummyConnection = manager.openConnection(configuration);
 		createLocalSource();
 		createRemoteDestination();
 
+		// Get another config, and give it a new name so that they don't get confused
+		ConnectionConfiguration transferConfig = makeConnectionConfiguration();
+		transferConfig.setName("transfer");
 		// Get the file transfer handler
-		IFileHandler handler = factory.getFileHandler(makeConnectionConfiguration());
+		IFileHandler handler = factory.getFileHandler(transferConfig);
 		String filename = theSource.substring(theSource.lastIndexOf("/"));
 		// Now try to move the file
 		CommandStatus status = handler.move(theSource, theDestination);
@@ -639,6 +534,9 @@ public class IFileHandlerFactoryTest {
 		deleteLocalSource();
 		deleteRemoteDestination();
 
+		// Just get rid of all the connections at the end to start with a clean
+		// slate on the next test
+		manager.closeAllConnections();
 	}
 
 	/**
@@ -649,14 +547,21 @@ public class IFileHandlerFactoryTest {
 	@Test
 	public void testRemoteFileHandlerFactoryDestinationNonexistent() throws Exception {
 		// Make a local test file to play with
+		ConnectionConfiguration configuration = makeConnectionConfiguration();
+		// Get the manager to give it the dummy configuration for making the files
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		dummyConnection = manager.openConnection(configuration);
 		createLocalSource();
 		createRemoteDestination();
-		
-		IFileHandler handler = factory.getFileHandler(makeConnectionConfiguration());
+
+		// Get another config, and give it a new name so that they don't get confused
+		ConnectionConfiguration transferConfig = makeConnectionConfiguration();
+		transferConfig.setName("transfer");
+		IFileHandler handler = factory.getFileHandler(transferConfig);
 
 		// Now try to move the file to some new directory
-		String newDirectory = "otherDir/";
-		//theDestination = theDestination + newDirectory;
+		String newDirectory = "some/other/dir/";
+		// theDestination = theDestination + newDirectory;
 		CommandStatus status = handler.move(theSource, theDestination + newDirectory);
 		assert (status == CommandStatus.SUCCESS);
 
@@ -667,6 +572,8 @@ public class IFileHandlerFactoryTest {
 		// Delete the test file/directory now that the test is finished
 		deleteLocalSource();
 		deleteRemoteDestination();
+		
+		manager.closeAllConnections();
 
 	}
 
