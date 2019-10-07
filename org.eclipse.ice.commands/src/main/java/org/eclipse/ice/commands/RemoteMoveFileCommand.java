@@ -82,7 +82,7 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 			// Open the channel and connect it
 			channel = (ChannelSftp) getConnection().getSession().openChannel("sftp");
 			channel.connect();
-			
+
 			// Determine the move type and, thus, how to move the file
 			if (moveType == 1) { // If move type is local -> remote, use put
 				logger.info("Putting file: " + source + " to destination " + destination);
@@ -90,11 +90,10 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 			} else if (moveType == 2) { // if move type is remote -> local, use get
 				logger.info("Getting file: " + source + " to destination " + destination);
 				channel.get(source, destination);
-			} else if(moveType == 3) { // if move type is remote -> remote, call function
+			} else if (moveType == 3) { // if move type is remote -> remote, call function
 				logger.info("Executing mv: " + source + " to destination " + destination);
 				moveRemoteToRemote();
-			}
-			else {
+			} else {
 				logger.error("Unknown move type...");
 				status = CommandStatus.FAILED;
 				return status;
@@ -105,7 +104,6 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 			status = CommandStatus.FAILED;
 			return status;
 		}
-		
 
 		status = CommandStatus.SUCCESS;
 		return status;
@@ -129,8 +127,7 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 		// If the channel isn't connected, connect and run the command
 		if (!getConnection().getChannel().isConnected()) {
 			getConnection().getChannel().connect();
-		}
-		else {
+		} else {
 			logger.error("Channel isn't connected and can't move remote to remote...");
 			throw new JSchException();
 		}

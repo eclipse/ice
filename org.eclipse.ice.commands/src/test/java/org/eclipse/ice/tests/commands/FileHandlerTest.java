@@ -173,6 +173,40 @@ public class FileHandlerTest {
 
 	}
 
+	
+	/**
+	 * This function tests remote to remote file handling. Only remote to
+	 * remote copying needs an additional test, because the functionality
+	 * is identical except for the remote-to-remote handling
+	 */
+	@Test
+	public void testRemoteToRemoteCopy() throws Exception {
+		factory.createRemoteSource();
+		factory.createRemoteDestination();
+
+		ConnectionConfiguration config = makeConnectionConfiguration();
+		RemoteFileHandler handler = new RemoteFileHandler();
+		handler.setConnectionConfiguration(config);
+
+		String src = factory.getSource();
+		String dest = factory.getDestination();
+		// Get the filename to check for existence
+		String filename = src.substring(src.lastIndexOf("/"));
+
+		// Now try to copy the file
+		CommandStatus status = handler.copy(src, dest);
+
+		assert (status == CommandStatus.SUCCESS);
+
+		// Check that the file exists now
+		assert (handler.exists(dest + filename));
+		
+		factory.deleteRemoteDestination();
+		factory.deleteRemoteSource();
+
+		
+	}
+	
 	/**
 	 * This function tests remote to remote file handling
 	 */
@@ -182,7 +216,8 @@ public class FileHandlerTest {
 		factory.createRemoteDestination();
 
 		ConnectionConfiguration config = makeConnectionConfiguration();
-		RemoteFileHandler handler = new RemoteFileHandler(config);
+		RemoteFileHandler handler = new RemoteFileHandler();
+		handler.setConnectionConfiguration(config);
 
 		String src = factory.getSource();
 		String dest = factory.getDestination();
@@ -216,7 +251,8 @@ public class FileHandlerTest {
 		factory.createLocalDestination();
 
 		ConnectionConfiguration config = makeConnectionConfiguration();
-		RemoteFileHandler handler = new RemoteFileHandler(config);
+		RemoteFileHandler handler = new RemoteFileHandler();
+		handler.setConnectionConfiguration(config);
 
 		String src = factory.getSource();
 		String dest = factory.getDestination();
@@ -268,7 +304,8 @@ public class FileHandlerTest {
 		// which allows reusing the dummy config code
 		ConnectionConfiguration config = makeConnectionConfiguration();
 		// Get the remote file handler
-		RemoteFileHandler handler = new RemoteFileHandler(config);
+		RemoteFileHandler handler = new RemoteFileHandler();
+		handler.setConnectionConfiguration(config);
 
 		String theSource = factory.getSource();
 		String theDestination = factory.getDestination();
@@ -339,7 +376,8 @@ public class FileHandlerTest {
 		ConnectionConfiguration config = makeConnectionConfiguration();
 
 		// Make the remote file handler with the dummy configuration
-		FileHandler handler = new RemoteFileHandler(config);
+		RemoteFileHandler handler = new RemoteFileHandler();
+		handler.setConnectionConfiguration(config);
 
 		// Check two asserts - that the created file exists, and that
 		// some other nonexistent file throws an error

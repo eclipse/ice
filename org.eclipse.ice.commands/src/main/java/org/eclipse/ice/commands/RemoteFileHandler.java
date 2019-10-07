@@ -60,7 +60,11 @@ public class RemoteFileHandler extends FileHandler {
 	/**
 	 * Default constructor
 	 */
-	public RemoteFileHandler(ConnectionConfiguration config) {
+	public RemoteFileHandler() {
+
+	}
+
+	public void setConnectionConfiguration(ConnectionConfiguration config) {
 		// Get the connection manager and open the connection in constructor so that it
 		// is only performed once, thus the connection isn't constantly re-requiring
 		// password authentication
@@ -75,7 +79,6 @@ public class RemoteFileHandler extends FileHandler {
 
 		// Set the member variable for access later
 		connectionConfig = config;
-
 	}
 
 	/**
@@ -90,7 +93,7 @@ public class RemoteFileHandler extends FileHandler {
 			SftpATTRS attrs = sftpChannel.lstat(file);
 		} catch (JSchException | SftpException e) {
 			logger.info("Couldn't find " + file + " remotely. Seeing if it exists locally.");
-			if(isLocal(file)) {
+			if (isLocal(file)) {
 				logger.info("File " + file + " exists locally.");
 				return true;
 			}
@@ -224,8 +227,8 @@ public class RemoteFileHandler extends FileHandler {
 			}
 		}
 
-		logger.info("FileHandler is moving/copying " + source + " to " 
-				    + destination + " with the handle type " + handle);
+		logger.info(
+				"FileHandler is moving/copying " + source + " to " + destination + " with the handle type " + handle);
 
 	}
 
@@ -235,17 +238,7 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	@Override
 	protected void configureMoveCommand(String source, String destination) {
-		// We need to get the connection information with this file handler
-		// and pass this information to the remote command in order for the
-		// command to be run on the remote host.
-		// First get the manager to get the connection
-		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
-		String connectionName = connectionConfig.getName();
-		Connection connection = manager.getConnection(connectionName);
-
-		// Log some information
-		logger.info("Configuring handle connection with name " + connectionName);
-
+		Connection connection = getHandlerConnection();
 		// Now instantiate the command as a RemoteMoveFileCommand
 		command = new RemoteMoveFileCommand();
 
@@ -264,12 +257,41 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	@Override
 	protected void configureCopyCommand(String source, String destination) {
+		Connection connection = getHandlerConnection();
+		// Now instantiate the command as a RemoteMoveFileCommand
+		command = new RemoteCopyFileCommand();
+
+		// Set the command to have this connection and connection configuration
+		command.setConnectionConfiguration(connection.getConfiguration());
+		((RemoteCommand) command).setConnection(connection);
 		// Cast the command as a remote command
 		((RemoteCopyFileCommand) command).setConfiguration(source, destination);
 		((RemoteCopyFileCommand) command).setCopyType(HANDLE_TYPE);
 	}
 
+	/**
+	 * This function gets the connection information from the file handler for the
+	 * command to be processed. It is important to do this up front in the command
+	 * configuration, since for remote file handling the connection must be
+	 * established.
+	 * 
+	 * @return - A connection corresponding to the connection configuration
+	 *         associated to this remote file handler
+	 */
+	private Connection getHandlerConnection() {
+		// We need to get the connection information with this file handler
+		// and pass this information to the remote command in order for the
+		// command to be run on the remote host.
+		// First get the manager to get the connection
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		String connectionName = connectionConfig.getName();
+		Connection connection = manager.getConnection(connectionName);
 
+		// Log some information
+		logger.info("Configuring handle connection with name " + connectionName);
+
+		return connection;
+	}
 
 	/**
 	 * This function opens the connection, and keeps this code condensed and out of

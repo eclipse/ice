@@ -81,7 +81,7 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 			// Open the channel and connect it
 			channel = (ChannelSftp) getConnection().getSession().openChannel("sftp");
 			channel.connect();
-			
+
 			// Determine how to proceed given what kind of copy it is
 			if (copyType == 1) { // If move type is local -> remote, use put
 				logger.info("Copying file " + source + " to " + destination);
@@ -89,7 +89,7 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 			} else if (copyType == 2) { // if move type is remote -> local, use get
 				logger.info("Copying file " + source + " to " + destination);
 				channel.get(source, destination);
-			} else if(copyType == 3) { // if move type is remote -> remote, call function
+			} else if (copyType == 3) { // if move type is remote -> remote, call function
 				logger.info("Executing cp " + source + " to " + destination);
 				copyRemoteToRemote();
 			} else {
