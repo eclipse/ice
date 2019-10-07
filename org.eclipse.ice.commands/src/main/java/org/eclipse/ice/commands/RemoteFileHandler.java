@@ -124,6 +124,7 @@ public class RemoteFileHandler extends FileHandler {
 			sftpChannel.connect();
 			// Try to make the directory on the remote host
 			sftpChannel.mkdir(file);
+			logger.info("Made new remote directory");
 		} catch (JSchException | SftpException e) {
 			logger.error("Couldn't make nonexistent remote directory, exiting.");
 			e.printStackTrace();
@@ -169,18 +170,20 @@ public class RemoteFileHandler extends FileHandler {
 			}
 			// If remote directory doesn't exist, try to make it
 			else {
-				// If we can't, throw an error
-				if (!makeRemoteDirectory(destinationPath)) {
+				// If we can make it, great
+				if (makeRemoteDirectory(destinationPath)) {
+					HANDLE_TYPE = handleType.get("localRemote");
+				} else {
+					// If we can't make the directory, throw an error
 					logger.error("Couldn't make remote destination, exiting.");
 					command.setStatus(CommandStatus.FAILED);
 					throw new IOException();
 				}
 			}
 
-		}
-		// Otherwise the source must be remote, so we need to determine if it is a
-		// remote --> local or remote --> remote handle
-		else {
+		} else {
+			// Otherwise the source must be remote, so we need to determine if it is a
+			// remote --> local or remote --> remote handle
 			// First check if the remote source exists
 			if (!exists(source)) {
 				// If it doesn't, the source doesn't exist locally or remotely,

@@ -361,6 +361,21 @@ public class FileHandlerTest {
 	}
 
 	/**
+	 * Function which checks nonexistent source exception throwing for both
+	 * local and remote file handlers
+	 * @throws Exception
+	 */
+	@Test(expected=Exception.class)
+	public void testNonexistentSource() throws Exception {
+		RemoteFileHandler handler = new RemoteFileHandler();
+		handler.setConnectionConfiguration(makeConnectionConfiguration());
+		
+		handler.move("/non/existent/source/", "/non/existent/destination/");
+		
+		
+	}
+	
+	/**
 	 * Test the exists function for remote file handlers
 	 */
 	@Test
