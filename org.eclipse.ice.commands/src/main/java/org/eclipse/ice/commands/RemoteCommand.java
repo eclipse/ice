@@ -122,7 +122,7 @@ public class RemoteCommand extends Command {
 		// error
 		try {
 			status = transferFiles();
-		} catch (SftpException | FileNotFoundException | JSchException e) {
+		} catch (SftpException | JSchException | IOException e) {
 			logger.error("File transfer error, could not complete file transfers to remote host. Exiting.");
 			e.printStackTrace();
 			return CommandStatus.INFOERROR;
@@ -324,38 +324,20 @@ public class RemoteCommand extends Command {
 
 	/**
 	 * This function is responsible for transferring the files to the remote host.
-	 * //TODO Change this to use FileHandler functionality once implemented?
+	 * It utilizes the file handling API in this package
 	 * 
 	 * @return - CommandStatus indicating that the transfer was successful (or not)
 	 * @throws SftpException
 	 * @throws JSchException
-	 * @throws FileNotFoundException
+	 * @throws IOException
 	 */
-	protected CommandStatus transferFiles() throws SftpException, JSchException, FileNotFoundException {
-		// Open the sftp channel to transfer the files
-		ChannelSftp sftpChannel = (ChannelSftp) connection.getSession().openChannel("sftp");
-		sftpChannel.connect();
+	protected CommandStatus transferFiles() throws SftpException, JSchException, IOException {
 
-		// Get the remote working directory to move files to
-		// This way there is a clean remote directory with which to operate in
+		RemoteFileHandler handler = new RemoteFileHandler();
+		handler.setConnectionConfiguration(connectionConfig);
+
 		String remoteWorkingDirectory = commandConfig.getRemoteWorkingDirectory();
 		logger.info("Make the working directory at: " + remoteWorkingDirectory);
-
-		// Try to cd to the directory if it already exists
-		try {
-			sftpChannel.cd(remoteWorkingDirectory);
-		} catch (SftpException e) {
-			// If we can't, try making the directory and then cd-ing. If can't again,
-			// exception will be thrown
-			sftpChannel.mkdir(remoteWorkingDirectory);
-			try {
-				sftpChannel.cd(remoteWorkingDirectory);
-			} catch (SftpException e1) {
-				logger.error("Tried making remote directory but couldn't. Bailing");
-				e1.printStackTrace();
-				return CommandStatus.FAILED;
-			}
-		}
 
 		String workingDirectory = commandConfig.getWorkingDirectory();
 
@@ -372,9 +354,14 @@ public class RemoteCommand extends Command {
 		if (!remoteWorkingDirectory.endsWith("/"))
 			remoteWorkingDirectory += "/";
 
-		logger.info("Putting executable file: " + workingDirectory + shortExecName + " in directory "
-				+ remoteWorkingDirectory + shortExecName);
-		sftpChannel.put(workingDirectory + shortExecName, remoteWorkingDirectory + shortExecName);
+		String source = workingDirectory + shortExecName;
+		String destination = remoteWorkingDirectory + shortExecName;
+		logger.info("Putting executable file: " + source + " in directory " + destination);
+		CommandStatus fileTransfer = handler.copy(source, destination);
+		if (fileTransfer != CommandStatus.SUCCESS) {
+			logger.error("Couldn't transfer executable to remote host!");
+			throw new IOException();
+		}
 
 		/**
 		 * Change the permission of the executable so that it can be executed. Give user
@@ -385,7 +372,10 @@ public class RemoteCommand extends Command {
 		 * the end of processing if desired, or e.g. overwritten if the job fails for
 		 * whatever reason and needs to be run again.
 		 */
+		ChannelSftp sftpChannel = (ChannelSftp) connection.getSession().openChannel("sftp");
+		sftpChannel.connect();
 		sftpChannel.chmod(448, remoteWorkingDirectory + shortExecName);
+		sftpChannel.disconnect();
 
 		// Now move the input files after moving the executable file
 		HashMap<String, String> inputFiles = commandConfig.getInputFileList();
@@ -408,12 +398,14 @@ public class RemoteCommand extends Command {
 			// notifications about
 			// the progress of the transfer and use 0 to overwrite the files if they exist
 			// there already
-			sftpChannel.put(workingDirectory + shortInputName, remoteWorkingDirectory + shortInputName);
-
+			source = workingDirectory + shortInputName;
+			destination = remoteWorkingDirectory + shortInputName;
+			fileTransfer = handler.copy(source, destination);
+			if (fileTransfer != CommandStatus.SUCCESS) {
+				logger.error("Couldn't transfer " + source + " to remote host!");
+				throw new IOException();
+			}
 		}
-
-		// Disconnect the sftp channel to stop moving files
-		sftpChannel.disconnect();
 
 		return CommandStatus.RUNNING;
 	}

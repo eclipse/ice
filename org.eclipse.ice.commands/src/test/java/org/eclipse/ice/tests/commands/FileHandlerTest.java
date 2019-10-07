@@ -23,7 +23,9 @@ import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.FileHandler;
 import org.eclipse.ice.commands.LocalFileHandler;
 import org.eclipse.ice.commands.RemoteFileHandler;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -49,14 +51,14 @@ public class FileHandlerTest {
 	static private IFileHandlerFactoryTest factory = new IFileHandlerFactoryTest();
 
 	/**
-	 * Run before the class to setup the connection information for the
+	 * Run before the test to setup the connection information for the
 	 * IFileHandlerFactoryTest, so that we can take advantage of all of the file
 	 * creation/deletion code
 	 * 
 	 * @throws Exception
 	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		// Set up the dummy connection
 		ConnectionConfiguration config = makeConnectionConfiguration();
 
@@ -72,6 +74,29 @@ public class FileHandlerTest {
 		factory.setConnection(manager.getConnection(config.getName()));
 		factory.setConnectionConfiguration(config);
 
+	}
+
+	/**
+	 * After the tests run, disconnect the connections so that each time we are
+	 * starting with a fresh connection
+	 * 
+	 * @throws Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		manager.closeAllConnections();
+	}
+
+	/**
+	 * This function deletes all of the connections in the connection manager
+	 * 
+	 * @throws Exception
+	 */
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		manager.removeAllConnections();
 	}
 
 	/**

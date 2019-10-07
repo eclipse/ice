@@ -494,6 +494,7 @@ public class IFileHandlerFactoryTest {
 		deleteRemoteDestination();
 
 		manager.closeAllConnections();
+		manager.removeAllConnections();
 
 	}
 
@@ -534,6 +535,7 @@ public class IFileHandlerFactoryTest {
 		// Just get rid of all the connections at the end to start with a clean
 		// slate on the next test
 		manager.closeAllConnections();
+		manager.removeAllConnections();
 	}
 
 	/**
@@ -571,6 +573,7 @@ public class IFileHandlerFactoryTest {
 		deleteRemoteDestination();
 
 		manager.closeAllConnections();
+		manager.removeAllConnections();
 
 	}
 

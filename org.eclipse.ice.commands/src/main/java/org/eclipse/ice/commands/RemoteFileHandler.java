@@ -64,17 +64,29 @@ public class RemoteFileHandler extends FileHandler {
 
 	}
 
+	/**
+	 * This function sets the connection configuration for the file handler. It
+	 * checks if the connection is already open, and if it is not it calls the
+	 * connection manager to open the connection
+	 * 
+	 * @param config
+	 */
 	public void setConnectionConfiguration(ConnectionConfiguration config) {
 		// Get the connection manager and open the connection in constructor so that it
 		// is only performed once, thus the connection isn't constantly re-requiring
 		// password authentication
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
-		// Open the connection
-		try {
-			manager.openConnection(config);
-		} catch (JSchException e) {
-			logger.error("Connection could not be established.");
-			e.printStackTrace();
+
+		// First check if there is already an existing connection open with these
+		// details
+		if (manager.getConnection(config.getName()) == null) {
+			// If there isn't one open, try to open the connection
+			try {
+				manager.openConnection(config);
+			} catch (JSchException e) {
+				logger.error("Connection could not be established.");
+				e.printStackTrace();
+			}
 		}
 
 		// Set the member variable for access later
