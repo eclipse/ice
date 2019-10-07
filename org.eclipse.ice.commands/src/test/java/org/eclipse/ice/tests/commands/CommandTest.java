@@ -50,7 +50,7 @@ public class CommandTest {
 		CommandConfiguration commandConfig = new CommandConfiguration();
 		commandConfig.setCommandId(2); // an id indicating the job number
 		commandConfig.setExecutable("./test_code_execution.sh"); // the shell script to execute
-		commandConfig.addInputFile("someInputFile","someInputFile.txt"); // an input file needed by the script
+		commandConfig.addInputFile("someInputFile", "someInputFile.txt"); // an input file needed by the script
 		commandConfig.setErrFileName("someRemoteErrFile.txt"); // a file to contain errors thrown
 		commandConfig.setOutFileName("someRemoteOutFile.txt"); // a file to contain the output
 		commandConfig.setInstallDirectory(""); // no install dir needed for this script

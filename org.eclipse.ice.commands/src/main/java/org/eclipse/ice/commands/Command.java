@@ -176,9 +176,10 @@ public abstract class Command {
 	public CommandConfiguration getCommandConfiguration() {
 		return commandConfig;
 	}
-	
+
 	/**
 	 * This function sets the command configuration for a particular command
+	 * 
 	 * @param config
 	 */
 	public void setCommandConfiguration(CommandConfiguration config) {

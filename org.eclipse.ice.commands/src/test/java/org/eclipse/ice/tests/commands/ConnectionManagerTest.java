@@ -61,7 +61,7 @@ public class ConnectionManagerTest {
 	 * A connection manager to deal with the dummy test connections
 	 */
 	ConnectionManager manager = new ConnectionManager();
-	
+
 	/**
 	 * This function makes a test connection with which to play with
 	 * 
@@ -70,7 +70,6 @@ public class ConnectionManagerTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 
-		
 		// Read in a dummy configuration file that contains credentials
 		File file = new File("/tmp/ice-remote-creds.txt");
 		Scanner scanner = new Scanner(file);
@@ -133,10 +132,10 @@ public class ConnectionManagerTest {
 		Connection testConnection = manager.getConnection(connectionName);
 
 		assert (testConnection != null);
-		
+
 		// test a bad connection that doesn't exist in the connection list
 		Connection badConnection = manager.getConnection("nonexistent_connection");
-		assert(badConnection == null);
+		assert (badConnection == null);
 	}
 
 	/**
@@ -152,7 +151,8 @@ public class ConnectionManagerTest {
 		// Remove the connection from the connection manager
 		manager.removeConnection(connectionName);
 
-		// Assert that this connection no longer exists, so when you try to get it it is null
+		// Assert that this connection no longer exists, so when you try to get it it is
+		// null
 		assert (manager.getConnection(connectionName) == null);
 	}
 
@@ -179,7 +179,6 @@ public class ConnectionManagerTest {
 		String password = scanner.next();
 		String hostname = scanner.next();
 
-		
 		// Set the credentials since they were deleted after closing the previous
 		// connection
 		configuration.setUsername(username);
@@ -215,7 +214,7 @@ public class ConnectionManagerTest {
 		}
 
 		// Get the connection list from the manager to test some things
-		HashMap<String,Connection> connections = new HashMap<String,Connection>();
+		HashMap<String, Connection> connections = new HashMap<String, Connection>();
 		connections = manager.getConnectionList();
 
 		// Expect only two connections since one of the connections is not good (i.e.
@@ -229,8 +228,7 @@ public class ConnectionManagerTest {
 		assert (connections.get("someOtherConnection").getConfiguration().getHostname().equals(hostname));
 
 		// Check that the name returns the appropriate connection from ConnectionManager
-		assert (manager.getConnection("FirstConnection").getConfiguration().getName()
-				.equals("FirstConnection"));
+		assert (manager.getConnection("FirstConnection").getConfiguration().getName().equals("FirstConnection"));
 
 		// Check that the connection is actually open, since FirstConnection is a good
 		// connection

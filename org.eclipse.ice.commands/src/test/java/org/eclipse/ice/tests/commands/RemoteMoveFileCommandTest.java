@@ -110,12 +110,12 @@ public class RemoteMoveFileCommandTest {
 	 */
 	@Test
 	public void testRemoteMoveFileCommand() throws Exception {
-		
+
 		factory.createRemoteSource();
 		factory.createRemoteDestination();
 		source = factory.getSource();
 		dest = factory.getDestination();
-		
+
 		RemoteMoveFileCommand command = new RemoteMoveFileCommand();
 		// These functions are nominally handled by the FileHandler. But, when testing
 		// this class alone, we need to set them individually
@@ -134,8 +134,7 @@ public class RemoteMoveFileCommandTest {
 		// Delete the temporary files that were created to test
 		factory.deleteRemoteSource();
 		factory.deleteRemoteDestination();
-		
-		
+
 	}
 
 	/**

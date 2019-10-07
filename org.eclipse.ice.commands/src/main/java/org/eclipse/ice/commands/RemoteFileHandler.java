@@ -324,7 +324,7 @@ public class RemoteFileHandler extends FileHandler {
 
 			// Get the sftp channel to check existence
 			ChannelSftp sftpChannel = (ChannelSftp) connection.getSession().openChannel("sftp");
-			// Connect the channel
+			// If we got it, return it
 			return sftpChannel;
 		} catch (JSchException e) {
 			// If there was a Jsch connection problem, puke

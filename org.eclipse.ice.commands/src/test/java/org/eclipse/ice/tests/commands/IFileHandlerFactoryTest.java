@@ -78,8 +78,6 @@ public class IFileHandlerFactoryTest {
 	 */
 	static ConnectionConfiguration config = new ConnectionConfiguration();
 
-
-
 	/**
 	 * This setup creates a test dummy file to transfer around. It creates the file
 	 * by default locally.
@@ -491,11 +489,10 @@ public class IFileHandlerFactoryTest {
 		boolean exist = handler.exists(theDestination + filename);
 		assert (exist == true);
 
-		
 		// Delete the test file/directory now that the test is finished
 		deleteLocalSource();
 		deleteRemoteDestination();
-		
+
 		manager.closeAllConnections();
 
 	}
@@ -572,7 +569,7 @@ public class IFileHandlerFactoryTest {
 		// Delete the test file/directory now that the test is finished
 		deleteLocalSource();
 		deleteRemoteDestination();
-		
+
 		manager.closeAllConnections();
 
 	}

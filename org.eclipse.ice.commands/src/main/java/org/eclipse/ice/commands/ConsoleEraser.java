@@ -12,9 +12,10 @@
 package org.eclipse.ice.commands;
 
 /**
- * This is a simple class which extends thread and is used to erase characters that
- * are printed to the console. The primary use is for erasing characters when one
- * is entering their password.
+ * This is a simple class which extends thread and is used to erase characters
+ * that are printed to the console. The primary use is for erasing characters
+ * when one is entering their password.
+ * 
  * @author Joe Osborn
  *
  */

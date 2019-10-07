@@ -43,10 +43,11 @@ public class ConnectionConfiguration {
 	 */
 	private String password = "";
 
-
 	/**
 	 * A boolean indicating whether or not the files/directories created on the
-	 * remote host should be deleted or not. Default set to false
+	 * remote host should be deleted or not. Default set to false, for obvious
+	 * reasons. This will delete the working directory of a remote command on the
+	 * remote host, if it is set to true.
 	 */
 	private boolean deleteWorkingDirectory = false;
 
@@ -65,7 +66,7 @@ public class ConnectionConfiguration {
 	public void setUsername(String uname) {
 		username = uname;
 	}
-	
+
 	/**
 	 * Getter for the username for a connection
 	 * 
@@ -74,7 +75,7 @@ public class ConnectionConfiguration {
 	public String getUsername() {
 		return username;
 	}
-	
+
 	/**
 	 * Setter function for
 	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#hostname}
@@ -112,7 +113,7 @@ public class ConnectionConfiguration {
 	public void setName(String _name) {
 		name = _name;
 	}
-	
+
 	/**
 	 * Getter for whether or not to delete the remote working directory upon
 	 * completion
@@ -135,7 +136,6 @@ public class ConnectionConfiguration {
 		deleteWorkingDirectory = _delete;
 	}
 
-
 	/**
 	 * Setter for {@link org.eclipse.ice.commands.ConnectionConfiguration#password}
 	 * Use with caution, only if you are comfortable putting your password into a
@@ -147,10 +147,11 @@ public class ConnectionConfiguration {
 	public void setPassword(String _pass) {
 		password = _pass;
 	}
-	
+
 	/**
-	 * Getter for obtaining password string. Protected so that it cannot be
-	 * publicly accessed, only by classes within this package.
+	 * Getter for obtaining password string. Protected so that it cannot be publicly
+	 * accessed, only by classes within this package.
+	 * 
 	 * @return
 	 */
 	protected String getPassword() {

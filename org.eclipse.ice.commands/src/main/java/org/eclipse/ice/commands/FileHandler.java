@@ -69,10 +69,10 @@ public abstract class FileHandler implements IFileHandler {
 	public CommandStatus move(final String source, final String destination) throws IOException {
 		// Set the transfer status to processing, to indicate the transfer is beginning
 		transferStatus = CommandStatus.PROCESSING;
-		
+
 		// Check the file existence. If they don't exist, an exception is thrown
 		checkExistence(source, destination);
-		
+
 		// Set the commands to have the appropriate properties
 		configureMoveCommand(source, destination);
 
@@ -95,13 +95,12 @@ public abstract class FileHandler implements IFileHandler {
 	public CommandStatus copy(final String source, final String destination) throws IOException {
 		// Set the transfer status to processing, to indicate the transfer is beginning
 		transferStatus = CommandStatus.PROCESSING;
-		
+
 		// Check the file existence. If one or both don't exist, an exception is thrown
 		checkExistence(source, destination);
-		
+
 		// Set the commands to have the appropriate properties
 		configureCopyCommand(source, destination);
-	
 
 		// Execute and process the file transfer
 		transferStatus = executeTransfer(destination);
@@ -180,7 +179,7 @@ public abstract class FileHandler implements IFileHandler {
 		return Files.exists(path);
 
 	}
-	
+
 	/**
 	 * This operation creates all the directories that are parents of the
 	 * destination.
@@ -226,13 +225,12 @@ public abstract class FileHandler implements IFileHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		if (check)
 			return CommandStatus.SUCCESS;
 		else
 			return CommandStatus.FAILED;
 
 	}
-
 
 }

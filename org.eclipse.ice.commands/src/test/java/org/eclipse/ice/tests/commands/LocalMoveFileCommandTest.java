@@ -142,7 +142,7 @@ public class LocalMoveFileCommandTest {
 		LocalMoveFileCommand command = new LocalMoveFileCommand();
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();
-		
+
 		// Check if the path exists now
 		Path path = Paths.get(dest);
 		assert (Files.exists(path));

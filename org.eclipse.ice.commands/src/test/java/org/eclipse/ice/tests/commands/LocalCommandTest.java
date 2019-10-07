@@ -103,7 +103,7 @@ public class LocalCommandTest {
 	public void testExecute() {
 
 		String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
-		
+
 		// Set the CommandConfiguration class
 		// See {@link org.eclipse.ice.commands.CommandConfiguration} for detailed info
 		// on each
@@ -118,7 +118,7 @@ public class LocalCommandTest {
 		commandConfig.setAppendInput(true);
 		commandConfig.setNumProcs("1");
 		commandConfig.setOS(System.getProperty("os.name"));
-	
+
 		// Make the command and execute it
 		LocalCommand localCommand = new LocalCommand(connection, commandConfig);
 		CommandStatus status = localCommand.execute();

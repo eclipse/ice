@@ -173,11 +173,10 @@ public class FileHandlerTest {
 
 	}
 
-	
 	/**
-	 * This function tests remote to remote file handling. Only remote to
-	 * remote copying needs an additional test, because the functionality
-	 * is identical except for the remote-to-remote handling
+	 * This function tests remote to remote file handling. Only remote to remote
+	 * copying needs an additional test, because the functionality is identical
+	 * except for the remote-to-remote handling
 	 */
 	@Test
 	public void testRemoteToRemoteCopy() throws Exception {
@@ -200,13 +199,12 @@ public class FileHandlerTest {
 
 		// Check that the file exists now
 		assert (handler.exists(dest + filename));
-		
+
 		factory.deleteRemoteDestination();
 		factory.deleteRemoteSource();
 
-		
 	}
-	
+
 	/**
 	 * This function tests remote to remote file handling
 	 */
@@ -231,11 +229,10 @@ public class FileHandlerTest {
 
 		// Check that the file exists now
 		assert (handler.exists(dest + filename));
-		
+
 		factory.deleteRemoteDestination();
 		factory.deleteRemoteSource();
 
-		
 	}
 
 	/**
@@ -361,20 +358,20 @@ public class FileHandlerTest {
 	}
 
 	/**
-	 * Function which checks nonexistent source exception throwing for both
-	 * local and remote file handlers
+	 * Function which checks nonexistent source exception throwing for both local
+	 * and remote file handlers
+	 * 
 	 * @throws Exception
 	 */
-	@Test(expected=Exception.class)
+	@Test(expected = Exception.class)
 	public void testNonexistentSource() throws Exception {
 		RemoteFileHandler handler = new RemoteFileHandler();
 		handler.setConnectionConfiguration(makeConnectionConfiguration());
-		
+
 		handler.move("/non/existent/source/", "/non/existent/destination/");
-		
-		
+
 	}
-	
+
 	/**
 	 * Test the exists function for remote file handlers
 	 */

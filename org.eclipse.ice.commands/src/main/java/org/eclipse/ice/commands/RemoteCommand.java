@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,8 +58,6 @@ public class RemoteCommand extends Command {
 	 */
 	private FileOutputStream stdOutStream = null;
 
-
-	
 	/**
 	 * Default constructor
 	 */
@@ -69,10 +68,11 @@ public class RemoteCommand extends Command {
 	/**
 	 * Constructor to instantiate the remote command with a particular
 	 * CommandConfiguration and ConnectionConfiguration.
+	 * 
 	 * @param - CommandConfiguration which corresponds to the particular command
 	 * @param - ConnectionConfiguration connectConfig which corresponds to the
 	 *          particular connection
-	 *          
+	 * 
 	 * @param - ConnectionConfiguration extraConnection which corresponds to an
 	 *          additional connection, if the command is meant to multi-hop where
 	 *          one remote host is used to execute a job on another remote host
@@ -82,9 +82,9 @@ public class RemoteCommand extends Command {
 		// Set the command and connection configurations
 		commandConfig = _commandConfig;
 		connectionConfig = connectConfig;
-		
+
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
-		
+
 		// Open and set the connection(s)
 		try {
 			connection = manager.openConnection(connectConfig);
@@ -178,14 +178,15 @@ public class RemoteCommand extends Command {
 		// If the user would like to delete the remote working directory, delete it
 		if (connection.getConfiguration().getDeleteWorkingDirectory()) {
 			logger.info("Removing remote working directory");
-			// Set a command to force remove the directory
-			((ChannelExec) connection.getChannel()).setCommand("rm -rf " + commandConfig.getRemoteWorkingDirectory());
-			// Connect the channel to execute the removal
 			try {
-				connection.getChannel().connect();
-			} catch (JSchException e) {
-				logger.error("Could not delete the remote working directory after completion!");
+				// Open an sftp channel so that we can ls the contents of the path
+				ChannelSftp channel = (ChannelSftp) connection.getSession().openChannel("sftp");
+				channel.connect();
+				// Delete the directory and all of the contents
+				deleteRemoteDirectory(channel, commandConfig.getRemoteWorkingDirectory());
+			} catch (JSchException | SftpException e) {
 				e.printStackTrace();
+				logger.error("Unable to delete remote directory tree");
 			}
 		}
 
@@ -390,7 +391,7 @@ public class RemoteCommand extends Command {
 		HashMap<String, String> inputFiles = commandConfig.getInputFileList();
 
 		// Iterate over each input file
-		for (Map.Entry<String, String> entry: inputFiles.entrySet()) {
+		for (Map.Entry<String, String> entry : inputFiles.entrySet()) {
 			// Get the filepath
 			String shortInputName = entry.getValue();
 
@@ -418,6 +419,38 @@ public class RemoteCommand extends Command {
 	}
 
 	/**
+	 * Recurisve function that deletes a remote directory and its contents
+	 * 
+	 * @param sftpChannel
+	 * @param path
+	 * @throws SftpException
+	 */
+	private void deleteRemoteDirectory(ChannelSftp sftpChannel, String path) throws SftpException {
+
+		// Get the path's directory structure
+		Collection<ChannelSftp.LsEntry> fileList = sftpChannel.ls(path);
+
+		// Iterate through the list to get the file/directory names
+		for (ChannelSftp.LsEntry file : fileList) {
+			// If it isn't a directory delete it
+			if (!file.getAttrs().isDir()) {
+				sftpChannel.rm(path + "/" + file.getFilename());
+			} else if (!(".".equals(file.getFilename()) || "..".equals(file.getFilename()))) { // If it is a subdir.
+				// Otherwise its a subdirectory, so try deleting it
+				try {
+					// remove the sub directory
+					sftpChannel.rmdir(path + "/" + file.getFilename());
+				} catch (Exception e) {
+					// If the subdirectory is not empty, then iterate with this
+					// subdirectory to remove the contents
+					deleteRemoteDirectory(sftpChannel, path + "/" + file.getFilename());
+				}
+			}
+		}
+		sftpChannel.rmdir(path); // delete the parent directory after empty
+	}
+
+	/**
 	 * Set a particular connection for a particular RemoteCommand
 	 * 
 	 * @param connection - the connection for this command
@@ -435,6 +468,5 @@ public class RemoteCommand extends Command {
 
 		return connection;
 	}
-
 
 }

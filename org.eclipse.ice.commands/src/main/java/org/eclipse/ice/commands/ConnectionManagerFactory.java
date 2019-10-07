@@ -14,10 +14,10 @@ package org.eclipse.ice.commands;
 
 /**
  * This factory class returns a static instance of ConnectionManager. The class
- * is intended to act as a global ConnectionManager returner, so that there is 
+ * is intended to act as a global ConnectionManager returner, so that there is
  * only a single ConnectionManager that can be accessed by all of the classes.
- * This creates a cleaner API so that all classes can access the same connections
- * at any given time.
+ * This creates a cleaner API so that all classes can access the same
+ * connections at any given time.
  * 
  * @author Joe Osborn
  *
@@ -25,7 +25,7 @@ package org.eclipse.ice.commands;
 public class ConnectionManagerFactory {
 
 	static ConnectionManager manager = new ConnectionManager();
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -34,10 +34,11 @@ public class ConnectionManagerFactory {
 
 	/**
 	 * A function to return the static instance of ConnectionManager
+	 * 
 	 * @return
 	 */
 	public static ConnectionManager getConnectionManager() {
 		return manager;
-		
+
 	}
 }

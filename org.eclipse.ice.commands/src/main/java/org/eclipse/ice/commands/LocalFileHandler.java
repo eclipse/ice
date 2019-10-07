@@ -29,27 +29,30 @@ public class LocalFileHandler extends FileHandler {
 	}
 
 	/**
-	 * See {@link org.eclipse.ice.commands.FileHandler#setConfiguration(String, String)}
+	 * See
+	 * {@link org.eclipse.ice.commands.FileHandler#setConfiguration(String, String)}
 	 */
 	@Override
 	protected void configureMoveCommand(final String source, final String destination) {
 		command = new LocalMoveFileCommand();
-		// Cast the Command as a LocalMoveFileCommand to set the source and destination paths
+		// Cast the Command as a LocalMoveFileCommand to set the source and destination
+		// paths
 		((LocalMoveFileCommand) command).setConfiguration(source, destination);
 	}
 
 	/**
-	 * See {@link org.eclipse.ice.commands.FileHandler#setConfiguration(String, String)}
+	 * See
+	 * {@link org.eclipse.ice.commands.FileHandler#setConfiguration(String, String)}
 	 */
 	@Override
 	protected void configureCopyCommand(final String source, final String destination) {
 		command = new LocalCopyFileCommand();
-		// Cast the Command as a LocalCopyFileCommand to set the source and destination paths
+		// Cast the Command as a LocalCopyFileCommand to set the source and destination
+		// paths
 		((LocalCopyFileCommand) command).setConfiguration(source, destination);
 
 	}
 
-	
 	/**
 	 * See {@link org.eclipse.ice.commands.FileHandler#exists(String)}
 	 */

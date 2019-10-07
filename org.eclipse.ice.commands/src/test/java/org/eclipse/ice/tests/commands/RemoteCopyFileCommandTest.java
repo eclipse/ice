@@ -105,21 +105,19 @@ public class RemoteCopyFileCommandTest {
 		dummyConnection = manager.openConnection(connectionConfig);
 		factory.setConnection(dummyConnection);
 
-	
 	}
-
 
 	/**
 	 * Test for copying a file only on the remote system
 	 */
 	@Test
 	public void testRemoteCopyFileCommand() throws Exception {
-		
+
 		factory.createRemoteSource();
 		factory.createRemoteDestination();
 		source = factory.getSource();
 		dest = factory.getDestination();
-		
+
 		RemoteCopyFileCommand command = new RemoteCopyFileCommand();
 		// These functions are nominally handled by the FileHandler. But, when testing
 		// this class alone, we need to set them individually
@@ -138,11 +136,9 @@ public class RemoteCopyFileCommandTest {
 		// Delete the temporary files that were created to test
 		factory.deleteRemoteSource();
 		factory.deleteRemoteDestination();
-		
-		
+
 	}
 
-	
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.RemoteMoveFileCommand()}
 	 * where the file is downloaded from the remote host
@@ -181,19 +177,19 @@ public class RemoteCopyFileCommandTest {
 	}
 
 	/**
-	 * Test for method {@link org.eclipse.ice.commands.RemoteMoveFileCommand()}
-	 * for uploading a file to the remote host
+	 * Test for method {@link org.eclipse.ice.commands.RemoteMoveFileCommand()} for
+	 * uploading a file to the remote host
 	 */
 	@Test
 	public void testRemoteCopyFileCommandUpload() throws Exception {
-		
+
 		// Create a local source file to move
 		factory.createLocalSource();
 		source = factory.getSource();
 		// Create a remote destination to move it to
 		factory.createRemoteDestination();
 		dest = factory.getDestination();
-		
+
 		// Make a command and execute it
 		RemoteCopyFileCommand command = new RemoteCopyFileCommand();
 		// These functions are nominally handled by the FileHandler. But, when testing
@@ -204,21 +200,20 @@ public class RemoteCopyFileCommandTest {
 
 		// execute the command
 		CommandStatus status = command.execute();
-		
+
 		assert (status == CommandStatus.SUCCESS);
-		
+
 		// Check that the path exists
 		try {
 			assert (remotePathExists());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		factory.deleteLocalSource();
 		factory.deleteRemoteDestination();
 	}
 
-	
 	/**
 	 * This function checks if a local path exists on the host
 	 * 
@@ -228,7 +223,7 @@ public class RemoteCopyFileCommandTest {
 		Path path = Paths.get(dest);
 		return Files.exists(path);
 	}
-	
+
 	/**
 	 * This function checks if a remote file exists on the host
 	 * 
@@ -246,8 +241,8 @@ public class RemoteCopyFileCommandTest {
 		} catch (SftpException e) {
 			// If an exception is caught, this means the file was not there
 			return false;
-			}
-		
+		}
+
 		return true;
 	}
 

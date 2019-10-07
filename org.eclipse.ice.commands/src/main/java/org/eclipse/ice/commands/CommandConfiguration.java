@@ -57,10 +57,10 @@ public class CommandConfiguration {
 
 	/**
 	 * The input file that the executable needs or takes as an argument in its
-	 * processing. The first string is the name of the file as in the executable string,
-	 * while the second string is the path to that file
+	 * processing. The first string is the name of the file as in the executable
+	 * string, while the second string is the path to that file
 	 */
-	private HashMap<String, String> inputFiles = new HashMap<String,String>();
+	private HashMap<String, String> inputFiles = new HashMap<String, String>();
 
 	/**
 	 * The name of the file that will contain the output of the job
@@ -287,7 +287,7 @@ public class CommandConfiguration {
 			installDirectory = installDirectory + separator;
 
 		// Search for and replace the ${inputFile} to properly configure the input file
-		for (Map.Entry<String, String> entry: inputFiles.entrySet()) {
+		for (Map.Entry<String, String> entry : inputFiles.entrySet()) {
 			if (fixedExecutableName.contains("${" + entry.getKey() + "}") && !appendInput)
 				fixedExecutableName = fixedExecutableName.replace("${" + entry.getKey() + "}", entry.getValue());
 		}
@@ -388,7 +388,7 @@ public class CommandConfiguration {
 	 */
 	public String getInputFiles() {
 		String files = "";
-		for (Map.Entry<String,String> entry : inputFiles.entrySet()) {
+		for (Map.Entry<String, String> entry : inputFiles.entrySet()) {
 			files += entry.getValue() + " ";
 		}
 		return files;
@@ -400,7 +400,7 @@ public class CommandConfiguration {
 	 * 
 	 * @return inputFile
 	 */
-	public HashMap<String,String> getInputFileList() {
+	public HashMap<String, String> getInputFileList() {
 		return inputFiles;
 	}
 

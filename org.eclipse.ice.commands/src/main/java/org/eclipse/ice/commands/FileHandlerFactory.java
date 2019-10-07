@@ -57,9 +57,9 @@ public class FileHandlerFactory {
 		} else {
 			handler = new RemoteFileHandler();
 			// Set the connection information for the remote file handler
-			((RemoteFileHandler)handler).setConnectionConfiguration(connectionConfig);
+			((RemoteFileHandler) handler).setConnectionConfiguration(connectionConfig);
 		}
-		
+
 		return handler;
 	}
 

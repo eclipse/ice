@@ -44,7 +44,6 @@ public class LocalCopyFileCommand extends LocalCommand {
 	public LocalCopyFileCommand() {
 	}
 
-
 	/**
 	 * This function actually executes the copy file command. It checks that the
 	 * copy was completed successfully. It returns a CommandStatus indicating
@@ -93,10 +92,10 @@ public class LocalCopyFileCommand extends LocalCommand {
 		return CommandStatus.CANCELED;
 	}
 
-	
 	/**
 	 * This function sets the Paths for source and destination to the given strings
-	 * @param src - string corresponding to the source file
+	 * 
+	 * @param src  - string corresponding to the source file
 	 * @param dest - string corresponding to the destination file
 	 */
 	public void setConfiguration(String src, String dest) {
@@ -104,7 +103,7 @@ public class LocalCopyFileCommand extends LocalCommand {
 		destination = Paths.get(dest);
 		return;
 	}
-	
+
 	/**
 	 * A function that returns the source path in string form
 	 * 
@@ -113,8 +112,7 @@ public class LocalCopyFileCommand extends LocalCommand {
 	public String getSource() {
 		return source.toString();
 	}
-	
-	
+
 	/**
 	 * A function that returns the destination path in string form
 	 * 

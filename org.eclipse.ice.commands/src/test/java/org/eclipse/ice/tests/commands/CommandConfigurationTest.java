@@ -40,7 +40,7 @@ public class CommandConfigurationTest {
 		config.setExecutable("./some_executable.sh");
 		config.setErrFileName("errorFile.txt");
 		config.setOutFileName("outFile.txt");
-		
+
 		// Assert whether or not things are/aren't set
 		assert (config.getOutFileName() != null);
 		assert (config.getOS() != null);
@@ -50,12 +50,11 @@ public class CommandConfigurationTest {
 
 		// Assert that the default local OS is set
 		assert (config.getOS().equals(System.getProperty("os.name")));
-		
+
 		config.setOS("JoeOsbornOS");
-		
+
 		assert (config.getOS().equals("JoeOsbornOS"));
-		
-		
+
 	}
 
 	/**
@@ -93,8 +92,8 @@ public class CommandConfigurationTest {
 	public void testGetExecutableNameSplitCommand() {
 		CommandConfiguration splitConfig = new CommandConfiguration();
 		splitConfig.setCommandId(2);
-		splitConfig
-				.setExecutable("./dummy.sh ${inputfile}; ./next_file.sh ${otherinputfile}; ./other_file.sh ${installDir}");
+		splitConfig.setExecutable(
+				"./dummy.sh ${inputfile}; ./next_file.sh ${otherinputfile}; ./other_file.sh ${installDir}");
 		// Test if the user falsifies append input whether or not the environment
 		// variable is replaced
 		splitConfig.setAppendInput(false);
@@ -104,8 +103,8 @@ public class CommandConfigurationTest {
 		splitConfig.setInstallDirectory("~/install_dir");
 		splitConfig.setOS(System.getProperty("os.name"));
 		String executable = splitConfig.getExecutableName();
-		assert (executable
-				.equals("./dummy.sh inputfile.txt; ./next_file.sh /some/dummy/path/to/an/inputfile.txt; ./other_file.sh ~/install_dir/"));
+		assert (executable.equals(
+				"./dummy.sh inputfile.txt; ./next_file.sh /some/dummy/path/to/an/inputfile.txt; ./other_file.sh ~/install_dir/"));
 
 		ArrayList<String> split = new ArrayList<String>();
 		split = splitConfig.getSplitCommand();
