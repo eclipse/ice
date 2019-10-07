@@ -96,9 +96,10 @@ public class RemoteFileHandler extends FileHandler {
 			if (isLocal(file)) {
 				logger.info("File " + file + " exists locally.");
 				return true;
+			} else {
+				logger.info("File " + file + " also doesn't exist locally. Will try making it remotely");
+				return false;
 			}
-			e.printStackTrace();
-			return false;
 		}
 
 		sftpChannel.disconnect();
@@ -123,7 +124,22 @@ public class RemoteFileHandler extends FileHandler {
 			// Connect the channel to try making the directory
 			sftpChannel.connect();
 			// Try to make the directory on the remote host
-			sftpChannel.mkdir(file);
+			// Could be many directories, so we need to iterate over each piece
+			// of the path and see if it exists. If it doesn't, then make it.
+			String[] directories = file.split("/");
+			String directory = "";
+			for (int i = 0; i < directories.length; i++) {
+				// Add the next directory to the full path name
+				directory += "/" + directories[i];
+				// Try to ls the directory. If it throws an exception, then
+				// it doesn't exist, so we should make it
+				try {
+					SftpATTRS attrs = sftpChannel.lstat(directory);
+				} catch (SftpException e) {
+					sftpChannel.mkdir(directory);
+				}
+			}
+
 			logger.info("Made new remote directory");
 		} catch (JSchException | SftpException e) {
 			logger.error("Couldn't make nonexistent remote directory, exiting.");
