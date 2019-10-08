@@ -19,6 +19,8 @@ import java.util.Scanner;
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionConfiguration;
+import org.eclipse.ice.commands.ConnectionManager;
+import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.RemoteCommand;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -130,6 +132,10 @@ public class RemoteCommandTest {
 		// Process it
 		Process job = builder.start();
 		job.waitFor(); // wait for it to finish
+
+		// Remove all connections that may remain from the manager
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		manager.removeAllConnections();
 
 	}
 

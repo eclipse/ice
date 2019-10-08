@@ -19,6 +19,8 @@ import java.util.Scanner;
 import org.eclipse.ice.commands.Connection;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
+import org.eclipse.ice.commands.ConnectionManagerFactory;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -89,6 +91,18 @@ public class ConnectionManagerTest {
 			configuration.setPassword(password);
 		configuration.setName(connectionName);
 
+	}
+
+	/**
+	 * This function deletes all of the connections in the connection manager once
+	 * the tests have run and completed.
+	 * 
+	 * @throws Exception
+	 */
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		manager.removeAllConnections();
 	}
 
 	/**
@@ -204,9 +218,7 @@ public class ConnectionManagerTest {
 		// Open some configurations
 		try {
 			conn1 = manager.openConnection(configuration);
-
 			conn2 = manager.openConnection(conf2);
-
 			conn3 = manager.openConnection(conf3);
 
 		} catch (JSchException e) {
@@ -218,7 +230,7 @@ public class ConnectionManagerTest {
 		connections = manager.getConnectionList();
 
 		// Expect only two connections since one of the connections is not good (i.e.
-		// conn3 has a bad password)
+		// conn3 has a bad password, therefore it isn't added to the list)
 		assert (connections.size() == 2);
 
 		// List all available connections to the console screen

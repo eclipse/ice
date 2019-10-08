@@ -22,7 +22,9 @@ import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.Connection;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
+import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.RemoteMoveFileCommand;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -103,6 +105,18 @@ public class RemoteMoveFileCommandTest {
 		dummyConnection = manager.openConnection(connectionConfig);
 		factory.setConnection(dummyConnection);
 
+	}
+
+	/**
+	 * This function deletes all of the connections in the connection manager once
+	 * the tests have run and completed.
+	 * 
+	 * @throws Exception
+	 */
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		manager.removeAllConnections();
 	}
 
 	/**

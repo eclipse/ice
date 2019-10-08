@@ -33,15 +33,16 @@ import org.junit.Test;
  */
 public class CommandTest {
 
-	// Get the present working directory
-	// Add the following directories where the tests live
+	/**
+	 * Get the present working directory Add the following directories where the
+	 * tests live
+	 */
 	String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
 
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.Command#Command()} with a
 	 * particular instance of a RemoteCommand
 	 */
-
 	@Test
 	public void testRemoteCommand() {
 
@@ -58,7 +59,7 @@ public class CommandTest {
 		commandConfig.setAppendInput(true); // append the input file name to the script executable command
 		commandConfig.setNumProcs("1"); // number of processes is 1
 		commandConfig.setOS(System.getProperty("os.name"));
-
+		// Set the remote working directory, where the command will be processed
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
 		// Set the connection configuration to a dummy remote connection
 		// Read in a dummy configuration file that contains credentials

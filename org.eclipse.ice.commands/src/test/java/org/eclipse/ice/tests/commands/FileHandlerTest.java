@@ -78,7 +78,8 @@ public class FileHandlerTest {
 
 	/**
 	 * After the tests run, disconnect the connections so that each time we are
-	 * starting with a fresh connection
+	 * starting with a fresh connection, and thus testing all steps of the file
+	 * handling
 	 * 
 	 * @throws Exception
 	 */
@@ -89,7 +90,8 @@ public class FileHandlerTest {
 	}
 
 	/**
-	 * This function deletes all of the connections in the connection manager
+	 * This function deletes all of the connections in the connection manager once
+	 * the tests have run and completed.
 	 * 
 	 * @throws Exception
 	 */

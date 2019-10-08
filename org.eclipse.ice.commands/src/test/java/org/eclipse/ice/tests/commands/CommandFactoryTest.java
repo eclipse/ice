@@ -27,6 +27,7 @@ import org.eclipse.ice.commands.CommandFactory;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
+import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +56,9 @@ public class CommandFactoryTest {
 	 */
 	String workingDirectory;
 
-	// Get the present working directory
+	/**
+	 * Get the present working directory to run things in
+	 */
 	String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
 
 	/**
@@ -73,10 +76,15 @@ public class CommandFactoryTest {
 	 */
 	ConnectionManager manager = new ConnectionManager();
 
+	/**
+	 * Default constructor
+	 */
 	public CommandFactoryTest() {
 	}
 
 	/**
+	 * Set up a hello world command configuration
+	 * 
 	 * @throws java.lang.Exception
 	 */
 	@Before
@@ -89,8 +97,7 @@ public class CommandFactoryTest {
 		 */
 
 		// Set the CommandConfiguration class with some default things that are relevant
-		// for all
-		// the test functions here
+		// for all the test functions here
 		commandConfig.setExecutable("./test_code_execution.sh");
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
 		commandConfig.setNumProcs("1");
@@ -116,12 +123,15 @@ public class CommandFactoryTest {
 		// in these tests.
 
 		// Make a string of all the output file names in this test
+		// Didn't want to do *.txt, in the event that it inadvertently deletes other
+		// files
+		// on people's computers
 		String rm = "someLocalErrFile.txt someLocalOutFile.txt someLocalErrFileDir.txt someLocalOutFileDir.txt";
 		rm += " someRemoteErrFile.txt someRemoteOutFile.txt someMultLocalErrFile.txt someMultLocalOutFile.txt";
 		rm += " someLsOutFile.txt someLsErrFile.txt someMultRemoteOutFile.txt someMultRemoteErrFile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
-		// TODO build this command for use in windows
+		// TODO - build this command for use in windows
 		command.add("/bin/bash");
 		command.add("-c");
 		command.add("rm " + rm);
@@ -135,11 +145,17 @@ public class CommandFactoryTest {
 		Process job = builder.start();
 		job.waitFor(); // wait for it to finish
 
+		// Remove lal the connections that were opened in testing
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		manager.removeAllConnections();
+
 	}
 
 	/**
 	 * This function tests a multi-hop remote command, where the command logs into a
-	 * remote host and then executes on a different remote host.
+	 * remote host and then executes on a different remote host. TODO - Commented
+	 * out for now since multi-hop command source code is not implemented and can be
+	 * for future development.
 	 */
 	// @Test
 	public void testMultiHopRemoteCommand() {
@@ -360,37 +376,14 @@ public class CommandFactoryTest {
 		commandConfig.setErrFileName("someRemoteErrFile.txt");
 		commandConfig.setOutFileName("someRemoteOutFile.txt");
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
-		// Set the connection configuration to a dummy remote connection
-		// Read in a dummy configuration file that contains credentials
-		File file = new File("/tmp/ice-remote-creds.txt");
-		Scanner scanner = null;
-		try {
-			scanner = new Scanner(file);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		// Scan line by line
-		scanner.useDelimiter("\n");
 
-		// Get the credentials for the dummy remote account
-		String username = scanner.next();
-		String password = scanner.next();
-		String hostname = scanner.next();
-
-		// Make the connection configuration
-		connectionConfig.setHostname(hostname);
-		connectionConfig.setUsername(username);
-		connectionConfig.setPassword(password);
-		// Note the password can be input at the console by not setting the
-		// the password explicitly in the connection configuration
-		connectionConfig.setName("dummyConnection");
-
-		connectionConfig.setDeleteWorkingDirectory(true);
+		// Get the connection configuration for remote testing
+		ConnectionConfiguration config = setupDummyConnectionConfiguration();
 
 		// Get the command
 		Command remoteCommand = null;
 		try {
-			remoteCommand = factory.getCommand(commandConfig, connectionConfig);
+			remoteCommand = factory.getCommand(commandConfig, config);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -418,37 +411,13 @@ public class CommandFactoryTest {
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectoryMult");
 		// Add another input file to the list of input files already started
 		commandConfig.addInputFile("someOtherFile", "someOtherInputFile.txt");
-		// Set the connection configuration to a dummy remote connection
-		// Read in a dummy configuration file that contains credentials
-		File file = new File("/tmp/ice-remote-creds.txt");
-		Scanner scanner = null;
-		try {
-			scanner = new Scanner(file);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		// Scan line by line
-		scanner.useDelimiter("\n");
 
-		// Get the credentials for the dummy remote account
-		String username = scanner.next();
-		String password = scanner.next();
-		String hostname = scanner.next();
-
-		// Make the connection configuration
-		connectionConfig.setHostname(hostname);
-		connectionConfig.setUsername(username);
-		connectionConfig.setPassword(password);
-		// Note the password can be input at the console by not setting the
-		// the password explicitly in the connection configuration
-		connectionConfig.setName("dummyConnection");
-
-		connectionConfig.setDeleteWorkingDirectory(true);
-
+		// Get the connection configuration
+		ConnectionConfiguration config = setupDummyConnectionConfiguration();
 		// Get the command
 		Command remoteCommand = null;
 		try {
-			remoteCommand = factory.getCommand(commandConfig, connectionConfig);
+			remoteCommand = factory.getCommand(commandConfig, config);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -490,6 +459,44 @@ public class CommandFactoryTest {
 
 		assert (status == CommandStatus.SUCCESS);
 
+	}
+
+	/**
+	 * A helper function to return the dummy connection configuration for remote
+	 * testing
+	 * 
+	 * @return - dummy connection configuration
+	 */
+	private ConnectionConfiguration setupDummyConnectionConfiguration() {
+		// Set the connection configuration to a dummy remote connection
+		// Read in a dummy configuration file that contains credentials
+		File file = new File("/tmp/ice-remote-creds.txt");
+		Scanner scanner = null;
+		try {
+			scanner = new Scanner(file);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		// Scan line by line
+		scanner.useDelimiter("\n");
+
+		// Get the credentials for the dummy remote account
+		String username = scanner.next();
+		String password = scanner.next();
+		String hostname = scanner.next();
+
+		ConnectionConfiguration cfg = new ConnectionConfiguration();
+		// Make the connection configuration
+		cfg.setHostname(hostname);
+		cfg.setUsername(username);
+		cfg.setPassword(password);
+		// Note the password can be input at the console by not setting the
+		// the password explicitly in the connection configuration
+		cfg.setName("dummyConnection");
+
+		cfg.setDeleteWorkingDirectory(true);
+
+		return cfg;
 	}
 
 	/**

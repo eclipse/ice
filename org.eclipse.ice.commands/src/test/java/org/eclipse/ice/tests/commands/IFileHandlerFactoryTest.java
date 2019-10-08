@@ -30,6 +30,7 @@ import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.FileHandlerFactory;
 import org.eclipse.ice.commands.IFileHandler;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 import com.jcraft.jsch.ChannelSftp;
@@ -138,14 +139,8 @@ public class IFileHandlerFactoryTest {
 		// Delete the source file that was created
 		try {
 			Files.deleteIfExists(localSourcePath);
-		} catch (NoSuchFileException e) {
-			System.err.format("%s: no such" + " file or directory%n", localSourcePath);
-			e.printStackTrace();
-		} catch (DirectoryNotEmptyException e) {
-			System.err.format("%s not empty%n", localSourcePath);
-			e.printStackTrace();
 		} catch (IOException e) {
-			System.err.println(e);
+			System.out.println("Couldn't delete path " + localSourcePath);
 			e.printStackTrace();
 		}
 		System.out.println("Successfully deleted local source file");
@@ -318,6 +313,18 @@ public class IFileHandlerFactoryTest {
 
 		// Disconnect channel
 		sftpChannel.disconnect();
+	}
+
+	/**
+	 * This function deletes all of the connections in the connection manager once
+	 * the tests have run and completed. Run it to clear the connection manager out
+	 * 
+	 * @throws Exception
+	 */
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		manager.removeAllConnections();
 	}
 
 	/**
