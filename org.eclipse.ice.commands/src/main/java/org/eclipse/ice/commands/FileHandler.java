@@ -217,7 +217,7 @@ public abstract class FileHandler implements IFileHandler {
 	protected CommandStatus executeTransfer(final String destination) {
 		// Execute the file transfer
 		transferStatus = command.execute();
-
+		
 		// Check that the move succeeded
 		boolean check = false;
 		try {

@@ -108,13 +108,11 @@ public class LocalMoveFileCommandTest {
 			
 		} catch (IOException e) {
 			System.err.println(e);
-			//e.printStackTrace();
 		}
 		try {
 			Files.deleteIfExists(destDir);
 		} catch (IOException e) {
 			System.err.println(e);
-			//e.printStackTrace();
 		}
 
 	}

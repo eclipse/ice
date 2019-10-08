@@ -112,8 +112,6 @@ public class FileHandlerTest {
 		factory.createLocalDestination();
 		localSource = factory.getSource();
 		localDestination = factory.getDestination();
-		System.out.println("Created source file at: " + localSource);
-		System.out.println("Created destination file at: " + localDestination);
 	}
 
 	/**
@@ -139,7 +137,9 @@ public class FileHandlerTest {
 
 		// Try to make a local temp file to play with
 		createLocalTempFile();
-
+		// Get the filename for testing exists later
+		String filename = localSource.substring(localSource.lastIndexOf("/"));
+		
 		FileHandler handler = null;
 		try {
 			handler = new LocalFileHandler();
@@ -151,7 +151,7 @@ public class FileHandlerTest {
 
 		// Check that it exists
 		try {
-			boolean exist = handler.exists(localDestination);
+			boolean exist = handler.exists(localDestination + filename);
 			assert (exist == true);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -175,10 +175,12 @@ public class FileHandlerTest {
 
 		// Try to make a local temp file to play with
 		createLocalTempFile();
-
+		// Get the filename for testing exists later
+		String filename = localSource.substring(localSource.lastIndexOf("/"));
 		FileHandler handler = null;
 		try {
 			handler = new LocalFileHandler();
+			
 			CommandStatus status = handler.move(localSource, localDestination);
 			assert (status == CommandStatus.SUCCESS);
 		} catch (IOException e) {
@@ -187,7 +189,7 @@ public class FileHandlerTest {
 
 		// Check that it exists
 		try {
-			boolean exist = handler.exists(localDestination);
+			boolean exist = handler.exists(localDestination + filename);
 			assert (exist == true);
 		} catch (IOException e) {
 			e.printStackTrace();

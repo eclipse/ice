@@ -75,11 +75,11 @@ public class CommandFactoryExample {
 
 		// Set the CommandConfiguration class
 		CommandConfiguration commandConfig = new CommandConfiguration();
-		commandConfig.setCommandId(1); // Give an ID to the job for tracking
+		commandConfig.setCommandId(2); // Give an ID to the job for tracking
 		// Set the executable. Alternatively one could type setExecutable("ls -lrt")
 		// for example, to list the directories in the remote host
 		commandConfig.setExecutable(script);
-		commandConfig.setInputFile(inputFile); // Set the input file for the script to run
+		commandConfig.addInputFile("inputfile", inputFile); // Set the input file for the script to run
 		commandConfig.setErrFileName("someRemoteErrFile.txt"); // Give an error file name
 		commandConfig.setOutFileName("someRemoteOutFile.txt"); // Give an out file name
 		commandConfig.setNumProcs("1"); // Set the number of processes
@@ -91,51 +91,10 @@ public class CommandFactoryExample {
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
 
 		System.out.println(scriptDir);
-		/**
-		 * Create a ConnectionConfiguration with the necessary information to open a
-		 * remote connection. See
-		 * {@link org.eclipse.ice.commands.ConnectionConfiguration} for relevant member
-		 * variables that one can set. Note about passwords: The password can be set to
-		 * open the connection; however, it is in general not recommended since Strings
-		 * are immutable and thus the password could in principle be identified with a
-		 * code profiler. The password is entered here for the dummy ssh account set up
-		 * for the CI build pipeline. Users have two options:
-		 * 
-		 * 1. They can set their password as shown below
-		 * 
-		 * 2. They can not set a password and they will be prompted for the password at
-		 * the console once the connection is trying to be established. This password is
-		 * received in an array of chars and subsequently deleted once the connection is
-		 * established.
-		 */
-		ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
-		// Set the connection configuration to a dummy remote connection
-		// Read in a dummy configuration file that contains credentials
-		File file = new File("/tmp/ice-remote-creds.txt");
-		Scanner scanner = null;
-		try {
-			scanner = new Scanner(file);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		// Scan line by line
-		scanner.useDelimiter("\n");
-
-		// Get the credentials for the dummy remote account
-		String username = scanner.next();
-		String password = scanner.next();
-		String hostname = scanner.next();
-
-		// Make the connection configuration
-		connectionConfig.setHostname(hostname);
-		connectionConfig.setUsername(username);
-		connectionConfig.setPassword(password);
-		// Give the connection a name
-		connectionConfig.setName("dummyConnection");
-
-		// Delete the remote working directory once we are finished running the job
-		connectionConfig.setDeleteWorkingDirectory(true);
-
+		
+		// Get the connection configuration credentials for the dummy host
+		ConnectionConfiguration connectionConfig = makeDumConnectionConfig();
+		
 		// Get the command
 		Command command = null;
 		try {
@@ -185,7 +144,8 @@ public class CommandFactoryExample {
 		CommandConfiguration commandConfig = new CommandConfiguration();
 		commandConfig.setCommandId(1);
 		commandConfig.setExecutable(script);
-		commandConfig.setInputFile(inputFile);
+		commandConfig.addInputFile("inputFile", inputFile);
+		commandConfig.addInputFile("otherInputFile", "someOtherInputFile.txt");
 		commandConfig.setErrFileName("someLocalErrFile.txt");
 		commandConfig.setOutFileName("someLocalOutFile.txt");
 		commandConfig.setNumProcs("1");
@@ -217,6 +177,58 @@ public class CommandFactoryExample {
 		return;
 	}
 
+	/**
+	 * This function creates a connection configuration for the dummy remote host
+	 * used in CI testing.
+	 * Create a ConnectionConfiguration with the necessary information to open a
+	 * remote connection. See
+	 * {@link org.eclipse.ice.commands.ConnectionConfiguration} for relevant member
+	 * variables that one can set. Note about passwords: The password can be set to
+	 * open the connection; however, it is in general not recommended since Strings
+	 * are immutable and thus the password could in principle be identified with a
+	 * code profiler. The password is entered here for the dummy ssh account set up
+	 * for the CI build pipeline. Users have two options:
+	 * 
+	 * 1. They can set their password as shown below
+	 * 
+	 * 2. They can not set a password and they will be prompted for the password at
+	 * the console once the connection is trying to be established. This password is
+	 * received in an array of chars and subsequently deleted once the connection is
+	 * established.
+	 */
+	private static ConnectionConfiguration makeDumConnectionConfig() {
+	
+		ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
+		// Set the connection configuration to a dummy remote connection
+		// Read in a dummy configuration file that contains credentials
+		File file = new File("/tmp/ice-remote-creds.txt");
+		Scanner scanner = null;
+		try {
+			scanner = new Scanner(file);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		// Scan line by line
+		scanner.useDelimiter("\n");
+
+		// Get the credentials for the dummy remote account
+		String username = scanner.next();
+		String password = scanner.next();
+		String hostname = scanner.next();
+
+		// Make the connection configuration
+		connectionConfig.setHostname(hostname);
+		connectionConfig.setUsername(username);
+		connectionConfig.setPassword(password);
+		// Give the connection a name
+		connectionConfig.setName("dummyConnection");
+
+		// Delete the remote working directory once we are finished running the job
+		connectionConfig.setDeleteWorkingDirectory(true);
+
+		return connectionConfig;
+	}
+	
 	/**
 	 * This function just returns the local hostname of your local computer
 	 * 

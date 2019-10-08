@@ -431,16 +431,12 @@ public class IFileHandlerFactoryTest {
 		// Make a local test file to play with
 		createLocalSource();
 		createLocalDestination();
-
+		System.out.println("Test local file handler factory change name");
 		IFileHandler handler = null;
 
 		// Make the new file name be the same file in the same directory, just a new
 		// name
-		String[] tokens = theSource.split("/");
-		String localNewName = "";
-		for (int i = 0; i < tokens.length - 1; i++)
-			localNewName += tokens[i] + "/";
-
+		String localNewName = theSource.substring(0,theSource.lastIndexOf("/") + 1);
 		localNewName += "NewFileName.txt";
 
 		System.out.println("New file path: " + localNewName);
