@@ -95,10 +95,19 @@ public class LocalMoveFileCommand extends LocalCommand {
 		else {
 			try {
 				status = CommandStatus.RUNNING;
-				Files.move(source, destination.resolve(source.getFileName()));
+				// Try to first move it as a new file name
+				Files.move(source, destination);
 			} catch (IOException e) {
-				e.printStackTrace();
-				return CommandStatus.FAILED;
+				try {
+					// If that catches, then try to move it into a different directory
+					// with the same name
+					Files.move(source, destination.resolve(source.getFileName()));
+				} catch (IOException e1) {
+					// If that catches, then it really failed and return as such
+					e.printStackTrace();
+					e1.printStackTrace();
+					return CommandStatus.FAILED;
+				}
 			}
 		}
 
