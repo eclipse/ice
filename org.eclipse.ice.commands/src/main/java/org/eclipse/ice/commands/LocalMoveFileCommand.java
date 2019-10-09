@@ -63,7 +63,8 @@ public class LocalMoveFileCommand extends LocalCommand {
 	 * CommandStatus indicating that the command is currently running and needs to
 	 * be checked that it completed correctly.
 	 * 
-	 * @return CommandStatus
+	 * @return CommandStatus - indicates whether or not the move was successful or
+	 *         not
 	 */
 	@Override
 	protected CommandStatus run() {
@@ -77,8 +78,7 @@ public class LocalMoveFileCommand extends LocalCommand {
 		String[] destinationDirs = destination.toString().split("/");
 
 		// If the directory paths are the same and the files have the same file
-		// extension
-		// type, then we are just changing a file name
+		// extension type, then we are just changing a file name
 		if (sameFileExtension) {
 			try {
 				status = CommandStatus.RUNNING;

@@ -33,7 +33,8 @@ public class ConnectionConfiguration {
 
 	/**
 	 * A name given to this particular connection configuration, which can be used
-	 * to identify the forthcoming connection
+	 * to identify the forthcoming connection and, for example, get it from the
+	 * ConnectionManager class
 	 */
 	private String name = "";
 

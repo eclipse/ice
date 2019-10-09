@@ -33,8 +33,8 @@ import com.jcraft.jsch.JSchException;
 public class ConnectionManager {
 
 	/**
-	 * An HashMap of available Connections to the ConnectionManager, organized by
-	 * the name of the connection and the connection itself.
+	 * A HashMap of available Connections to the ConnectionManager, organized by the
+	 * name of the connection and the connection itself.
 	 * 
 	 */
 	private HashMap<String, Connection> connectionList = new HashMap<String, Connection>();
@@ -52,7 +52,9 @@ public class ConnectionManager {
 	}
 
 	/**
-	 * Opens, and thus begins, a connection to a remote system
+	 * Opens, and thus begins, a connection to a remote system. Also adds the
+	 * connection to the list of connections given in
+	 * {@link org.eclipse.ice.commands.ConnectionManager#connectionList}
 	 * 
 	 * @param config - ConnectionConfiguration to be used to open connection
 	 * @return Connection - returns connection if successful, null otherwise

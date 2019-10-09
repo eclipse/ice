@@ -98,7 +98,7 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	@Override
 	public boolean exists(String file) throws IOException {
-		ChannelSftp sftpChannel = getConnection();
+		ChannelSftp sftpChannel = getChannel();
 		try {
 			sftpChannel.connect();
 			// Try to lstat the path. If an exception is thrown, it means it does not exist
@@ -131,7 +131,7 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	private boolean makeRemoteDirectory(String file) {
 		logger.warn("Path doesn't exist on the remote host, trying to make it.");
-		ChannelSftp sftpChannel = getConnection();
+		ChannelSftp sftpChannel = getChannel();
 		try {
 			// Connect the channel to try making the directory
 			sftpChannel.connect();
@@ -328,7 +328,7 @@ public class RemoteFileHandler extends FileHandler {
 	 * This function opens the connection, and keeps this code condensed and out of
 	 * the way of the main "workhorse" functions
 	 */
-	private ChannelSftp getConnection() {
+	private ChannelSftp getChannel() {
 		try {
 			// Get the connection associated with this configuration
 			Connection connection = ConnectionManagerFactory.getConnectionManager()

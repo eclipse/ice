@@ -119,6 +119,7 @@ public class LocalMoveFileCommandTest {
 
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.LocalMoveFileCommand()}
+	 * Tests moving a file to a different directory, with the same name
 	 * @throws Exception 
 	 */
 	@Test
@@ -129,9 +130,10 @@ public class LocalMoveFileCommandTest {
 		LocalMoveFileCommand command = new LocalMoveFileCommand();
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();
-
+		
+		String filename = source.substring(source.lastIndexOf("/"));
 		// Check if the path exists now
-		Path path = Paths.get(dest);
+		Path path = Paths.get(dest + filename);
 		assert (Files.exists(path));
 		
 		deleteFiles();
@@ -161,6 +163,8 @@ public class LocalMoveFileCommandTest {
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();
 
+		assert(status == CommandStatus.SUCCESS);
+		
 		// Check that the file exists with the new name
 		Path path = Paths.get(dest);
 		assert (Files.exists(path));
@@ -183,6 +187,8 @@ public class LocalMoveFileCommandTest {
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();
 
+		assert(status == CommandStatus.SUCCESS);
+		
 		// Check if the path exists now
 		Path path = Paths.get(dest);
 		assert (Files.exists(path));

@@ -40,7 +40,6 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	 * An int which determines what kind of file handle type it is, e.g.
 	 * local->remote, remote->local, or remote->remote
 	 */
-
 	private int copyType;
 
 	/**
@@ -109,6 +108,13 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 		return status;
 	}
 
+	/**
+	 * This is a function that executes a copy command on the remote host to copy a
+	 * file from one location on the remote host to another location on the remote
+	 * host.
+	 * 
+	 * @throws JSchException
+	 */
 	private void copyRemoteToRemote() throws JSchException {
 		getConnection().setChannel(getConnection().getSession().openChannel("exec"));
 		// TODO - test with windows, cp probably won't work
@@ -141,24 +147,6 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	 */
 	public String getDestination() {
 		return destination;
-	}
-
-	/**
-	 * Set the source file string
-	 * 
-	 * @param src
-	 */
-	public void setSource(String src) {
-		source = src;
-	}
-
-	/**
-	 * Set the destination file string
-	 * 
-	 * @param dest
-	 */
-	public void setDestination(String dest) {
-		destination = dest;
 	}
 
 	/**

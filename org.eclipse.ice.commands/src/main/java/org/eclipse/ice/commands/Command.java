@@ -13,7 +13,6 @@
 package org.eclipse.ice.commands;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,9 +22,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is the instantiation class of the CommandFactory class and thus is
- * responsible for executing particular commands. It is the base class for local
- * and remote commands, and thus delegates the creation of a LocalCommand or
- * RemoteCommand, depending on the hostname.
+ * responsible for executing particular commands. It is the super class for
+ * local and remote commands, and thus delegates the creation of a LocalCommand
+ * or RemoteCommand, depending on the hostname.
  * 
  * @author Joe Osborn
  *
@@ -123,6 +122,8 @@ public abstract class Command {
 	 * monitoring and returns that the exit value of the job was unsuccessful. The
 	 * function also writes to the output logfile what the actual final job exit
 	 * value is, so the user can always see if their job finished successfully.
+	 * 
+	 * @return - CommandStatus indicating the result of the function.
 	 */
 	protected abstract CommandStatus monitorJob();
 
@@ -131,7 +132,7 @@ public abstract class Command {
 	 * job after the process builder or JSch API has submitted the job to be
 	 * processed. These are things related to, for example, logging output.
 	 * 
-	 * @return
+	 * @return - CommandStatus indicating the result of the function.
 	 */
 	protected abstract CommandStatus finishJob();
 
@@ -145,65 +146,6 @@ public abstract class Command {
 	public CommandStatus cancel() {
 		status = CommandStatus.CANCELED;
 		return status;
-	}
-
-	/**
-	 * This function returns the status for a particular command at a given time in
-	 * the operation of the command.
-	 * 
-	 * @return - return current status for a particular command
-	 */
-	public CommandStatus getStatus() {
-		return status;
-	}
-
-	/**
-	 * This function sets the status for a particular command to be stat
-	 * 
-	 * @param stat - new CommandStatus to be set
-	 */
-	public void setStatus(CommandStatus stat) {
-		status = stat;
-		return;
-	}
-
-	/**
-	 * This function returns to the user the configuration that was used to create a
-	 * particular command.
-	 * 
-	 * @return - the particular configuration for this command
-	 */
-	public CommandConfiguration getCommandConfiguration() {
-		return commandConfig;
-	}
-
-	/**
-	 * This function sets the command configuration for a particular command
-	 * 
-	 * @param config
-	 */
-	public void setCommandConfiguration(CommandConfiguration config) {
-		commandConfig = config;
-	}
-
-	/**
-	 * This function returns to the user the configuration that was used to set up a
-	 * particular connection.
-	 * 
-	 * @return - the particular connection configuration for this command
-	 */
-	public ConnectionConfiguration getConnectionConfiguration() {
-		return connectionConfig;
-	}
-
-	/**
-	 * This function sets the configuration that is to be used to set up a
-	 * particular connection.
-	 * 
-	 * @param connect
-	 */
-	public void setConnectionConfiguration(ConnectionConfiguration connect) {
-		connectionConfig = connect;
 	}
 
 	/**
@@ -226,11 +168,26 @@ public abstract class Command {
 		}
 
 		// Check that the directory exists
-		// TODO - should use the file handler to check for file existence
-		File workDir = new File(commandConfig.getWorkingDirectory());
+		// Get the file handler factory
+		FileHandlerFactory factory = new FileHandlerFactory();
+		boolean exists = false;
+		try {
+			// Get the handler for this particular connection, whether local or remote
+			IFileHandler handler = factory.getFileHandler(connectionConfig);
+			// Check if the working directory exists
+			exists = handler.exists(commandConfig.getWorkingDirectory());
 
-		if (!workDir.exists()) {
-			logger.error("Directory containing files doesn't exist! Check it!!");
+		} catch (IOException e) {
+			// If we can't get the file handler, then there was an error in the connection
+			// configuration
+			logger.error("Unable to connect to filehandler and check file existence. Exiting.");
+			e.printStackTrace();
+			return CommandStatus.INFOERROR;
+		}
+		// If the working directory doesn't exist, we won't be able to continue the job
+		// processing
+		if (!exists) {
+			logger.error("Directory containing files does not exist! Check it!");
 			return CommandStatus.INFOERROR;
 		}
 
@@ -337,6 +294,65 @@ public abstract class Command {
 			throw new IOException();
 		}
 
+	}
+
+	/**
+	 * This function returns the status for a particular command at a given time in
+	 * the operation of the command.
+	 * 
+	 * @return - return current status for a particular command
+	 */
+	public CommandStatus getStatus() {
+		return status;
+	}
+
+	/**
+	 * This function sets the status for a particular command to be stat
+	 * 
+	 * @param stat - new CommandStatus to be set
+	 */
+	public void setStatus(CommandStatus stat) {
+		status = stat;
+		return;
+	}
+
+	/**
+	 * This function returns to the user the configuration that was used to create a
+	 * particular command.
+	 * 
+	 * @return - the particular configuration for this command
+	 */
+	public CommandConfiguration getCommandConfiguration() {
+		return commandConfig;
+	}
+
+	/**
+	 * This function sets the command configuration for a particular command
+	 * 
+	 * @param config
+	 */
+	public void setCommandConfiguration(CommandConfiguration config) {
+		commandConfig = config;
+	}
+
+	/**
+	 * This function returns to the user the configuration that was used to set up a
+	 * particular connection.
+	 * 
+	 * @return - the particular connection configuration for this command
+	 */
+	public ConnectionConfiguration getConnectionConfiguration() {
+		return connectionConfig;
+	}
+
+	/**
+	 * This function sets the configuration that is to be used to set up a
+	 * particular connection.
+	 * 
+	 * @param connect
+	 */
+	public void setConnectionConfiguration(ConnectionConfiguration connect) {
+		connectionConfig = connect;
 	}
 
 }

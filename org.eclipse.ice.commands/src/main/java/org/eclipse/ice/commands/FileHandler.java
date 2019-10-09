@@ -59,7 +59,7 @@ public abstract class FileHandler implements IFileHandler {
 
 	/**
 	 * This method is responsible for moving a file from a source to a destination
-	 * path If the operation fails, an exception is thrown
+	 * path. If the operation fails, an exception is thrown
 	 * 
 	 * @return - CommandStatus - a CommandStatus indicating whether or not the move
 	 *         was successful
@@ -85,7 +85,7 @@ public abstract class FileHandler implements IFileHandler {
 
 	/**
 	 * This method is responsible for copying a file from a source to a destination
-	 * path If the operation fails, an exception is thrown
+	 * path. If the operation fails, an exception is thrown
 	 * 
 	 * @return - CommandStatus - a CommandStatus indicating whether or not the copy
 	 *         was successful
@@ -114,8 +114,8 @@ public abstract class FileHandler implements IFileHandler {
 	 * destination strings. It is delegated to the subclasses so that the commands
 	 * can be cast appropriately
 	 * 
-	 * @param source
-	 * @param destination
+	 * @param source      - string of the source file
+	 * @param destination - string of the destination file
 	 */
 	protected abstract void configureMoveCommand(final String source, final String destination);
 
@@ -124,8 +124,8 @@ public abstract class FileHandler implements IFileHandler {
 	 * destination strings. It is delegated to the subclasses so that the commands
 	 * can be cast appropriately
 	 * 
-	 * @param source
-	 * @param destination
+	 * @param source      - string of the source file
+	 * @param destination - string of the destination file
 	 */
 	protected abstract void configureCopyCommand(final String source, final String destination);
 
@@ -189,7 +189,6 @@ public abstract class FileHandler implements IFileHandler {
 	 * @throws IOException thrown if the dest cannot be created
 	 */
 	protected boolean createDirectories(String dest) throws IOException {
-
 		boolean exists = false;
 		if (!exists(dest)) {
 			try {
@@ -217,7 +216,7 @@ public abstract class FileHandler implements IFileHandler {
 	protected CommandStatus executeTransfer(final String destination) {
 		// Execute the file transfer
 		transferStatus = command.execute();
-		
+
 		// Check that the move succeeded
 		boolean check = false;
 		try {

@@ -45,7 +45,8 @@ public class CommandFactory {
 	 * Remote commands where your local computer is connecting to a remote host. The
 	 * more generic getCommand function with three arguments is for the case where
 	 * one wants to connect remotely to a host, and then connect from that host to
-	 * another host to execute a command. See also the function below.
+	 * another host to execute a command. See also
+	 * {@link org.eclipse.ice.commands.CommandFactory#getCommand(CommandConfiguration, ConnectionConfiguration, ConnectionConfiguration)
 	 * 
 	 * @param commandConfig
 	 * @param connectConfig
@@ -121,7 +122,7 @@ public class CommandFactory {
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-
+		// Get the local host name from the operating system
 		String hostname = addr.getHostName();
 
 		// If the local hostname is the same as the hostname provided, then it is local

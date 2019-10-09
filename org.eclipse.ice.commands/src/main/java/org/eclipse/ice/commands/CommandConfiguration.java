@@ -56,7 +56,7 @@ public class CommandConfiguration {
 	private String executable;
 
 	/**
-	 * The input file that the executable needs or takes as an argument in its
+	 * The input file(s) that the executable needs or takes as an argument in its
 	 * processing. The first string is the name of the file as in the executable
 	 * string, while the second string is the path to that file
 	 */
@@ -100,12 +100,12 @@ public class CommandConfiguration {
 	 * The operating system that the command will be run on. Set by default to the
 	 * local OS
 	 */
-	private String os;
+	private String os = System.getProperty("os.name");
 
 	/**
 	 * The hostname that the command will be executed on. This is the same as the
-	 * hostname in {@link org.eclipse.ice.commands.Connection} and is just used for
-	 * output file purposes.
+	 * hostname in {@link org.eclipse.ice.commands.Connection} and is only used here
+	 * for logging purposes in the output files.
 	 */
 	private String hostname;
 
@@ -118,7 +118,8 @@ public class CommandConfiguration {
 	 * This is a string that contains all of the output of the job. This is the same
 	 * text that gets written out to
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOut}, just in string
-	 * form.
+	 * form. It is used for easy access to the output at the end of the job
+	 * processing, if desired.
 	 */
 	private String stdOutput = "";
 
@@ -126,7 +127,7 @@ public class CommandConfiguration {
 	 * This is a string that contains all of the error output from the job. This is
 	 * the same text that gets written out to
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdErr}, just in string
-	 * form for easy access.
+	 * form for easy access and for the same purposes as stdOutput above.
 	 */
 	private String errMsg = "";
 
@@ -155,7 +156,6 @@ public class CommandConfiguration {
 	public CommandConfiguration() {
 		// Assume some default variables
 		commandId = -999;
-		os = System.getProperty("os.name");
 	}
 
 	/**
@@ -247,6 +247,7 @@ public class CommandConfiguration {
 		// Add the input file name
 		header += "# Input files: " + getInputFiles() + "\n";
 
+		// Add the install directory name
 		header += "# Install directory: " + installDirectory + "\n";
 
 		// Add an empty line
@@ -382,7 +383,7 @@ public class CommandConfiguration {
 
 	/**
 	 * Getter for a string of inputFiles, see
-	 * {@link org.eclipse.ice.commands.CommandConfiguration#inputFile}
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#inputFiles}
 	 * 
 	 * @return inputFile
 	 */
@@ -396,7 +397,7 @@ public class CommandConfiguration {
 
 	/**
 	 * Getter for the inputFile hashmap itself, see
-	 * {@link org.eclipse.ice.commands.CommandConfiguration#inputFile}
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#inputFiles}
 	 * 
 	 * @return inputFile
 	 */

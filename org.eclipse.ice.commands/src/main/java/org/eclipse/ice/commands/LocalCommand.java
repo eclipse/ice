@@ -187,6 +187,7 @@ public class LocalCommand extends Command {
 	 * This function is responsible for actually running the Process in the command
 	 * line. It catches exceptions in the event that the job can't be started.
 	 * 
+	 * See also {@link org.eclipse.ice.commands.Command#processJob()}
 	 */
 	@Override
 	protected CommandStatus processJob() {
@@ -233,10 +234,10 @@ public class LocalCommand extends Command {
 	/**
 	 * This function cleans up the remaining tasks left after job processing. This
 	 * is mostly logging output files, and checking that the process actually
-	 * finished successfully according to the ProcessBuilder
+	 * finished successfully according to the ProcessBuilder.
 	 * 
-	 * @param errorMessage - A string of any potential errors that were thrown
-	 *                     during job execution
+	 * See also {@link org.eclipse.ice.commands.Command#finishJob()}
+	 * 
 	 * @return - CommandStatus indicating whether or not the function processed
 	 *         correctly
 	 */
@@ -361,16 +362,6 @@ public class LocalCommand extends Command {
 			return CommandStatus.SUCCESS;
 		else
 			return CommandStatus.FAILED;
-	}
-
-	/**
-	 * Method that overrides Commmand:Cancel and actually implements the particular
-	 * LocalCommand to be cancelled.
-	 */
-	@Override
-	public CommandStatus cancel() {
-		status = CommandStatus.CANCELED;
-		return status;
 	}
 
 }

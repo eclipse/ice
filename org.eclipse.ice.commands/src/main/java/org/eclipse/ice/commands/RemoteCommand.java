@@ -44,7 +44,8 @@ public class RemoteCommand extends Command {
 	/**
 	 * An additional connection that is used for multi-hop connections, where a user
 	 * connects to an intermediary machine (with connection, above) and then uses
-	 * that machine to connect to a second machine.
+	 * that machine to connect to a second machine. TODO - Implement multi-hop
+	 * connections with secondConnection
 	 */
 	private Connection secondConnection = new Connection();
 
@@ -171,7 +172,9 @@ public class RemoteCommand extends Command {
 	 * This function deletes the remote working directory if the user so desires and
 	 * then disconnects the remote channel to finish up the job processing.
 	 * 
-	 * @return
+	 * See also {@link org.eclipse.ice.commands.Command#finishJob()}
+	 * 
+	 * @return CommandStatus
 	 */
 	@Override
 	protected CommandStatus finishJob() {
@@ -241,7 +244,9 @@ public class RemoteCommand extends Command {
 	 * connection. Since they can't be run all together they have to be run
 	 * individually.
 	 * 
-	 * @return
+	 * See also {@link org.eclipse.ice.commands.Command#processJob()}
+	 * 
+	 * @return CommandStatus
 	 */
 	@Override
 	protected CommandStatus processJob() {
@@ -411,10 +416,11 @@ public class RemoteCommand extends Command {
 	}
 
 	/**
-	 * Recurisve function that deletes a remote directory and its contents
+	 * Recursive function that deletes a remote directory and its contents
 	 * 
-	 * @param sftpChannel
-	 * @param path
+	 * @param sftpChannel - channel with which to use to delete the remote
+	 *                    directories
+	 * @param path        - top directory to delete
 	 * @throws SftpException
 	 */
 	private void deleteRemoteDirectory(ChannelSftp sftpChannel, String path) throws SftpException {

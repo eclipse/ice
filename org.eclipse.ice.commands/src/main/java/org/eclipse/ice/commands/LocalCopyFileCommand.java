@@ -83,16 +83,6 @@ public class LocalCopyFileCommand extends LocalCommand {
 	}
 
 	/**
-	 * This function cancels the command when called. See also
-	 * {@link org.eclipse.ice.commands.Command#cancel()}
-	 */
-	@Override
-	public CommandStatus cancel() {
-		status = CommandStatus.CANCELED;
-		return CommandStatus.CANCELED;
-	}
-
-	/**
 	 * This function sets the Paths for source and destination to the given strings
 	 * 
 	 * @param src  - string corresponding to the source file
