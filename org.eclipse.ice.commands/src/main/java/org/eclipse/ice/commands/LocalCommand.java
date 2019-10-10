@@ -105,13 +105,8 @@ public class LocalCommand extends Command {
 			status = finishJob();
 
 			// Check the status to ensure the job hasn't failed
-			try {
-				checkStatus(status);
-			} catch (IOException e) {
-				// If not, return failed
-				e.printStackTrace();
+			if(!checkStatus(status))
 				return CommandStatus.FAILED;
-			}
 
 			// Monitor the job to ensure it finished successfully or to watch it
 			// if it is still running
@@ -121,13 +116,8 @@ public class LocalCommand extends Command {
 			}
 
 			// Now check again to see if the job succeeded
-			try {
-				checkStatus(status);
-			} catch (IOException e) {
-				// If not, return failed
-				e.printStackTrace();
+			if(!checkStatus(status))
 				return CommandStatus.FAILED;
-			}
 
 		}
 
@@ -330,8 +320,7 @@ public class LocalCommand extends Command {
 					logger.warn("IllegalThreadStateException, still going to keep monitoring the job...");
 					commandConfig.getStdErr().write(getClass().getName() + "IllegalThreadStateException!: " + e);
 				} catch (IOException e1) {
-					logger.error("Couldn't write to stderr file!");
-					e1.printStackTrace();
+					logger.error("Couldn't write to stderr file! Returning failed.");
 					return CommandStatus.FAILED;
 				}
 			}
@@ -346,8 +335,7 @@ public class LocalCommand extends Command {
 					logger.error("Couldn't wait for the job to finish...");
 					commandConfig.getStdErr().write(getClass().getName() + " InterruptedException!: " + e);
 				} catch (IOException e1) {
-					logger.error("Couldn't write exception to error file!");
-					e1.printStackTrace();
+					logger.error("Couldn't write exception to error file! Returning failed.");
 					return CommandStatus.FAILED;
 				}
 			}
@@ -364,8 +352,7 @@ public class LocalCommand extends Command {
 		try {
 			commandConfig.getStdOut().write("INFO: Command::monitorJob Message: Exit value = " + exitValue + "\n");
 		} catch (IOException e) {
-			logger.error("Couldn't write final command exit value to the std out file. Exit value = " + exitValue);
-			e.printStackTrace();
+			logger.error("Couldn't write final command exit value to the std out file. Returning failed. Exit value = " + exitValue);
 			return CommandStatus.FAILED;
 		}
 

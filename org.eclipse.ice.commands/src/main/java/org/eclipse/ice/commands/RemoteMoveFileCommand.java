@@ -99,8 +99,7 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 				return status;
 			}
 		} catch (JSchException | SftpException e) {
-			logger.error("Remote move failed. Exiting.");
-			e.printStackTrace();
+			logger.error("Remote move failed. Returning failed.");
 			status = CommandStatus.FAILED;
 			return status;
 		}

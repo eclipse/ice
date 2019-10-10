@@ -88,8 +88,7 @@ public class RemoteFileHandler extends FileHandler {
 			try {
 				manager.openConnection(config);
 			} catch (JSchException e) {
-				logger.error("Connection could not be established.");
-				e.printStackTrace();
+				logger.error("Connection could not be established. Transfer will fail.");
 			}
 		}
 
@@ -159,7 +158,6 @@ public class RemoteFileHandler extends FileHandler {
 			logger.info("Made new remote directory");
 		} catch (JSchException | SftpException e) {
 			logger.error("Couldn't make nonexistent remote directory, exiting.");
-			e.printStackTrace();
 			return false;
 		}
 		// Disconnect the channel when finished
@@ -340,9 +338,8 @@ public class RemoteFileHandler extends FileHandler {
 			return sftpChannel;
 		} catch (JSchException e) {
 			// If there was a Jsch connection problem, puke
-			logger.error("Couldn't connect to the remote ssh connection!");
+			logger.error("Couldn't connect to the remote ssh connection! Returning info error.");
 			command.setStatus(CommandStatus.INFOERROR);
-			e.printStackTrace();
 			return null;
 		}
 	}

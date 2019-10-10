@@ -72,22 +72,14 @@ public abstract class Command {
 	public CommandStatus execute() {
 		// Check that the commandConfig and connectionConfig(s) file was properly
 		// instantiated in the constructor
-		try {
-			checkStatus(status);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(!checkStatus(status))
 			return CommandStatus.INFOERROR;
-		}
 
 		// Configure the command to be ready to run.
 		status = setConfiguration();
 		// Ensure that the command was properly configured
-		try {
-			checkStatus(status);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(!checkStatus(status))
 			return CommandStatus.INFOERROR;
-		}
 
 		// Now that all of the prerequisites have been set, start the job running
 		status = run();
@@ -181,7 +173,6 @@ public abstract class Command {
 			// If we can't get the file handler, then there was an error in the connection
 			// configuration
 			logger.error("Unable to connect to filehandler and check file existence. Exiting.");
-			e.printStackTrace();
 			return CommandStatus.INFOERROR;
 		}
 		// If the working directory doesn't exist, we won't be able to continue the job
@@ -282,16 +273,18 @@ public abstract class Command {
 	 * command status is not set to a flagged error, e.g. failed.
 	 * 
 	 * @param current_status
+	 * @return boolean indicating whether or not status is good to continue (true) 
+	 * or whether or not job has failed (returns false)
 	 */
-	public void checkStatus(CommandStatus current_status) throws IOException {
+	public boolean checkStatus(CommandStatus current_status) {
 
 		if (current_status != CommandStatus.FAILED && current_status != CommandStatus.INFOERROR) {
 			logger.info("The current status is: " + current_status);
-			return;
+			return true;
 		} else {
 			logger.error("The job failed with status: " + current_status);
 			logger.error("Check your error logfile for more details! Exiting now!");
-			throw new IOException();
+			return false;
 		}
 
 	}

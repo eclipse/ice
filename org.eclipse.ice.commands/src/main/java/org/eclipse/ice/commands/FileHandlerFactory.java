@@ -78,8 +78,7 @@ public class FileHandlerFactory {
 		try {
 			addr = InetAddress.getLocalHost();
 		} catch (UnknownHostException e) {
-			logger.error("Could not identify local host in file handling.");
-			e.printStackTrace();
+			logger.error("Could not identify local host in file handling. FileHandler will fail.");
 		}
 
 		String hostname = addr.getHostName();

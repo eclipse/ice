@@ -98,8 +98,7 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 			}
 
 		} catch (JSchException | SftpException e) {
-			logger.error("Failed to connect to remote host. Exiting.");
-			e.printStackTrace();
+			logger.error("Failed to connect to remote host. Returning failed.");
 			status = CommandStatus.FAILED;
 			return status;
 		}

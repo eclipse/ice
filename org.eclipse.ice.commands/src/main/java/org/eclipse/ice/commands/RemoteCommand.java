@@ -106,7 +106,7 @@ public class RemoteCommand extends Command {
 			// remotely!
 			status = CommandStatus.INFOERROR;
 			logger.error("There was a connection failure in the construction of Remote Command!");
-			e.printStackTrace();
+			logger.error("Returning info error");
 			return;
 		}
 
@@ -126,42 +126,28 @@ public class RemoteCommand extends Command {
 			status = transferFiles();
 		} catch (SftpException | JSchException | IOException e) {
 			logger.error("File transfer error, could not complete file transfers to remote host. Exiting.");
-			e.printStackTrace();
+			logger.error("Returning info error");
 			return CommandStatus.INFOERROR;
 		}
 
 		// Check the status to ensure file transfer was successful
-		try {
-			checkStatus(status);
-		} catch (IOException e) {
-			// If it wasn't successful, return
-			e.printStackTrace();
+		if(!checkStatus(status))
 			return CommandStatus.INFOERROR;
-		}
+		
 
 		// Execute the commands on the remote host
 		status = processJob();
 
 		// Check the status to ensure nothing failed
-		try {
-			checkStatus(status);
-		} catch (IOException e) {
-			// If it failed, return so
-			e.printStackTrace();
+		if(!checkStatus(status))
 			return CommandStatus.FAILED;
-		}
 
 		// Monitor the job to check its exit value and ensure it finishes correctly
 		status = monitorJob();
 
 		// Check the status to ensure job finished successfully
-		try {
-			checkStatus(status);
-		} catch (IOException e) {
-			// If it failed, return so
-			e.printStackTrace();
+		if(!checkStatus(status))
 			return CommandStatus.FAILED;
-		}
 
 		// Finish the job by cleaning up the remote directories created
 		status = finishJob();
@@ -191,8 +177,7 @@ public class RemoteCommand extends Command {
 			} catch (JSchException | SftpException e) {
 				// This exception just needs to be logged, since it is not harmful to
 				// the job processing in any way
-				e.printStackTrace();
-				logger.error("Unable to delete remote directory tree");
+				logger.warn("Unable to delete remote directory tree.");
 			}
 		}
 
@@ -224,7 +209,6 @@ public class RemoteCommand extends Command {
 			} catch (InterruptedException e) {
 				// Just log this exception, see if thread can wait next iteration
 				logger.error("Thread couldn't wait for another second while monitoring job...");
-				e.printStackTrace();
 			}
 			// Query the exit status. 0 is normal completion, everything else is abnormal
 			exitValue = ((ChannelExec) connection.getChannel()).getExitStatus();
@@ -272,9 +256,8 @@ public class RemoteCommand extends Command {
 			try {
 				connection.setChannel(connection.getSession().openChannel("exec"));
 			} catch (JSchException e) {
-				logger.error("Execution channel could not be opened over JSch...");
-				// If it can't be opened, puke
-				e.printStackTrace();
+				logger.error("Execution channel could not be opened over JSch... Returning failed.");
+				// If it can't be opened, fail
 				return CommandStatus.FAILED;
 			}
 
@@ -291,9 +274,8 @@ public class RemoteCommand extends Command {
 				// Set the input stream for the connection object
 				connection.setInputStream(connection.getChannel().getInputStream());
 			} catch (IOException e) {
-				logger.error("Input stream could not be set in JSch...");
-				// If we can't set the input stream, puke
-				e.printStackTrace();
+				logger.error("Input stream could not be set in JSch... Returning failed.");
+				// If we can't set the input stream, fail
 				return CommandStatus.FAILED;
 			}
 
@@ -306,10 +288,9 @@ public class RemoteCommand extends Command {
 				connection.getChannel().setOutputStream(stdOutBufferedStream);
 				((ChannelExec) connection.getChannel()).setErrStream(stdErrStream);
 			} catch (FileNotFoundException e) {
-				logger.error("Logging streams could not be set in JSch...");
+				logger.error("Logging streams could not be set in JSch... Returning failed.");
 				// If logging streams can't be set, return failed since we won't be
 				// able to see if job was successful or not
-				e.printStackTrace();
 				return CommandStatus.FAILED;
 			}
 
@@ -322,12 +303,10 @@ public class RemoteCommand extends Command {
 				logOutput(connection.getChannel().getInputStream(),
 						((ChannelExec) connection.getChannel()).getErrStream());
 			} catch (JSchException e) {
-				logger.error("Couldn't connect the channel to run the executable!");
-				e.printStackTrace();
+				logger.error("Couldn't connect the channel to run the executable! Returning failed.");
 				return CommandStatus.FAILED;
 			} catch (IOException e) {
-				logger.error("Couldn't log the output!");
-				e.printStackTrace();
+				logger.error("Couldn't log the output! Returning failed.");
 				return CommandStatus.FAILED;
 			}
 		}

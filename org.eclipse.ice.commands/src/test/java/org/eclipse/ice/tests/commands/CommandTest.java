@@ -14,7 +14,6 @@ package org.eclipse.ice.tests.commands;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Scanner;
 
 import org.eclipse.ice.commands.Command;
@@ -160,11 +159,7 @@ public class CommandTest {
 
 		// Check to make sure that an exception is thrown for a bad status when the
 		// status is checked
-		try {
-			command.checkStatus(status);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		assert(!command.checkStatus(status));
 	}
 
 }
