@@ -189,6 +189,8 @@ public class RemoteCommand extends Command {
 				// Delete the directory and all of the contents
 				deleteRemoteDirectory(channel, commandConfig.getRemoteWorkingDirectory());
 			} catch (JSchException | SftpException e) {
+				// This exception just needs to be logged, since it is not harmful to
+				// the job processing in any way
 				e.printStackTrace();
 				logger.error("Unable to delete remote directory tree");
 			}
@@ -220,6 +222,7 @@ public class RemoteCommand extends Command {
 				// Give it a second to finish up
 				Thread.currentThread().sleep(1000);
 			} catch (InterruptedException e) {
+				// Just log this exception, see if thread can wait next iteration
 				logger.error("Thread couldn't wait for another second while monitoring job...");
 				e.printStackTrace();
 			}
@@ -271,6 +274,7 @@ public class RemoteCommand extends Command {
 				logger.error("Execution channel could not be opened over JSch...");
 				// If it can't be opened, puke
 				e.printStackTrace();
+				return CommandStatus.FAILED;
 			}
 
 			// Give the command to the channel connection
@@ -289,6 +293,7 @@ public class RemoteCommand extends Command {
 				logger.error("Input stream could not be set in JSch...");
 				// If we can't set the input stream, puke
 				e.printStackTrace();
+				return CommandStatus.FAILED;
 			}
 
 			// Setup the output streams and pass them to the connection channel
@@ -301,8 +306,10 @@ public class RemoteCommand extends Command {
 				((ChannelExec) connection.getChannel()).setErrStream(stdErrStream);
 			} catch (FileNotFoundException e) {
 				logger.error("Logging streams could not be set in JSch...");
-				// If logging streams can't be set, puke
+				// If logging streams can't be set, return failed since we won't be
+				// able to see if job was successful or not
 				e.printStackTrace();
+				return CommandStatus.FAILED;
 			}
 
 			// Make sure the channel is connected

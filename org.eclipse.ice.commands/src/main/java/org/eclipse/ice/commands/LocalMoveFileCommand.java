@@ -110,7 +110,8 @@ public class LocalMoveFileCommand extends LocalCommand {
 					// If that catches, then it really failed and return as such
 					e.printStackTrace();
 					e1.printStackTrace();
-					return CommandStatus.FAILED;
+					status = CommandStatus.FAILED;
+					return status;
 				}
 			}
 		}

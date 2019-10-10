@@ -183,6 +183,7 @@ public class CommandConfiguration {
 			e.printStackTrace();
 		}
 
+		return;
 	}
 
 	/**
@@ -204,6 +205,7 @@ public class CommandConfiguration {
 			} catch (IOException e) {
 				logger.error("Could not retrieve a file writer for buffer writing");
 				e.printStackTrace();
+				return null;
 			}
 			bufferedWriter = new BufferedWriter(writer);
 			return bufferedWriter;
@@ -231,6 +233,9 @@ public class CommandConfiguration {
 		} catch (UnknownHostException e) {
 			logger.error("Could not identify local host name in output header creation.");
 			e.printStackTrace();
+			// To handle this exception, we can just set the local host name since it's only
+			// purpose is for logging in the header file
+			localHostname = "UNKNOWN";
 		}
 
 		// Add the header file name so that it can be identified

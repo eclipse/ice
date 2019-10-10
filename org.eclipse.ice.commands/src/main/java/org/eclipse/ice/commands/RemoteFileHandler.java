@@ -82,6 +82,7 @@ public class RemoteFileHandler extends FileHandler {
 
 		// First check if there is already an existing connection open with these
 		// details
+		// TODO - is there a way to re-establish an already existing connection?
 		if (manager.getConnection(config.getName()) == null) {
 			// If there isn't one open, try to open the connection
 			try {
