@@ -66,18 +66,28 @@ public abstract class FileHandler implements IFileHandler {
 	 * @throws IOException
 	 */
 	@Override
-	public CommandStatus move(final String source, final String destination) throws IOException {
+	public CommandStatus move(final String source, final String destination) {
 		// Set the transfer status to processing, to indicate the transfer is beginning
 		transferStatus = CommandStatus.PROCESSING;
 
 		// Check the file existence. If they don't exist, an exception is thrown
-		checkExistence(source, destination);
+		try {
+			checkExistence(source, destination);
+		} catch (IOException e) {
+			logger.error("The source and/or destination file could not be confirmed to exist...");
+			e.printStackTrace();
+		}
 
 		// Set the commands to have the appropriate properties
 		configureMoveCommand(source, destination);
 
 		// Execute and process the file transfer
-		transferStatus = executeTransfer(destination);
+		try {
+			transferStatus = executeTransfer(destination);
+		} catch (IOException e) {
+			logger.error("Destination file does not exist! File transfer failed!");
+			e.printStackTrace();
+		}
 
 		// Return whether or not it succeeded
 		return transferStatus;
@@ -92,18 +102,28 @@ public abstract class FileHandler implements IFileHandler {
 	 * @throws IOException
 	 */
 	@Override
-	public CommandStatus copy(final String source, final String destination) throws IOException {
+	public CommandStatus copy(final String source, final String destination) {
 		// Set the transfer status to processing, to indicate the transfer is beginning
 		transferStatus = CommandStatus.PROCESSING;
 
 		// Check the file existence. If one or both don't exist, an exception is thrown
-		checkExistence(source, destination);
+		try {
+			checkExistence(source, destination);
+		} catch (IOException e1) {
+			logger.error("The source and/or destination file could not be confirmed to exist...");
+			e1.printStackTrace();
+		}
 
 		// Set the commands to have the appropriate properties
 		configureCopyCommand(source, destination);
 
 		// Execute and process the file transfer
-		transferStatus = executeTransfer(destination);
+		try {
+			transferStatus = executeTransfer(destination);
+		} catch (IOException e) {
+			logger.error("Destination file does not exist! File transfer failed!");
+			e.printStackTrace();
+		}
 
 		// Return whether or not it succeeded
 		return transferStatus;
@@ -212,18 +232,14 @@ public abstract class FileHandler implements IFileHandler {
 	 * @param destination - destination for the file to go to
 	 * @return - CommandStatus indicating whether or not the transfer completed
 	 *         successfully
+	 * @throws IOException 
 	 */
-	protected CommandStatus executeTransfer(final String destination) {
+	protected CommandStatus executeTransfer(final String destination) throws IOException {
 		// Execute the file transfer
 		transferStatus = command.execute();
 
 		// Check that the move succeeded
-		boolean check = false;
-		try {
-			check = exists(destination);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		boolean check = exists(destination);
 
 		if (check)
 			return CommandStatus.SUCCESS;
