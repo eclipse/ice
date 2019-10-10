@@ -237,7 +237,8 @@ public class RemoteCommand extends Command {
 			}
 		}
 
-		// If the job returns anything other than 0, then the job failed. Otherwise success
+		// If the job returns anything other than 0, then the job failed. Otherwise
+		// success
 		if (exitValue != 0)
 			return CommandStatus.FAILED;
 
@@ -313,29 +314,24 @@ public class RemoteCommand extends Command {
 			}
 
 			// Make sure the channel is connected
-			if (!connection.getChannel().isConnected()) {
-				try {
-					// Connect and run the executable
-					connection.getChannel().connect();
+			try {
+				// Connect and run the executable
+				connection.getChannel().connect();
 
-					// Log the output and error streams
-					logOutput(connection.getChannel().getInputStream(),
-							((ChannelExec) connection.getChannel()).getErrStream());
-				} catch (JSchException e) {
-					logger.error("Couldn't connect the channel to run the executable!");
-					e.printStackTrace();
-					return CommandStatus.FAILED;
-				} catch (IOException e) {
-					logger.error("Couldn't log the output!");
-					e.printStackTrace();
-					return CommandStatus.FAILED;
-				}
-			} else {
-				logger.error("Channel is not connected! Can't execute remotely...");
+				// Log the output and error streams
+				logOutput(connection.getChannel().getInputStream(),
+						((ChannelExec) connection.getChannel()).getErrStream());
+			} catch (JSchException e) {
+				logger.error("Couldn't connect the channel to run the executable!");
+				e.printStackTrace();
+				return CommandStatus.FAILED;
+			} catch (IOException e) {
+				logger.error("Couldn't log the output!");
+				e.printStackTrace();
 				return CommandStatus.FAILED;
 			}
-
 		}
+
 		return CommandStatus.RUNNING;
 	}
 

@@ -123,12 +123,13 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 		// Set the command for the JSch connection
 		((ChannelExec) getConnection().getChannel()).setCommand(command);
 		// If the channel isn't connected, connect and run the command
-		if (!getConnection().getChannel().isConnected()) {
+		try {
 			getConnection().getChannel().connect();
-		} else {
+		} catch (JSchException e) {
 			logger.error("Channel isn't connected and can't copy remote to remote...");
-			throw new JSchException();
+			throw e;
 		}
+
 	}
 
 	/**
