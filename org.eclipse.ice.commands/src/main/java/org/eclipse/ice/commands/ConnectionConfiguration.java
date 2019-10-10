@@ -64,8 +64,8 @@ public class ConnectionConfiguration {
 	 * 
 	 * @param uname
 	 */
-	public void setUsername(String uname) {
-		username = uname;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	/**
@@ -83,8 +83,8 @@ public class ConnectionConfiguration {
 	 * 
 	 * @param hname
 	 */
-	public void setHostname(String hname) {
-		hostname = hname;
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
 	}
 
 	/**
@@ -111,8 +111,8 @@ public class ConnectionConfiguration {
 	 * 
 	 * @return - name
 	 */
-	public void setName(String _name) {
-		name = _name;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -145,8 +145,8 @@ public class ConnectionConfiguration {
 	 * 
 	 * @param _pass
 	 */
-	public void setPassword(String _pass) {
-		password = _pass;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	/**

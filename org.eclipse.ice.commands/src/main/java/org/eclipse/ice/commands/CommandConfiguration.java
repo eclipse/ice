@@ -334,8 +334,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param _commandId
 	 */
-	public void setCommandId(int _commandId) {
-		commandId = _commandId;
+	public void setCommandId(int commandId) {
+		this.commandId = commandId;
 		return;
 	}
 
@@ -355,8 +355,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param exec
 	 */
-	public void setExecutable(String exec) {
-		executable = exec;
+	public void setExecutable(String executable) {
+		this.executable = executable;
 		return;
 	}
 
@@ -382,7 +382,7 @@ public class CommandConfiguration {
 	}
 
 	/**
-	 * Getter for a string of inputFiles, see
+	 * Getter for a concatenated string of inputFiles, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#inputFiles}
 	 * 
 	 * @return inputFile
@@ -411,8 +411,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param errFile
 	 */
-	public void setErrFileName(String errFile) {
-		stdErrFileName = errFile;
+	public void setErrFileName(String stdErrFileName) {
+		this.stdErrFileName = stdErrFileName;
 		return;
 	}
 
@@ -432,8 +432,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param outFile
 	 */
-	public void setOutFileName(String outFile) {
-		stdOutFileName = outFile;
+	public void setOutFileName(String stdOutFileName) {
+		this.stdOutFileName = stdOutFileName;
 		return;
 	}
 
@@ -453,8 +453,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param procs
 	 */
-	public void setNumProcs(String procs) {
-		numProcs = procs;
+	public void setNumProcs(String numProcs) {
+		this.numProcs = numProcs;
 		return;
 	}
 
@@ -474,8 +474,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param installDir
 	 */
-	public void setInstallDirectory(String installDir) {
-		installDirectory = installDir;
+	public void setInstallDirectory(String installDirectory) {
+		this.installDirectory = installDirectory;
 		return;
 	}
 
@@ -505,8 +505,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param OS
 	 */
-	public void setOS(String OS) {
-		os = OS;
+	public void setOS(String os) {
+		this.os = os;
 	}
 
 	/**
@@ -515,8 +515,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param workingDir
 	 */
-	public void setWorkingDirectory(String workingDir) {
-		workingDirectory = workingDir;
+	public void setWorkingDirectory(String workingDirectory) {
+		this.workingDirectory = workingDirectory;
 		return;
 	}
 
@@ -536,8 +536,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param _appendInput
 	 */
-	public void setAppendInput(boolean _appendInput) {
-		appendInput = _appendInput;
+	public void setAppendInput(boolean appendInput) {
+		this.appendInput = appendInput;
 		return;
 	}
 
@@ -559,8 +559,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param host
 	 */
-	protected void setHostname(String host) {
-		hostname = host;
+	protected void setHostname(String hostname) {
+		this.hostname = hostname;
 		return;
 	}
 
@@ -580,8 +580,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param writer
 	 */
-	public void setStdErr(BufferedWriter writer) {
-		stdErr = writer;
+	public void setStdErr(BufferedWriter stdErr) {
+		this.stdErr = stdErr;
 		return;
 	}
 
@@ -601,8 +601,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param writer
 	 */
-	public void setStdOut(BufferedWriter writer) {
-		stdOut = writer;
+	public void setStdOut(BufferedWriter stdOut) {
+		this.stdOut = stdOut;
 		return;
 	}
 
@@ -622,8 +622,8 @@ public class CommandConfiguration {
 	 * 
 	 * @return stdOutput
 	 */
-	public void setStdOutputString(String out) {
-		stdOutput = out;
+	public void setStdOutputString(String stdOutput) {
+		this.stdOutput = stdOutput;
 	}
 
 	/**
@@ -666,8 +666,8 @@ public class CommandConfiguration {
 	 *
 	 * 
 	 */
-	protected void setFullCommand(String command) {
-		fullCommand = command;
+	protected void setFullCommand(String fullCommand) {
+		this.fullCommand = fullCommand;
 		return;
 	}
 
@@ -687,8 +687,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param
 	 */
-	public void addToErrString(String _err) {
-		errMsg += _err;
+	public void addToErrString(String errMsg) {
+		this.errMsg += errMsg;
 	}
 
 	/**
@@ -697,8 +697,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param
 	 */
-	public void setErrString(String _err) {
-		errMsg = _err;
+	public void setErrString(String errMsg) {
+		this.errMsg = errMsg;
 	}
 
 	/**
@@ -717,8 +717,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param dir
 	 */
-	public void setRemoteWorkingDirectory(String dir) {
-		remoteWorkingDirectory = dir;
+	public void setRemoteWorkingDirectory(String remoteWorkingDirectory) {
+		this.remoteWorkingDirectory = remoteWorkingDirectory;
 	}
 
 	/**

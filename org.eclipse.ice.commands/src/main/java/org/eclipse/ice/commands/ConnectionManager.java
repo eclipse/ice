@@ -271,8 +271,8 @@ public class ConnectionManager {
 	 * 
 	 * @param connections
 	 */
-	public void setConnectionList(HashMap<String, Connection> connections) {
-		connectionList = connections;
+	public void setConnectionList(HashMap<String, Connection> connectionList) {
+		this.connectionList = connectionList;
 	}
 
 	/**

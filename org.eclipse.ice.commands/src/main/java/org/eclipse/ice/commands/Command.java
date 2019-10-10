@@ -311,8 +311,8 @@ public abstract class Command {
 	 * 
 	 * @param stat - new CommandStatus to be set
 	 */
-	public void setStatus(CommandStatus stat) {
-		status = stat;
+	public void setStatus(CommandStatus status) {
+		this.status = status;
 		return;
 	}
 
@@ -331,8 +331,8 @@ public abstract class Command {
 	 * 
 	 * @param config
 	 */
-	public void setCommandConfiguration(CommandConfiguration config) {
-		commandConfig = config;
+	public void setCommandConfiguration(CommandConfiguration commandConfig) {
+		this.commandConfig = commandConfig;
 	}
 
 	/**
@@ -351,8 +351,8 @@ public abstract class Command {
 	 * 
 	 * @param connect
 	 */
-	public void setConnectionConfiguration(ConnectionConfiguration connect) {
-		connectionConfig = connect;
+	public void setConnectionConfiguration(ConnectionConfiguration connectionConfig) {
+		this.connectionConfig = connectionConfig;
 	}
 
 }

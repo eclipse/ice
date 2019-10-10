@@ -154,8 +154,8 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	 * 
 	 * @param type
 	 */
-	public void setCopyType(int type) {
-		copyType = type;
+	public void setCopyType(int copyType) {
+		this.copyType = copyType;
 	}
 
 }

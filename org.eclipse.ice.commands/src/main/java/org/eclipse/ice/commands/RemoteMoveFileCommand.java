@@ -153,29 +153,11 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 	}
 
 	/**
-	 * Set the source file string
-	 * 
-	 * @param src
-	 */
-	public void setSource(String src) {
-		source = src;
-	}
-
-	/**
-	 * Set the destination file string
-	 * 
-	 * @param dest
-	 */
-	public void setDestination(String dest) {
-		destination = dest;
-	}
-
-	/**
 	 * Set the move type variable
 	 * 
 	 * @param type
 	 */
-	public void setMoveType(int type) {
-		moveType = type;
+	public void setMoveType(int moveType) {
+		this.moveType = moveType;
 	}
 }

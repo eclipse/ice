@@ -90,8 +90,8 @@ public class Connection {
 	 * 
 	 * @param jsch
 	 */
-	public void setJShellSession(JSch jsch) {
-		jShell = jsch;
+	public void setJShellSession(JSch jShell) {
+		this.jShell = jShell;
 	}
 
 	/**
@@ -108,8 +108,8 @@ public class Connection {
 	 * 
 	 * @param _channel
 	 */
-	public void setChannel(Channel _channel) {
-		channel = _channel;
+	public void setChannel(Channel channel) {
+		this.channel = channel;
 	}
 
 	/**
@@ -135,8 +135,8 @@ public class Connection {
 	 * 
 	 * @param _session
 	 */
-	public void setSession(Session _session) {
-		session = _session;
+	public void setSession(Session session) {
+		this.session = session;
 	}
 
 	/**
@@ -144,8 +144,8 @@ public class Connection {
 	 * 
 	 * @param _stream
 	 */
-	public void setInputStream(InputStream _stream) {
-		inputStream = _stream;
+	public void setInputStream(InputStream inputStream) {
+		this.inputStream = inputStream;
 	}
 
 	/**
@@ -163,8 +163,8 @@ public class Connection {
 	 * 
 	 * @param _stream
 	 */
-	public void setOutputStream(OutputStream _stream) {
-		outputStream = _stream;
+	public void setOutputStream(OutputStream outputStream) {
+		this.outputStream = outputStream;
 	}
 
 	/**

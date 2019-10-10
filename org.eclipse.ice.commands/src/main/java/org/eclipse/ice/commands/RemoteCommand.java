@@ -453,8 +453,8 @@ public class RemoteCommand extends Command {
 	 * 
 	 * @param connection - the connection for this command
 	 */
-	public void setConnection(Connection _connection) {
-		connection = _connection;
+	public void setConnection(Connection connection) {
+		this.connection = connection;
 	}
 
 	/**
