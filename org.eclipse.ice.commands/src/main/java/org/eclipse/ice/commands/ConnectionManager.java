@@ -244,14 +244,19 @@ public class ConnectionManager {
 	private final char[] getPassword() {
 
 		String password = "";
+		// Start up a console eraser class to erase characters as they are typed to the
+		// console screen
 		ConsoleEraser eraser = new ConsoleEraser();
 
 		logger.info("Please enter your password: ");
 
+		// Read in the password
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
+		// Start erasing the characters that are input to the console screen
 		eraser.start();
 		try {
+			// Read in the password
 			password = in.readLine();
 			in.close();
 		} catch (IOException e) {
@@ -259,9 +264,13 @@ public class ConnectionManager {
 			return null;
 		}
 
+		// Stop the thread from erasing the previous character, since other output
+		// is important to see
 		eraser.stopErasing();
 		System.out.print("\b");
 
+		// Return the password as a char array for added safety, since strings are
+		// immutable
 		return password.toCharArray();
 	}
 
