@@ -221,6 +221,7 @@ public class LocalCommand extends Command {
 					if (status != CommandStatus.CANCELED)
 						job = jobBuilder.start();
 				} catch (IOException e2) {
+					logger.error("Could not start processing job...");
 					// If there is an error, add it to errMsg
 					commandConfig.addToErrString(e2.getMessage() + "\n");
 				}
@@ -325,6 +326,7 @@ public class LocalCommand extends Command {
 				try {
 					commandConfig.getStdErr().write(getClass().getName() + "IllegalThreadStateException!: " + e);
 				} catch (IOException e1) {
+					logger.warn("IllegalThreadStateException, still going to keep monitoring the job...");
 					e1.printStackTrace();
 				}
 			}
@@ -336,6 +338,7 @@ public class LocalCommand extends Command {
 			} catch (InterruptedException e) {
 				// Complain
 				try {
+					logger.error("Couldn't wait for the job to finish...");
 					commandConfig.getStdErr().write(getClass().getName() + " InterruptedException!: " + e);
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -354,6 +357,7 @@ public class LocalCommand extends Command {
 		try {
 			commandConfig.getStdOut().write("INFO: Command::monitorJob Message: Exit value = " + exitValue + "\n");
 		} catch (IOException e) {
+			logger.error("Couldn't write final command exit value to the std out file. Exit value = " + exitValue);
 			e.printStackTrace();
 		}
 

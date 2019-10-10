@@ -232,19 +232,16 @@ public abstract class FileHandler implements IFileHandler {
 	 * @param destination - destination for the file to go to
 	 * @return - CommandStatus indicating whether or not the transfer completed
 	 *         successfully
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	protected CommandStatus executeTransfer(final String destination) throws IOException {
 		// Execute the file transfer
 		transferStatus = command.execute();
-
 		// Check that the move succeeded
-		boolean check = exists(destination);
-
-		if (check)
-			return CommandStatus.SUCCESS;
-		else
+		if (!exists(destination))
 			return CommandStatus.FAILED;
+
+		return CommandStatus.SUCCESS;
 
 	}
 

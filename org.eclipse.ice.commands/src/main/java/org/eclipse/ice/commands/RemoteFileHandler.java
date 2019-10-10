@@ -61,7 +61,10 @@ public class RemoteFileHandler extends FileHandler {
 	 * Default constructor
 	 */
 	public RemoteFileHandler() {
-
+		// Define and set the hash map for the different type of file handles
+		handleType.put("localRemote", 1);
+		handleType.put("remoteLocal", 2);
+		handleType.put("remoteRemote", 3);
 	}
 
 	/**
@@ -176,10 +179,6 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	@Override
 	public void checkExistence(String source, String destination) throws IOException {
-		// Set the hash map for the different type of file handles
-		handleType.put("localRemote", 1);
-		handleType.put("remoteLocal", 2);
-		handleType.put("remoteRemote", 3);
 
 		// We need to determine what kind of remote move this is, i.e. if it is moving
 		// from the remote host to the local host, vice versa, or moving on the remote

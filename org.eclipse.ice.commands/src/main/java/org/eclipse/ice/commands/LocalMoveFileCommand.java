@@ -87,6 +87,7 @@ public class LocalMoveFileCommand extends LocalCommand {
 						REPLACE_EXISTING);
 			} catch (IOException e) {
 				e.printStackTrace();
+				logger.error("The move type was identified as a name change in the same directory, but the move failed!");;
 				status = CommandStatus.FAILED;
 				return status;
 			}
@@ -103,6 +104,7 @@ public class LocalMoveFileCommand extends LocalCommand {
 					// with the same name
 					Files.move(source, destination.resolve(source.getFileName()));
 				} catch (IOException e1) {
+					logger.error("File was supposed to move directories, but move failed!");
 					// If that catches, then it really failed and return as such
 					e.printStackTrace();
 					e1.printStackTrace();

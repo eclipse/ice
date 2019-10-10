@@ -105,6 +105,7 @@ public class RemoteCommand extends Command {
 			// If the connection(s) can't be opened, we can't be expected to execute a job
 			// remotely!
 			status = CommandStatus.INFOERROR;
+			logger.error("There was a connection failure in the construction of Remote Command!");
 			e.printStackTrace();
 			return;
 		}
@@ -219,6 +220,7 @@ public class RemoteCommand extends Command {
 				// Give it a second to finish up
 				Thread.currentThread().sleep(1000);
 			} catch (InterruptedException e) {
+				logger.error("Thread couldn't wait for another second while monitoring job...");
 				e.printStackTrace();
 			}
 			// Query the exit status. 0 is normal completion, everything else is abnormal
@@ -266,6 +268,7 @@ public class RemoteCommand extends Command {
 			try {
 				connection.setChannel(connection.getSession().openChannel("exec"));
 			} catch (JSchException e) {
+				logger.error("Execution channel could not be opened over JSch...");
 				// If it can't be opened, puke
 				e.printStackTrace();
 			}
@@ -283,6 +286,7 @@ public class RemoteCommand extends Command {
 				// Set the input stream for the connection object
 				connection.setInputStream(connection.getChannel().getInputStream());
 			} catch (IOException e) {
+				logger.error("Input stream could not be set in JSch...");
 				// If we can't set the input stream, puke
 				e.printStackTrace();
 			}
@@ -296,6 +300,7 @@ public class RemoteCommand extends Command {
 				connection.getChannel().setOutputStream(stdOutBufferedStream);
 				((ChannelExec) connection.getChannel()).setErrStream(stdErrStream);
 			} catch (FileNotFoundException e) {
+				logger.error("Logging streams could not be set in JSch...");
 				// If logging streams can't be set, puke
 				e.printStackTrace();
 			}

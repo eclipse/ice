@@ -179,6 +179,7 @@ public class CommandConfiguration {
 			stdErr.write(stdErrHeader);
 			stdErr.close();
 		} catch (IOException e) {
+			logger.error("Could not write header logs to output files!");
 			e.printStackTrace();
 		}
 
@@ -201,6 +202,7 @@ public class CommandConfiguration {
 			try {
 				writer = new FileWriter(filename, true);
 			} catch (IOException e) {
+				logger.error("Could not retrieve a file writer for buffer writing");
 				e.printStackTrace();
 			}
 			bufferedWriter = new BufferedWriter(writer);
@@ -225,6 +227,7 @@ public class CommandConfiguration {
 			InetAddress addr = InetAddress.getLocalHost();
 			localHostname = addr.getHostName();
 		} catch (UnknownHostException e) {
+			logger.error("Could not identify local host name in output header creation.");
 			e.printStackTrace();
 		}
 

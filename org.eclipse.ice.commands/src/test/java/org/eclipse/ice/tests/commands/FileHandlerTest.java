@@ -141,13 +141,9 @@ public class FileHandlerTest {
 		String filename = localSource.substring(localSource.lastIndexOf("/"));
 		
 		FileHandler handler = null;
-		try {
-			handler = new LocalFileHandler();
-			CommandStatus status = handler.copy(localSource, localDestination);
-			assert (status == CommandStatus.SUCCESS);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		handler = new LocalFileHandler();
+		CommandStatus status = handler.copy(localSource, localDestination);
+		assert (status == CommandStatus.SUCCESS);
 
 		// Check that it exists
 		try {
@@ -178,14 +174,10 @@ public class FileHandlerTest {
 		// Get the filename for testing exists later
 		String filename = localSource.substring(localSource.lastIndexOf("/"));
 		FileHandler handler = null;
-		try {
-			handler = new LocalFileHandler();
-			
-			CommandStatus status = handler.move(localSource, localDestination);
-			assert (status == CommandStatus.SUCCESS);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		handler = new LocalFileHandler();
+		
+		CommandStatus status = handler.move(localSource, localDestination);
+		assert (status == CommandStatus.SUCCESS);
 
 		// Check that it exists
 		try {
@@ -303,11 +295,7 @@ public class FileHandlerTest {
 		// remote --> remote move. Thus, it is up to the user to ensure that their
 		// local destination directory exists
 		dest = factory.getDestination() + "/newDirectory/newFilename.txt";
-		try {
-			status = handler.move(src, dest);
-		} catch (IOException e) {
-			System.out.println("Expected exception thrown. Continue test.");
-		}
+		status = handler.move(src, dest);
 
 		factory.deleteRemoteSource();
 
