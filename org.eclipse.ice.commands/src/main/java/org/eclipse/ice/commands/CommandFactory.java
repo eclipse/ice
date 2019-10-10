@@ -126,11 +126,11 @@ public class CommandFactory {
 		// Get the local host name from the operating system
 		String hostname = addr.getHostName();
 
-		// If the local hostname is the same as the hostname provided, then it is local
-		if (hostname == host)
-			return true;
-		else
+		// If the local hostname is not the same as the hostname provided, then it is remote
+		if (hostname != host)
 			return false;
+		// Otherwise it is a local host, and return true
+		return true;
 
 	}
 

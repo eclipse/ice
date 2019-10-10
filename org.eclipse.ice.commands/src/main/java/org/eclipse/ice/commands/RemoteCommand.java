@@ -234,11 +234,11 @@ public class RemoteCommand extends Command {
 			}
 		}
 
-		// If the job finished correctly, return success. Otherwise return failure
-		if (exitValue == 0)
-			return CommandStatus.SUCCESS;
-		else
+		// If the job returns anything other than 0, then the job failed. Otherwise success
+		if (exitValue != 0)
 			return CommandStatus.FAILED;
+
+		return CommandStatus.SUCCESS;
 	}
 
 	/**

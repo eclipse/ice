@@ -261,6 +261,7 @@ public class CommandFactoryTest {
 			e.printStackTrace();
 		}
 		CommandStatus status = cmd.execute();
+		System.out.println(status);
 		assert (status == CommandStatus.SUCCESS);
 	}
 

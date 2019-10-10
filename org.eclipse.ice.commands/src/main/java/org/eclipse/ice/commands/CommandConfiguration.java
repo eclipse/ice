@@ -207,8 +207,10 @@ public class CommandConfiguration {
 			}
 			bufferedWriter = new BufferedWriter(writer);
 			return bufferedWriter;
-		} else
-			return null;
+		}
+
+		// If filename is null, then we need to return null
+		return null;
 	}
 
 	/**

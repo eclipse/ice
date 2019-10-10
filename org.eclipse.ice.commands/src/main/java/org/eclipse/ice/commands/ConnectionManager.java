@@ -123,9 +123,10 @@ public class ConnectionManager {
 			// Upon success, return the opened connection
 			return newConnection;
 		}
-		// If the connectionConfiguration was not properly specified, return null
-		else
-			return null;
+
+		// If the connectionConfiguration was not properly specified, or an error
+		// occurred, return null
+		return null;
 	}
 
 	/**

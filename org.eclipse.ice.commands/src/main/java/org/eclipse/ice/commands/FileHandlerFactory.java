@@ -87,8 +87,8 @@ public class FileHandlerFactory {
 		// If the local hostname is the same as the hostname provided, then it is local
 		if (hostname == host)
 			return true;
-		else
-			return false;
+		// Otherwise it is remote, so return false
+		return false;
 
 	}
 }

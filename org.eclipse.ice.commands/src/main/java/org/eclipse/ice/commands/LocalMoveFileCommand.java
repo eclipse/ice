@@ -87,7 +87,9 @@ public class LocalMoveFileCommand extends LocalCommand {
 						REPLACE_EXISTING);
 			} catch (IOException e) {
 				e.printStackTrace();
-				logger.error("The move type was identified as a name change in the same directory, but the move failed!");;
+				logger.error(
+						"The move type was identified as a name change in the same directory, but the move failed!");
+				;
 				status = CommandStatus.FAILED;
 				return status;
 			}
@@ -163,8 +165,8 @@ public class LocalMoveFileCommand extends LocalCommand {
 		// file directory move
 		if (!different && sameFileExt)
 			return true;
-		else
-			return false;
+		// Otherwise it is a directory move
+		return false;
 
 	}
 

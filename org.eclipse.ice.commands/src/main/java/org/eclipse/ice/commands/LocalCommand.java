@@ -296,11 +296,11 @@ public class LocalCommand extends Command {
 		}
 		// By convention exit values other than zero mean that the program
 		// failed. If it is not 0, mark the job as failed (since it finished).
-		if (exitValue == 0) {
-			return CommandStatus.SUCCESS;
-		} else {
+		logger.info("Job finished with exit value = " + exitValue);
+		if (exitValue != 0) {
 			return CommandStatus.FAILED;
 		}
+		return CommandStatus.SUCCESS;
 
 	}
 
@@ -362,10 +362,11 @@ public class LocalCommand extends Command {
 		}
 
 		logger.info("Finished monitoring job with exit value: " + exitValue);
-		if (exitValue == 0)
-			return CommandStatus.SUCCESS;
-		else
+		// If exit value is anything other than 0, then the job had an error
+		if (exitValue != 0)
 			return CommandStatus.FAILED;
+		// Otherwise return that the job was successful
+		return CommandStatus.SUCCESS;
 	}
 
 }
