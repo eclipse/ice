@@ -241,6 +241,7 @@ public abstract class FileHandler implements IFileHandler {
 		if (!exists(destination))
 			return CommandStatus.FAILED;
 
+		logger.info("File transfer successful!");
 		return CommandStatus.SUCCESS;
 
 	}

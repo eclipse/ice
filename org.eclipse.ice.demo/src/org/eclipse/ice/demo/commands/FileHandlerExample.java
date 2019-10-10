@@ -103,10 +103,13 @@ public class FileHandlerExample {
 	public static void moveLocalFile() {
 		// Create a dummy local file to move
 		createDummyLocalFile();
+		
 		// Create a dummy local destination to move the file to
 		createDummyLocalDestination();
+		
 		// Move it
 		moveFileLocally();
+		
 		// Delete the remaining files that we don't need
 		cleanUpLocalFiles();
 	}
@@ -153,13 +156,16 @@ public class FileHandlerExample {
 
 		// Get the dummy connection configuration with the credentials
 		ConnectionConfiguration configuration = makeConnectionConfiguration();
+		
 		// Get the filename of the dummy file
 		String filename = localSource.substring(localSource.lastIndexOf("/") + 1);
 
 		// Get the file handler factory to create the transfer
 		FileHandlerFactory factory = new FileHandlerFactory();
+		
 		IFileHandler handler = null;
 		CommandStatus status = null;
+		
 		try {
 			// Get the handler for this particular connection configuration
 			handler = factory.getFileHandler(configuration);
@@ -171,9 +177,8 @@ public class FileHandlerExample {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if (status == CommandStatus.SUCCESS) {
-			System.out.println("The remote move succeeded!");
-		}
+		
+		
 
 	}
 
@@ -184,13 +189,16 @@ public class FileHandlerExample {
 	public static void copyFileRemotely() {
 		// Get the dummy connection configuration with the credentials
 		ConnectionConfiguration configuration = makeConnectionConfiguration();
+		
 		// Get the filename of the dummy file
 		String filename = localSource.substring(localSource.lastIndexOf("/"));
 
 		// Get the file handler factory to create the transfer
 		FileHandlerFactory factory = new FileHandlerFactory();
+		
 		IFileHandler handler = null;
 		CommandStatus status = null;
+		
 		try {
 			// Get the handler for this particular connection configuration
 			handler = factory.getFileHandler(configuration);
@@ -202,9 +210,8 @@ public class FileHandlerExample {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if (status == CommandStatus.SUCCESS) {
-			System.out.println("The remote copy succeeded!");
-		}
+		
+		
 
 	}
 
@@ -232,11 +239,7 @@ public class FileHandlerExample {
 			}
 			// You can also check if a file exists if desired
 			boolean exist = handler.exists(localDestination);
-			// However file handler checks exists after the file transfer, so you should
-			// know if the file transfer failed
-			if (exist) {
-				System.out.println("Copy file successful!");
-			}
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -274,9 +277,7 @@ public class FileHandlerExample {
 			// Check that it exists
 			String filename = localSource.substring(localSource.lastIndexOf("/"));
 			boolean exist = handler.exists(localDestination + filename);
-			if (exist) {
-				System.out.println("Move file successful!");
-			}
+		
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -299,8 +300,6 @@ public class FileHandlerExample {
 		}
 		// Turn the path into a string to pass to the command
 		localSource = sourcePath.toString();
-		System.out.println("Created source file at: " + localSource);
-
 	}
 
 	/**
@@ -318,7 +317,6 @@ public class FileHandlerExample {
 		}
 		// Turn the path into a string to give to the command
 		localDestination = destinationPath.toString();
-		System.out.println("Created destination file at: " + localDestination);
 	}
 
 	/**
@@ -342,9 +340,7 @@ public class FileHandlerExample {
 		deleteDestination = deleteDirectory(new File(localDestination));
 		if (!deleteDestination) {
 			System.out.println("Couldn't delete destination file/directory at: " + localDestination);
-		} else {
-			System.out.println("Deleted files successfully!");
-		}
+		} 
 
 		return;
 	}

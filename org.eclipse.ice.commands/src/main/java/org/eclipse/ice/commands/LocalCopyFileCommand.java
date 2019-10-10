@@ -71,6 +71,7 @@ public class LocalCopyFileCommand extends LocalCommand {
 	protected CommandStatus run() {
 		// Try to copy from source to destination, overwriting if the file already
 		// exists at the destination. If it can't, complain.
+		logger.info("Copying " + source + " to " + destination);
 		try {
 			status = CommandStatus.RUNNING;
 			Files.copy(source, destination.resolve(source.getFileName()), REPLACE_EXISTING);

@@ -77,6 +77,7 @@ public class LocalMoveFileCommand extends LocalCommand {
 		// Split the destination by path delimiter to get the desired filename
 		String[] destinationDirs = destination.toString().split("/");
 
+		logger.info("Moving " + source + " to " + destination);
 		// If the directory paths are the same and the files have the same file
 		// extension type, then we are just changing a file name
 		if (sameFileExtension) {
