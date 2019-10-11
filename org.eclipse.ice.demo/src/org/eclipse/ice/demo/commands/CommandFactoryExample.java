@@ -43,6 +43,9 @@ public class CommandFactoryExample {
 
 		// Run an example test script on a remote host
 		runRemoteCommand();
+		
+		// Run an example python script
+		runPythonScript();
 
 		return;
 	}
@@ -89,8 +92,6 @@ public class CommandFactoryExample {
 		commandConfig.setOS(System.getProperty("os.name")); // Get the OS
 		// Set the remote working directory for the process to be performed
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
-
-		
 
 		// Get the connection configuration credentials for the dummy host
 		ConnectionConfiguration connectionConfig = makeDumConnectionConfig();
@@ -224,6 +225,59 @@ public class CommandFactoryExample {
 		String output = commandConfig.getStdOutputString();
 
 		return;
+	}
+
+	
+	/**
+	 * This function shows an example of how to run with a python script.
+	 * The functionality is very similar to above, except that the interpreter
+	 * needs to be specified in the CommandConfiguration. This appends the string
+	 * "python" before the executable name, allowing it to run in python.
+	 */
+	public static void runPythonScript() {
+
+		System.out.println("Testing python script");
+		// Get the present working directory
+		String pwd = System.getProperty("user.dir");
+
+		// Create the path relative to the current directory where the test script lives
+		String scriptDir = pwd + "/../org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands/";
+
+		// Create a command configuration corresponding to a python script
+		// This is very similar to above, except that we need to specifically
+		// set the interpreter to be python.
+		CommandConfiguration configuration = new CommandConfiguration();
+		configuration.setExecutable("test_python_script.py");
+		// Here we set the interpreter to run in python, instead of in e.g. bash
+		configuration.setInterpreter("python");
+		configuration.setCommandId(9);
+		configuration.setErrFileName("somePythErrFile.txt");
+		configuration.setOutFileName("somePythOutFile.txt");
+		configuration.setNumProcs("1");
+		configuration.setInstallDirectory("");
+		configuration.setOS(System.getProperty("os.name"));
+		configuration.setAppendInput(true);
+		configuration.addInputFile("inputfile", "someInputFile.txt");
+		configuration.addInputFile("inputfile2", "someOtherInputFile.txt");
+		configuration.setWorkingDirectory(scriptDir);
+
+		ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
+		connectionConfig.setHostname(getLocalHostname());
+
+		// Create a factory to get the Command
+		CommandFactory factory = new CommandFactory();
+
+		// Get the command and run it
+		Command command = null;
+		try {
+			command = factory.getCommand(configuration, connectionConfig);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		CommandStatus status = command.execute();
+
+
 	}
 
 	/**

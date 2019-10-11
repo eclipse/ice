@@ -51,6 +51,16 @@ public class CommandConfiguration {
 	private int commandId;
 
 	/**
+	 * A string that lets the user optionally set an interpreter name to be
+	 * attached before the executable name. For example, if the executable is
+	 * script.py, interpreter would allow the user to put python2 or python3 
+	 * in front of script.py to run it in either version of python.
+	 * Set to null by default, which means by default the interpreter is
+	 * bash
+	 */
+	private String interpreter = null;
+	
+	/**
 	 * The file name of the executable that is to be processed or run
 	 */
 	private String executable;
@@ -277,7 +287,17 @@ public class CommandConfiguration {
 
 		// Get the information from the executable dictionary
 		int numProcsInt = Math.max(1, Integer.parseInt(numProcs));
-		String fixedExecutableName = executable;
+		
+		// Make the full executable to be processed
+		String fixedExecutableName = "";
+		
+		// Check to see if this is a python script or a bash script
+		if(interpreter != null) {
+			// If it is a python script, add "python" in front
+			fixedExecutableName += interpreter + " ";
+		}
+		
+		fixedExecutableName += executable;
 		String separator = "/";
 
 		// If the input files should be appended, append it
@@ -738,4 +758,21 @@ public class CommandConfiguration {
 		return remoteWorkingDirectory;
 	}
 
+	/**
+	 * Setter for interpreter
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#interpreter}
+	 * @param interpreter
+	 */
+	public void setInterpreter(String interpreter) {
+		this.interpreter = interpreter;
+	}
+	/**
+	 * Getter for interpreter
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#interpreter}
+	 * @return
+	 */
+	public String getInterpreter() {
+		return interpreter;
+	}
+	
 }

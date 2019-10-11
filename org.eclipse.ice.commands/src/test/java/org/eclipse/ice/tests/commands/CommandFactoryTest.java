@@ -124,11 +124,11 @@ public class CommandFactoryTest {
 
 		// Make a string of all the output file names in this test
 		// Didn't want to do *.txt, in the event that it inadvertently deletes other
-		// files
-		// on people's computers
+		// files on people's computers
 		String rm = "someLocalErrFile.txt someLocalOutFile.txt someLocalErrFileDir.txt someLocalOutFileDir.txt";
 		rm += " someRemoteErrFile.txt someRemoteOutFile.txt someMultLocalErrFile.txt someMultLocalOutFile.txt";
 		rm += " someLsOutFile.txt someLsErrFile.txt someMultRemoteOutFile.txt someMultRemoteErrFile.txt";
+		rm += " somePythOutFile.txt somePythErrFile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
 		// TODO - build this command for use in windows
@@ -457,6 +457,53 @@ public class CommandFactoryTest {
 
 		// Run it
 		CommandStatus status = localCommand.execute();
+
+		assert (status == CommandStatus.SUCCESS);
+
+	}
+
+	/**
+	 * This function tests the processing of a hello world python script, rather
+	 * than a bash script
+	 */
+	@Test
+	public void testPythonScript() {
+
+		System.out.println("Testing python script");
+		// Get the present working directory
+		String pwd = System.getProperty("user.dir");
+
+		// Create the path relative to the current directory where the test script lives
+		String scriptDir = pwd + "/src/test/java/org/eclipse/ice/tests/commands/";
+
+		// Create a command configuration corresponding to a python script
+		CommandConfiguration configuration = new CommandConfiguration();
+		configuration.setExecutable("test_python_script.py");
+		configuration.setInterpreter("python");
+		configuration.setCommandId(9);
+		configuration.setErrFileName("somePythErrFile.txt");
+		configuration.setOutFileName("somePythOutFile.txt");
+		configuration.setNumProcs("1");
+		configuration.setInstallDirectory("");
+		configuration.setOS(System.getProperty("os.name"));
+		configuration.setAppendInput(true);
+		configuration.addInputFile("inputfile", "someInputFile.txt");
+		configuration.addInputFile("inputfile2", "someOtherInputFile.txt");
+		configuration.setWorkingDirectory(scriptDir);
+		configuration.setRemoteWorkingDirectory("/tmp/pythonTest");
+
+		// Get the dummy connection configuration
+		ConnectionConfiguration connectionConfig = setupDummyConnectionConfiguration();
+		
+		// Get the command and run it
+		Command command = null;
+		try {
+			command = factory.getCommand(configuration, connectionConfig);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		CommandStatus status = command.execute();
 
 		assert (status == CommandStatus.SUCCESS);
 

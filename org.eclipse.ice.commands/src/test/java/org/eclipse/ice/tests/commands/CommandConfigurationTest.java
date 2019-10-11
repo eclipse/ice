@@ -66,20 +66,21 @@ public class CommandConfigurationTest {
 
 		// Test that if one wants to append inputfile, it is appended
 		config.setCommandId(1);
+		config.setInterpreter("bash");
 		config.setExecutable("./test_code_execution.sh");
 		config.addInputFile("someInputFile", "someInputFile.txt");
 		config.setNumProcs("1");
 		config.setAppendInput(true);
 		config.setOS("osx");
 		String executable = config.getExecutableName();
-		assert (executable.equals("./test_code_execution.sh someInputFile.txt"));
+		assert (executable.equals("bash ./test_code_execution.sh someInputFile.txt"));
 
 		// Test that if num processes is more than 1, mpi options are added
 		config.setNumProcs("4"); // arbitrary number
 		// We can test append input as well when it is false
 		config.setAppendInput(false);
 		executable = config.getExecutableName();
-		assert (executable.equals("mpirun -np 4 ./test_code_execution.sh"));
+		assert (executable.equals("mpirun -np 4 bash ./test_code_execution.sh"));
 
 	}
 
