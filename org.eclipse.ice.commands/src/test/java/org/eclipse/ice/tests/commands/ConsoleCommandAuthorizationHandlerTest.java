@@ -14,7 +14,6 @@ package org.eclipse.ice.tests.commands;
 import java.util.Arrays;
 
 import org.eclipse.ice.commands.ConsoleCommandAuthorizationHandler;
-import org.junit.Test;
 
 /**
  * This class implements test functinoality for the ConsoleCommandAuthorization
@@ -38,7 +37,7 @@ public class ConsoleCommandAuthorizationHandlerTest {
 	 * to recursively remove characters from the screen.  For the test to pass, the user
 	 * needs to type "password" at the prompt
 	 */
-	@Test
+	//@Test
 	public void testGetPassword() {
 		System.out.println("Type the word 'password' when prompted");
 

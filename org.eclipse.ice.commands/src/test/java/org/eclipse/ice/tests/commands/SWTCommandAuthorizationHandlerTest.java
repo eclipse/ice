@@ -14,7 +14,6 @@ package org.eclipse.ice.tests.commands;
 import java.util.Arrays;
 
 import org.eclipse.ice.commands.SWTCommandAuthorizationHandler;
-import org.junit.Test;
 
 /**
  * This class implements test functionality for the
@@ -35,7 +34,7 @@ public class SWTCommandAuthorizationHandlerTest {
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.SWTCommandAuthorizationHandler#getPassword()|
 	 */
-	@Test
+	//@Test
 	public void testGetPassword() {
 		System.out.println("Enter 'password' into the SWT GUI when prompted");
 		SWTCommandAuthorizationHandler swt = new SWTCommandAuthorizationHandler();
