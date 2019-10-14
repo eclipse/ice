@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class is a super class for the password authorization and authentication
  * within the commands package. It lays the foundation for the various password
@@ -21,6 +24,21 @@ package org.eclipse.ice.commands;
  */
 public abstract interface CommandAuthorizationHandler {
 
+	/**
+	 * Logger for handling event messages and other information. All password 
+	 * authentication classes can use a single logger
+	 */
+	public final Logger logger = LoggerFactory.getLogger(CommandAuthorizationHandler.class);
+
+	
+	/**
+	 * This function gets a password for the command authentication. The password
+	 * is returned in a char array since Strings are immutable, so it is generally
+	 * ill advised to store passwords in strings.
+	 * @return - obtained password
+	 */
+	public abstract char[] getPassword();
+	
 	
 
 }

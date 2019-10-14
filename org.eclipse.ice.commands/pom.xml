@@ -29,6 +29,25 @@
         	<groupId>com.jcraft</groupId>
         	<artifactId>jsch</artifactId>
         	<version>0.1.55</version>
-        </dependency>  
+        </dependency>
+        <!-- 
+        	SWT has a different library for each OS. So include all of them
+        	as dependencies for whatever OS is actually being used 
+        -->
+ 		<dependency>
+   			<groupId>org.eclipse.swt.org.eclipse.swt.cocoa.macosx.x86_64.4.3.swt</groupId>
+   			<artifactId>org.eclipse.swt.cocoa.macosx.x86_64</artifactId>
+    		<version>4.3</version>
+		</dependency>
+		<dependency>
+   			<groupId>org.eclipse.swt.org.eclipse.swt.gtk.linux.x86_64.4.3.swt</groupId>
+    		<artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
+    		<version>4.3</version>
+		</dependency>
+		<dependency>
+   		 	<groupId>org.eclipse.swt</groupId>
+    		<artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
+    		<version>4.3</version>
+		</dependency>
 	</dependencies>
 </project>

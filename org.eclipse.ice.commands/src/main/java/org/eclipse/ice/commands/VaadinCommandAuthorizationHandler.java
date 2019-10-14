@@ -26,4 +26,14 @@ public class VaadinCommandAuthorizationHandler implements CommandAuthorizationHa
 	public VaadinCommandAuthorizationHandler() {
 	}
 
+	
+	/**
+	 * See {@link org.eclipse.ice.commands.CommandAuthorizationHandler#getPassword()}
+	 */
+	@Override
+	public char[] getPassword() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -11,6 +11,11 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import java.util.Arrays;
+
+import org.eclipse.ice.commands.SWTCommandAuthorizationHandler;
+import org.junit.Test;
+
 /**
  * This class implements test functionality for the
  * SWTCommandAuthorizationHandler class
@@ -24,6 +29,22 @@ public class SWTCommandAuthorizationHandlerTest {
 	 * Default constructor
 	 */
 	public SWTCommandAuthorizationHandlerTest() {
+	}
+
+	/**
+	 * Test method for
+	 * {@link org.eclipse.ice.commands.SWTCommandAuthorizationHandler#getPassword()|
+	 */
+	@Test
+	public void testGetPassword() {
+		System.out.println("Enter 'password' into the SWT GUI when prompted");
+		SWTCommandAuthorizationHandler swt = new SWTCommandAuthorizationHandler();
+		
+		char[] swtPassword = swt.getPassword();
+		// Make an array to compare to
+		char[] password = new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' };
+				
+		assert(Arrays.equals(swtPassword, password));
 	}
 
 }
