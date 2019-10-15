@@ -9,8 +9,9 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
-package org.eclipse.ice.commands;
+package org.eclipse.ice.commands.swt;
 
+import org.eclipse.ice.commands.CommandAuthorizationHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;

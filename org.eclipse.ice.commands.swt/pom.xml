@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.eclipse.ice</groupId>
+  <artifactId>org.eclipse.ice.commands.swt</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Eclipse ICE Commands API SWT Authorization</name>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+  <description>This project provides SWT authorization for remote commands.</description>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.7.12</version>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.17</version>
+    </dependency> 
+    
+    <!-- 
+         SWT has a different library for each OS. So include all of them
+         as dependencies for whatever OS is actually being used 
+    -->
+    <dependency>
+      <groupId>org.eclipse.swt.org.eclipse.swt.cocoa.macosx.x86_64.4.3.swt</groupId>
+      <artifactId>org.eclipse.swt.cocoa.macosx.x86_64</artifactId>
+      <version>4.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.swt.org.eclipse.swt.gtk.linux.x86_64.4.3.swt</groupId>
+      <artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
+      <version>4.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.swt</groupId>
+      <artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
+      <version>4.3</version>
+    </dependency>
+
+  </dependencies>
+</project>

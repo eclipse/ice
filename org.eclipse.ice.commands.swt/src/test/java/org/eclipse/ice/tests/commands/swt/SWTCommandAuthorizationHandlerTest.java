@@ -9,11 +9,12 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
-package org.eclipse.ice.tests.commands;
+package org.eclipse.ice.tests.commands.swt;
 
 import java.util.Arrays;
 
-import org.eclipse.ice.commands.SWTCommandAuthorizationHandler;
+import org.eclipse.ice.commands.swt.SWTCommandAuthorizationHandler;
+import org.junit.Test;
 
 /**
  * This class implements test functionality for the
@@ -34,7 +35,7 @@ public class SWTCommandAuthorizationHandlerTest {
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.SWTCommandAuthorizationHandler#getPassword()|
 	 */
-	//@Test
+	@Test
 	public void testGetPassword() {
 		System.out.println("Enter 'password' into the SWT GUI when prompted");
 		SWTCommandAuthorizationHandler swt = new SWTCommandAuthorizationHandler();
