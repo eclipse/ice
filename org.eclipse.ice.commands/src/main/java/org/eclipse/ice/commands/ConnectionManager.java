@@ -93,6 +93,8 @@ public class ConnectionManager {
 				// If the credential path was not specified, query the user from the console
 				// for the password
 				if(newConnection.getConfiguration().getCredentialPath().equals("")) {
+					// TODO - this is where the code will go that gets the password from
+					// the appropriate password authentication handler
 					pwd = getPassword();
 				}
 				else {
