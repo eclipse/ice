@@ -45,6 +45,13 @@ public class ConnectionConfiguration {
 	private String password = "";
 
 	/**
+	 * An optional path that the user can provide to a text file with their ssh
+	 * credentials available. The file must be completely empty except 
+	 * for the ssh password to be used.
+	 */
+	private String credentialPath = "";
+
+	/**
 	 * A boolean indicating whether or not the files/directories created on the
 	 * remote host should be deleted or not. Default set to false, for obvious
 	 * reasons. This will delete the working directory of a remote command on the
@@ -157,6 +164,26 @@ public class ConnectionConfiguration {
 	 */
 	protected String getPassword() {
 		return password;
+	}
+
+	/**
+	 * Setter for the credential path, if desired. See
+	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#credentialPath}
+	 * 
+	 * @param credentialPath
+	 */
+	public void setCredentialPath(String credentialPath) {
+		this.credentialPath = credentialPath;
+	}
+
+	/**
+	 * Getter for the credential path, if desired. See
+	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#credentialPath}
+	 * 
+	 * @return
+	 */
+	public String getCredentialPath() {
+		return credentialPath;
 	}
 
 }

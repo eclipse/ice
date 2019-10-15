@@ -12,10 +12,13 @@
 package org.eclipse.ice.commands;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +90,26 @@ public class ConnectionManager {
 			// If it is not in the configuration, then we need to prompt the user for the
 			// password
 			if (newConnection.getConfiguration().getPassword().equals("")) {
-				pwd = getPassword();
+				// If the credential path was not specified, query the user from the console
+				// for the password
+				if(newConnection.getConfiguration().getCredentialPath().equals("")) {
+					pwd = getPassword();
+				}
+				else {
+					// Otherwise try to get the password from the credential path
+					String path = newConnection.getConfiguration().getCredentialPath();
+					// Get the file with the password in it
+					File credFile = new File(path);
+					Scanner scanner = null;
+					try {
+						scanner = new Scanner(credFile);
+					} catch(FileNotFoundException e) {
+						logger.error("A path was given where the ssh credentials live, but that path doesn't exist!");
+						return null;
+					}
+					// Get the password from the file
+					pwd = scanner.next().toCharArray();
+				}
 			} else {
 				// The password is only stored for unit tests to the dummy ssh connection
 				// Users can also store it, but this generally isn't recommended for security
