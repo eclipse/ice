@@ -24,23 +24,17 @@ import org.junit.Test;
 public class ConnectionConfigurationTest {
 
 	/**
-	 * Test some getters and setters
+	 * Test some getters and setters. ConnectionConfiguration is a POJO so not much to test
 	 */
 	@Test
 	public void testConstructor() {
 		ConnectionConfiguration config = new ConnectionConfiguration();
 
 		// Check that things are set to blank by default
-		assert (config.getHostname().equals(""));
+		assert (config.getName().equals(""));
 
 		// Check that this defaults to false
 		assert (config.getDeleteWorkingDirectory() == false);
-
-		config.setHostname("someHost");
-		config.setPassword("Pass");
-		config.setUsername("uname");
-
-		assert (config.getUsername().equals("uname"));
 
 	}
 }

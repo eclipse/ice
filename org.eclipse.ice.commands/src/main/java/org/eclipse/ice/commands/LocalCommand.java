@@ -71,7 +71,7 @@ public class LocalCommand extends Command {
 		// Make sure both commandConfig and connectionConfig have the same
 		// hostname, since commandConfig needs the hostname for several output
 		// files (e.g. for debugging purposes).
-		commandConfig.setHostname(connectionConfig.getHostname());
+		commandConfig.setHostname(connectionConfig.getAuthorization().getHostname());
 
 	}
 

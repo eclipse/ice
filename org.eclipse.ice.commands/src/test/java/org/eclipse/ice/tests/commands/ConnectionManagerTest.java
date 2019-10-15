@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import org.eclipse.ice.commands.Connection;
+import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
+import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
@@ -72,23 +74,15 @@ public class ConnectionManagerTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 
-		// Read in a dummy configuration file that contains credentials
-		File file = new File("/tmp/ice-remote-creds.txt");
-		Scanner scanner = new Scanner(file);
-
-		// Scan line by line
-		scanner.useDelimiter("\n");
-
-		// Get the credentials for the dummy remote account
-		String username = scanner.next();
-		String password = scanner.next();
-		String hostname = scanner.next();
-
 		// Set up the configuration with the necessary credentials
-		configuration.setHostname(hostname);
-		configuration.setUsername(username);
-		if (!require_password)
-			configuration.setPassword(password);
+		// Get a factory which determines the type of authorization
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Request a ConnectionAuthorization of type text file which contains the
+		// credentials
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
+				"/tmp/ice-remote-creds.txt");
+		// Set it
+		configuration.setAuthorization(auth);
 		configuration.setName(connectionName);
 
 	}
@@ -195,31 +189,28 @@ public class ConnectionManagerTest {
 
 		// Set the credentials since they were deleted after closing the previous
 		// connection
-		configuration.setUsername(username);
-		configuration.setPassword(password);
-		configuration.setHostname(hostname);
+		// Get a factory which determines the type of authorization
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Request a ConnectionAuthorization of type text file which contains the
+		// credentials
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
+				"/tmp/ice-remote-creds.txt");
+		// Set it
+		configuration.setAuthorization(auth);
 		configuration.setName("FirstConnection");
 
 		// Make another one
 		ConnectionConfiguration conf2 = new ConnectionConfiguration();
-		conf2.setUsername(username);
-		conf2.setPassword(password);
-		conf2.setHostname(hostname);
+		ConnectionAuthorizationHandler auth2 = authFactory.getConnectionAuthorizationHandler("text",
+				"/tmp/ice-remote-creds.txt");
+		conf2.setAuthorization(auth2);
 		conf2.setName("someOtherConnection");
 
-		// Make another one
-		ConnectionConfiguration conf3 = new ConnectionConfiguration();
-		conf3.setUsername(username);
-		conf3.setPassword("Badpassword");
-		conf3.setHostname(hostname);
-		conf3.setName("someThirdConnection");
-
-		Connection conn1 = null, conn2 = null, conn3 = null;
+		Connection conn1 = null, conn2 = null;
 		// Open some configurations
 		try {
 			conn1 = manager.openConnection(configuration);
 			conn2 = manager.openConnection(conf2);
-			conn3 = manager.openConnection(conf3);
 
 		} catch (JSchException e) {
 			e.printStackTrace();
@@ -237,7 +228,8 @@ public class ConnectionManagerTest {
 		manager.listAllConnections();
 
 		// Check that get name returns the appropriate connection in the list
-		assert (connections.get("someOtherConnection").getConfiguration().getHostname().equals(hostname));
+		assert (connections.get("someOtherConnection").getConfiguration().getAuthorization().getHostname()
+				.equals(hostname));
 
 		// Check that the name returns the appropriate connection from ConnectionManager
 		assert (manager.getConnection("FirstConnection").getConfiguration().getName().equals("FirstConnection"));

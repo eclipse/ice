@@ -11,15 +11,14 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Scanner;
 
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.Connection;
+import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
+import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
@@ -77,28 +76,15 @@ public class RemoteMoveFileCommandTest {
 	public void setUp() throws Exception {
 
 		// Set the connection configuration to a dummy remote connection
-		// Read in a dummy configuration file that contains credentials
-		File file = new File("/tmp/ice-remote-creds.txt");
-		Scanner scanner = null;
-		try {
-			scanner = new Scanner(file);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		// Scan line by line
-		scanner.useDelimiter("\n");
+		// Get a factory which determines the type of authorization
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Request a ConnectionAuthorization of type text file which contains the
+		// credentials
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
+				"/tmp/ice-remote-creds.txt");
+		// Set it
+		connectionConfig.setAuthorization(auth);
 
-		// Get the credentials for the dummy remote account
-		String username = scanner.next();
-		String password = scanner.next();
-		String hostname = scanner.next();
-
-		// Make the connection configuration
-		connectionConfig.setHostname(hostname);
-		connectionConfig.setUsername(username);
-		connectionConfig.setPassword(password);
-		// Note the password can be input at the console by not setting the
-		// the password explicitly in the connection configuration
 		connectionConfig.setName("dummyConnection");
 		connectionConfig.setDeleteWorkingDirectory(false);
 

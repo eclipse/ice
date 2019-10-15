@@ -14,20 +14,21 @@ package org.eclipse.ice.tests.commands;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import org.eclipse.ice.commands.Command;
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandFactory;
 import org.eclipse.ice.commands.CommandStatus;
+import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
+import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
+import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -168,49 +169,26 @@ public class CommandFactoryTest {
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
 		// Just put in a dummy directory for now
 		commandConfig.setWorkingDirectory("/home/user/somedirectory");
+
 		// Set the connection configuration to a dummy remote connection
 		// This is the connection where the job will be executed
-		File file = new File("/tmp/ice-remote-creds.txt");
-		Scanner scanner = null;
-		try {
-			scanner = new Scanner(file);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		// Scan line by line
-		scanner.useDelimiter("\n");
+		// Get a factory which determines the type of authorization
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Request a ConnectionAuthorization of type text file which contains the
+		// credentials
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
+				"/tmp/ice-remote-creds.txt");
+		// Set it
+		connectionConfig.setAuthorization(auth);
 
-		// Get the credentials for the dummy remote account
-		String username = scanner.next();
-		String password = scanner.next();
-		String hostname = scanner.next();
-
-		// Make the connection configuration
-		connectionConfig.setHostname(hostname);
-		connectionConfig.setUsername(username);
-		connectionConfig.setPassword(password);
 		// Note the password can be input at the console by not setting the
 		// the password explicitly in the connection configuration
 		connectionConfig.setName("executeConnection");
 		connectionConfig.setDeleteWorkingDirectory(true);
 
-		// Make another connection which we will log into first, and then execute from
-		// there
-		File secondFile = new File("");
-		try {
-			scanner = new Scanner(secondFile);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		scanner.useDelimiter("\n");
-		hostname = scanner.next();
-		username = scanner.next();
-
 		ConnectionConfiguration intermConnection = new ConnectionConfiguration();
-		intermConnection.setHostname(hostname);
-		intermConnection.setUsername(username);
-		intermConnection.setPassword("some_password");
+		// TODO - this will have to be changed to some other remote connection
+		intermConnection.setAuthorization(auth);
 		intermConnection.setName("intermediateConnection");
 		intermConnection.setDeleteWorkingDirectory(false);
 
@@ -252,7 +230,9 @@ public class CommandFactoryTest {
 		cmdCfg.setErrFileName("someLsErrFile.txt");
 		cmdCfg.setOutFileName("someLsOutFile.txt");
 		ConnectionConfiguration ctCfg = new ConnectionConfiguration();
-		ctCfg.setHostname(hostname);
+		ConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
+		handler.setHostname(hostname);
+		ctCfg.setAuthorization(handler);
 
 		Command cmd = null;
 		try {
@@ -276,7 +256,9 @@ public class CommandFactoryTest {
 		commandConfig.setCommandId(1);
 		commandConfig.setErrFileName("someLocalErrFile.txt");
 		commandConfig.setOutFileName("someLocalOutFile.txt");
-		connectionConfig.setHostname(hostname);
+		ConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
+		handler.setHostname(hostname);
+		connectionConfig.setAuthorization(handler);
 
 		// Get the command
 		Command localCommand = null;
@@ -312,7 +294,9 @@ public class CommandFactoryTest {
 		CommandConfiguration badCommandConfig = new CommandConfiguration();
 
 		ConnectionConfiguration badConnectConfig = new ConnectionConfiguration();
-		badConnectConfig.setHostname(hostname);
+		ConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
+		handler.setHostname(hostname);
+		badConnectConfig.setAuthorization(handler);
 		// Get the command
 		Command localCommand = null;
 		try {
@@ -349,7 +333,9 @@ public class CommandFactoryTest {
 		commandConfig.setOutFileName("someLocalOutFileDir.txt");
 		commandConfig.setWorkingDirectory("~/some_nonexistent_directory");
 
-		connectionConfig.setHostname(hostname);
+		ConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
+		handler.setHostname(hostname);
+		connectionConfig.setAuthorization(handler);
 		// Get the command
 		Command localCommand2 = null;
 		try {
@@ -445,7 +431,9 @@ public class CommandFactoryTest {
 		commandConfig.addInputFile("someOtherFile", "someOtherInputFile.txt");
 		commandConfig.setExecutable("./test_code_execution.sh ${someInputFile} ${someOtherFile}");
 		commandConfig.setAppendInput(false);
-		connectionConfig.setHostname(hostname);
+		ConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
+		handler.setHostname(hostname);
+		connectionConfig.setAuthorization(handler);
 
 		// Get the command
 		Command localCommand = null;
@@ -494,7 +482,7 @@ public class CommandFactoryTest {
 
 		// Get the dummy connection configuration
 		ConnectionConfiguration connectionConfig = setupDummyConnectionConfiguration();
-		
+
 		// Get the command and run it
 		Command command = null;
 		try {
@@ -516,32 +504,21 @@ public class CommandFactoryTest {
 	 * @return - dummy connection configuration
 	 */
 	private ConnectionConfiguration setupDummyConnectionConfiguration() {
-		// Set the connection configuration to a dummy remote connection
-		// Read in a dummy configuration file that contains credentials
-		File file = new File("/tmp/ice-remote-creds.txt");
-		Scanner scanner = null;
-		try {
-			scanner = new Scanner(file);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		// Scan line by line
-		scanner.useDelimiter("\n");
-
-		// Get the credentials for the dummy remote account
-		String username = scanner.next();
-		String password = scanner.next();
-		String hostname = scanner.next();
 
 		ConnectionConfiguration cfg = new ConnectionConfiguration();
 		// Make the connection configuration
-		cfg.setHostname(hostname);
-		cfg.setUsername(username);
-		cfg.setPassword(password);
+		// Get a factory which determines the type of authorization
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Request a ConnectionAuthorization of type text file which contains the
+		// credentials
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
+				"/tmp/ice-remote-creds.txt");
+		// Set it
+		cfg.setAuthorization(auth);
+
 		// Note the password can be input at the console by not setting the
 		// the password explicitly in the connection configuration
 		cfg.setName("dummyConnection");
-
 		cfg.setDeleteWorkingDirectory(true);
 
 		return cfg;

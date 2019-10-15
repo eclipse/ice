@@ -18,21 +18,20 @@ package org.eclipse.ice.commands;
  * @author Joe Osborn
  *
  */
-public class VaadinCommandAuthorizationHandler implements CommandAuthorizationHandler {
+public class VaadinConnectionAuthorizationHandler extends ConnectionAuthorizationHandler {
 
 	/**
 	 * Default constructor
 	 */
-	public VaadinCommandAuthorizationHandler() {
+	public VaadinConnectionAuthorizationHandler() {
 	}
 
-	
 	/**
-	 * See {@link org.eclipse.ice.commands.CommandAuthorizationHandler#getPassword()}
+	 * See
+	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#getPassword()}
 	 */
 	@Override
-	public char[] getPassword() {
-		// TODO Auto-generated method stub
+	protected char[] getPassword() {
 		return null;
 	}
 

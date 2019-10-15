@@ -11,12 +11,11 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Scanner;
 
 import org.eclipse.ice.commands.CommandStatus;
+import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
+import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
@@ -139,7 +138,7 @@ public class FileHandlerTest {
 		createLocalTempFile();
 		// Get the filename for testing exists later
 		String filename = localSource.substring(localSource.lastIndexOf("/"));
-		
+
 		FileHandler handler = null;
 		handler = new LocalFileHandler();
 		CommandStatus status = handler.copy(localSource, localDestination);
@@ -175,7 +174,7 @@ public class FileHandlerTest {
 		String filename = localSource.substring(localSource.lastIndexOf("/"));
 		FileHandler handler = null;
 		handler = new LocalFileHandler();
-		
+
 		CommandStatus status = handler.move(localSource, localDestination);
 		assert (status == CommandStatus.SUCCESS);
 
@@ -434,27 +433,16 @@ public class FileHandlerTest {
 	 */
 	private static ConnectionConfiguration makeConnectionConfiguration() {
 		// Set the connection configuration to a dummy remote connection
-		// Read in a dummy configuration file that contains credentials
-		File file = new File("/tmp/ice-remote-creds.txt");
-		Scanner scanner = null;
-		try {
-			scanner = new Scanner(file);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		// Scan line by line
-		scanner.useDelimiter("\n");
-
-		// Get the credentials for the dummy remote account
-		String username = scanner.next();
-		String password = scanner.next();
-		String hostname = scanner.next();
-
 		ConnectionConfiguration config = new ConnectionConfiguration();
-		// Make the connection configuration
-		config.setHostname(hostname);
-		config.setUsername(username);
-		config.setPassword(password);
+		// Get a factory which determines the type of authorization
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Request a ConnectionAuthorization of type text file which contains the
+		// credentials
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
+				"/tmp/ice-remote-creds.txt");
+		// Set it
+		config.setAuthorization(auth);
+
 		// Note the password can be input at the console by not setting the
 		// the password explicitly in the connection configuration
 		config.setName("dummyConnection");

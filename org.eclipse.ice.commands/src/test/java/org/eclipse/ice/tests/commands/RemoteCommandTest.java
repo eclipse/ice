@@ -14,10 +14,11 @@ package org.eclipse.ice.tests.commands;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandStatus;
+import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
+import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
@@ -42,7 +43,7 @@ public class RemoteCommandTest {
 	/**
 	 * A connect configuration instance for testing
 	 */
-	ConnectionConfiguration connectConfig;
+	ConnectionConfiguration connectConfig = new ConnectionConfiguration();
 
 	/**
 	 * This function sets up the command and connection information to hand to the
@@ -77,26 +78,15 @@ public class RemoteCommandTest {
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
 
 		// Set the connection configuration to a dummy remote connection
-		// Read in a dummy configuration file that contains credentials
-		File file = new File("/tmp/ice-remote-creds.txt");
-		Scanner scanner = new Scanner(file);
-		// Scan line by line
-		scanner.useDelimiter("\n");
-
-		// Get the credentials for the dummy remote account
-		String username = scanner.next();
-		String password = scanner.next();
-		String hostname = scanner.next();
-
 		// Make the connection configuration
-		connectConfig = new ConnectionConfiguration();
-		connectConfig.setHostname(hostname);
-		connectConfig.setUsername(username);
-
-		// Note the password can be input at the console by just setting
-		// connectConfig.setPassword(""); in the event that you don't want your
-		// password held in a string object
-		connectConfig.setPassword(password);
+		// Get a factory which determines the type of authorization
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Request a ConnectionAuthorization of type text file which contains the
+		// credentials
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
+				"/tmp/ice-remote-creds.txt");
+		// Set it
+		connectConfig.setAuthorization(auth);
 		connectConfig.setName("dummyConnection");
 		connectConfig.setDeleteWorkingDirectory(true);
 	}
@@ -160,16 +150,24 @@ public class RemoteCommandTest {
 
 	/**
 	 * This tests that the job status is set to failed if an incorrect connection is
+	 * established. Expect an exception since the connection will not be able to be
 	 * established.
 	 */
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void testFailedConnectionRemoteCommand() {
 		System.out.println("Testing remote command with a bad connection");
 
 		// Make up some bad connection to test
-		connectConfig.setUsername("someBadUsername");
-		connectConfig.setHostname("someBadHostname");
-		connectConfig.setPassword("someBadPassword");
+		ConnectionConfiguration cfg = new ConnectionConfiguration();
+		// Make the connection configuration
+		// Get a factory which determines the type of authorization
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Request a ConnectionAuthorization of type text file which contains the
+		// credentials
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
+				"/non/existent/path/creds.txt");
+		// Set it
+		cfg.setAuthorization(auth);
 		// Make a command with a bad connection
 		RemoteCommand command = new RemoteCommand(commandConfig, connectConfig, null);
 

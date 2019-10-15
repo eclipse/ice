@@ -19,19 +19,20 @@ import java.io.InputStreamReader;
  * @author Joe Osborn
  *
  */
-public class ConsoleCommandAuthorizationHandler implements CommandAuthorizationHandler {
+public class ConsoleConnectionAuthorizationHandler extends ConnectionAuthorizationHandler {
 
 	/**
 	 * Default constructor
 	 */
-	public ConsoleCommandAuthorizationHandler() {
+	public ConsoleConnectionAuthorizationHandler() {
 	}
 
 	/**
-	 * See {@link org.eclipse.ice.commands.CommandAuthorizationHandler#getPassword()}
+	 * See
+	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#getPassword()}
 	 */
 	@Override
-	public char[] getPassword() {
+	protected char[] getPassword() {
 
 		String password = "";
 		// Start up a console eraser class to erase characters as they are typed to the
@@ -45,9 +46,9 @@ public class ConsoleCommandAuthorizationHandler implements CommandAuthorizationH
 
 		// Start erasing the characters that are input to the console screen
 		eraser.start();
-	
+
 		try {
-			// Read in the password	
+			// Read in the password
 			password = in.readLine();
 			in.close();
 		} catch (IOException e) {
@@ -65,5 +66,4 @@ public class ConsoleCommandAuthorizationHandler implements CommandAuthorizationH
 		return password.toCharArray();
 	}
 
-	
 }

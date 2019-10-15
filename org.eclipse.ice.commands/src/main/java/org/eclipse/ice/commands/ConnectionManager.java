@@ -11,14 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,8 +68,14 @@ public class ConnectionManager {
 
 		// Get the information necessary to open the connection
 		if (newConnection.getConfiguration() != null) {
-			String username = newConnection.getConfiguration().getUsername();
-			String hostname = newConnection.getConfiguration().getHostname();
+			ConnectionAuthorizationHandler auth = newConnection.getConfiguration().getAuthorization();
+
+			// Get the password first. If authorization is a text file, then
+			// username and hostname will be set. Otherwise user must set them
+			char[] pwd = auth.getPassword();
+
+			String username = auth.getUsername();
+			String hostname = auth.getHostname();
 
 			// Try go get and open the new session
 			try {
@@ -83,42 +83,6 @@ public class ConnectionManager {
 			} catch (JSchException e) {
 				logger.error("Couldn't open session with given username and hostname. Exiting.");
 				throw new JSchException();
-			}
-
-			// Get the password
-			char[] pwd = null;
-			// If it is not in the configuration, then we need to prompt the user for the
-			// password
-			if (newConnection.getConfiguration().getPassword().equals("")) {
-				// If the credential path was not specified, query the user from the console
-				// for the password
-				if(newConnection.getConfiguration().getCredentialPath().equals("")) {
-					// TODO - this is where the code will go that gets the password from
-					// the appropriate password authentication handler
-					pwd = getPassword();
-				}
-				else {
-					// Otherwise try to get the password from the credential path
-					String path = newConnection.getConfiguration().getCredentialPath();
-					// Get the file with the password in it
-					File credFile = new File(path);
-					Scanner scanner = null;
-					try {
-						scanner = new Scanner(credFile);
-					} catch(FileNotFoundException e) {
-						logger.error("A path was given where the ssh credentials live, but that path doesn't exist!");
-						return null;
-					}
-					// Get the password from the file
-					pwd = scanner.next().toCharArray();
-				}
-			} else {
-				// The password is only stored for unit tests to the dummy ssh connection
-				// Users can also store it, but this generally isn't recommended for security
-				// reasons
-				pwd = newConnection.getConfiguration().getPassword().toCharArray();
-				// Delete it since it is no longer needed
-				newConnection.getConfiguration().setPassword("");
 			}
 
 			// Pass it to the session
@@ -227,9 +191,9 @@ public class ConnectionManager {
 			// Build a message
 			String msg = null;
 			// Get the host for the connection
-			String host = connectionList.get(name).getConfiguration().getHostname();
+			String host = connectionList.get(name).getConfiguration().getAuthorization().getHostname();
 			// Get the username for the connection
-			String username = connectionList.get(name).getConfiguration().getUsername();
+			String username = connectionList.get(name).getConfiguration().getAuthorization().getUsername();
 			// Check the status. If it is open or closed (i.e. connected or disconnected)
 			String status = "";
 			if (isConnectionOpen(name))
@@ -256,47 +220,6 @@ public class ConnectionManager {
 	public boolean isConnectionOpen(String connectionName) {
 		Connection connection = getConnection(connectionName);
 		return connection.getSession().isConnected();
-	}
-
-	/**
-	 * This function gets the password from the user as a prompt. It uses the
-	 * {@link org.eclipse.ice.commands.ConsoleEraser#run} method to "erase" the
-	 * characters at the console prompt as they are typed in, so that the password
-	 * isn't shown. The prompt is terminated by a carriage return.
-	 * 
-	 * @return - char array of password chars
-	 */
-	private final char[] getPassword() {
-
-		String password = "";
-		// Start up a console eraser class to erase characters as they are typed to the
-		// console screen
-		ConsoleEraser eraser = new ConsoleEraser();
-
-		logger.info("Please enter your password: ");
-
-		// Read in the password
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-
-		// Start erasing the characters that are input to the console screen
-		eraser.start();
-		try {
-			// Read in the password
-			password = in.readLine();
-			in.close();
-		} catch (IOException e) {
-			logger.error("Couldn't read the password...");
-			return null;
-		}
-
-		// Stop the thread from erasing the previous character, since other output
-		// is important to see
-		eraser.stopErasing();
-		System.out.print("\b");
-
-		// Return the password as a char array for added safety, since strings are
-		// immutable
-		return password.toCharArray();
 	}
 
 	/**

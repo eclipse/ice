@@ -21,17 +21,6 @@ package org.eclipse.ice.commands;
 public class ConnectionConfiguration {
 
 	/**
-	 * Username to configure a particular connection
-	 */
-	private String username = "";
-
-	/**
-	 * The hostname on which to host the particular session, or where the
-	 * RemoteCommand will eventually be run
-	 */
-	private String hostname = "";
-
-	/**
 	 * A name given to this particular connection configuration, which can be used
 	 * to identify the forthcoming connection and, for example, get it from the
 	 * ConnectionManager class
@@ -39,17 +28,12 @@ public class ConnectionConfiguration {
 	private String name = "";
 
 	/**
-	 * The password used to make the connection. Used for unit tests with the dummy
-	 * ssh account only
+	 * This is a connection authorization handler which deals with the method
+	 * through which remote connections are authorized, i.e. the password
+	 * manipulation. This is another method which allows users to decide how to
+	 * input their password.
 	 */
-	private String password = "";
-
-	/**
-	 * An optional path that the user can provide to a text file with their ssh
-	 * credentials available. The file must be completely empty except 
-	 * for the ssh password to be used.
-	 */
-	private String credentialPath = "";
+	private ConnectionAuthorizationHandler authorization = null;
 
 	/**
 	 * A boolean indicating whether or not the files/directories created on the
@@ -63,43 +47,6 @@ public class ConnectionConfiguration {
 	 * Default constructor
 	 */
 	public ConnectionConfiguration() {
-	}
-
-	/**
-	 * Setter function for
-	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#username}
-	 * 
-	 * @param uname
-	 */
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	/**
-	 * Getter for the username for a connection
-	 * 
-	 * @return username
-	 */
-	public String getUsername() {
-		return username;
-	}
-
-	/**
-	 * Setter function for
-	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#hostname}
-	 * 
-	 * @param hname
-	 */
-	public void setHostname(String hostname) {
-		this.hostname = hostname;
-	}
-
-	/**
-	 * Create getter and setter functions to access member variables
-	 */
-
-	public String getHostname() {
-		return hostname;
 	}
 
 	/**
@@ -145,45 +92,22 @@ public class ConnectionConfiguration {
 	}
 
 	/**
-	 * Setter for {@link org.eclipse.ice.commands.ConnectionConfiguration#password}
-	 * Use with caution, only if you are comfortable putting your password into a
-	 * String variable (which you rarely should be!!). This function is primarily
-	 * for unit testing with a dummy ssh account in CI.
+	 * Setter for the authorization method, if desired. See
+	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#authorization}
 	 * 
-	 * @param _pass
+	 * @param authorization
 	 */
-	public void setPassword(String password) {
-		this.password = password;
+	public void setAuthorization(ConnectionAuthorizationHandler authorization) {
+		this.authorization = authorization;
 	}
 
 	/**
-	 * Getter for obtaining password string. Protected so that it cannot be publicly
-	 * accessed, only by classes within this package.
+	 * Getter for the authorization method, if desired. See
+	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#authorization}
 	 * 
-	 * @return
+	 * @param authorization
 	 */
-	protected String getPassword() {
-		return password;
+	public ConnectionAuthorizationHandler getAuthorization() {
+		return authorization;
 	}
-
-	/**
-	 * Setter for the credential path, if desired. See
-	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#credentialPath}
-	 * 
-	 * @param credentialPath
-	 */
-	public void setCredentialPath(String credentialPath) {
-		this.credentialPath = credentialPath;
-	}
-
-	/**
-	 * Getter for the credential path, if desired. See
-	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#credentialPath}
-	 * 
-	 * @return
-	 */
-	public String getCredentialPath() {
-		return credentialPath;
-	}
-
 }

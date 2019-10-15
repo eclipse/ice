@@ -12,16 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-
 import org.eclipse.ice.commands.Command;
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandStatus;
+import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
+import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.LocalCommand;
 import org.eclipse.ice.commands.RemoteCommand;
+import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
 import org.junit.Test;
 
 /**
@@ -61,34 +60,19 @@ public class CommandTest {
 		// Set the remote working directory, where the command will be processed
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
 		// Set the connection configuration to a dummy remote connection
-		// Read in a dummy configuration file that contains credentials
-		File file = new File("/tmp/ice-remote-creds.txt");
-		Scanner scanner = null;
-		try {
-			scanner = new Scanner(file);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		// Get the credentials line by line
-		scanner.useDelimiter("\n");
-		// Get the credentials for the dummy remote account
-
-		String username = scanner.next();
-		String password = scanner.next();
-		String hostname = scanner.next();
 
 		// Make the ConnectionConfiguration and set it up
 		ConnectionConfiguration connectConfig = new ConnectionConfiguration();
-		connectConfig.setHostname(hostname);
-		connectConfig.setUsername(username);
-		// Set password to "" to force input of remote connection password at console
-		// line, for example: connectConfig.setPassword("");
-		connectConfig.setPassword(password);
-		// Give the connection a name
+		// Make the connection configuration
+		// Get a factory which determines the type of authorization
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Request a ConnectionAuthorization of type text file which contains the
+		// credentials
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
+				"/tmp/ice-remote-creds.txt");
+		// Set it
+		connectConfig.setAuthorization(auth);
 		connectConfig.setName("dummyConnection");
-		// Tell the connection where you want the executable to be run in the remote
-		// system
-		// Delete remote working directory after job completion
 		connectConfig.setDeleteWorkingDirectory(true);
 
 		// Make the command and execute it
@@ -133,7 +117,9 @@ public class CommandTest {
 
 		// Create a connectionConfiguration to indicate a local command
 		ConnectionConfiguration connection = new ConnectionConfiguration();
-		connection.setHostname(hostname);
+		ConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
+		handler.setHostname(hostname);
+		connection.setAuthorization(handler);
 
 		// Make the command and execute it
 		Command localCommand = new LocalCommand(connection, commandConfig);
@@ -159,7 +145,7 @@ public class CommandTest {
 
 		// Check to make sure that an exception is thrown for a bad status when the
 		// status is checked
-		assert(!command.checkStatus(status));
+		assert (!command.checkStatus(status));
 	}
 
 }

@@ -49,7 +49,7 @@ public class FileHandlerFactory {
 		FileHandler handler = null;
 
 		// Determine if the hostname in the config is local or not
-		boolean isLocal = isLocal(connectionConfig.getHostname());
+		boolean isLocal = isLocal(connectionConfig.getAuthorization().getHostname());
 
 		// If it is, return a local file handler, otherwise remote
 		if (isLocal) {

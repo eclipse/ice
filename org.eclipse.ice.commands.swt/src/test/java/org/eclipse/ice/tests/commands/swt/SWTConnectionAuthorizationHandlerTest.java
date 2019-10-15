@@ -13,7 +13,7 @@ package org.eclipse.ice.tests.commands.swt;
 
 import java.util.Arrays;
 
-import org.eclipse.ice.commands.swt.SWTCommandAuthorizationHandler;
+import org.eclipse.ice.commands.swt.SWTConnectionAuthorizationHandler;
 import org.junit.Test;
 
 /**
@@ -23,12 +23,12 @@ import org.junit.Test;
  * @author Joe Osborn
  *
  */
-public class SWTCommandAuthorizationHandlerTest {
+public class SWTConnectionAuthorizationHandlerTest {
 
 	/**
 	 * Default constructor
 	 */
-	public SWTCommandAuthorizationHandlerTest() {
+	public SWTConnectionAuthorizationHandlerTest() {
 	}
 
 	/**
@@ -38,7 +38,7 @@ public class SWTCommandAuthorizationHandlerTest {
 	@Test
 	public void testGetPassword() {
 		System.out.println("Enter 'password' into the SWT GUI when prompted");
-		SWTCommandAuthorizationHandler swt = new SWTCommandAuthorizationHandler();
+		SWTConnectionAuthorizationHandler swt = new SWTConnectionAuthorizationHandler();
 		
 		char[] swtPassword = swt.getPassword();
 		// Make an array to compare to

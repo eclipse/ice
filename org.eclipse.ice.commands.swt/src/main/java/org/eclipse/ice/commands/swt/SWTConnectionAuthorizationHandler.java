@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.commands.swt;
 
-import org.eclipse.ice.commands.CommandAuthorizationHandler;
+import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Text;
  * @author Joe Osborn
  *
  */
-public class SWTCommandAuthorizationHandler implements CommandAuthorizationHandler {
+public class SWTConnectionAuthorizationHandler extends ConnectionAuthorizationHandler {
 
 	/**
 	 * A char array to hold the password that is obtained from the widget
@@ -39,12 +39,12 @@ public class SWTCommandAuthorizationHandler implements CommandAuthorizationHandl
 	/**
 	 * Default constructor
 	 */
-	public SWTCommandAuthorizationHandler() {
+	public SWTConnectionAuthorizationHandler() {
 	}
 
 	/**
 	 * See
-	 * {@link org.eclipse.ice.commands.CommandAuthorizationHandler#getPassword()}
+	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#getPassword()}
 	 */
 	@Override
 	public char[] getPassword() {
@@ -127,7 +127,7 @@ public class SWTCommandAuthorizationHandler implements CommandAuthorizationHandl
 	/**
 	 * Setter function for the password. Allows the member variable to be set from
 	 * inside the function which overrides the 'enter' button functionality in
-	 * {@link org.eclipse.ice.commands.SWTCommandAuthorizationHandler#getPassword()}
+	 * {@link org.eclipse.ice.commands.SWTConnectionAuthorizationHandler#getPassword()}
 	 * 
 	 * @param password
 	 */

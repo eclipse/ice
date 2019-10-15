@@ -22,23 +22,73 @@ import org.slf4j.LoggerFactory;
  * @author Joe Osborn
  *
  */
-public abstract interface CommandAuthorizationHandler {
+public abstract class ConnectionAuthorizationHandler {
 
 	/**
-	 * Logger for handling event messages and other information. All password 
+	 * Logger for handling event messages and other information. All password
 	 * authentication classes can use a single logger
 	 */
-	public final Logger logger = LoggerFactory.getLogger(CommandAuthorizationHandler.class);
+	public final Logger logger = LoggerFactory.getLogger(ConnectionAuthorizationHandler.class);
 
-	
 	/**
-	 * This function gets a password for the command authentication. The password
-	 * is returned in a char array since Strings are immutable, so it is generally
-	 * ill advised to store passwords in strings.
+	 * A string which contains the username of the connection, to be taken from the
+	 * text file
+	 */
+	String username = null;
+
+	/**
+	 * A string which contains the hostname of the connection, to be taken from the
+	 * text file
+	 */
+	String hostname = null;
+
+	/**
+	 * This function gets a password for the command authentication. The password is
+	 * returned in a char array since Strings are immutable, so it is generally ill
+	 * advised to store passwords in strings.
+	 * 
 	 * @return - obtained password
 	 */
-	public abstract char[] getPassword();
-	
-	
+	protected abstract char[] getPassword();
+
+	/**
+	 * Getter for authorization hostname
+	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#hostname}
+	 * 
+	 * @return
+	 */
+	public String getHostname() {
+		return hostname;
+	}
+
+	/**
+	 * Getter for authorization hostname
+	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#username}
+	 * 
+	 * @return
+	 */
+	public String getUsername() {
+		return username;
+	}
+
+	/**
+	 * Setter for authorization hostname
+	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#hostname}
+	 * 
+	 * @param
+	 */
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
+	}
+
+	/**
+	 * Setter for authorization hostname
+	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#username}
+	 * 
+	 * @param
+	 */
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
 }

@@ -84,6 +84,7 @@ public class RemoteCommand extends Command {
 		commandConfig = _commandConfig;
 		connectionConfig = connectConfig;
 
+		// Get the connection manager to open a new connection
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 
 		// Open and set the connection(s)
@@ -91,7 +92,7 @@ public class RemoteCommand extends Command {
 			connection = manager.openConnection(connectConfig);
 			// Set the commandConfig hostname to that of the connectionConfig - only used
 			// for output logging info
-			commandConfig.setHostname(connectConfig.getHostname());
+			commandConfig.setHostname(connectConfig.getAuthorization().getHostname());
 
 			// If there is an extra connection so that we are multi-hopping, then open it
 			// too
@@ -99,7 +100,7 @@ public class RemoteCommand extends Command {
 				secondConnection = manager.openConnection(extraConnection);
 				// Set the commandConfig hostname to be the extra connection, since this is
 				// really where the job will run
-				commandConfig.setHostname(extraConnection.getHostname());
+				commandConfig.setHostname(extraConnection.getAuthorization().getHostname());
 			}
 		} catch (JSchException e) {
 			// If the connection(s) can't be opened, we can't be expected to execute a job
@@ -131,22 +132,21 @@ public class RemoteCommand extends Command {
 		}
 
 		// Check the status to ensure file transfer was successful
-		if(!checkStatus(status))
+		if (!checkStatus(status))
 			return CommandStatus.INFOERROR;
-		
 
 		// Execute the commands on the remote host
 		status = processJob();
 
 		// Check the status to ensure nothing failed
-		if(!checkStatus(status))
+		if (!checkStatus(status))
 			return CommandStatus.FAILED;
 
 		// Monitor the job to check its exit value and ensure it finishes correctly
 		status = monitorJob();
 
 		// Check the status to ensure job finished successfully
-		if(!checkStatus(status))
+		if (!checkStatus(status))
 			return CommandStatus.FAILED;
 
 		// Finish the job by cleaning up the remote directories created

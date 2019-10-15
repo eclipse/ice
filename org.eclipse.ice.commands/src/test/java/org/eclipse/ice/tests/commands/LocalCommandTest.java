@@ -13,6 +13,7 @@ package org.eclipse.ice.tests.commands;
 
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandStatus;
+import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.LocalCommand;
 import org.junit.Before;
@@ -61,7 +62,8 @@ public class LocalCommandTest {
 		String hostname = factory.getLocalHostname();
 
 		connection = new ConnectionConfiguration();
-		connection.setHostname(hostname);
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		connection.setAuthorization(authFactory.getConnectionAuthorizationHandler("local"));
 
 		commandConfig.setCommandId(1);
 		commandConfig.setExecutable(executable);

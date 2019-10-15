@@ -82,14 +82,14 @@ public class CommandFactory {
 		Command command = null;
 
 		// If no host was provided, we don't know where to run the job
-		if (connectionConfig.getHostname() == null) {
+		if (connectionConfig.getAuthorization().getHostname() == null) {
 			logger.error(
 					"You didn't provide a hostname in the ConnectionConfiguration for the job to run on! Exiting.");
 			throw new IOException();
 		}
 
 		// If the host is local, get a LocalCommand. Otherwise, RemoteCommand
-		if (isLocal(connectionConfig.getHostname())) {
+		if (isLocal(connectionConfig.getAuthorization().getHostname())) {
 			command = new LocalCommand(connectionConfig, commandConfig);
 		} else if (extraConnection == null) {
 			// If there was only one connection, then it is a remote command from
@@ -125,7 +125,8 @@ public class CommandFactory {
 		// Get the local host name from the operating system
 		String hostname = addr.getHostName();
 
-		// If the local hostname is not the same as the hostname provided, then it is remote
+		// If the local hostname is not the same as the hostname provided, then it is
+		// remote
 		if (hostname != host)
 			return false;
 		// Otherwise it is a local host, and return true
