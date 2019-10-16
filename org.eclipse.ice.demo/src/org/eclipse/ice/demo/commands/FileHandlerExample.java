@@ -12,14 +12,14 @@
 package org.eclipse.ice.demo.commands;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Scanner;
 
 import org.eclipse.ice.commands.CommandStatus;
+import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
+import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.FileHandlerFactory;
 import org.eclipse.ice.commands.IFileHandler;
@@ -103,13 +103,13 @@ public class FileHandlerExample {
 	public static void moveLocalFile() {
 		// Create a dummy local file to move
 		createDummyLocalFile();
-		
+
 		// Create a dummy local destination to move the file to
 		createDummyLocalDestination();
-		
+
 		// Move it
 		moveFileLocally();
-		
+
 		// Delete the remaining files that we don't need
 		cleanUpLocalFiles();
 	}
@@ -156,16 +156,16 @@ public class FileHandlerExample {
 
 		// Get the dummy connection configuration with the credentials
 		ConnectionConfiguration configuration = makeConnectionConfiguration();
-		
+
 		// Get the filename of the dummy file
 		String filename = localSource.substring(localSource.lastIndexOf("/") + 1);
 
 		// Get the file handler factory to create the transfer
 		FileHandlerFactory factory = new FileHandlerFactory();
-		
+
 		IFileHandler handler = null;
 		CommandStatus status = null;
-		
+
 		try {
 			// Get the handler for this particular connection configuration
 			handler = factory.getFileHandler(configuration);
@@ -177,8 +177,6 @@ public class FileHandlerExample {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
 
 	}
 
@@ -189,16 +187,16 @@ public class FileHandlerExample {
 	public static void copyFileRemotely() {
 		// Get the dummy connection configuration with the credentials
 		ConnectionConfiguration configuration = makeConnectionConfiguration();
-		
+
 		// Get the filename of the dummy file
 		String filename = localSource.substring(localSource.lastIndexOf("/"));
 
 		// Get the file handler factory to create the transfer
 		FileHandlerFactory factory = new FileHandlerFactory();
-		
+
 		IFileHandler handler = null;
 		CommandStatus status = null;
-		
+
 		try {
 			// Get the handler for this particular connection configuration
 			handler = factory.getFileHandler(configuration);
@@ -210,8 +208,6 @@ public class FileHandlerExample {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
 
 	}
 
@@ -226,7 +222,14 @@ public class FileHandlerExample {
 
 		// Make a connection configuration and set the host to local
 		ConnectionConfiguration cfg = new ConnectionConfiguration();
-		cfg.setHostname(CommandFactoryExample.getLocalHostname());
+		// Get a factory which determines the type of authorization
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Get the authorization type. In this case, local, which is basically
+		// equivalent to
+		// "no authorization"
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("local");
+		// Set the connectionConfig to have access to e.g. the hostname
+		cfg.setAuthorization(auth);
 
 		// Get the appropriate remote/local FileHandler
 		try {
@@ -239,7 +242,7 @@ public class FileHandlerExample {
 			}
 			// You can also check if a file exists if desired
 			boolean exist = handler.exists(localDestination);
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -262,7 +265,14 @@ public class FileHandlerExample {
 
 		// Make a connection configuration and set the host to local
 		ConnectionConfiguration cfg = new ConnectionConfiguration();
-		cfg.setHostname(CommandFactoryExample.getLocalHostname());
+		// Get a factory which determines the type of authorization
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Get the authorization type. In this case, local, which is basically
+		// equivalent to
+		// "no authorization"
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("local");
+		// Set the connectionConfig to have access to e.g. the hostname
+		cfg.setAuthorization(auth);
 
 		// Get the appropriate remote/local FileHandler
 		try {
@@ -277,7 +287,7 @@ public class FileHandlerExample {
 			// Check that it exists
 			String filename = localSource.substring(localSource.lastIndexOf("/"));
 			boolean exist = handler.exists(localDestination + filename);
-		
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -340,7 +350,7 @@ public class FileHandlerExample {
 		deleteDestination = deleteDirectory(new File(localDestination));
 		if (!deleteDestination) {
 			System.out.println("Couldn't delete destination file/directory at: " + localDestination);
-		} 
+		}
 
 		return;
 	}
@@ -372,27 +382,17 @@ public class FileHandlerExample {
 	 */
 	private static ConnectionConfiguration makeConnectionConfiguration() {
 		// Set the connection configuration to a dummy remote connection
-		// Read in a dummy configuration file that contains credentials
-		File file = new File("/tmp/ice-remote-creds.txt");
-		Scanner scanner = null;
-		try {
-			scanner = new Scanner(file);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		// Scan line by line
-		scanner.useDelimiter("\n");
-
-		// Get the credentials for the dummy remote account
-		String username = scanner.next();
-		String password = scanner.next();
-		String hostname = scanner.next();
-
 		ConnectionConfiguration config = new ConnectionConfiguration();
-		// Make the connection configuration
-		config.setHostname(hostname);
-		config.setUsername(username);
-		config.setPassword(password);
+
+		// Get a factory which determines the type of authorization
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Request a ConnectionAuthorization of type text file which contains the
+		// credentials
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
+				"/tmp/ice-remote-creds.txt");
+		// Set it
+		config.setAuthorization(auth);
+
 		// Note the password can be input at the console by not setting the
 		// the password explicitly in the connection configuration
 		config.setName("dummyConnection");

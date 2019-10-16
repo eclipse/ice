@@ -11,17 +11,16 @@
  *******************************************************************************/
 package org.eclipse.ice.demo.commands;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Scanner;
 
 import org.eclipse.ice.commands.Command;
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandFactory;
 import org.eclipse.ice.commands.CommandStatus;
+import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
+import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 
 /**
@@ -43,7 +42,7 @@ public class CommandFactoryExample {
 
 		// Run an example test script on a remote host
 		runRemoteCommand();
-		
+
 		// Run an example python script
 		runPythonScript();
 
@@ -133,26 +132,14 @@ public class CommandFactoryExample {
 
 		ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
 		// Set the connection configuration to a dummy remote connection
-		// Read in a dummy configuration file that contains credentials
-		File file = new File("/tmp/ice-remote-creds.txt");
-		Scanner scanner = null;
-		try {
-			scanner = new Scanner(file);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		// Scan line by line
-		scanner.useDelimiter("\n");
-
-		// Get the credentials for the dummy remote account
-		String username = scanner.next();
-		String password = scanner.next();
-		String hostname = scanner.next();
-
-		// Make the connection configuration
-		connectionConfig.setHostname(hostname);
-		connectionConfig.setUsername(username);
-		connectionConfig.setPassword(password);
+		// Get a factory which determines the type of authorization
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Request a ConnectionAuthorization of type text file which contains the
+		// dummy remote host credentials
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
+				"/tmp/ice-remote-creds.txt");
+		// Set it so that the connection can authorize itself
+		connectionConfig.setAuthorization(auth);
 		// Give the connection a name
 		connectionConfig.setName("dummyConnection");
 
@@ -208,7 +195,14 @@ public class CommandFactoryExample {
 
 		// Make a ConnectionConfiguration to indicate that we want to run locally
 		ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
-		connectionConfig.setHostname(hostname);
+		// Get a factory which determines the type of authorization
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Get the authorization type. In this case, local, which is basically
+		// equivalent to
+		// "no authorization"
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("local");
+		// Set the connectionConfig to have access to e.g. the hostname
+		connectionConfig.setAuthorization(auth);
 
 		// Get the command
 		Command localCommand = null;
@@ -227,12 +221,11 @@ public class CommandFactoryExample {
 		return;
 	}
 
-	
 	/**
-	 * This function shows an example of how to run with a python script.
-	 * The functionality is very similar to above, except that the interpreter
-	 * needs to be specified in the CommandConfiguration. This appends the string
-	 * "python" before the executable name, allowing it to run in python.
+	 * This function shows an example of how to run with a python script. The
+	 * functionality is very similar to above, except that the interpreter needs to
+	 * be specified in the CommandConfiguration. This appends the string "python"
+	 * before the executable name, allowing it to run in python.
 	 */
 	public static void runPythonScript() {
 
@@ -262,7 +255,14 @@ public class CommandFactoryExample {
 		configuration.setWorkingDirectory(scriptDir);
 
 		ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
-		connectionConfig.setHostname(getLocalHostname());
+		// Get a factory which determines the type of authorization
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Get the authorization type. In this case, local, which is basically
+		// equivalent to
+		// "no authorization"
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("local");
+		// Set the connectionConfig to have access to e.g. the hostname
+		connectionConfig.setAuthorization(auth);
 
 		// Create a factory to get the Command
 		CommandFactory factory = new CommandFactory();
@@ -276,7 +276,6 @@ public class CommandFactoryExample {
 		}
 
 		CommandStatus status = command.execute();
-
 
 	}
 
