@@ -660,7 +660,7 @@ public class CommandConfiguration {
 	 * @param string
 	 */
 	public void addToStdOutputString(String string) {
-		stdOutput += " " + string;
+		stdOutput += "\n" + string;
 	}
 
 	/**
