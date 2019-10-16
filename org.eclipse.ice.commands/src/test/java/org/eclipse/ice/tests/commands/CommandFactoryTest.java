@@ -256,7 +256,7 @@ public class CommandFactoryTest {
 		CommandConfiguration cmdCfg = new CommandConfiguration();
 		cmdCfg.setExecutable("ls -lrt");
 		cmdCfg.setNumProcs("1");
-		cmdCfg.setWorkingDirectory("/Users/4jo/");
+		cmdCfg.setWorkingDirectory(pwd);
 		cmdCfg.setAppendInput(false);
 		cmdCfg.setOS(System.getProperty("os.name"));
 		cmdCfg.setRemoteWorkingDirectory("/tmp/");
