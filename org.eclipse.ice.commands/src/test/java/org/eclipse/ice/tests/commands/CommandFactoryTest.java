@@ -129,7 +129,7 @@ public class CommandFactoryTest {
 		String rm = "someLocalErrFile.txt someLocalOutFile.txt someLocalErrFileDir.txt someLocalOutFileDir.txt";
 		rm += " someRemoteErrFile.txt someRemoteOutFile.txt someMultLocalErrFile.txt someMultLocalOutFile.txt";
 		rm += " someLsOutFile.txt someLsErrFile.txt someMultRemoteOutFile.txt someMultRemoteErrFile.txt";
-		rm += " somePythOutFile.txt somePythErrFile.txt";
+		rm += " somePythOutFile.txt somePythErrFile.txt someLsRemoteErrFile.txt someLsRemoteOutFile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
 		// TODO - build this command for use in windows
@@ -217,7 +217,7 @@ public class CommandFactoryTest {
 	 * line prompts.
 	 */
 	@Test
-	public void testBoringCommand() {
+	public void testBoringCommandLocally() {
 
 		CommandConfiguration cmdCfg = new CommandConfiguration();
 		cmdCfg.setExecutable("ls -lrt");
@@ -245,6 +245,41 @@ public class CommandFactoryTest {
 		assert (status == CommandStatus.SUCCESS);
 	}
 
+	/**
+	 * This function tests a more boring command, e.g. just executing "ls" at the
+	 * command prompt This shows that the API can be used to execute basic command
+	 * line prompts.
+	 */
+	@Test
+	public void testBoringCommandRemotely() {
+		System.out.println("Test remotely ls");
+		CommandConfiguration cmdCfg = new CommandConfiguration();
+		cmdCfg.setExecutable("ls -lrt");
+		cmdCfg.setNumProcs("1");
+		cmdCfg.setWorkingDirectory("/Users/4jo/");
+		cmdCfg.setAppendInput(false);
+		cmdCfg.setOS(System.getProperty("os.name"));
+		cmdCfg.setRemoteWorkingDirectory("/tmp/");
+		cmdCfg.setCommandId(1);
+		cmdCfg.setErrFileName("someLsRemoteErrFile.txt");
+		cmdCfg.setOutFileName("someLsRemoteOutFile.txt");
+		ConnectionConfiguration ctCfg = setupDummyConnectionConfiguration();
+		ctCfg.setDeleteWorkingDirectory(false);
+		Command cmd = null;
+		try {
+			cmd = factory.getCommand(cmdCfg, ctCfg);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		CommandStatus status = cmd.execute();
+		System.out.println(status);
+		
+		System.out.println("Finished remote ls test " + cmd.getCommandConfiguration().getStdOutputString());
+		assert (status == CommandStatus.SUCCESS);
+	}
+
+	
+	
 	/**
 	 * This function tests with real files to test an actual job processing. The job
 	 * executes a script with some hello world commands in it.

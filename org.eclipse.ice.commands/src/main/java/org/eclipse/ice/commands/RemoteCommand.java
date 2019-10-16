@@ -329,7 +329,7 @@ public class RemoteCommand extends Command {
 		handler.setConnectionConfiguration(connectionConfig);
 
 		String remoteWorkingDirectory = commandConfig.getRemoteWorkingDirectory();
-		logger.info("Make the working directory at: " + remoteWorkingDirectory);
+		logger.info("The remote working directory is: " + remoteWorkingDirectory);
 
 		String workingDirectory = commandConfig.getWorkingDirectory();
 
@@ -348,26 +348,32 @@ public class RemoteCommand extends Command {
 
 		String source = workingDirectory + shortExecName;
 		String destination = remoteWorkingDirectory + shortExecName;
-		logger.info("Putting executable file: " + source + " in directory " + destination);
-		CommandStatus fileTransfer = handler.copy(source, destination);
-		if (fileTransfer != CommandStatus.SUCCESS) {
-			logger.error("Couldn't transfer executable to remote host!");
-			throw new IOException();
-		}
 
-		/**
-		 * Change the permission of the executable so that it can be executed. Give user
-		 * read write execute permissions, all other users no permissions NOTE: JSch
-		 * takes a decimal number, not an octal number like one would normally expect
-		 * with chmod. So 448 here in decimal corresponds to 700 in octal, i.e.
-		 * -rwx------ We give write permissions also so that the file can be deleted at
-		 * the end of processing if desired, or e.g. overwritten if the job fails for
-		 * whatever reason and needs to be run again.
-		 */
-		ChannelSftp sftpChannel = (ChannelSftp) connection.getSession().openChannel("sftp");
-		sftpChannel.connect();
-		sftpChannel.chmod(448, remoteWorkingDirectory + shortExecName);
-		sftpChannel.disconnect();
+		CommandStatus fileTransfer = null;
+		
+		// Check if the source file exists. If the executable is a script, then it will
+		// transfer it to the host. If it is just a command (e.g. ls) then it will skip
+		if (handler.exists(source)) {
+			logger.info("Putting executable file: " + source + " in directory " + destination);
+			fileTransfer = handler.copy(source, destination);
+			if (fileTransfer != CommandStatus.SUCCESS) {
+				logger.error("Couldn't transfer executable to remote host!");
+				throw new IOException();
+			}
+			/**
+			 * Change the permission of the executable so that it can be executed. Give user
+			 * read write execute permissions, all other users no permissions NOTE: JSch
+			 * takes a decimal number, not an octal number like one would normally expect
+			 * with chmod. So 448 here in decimal corresponds to 700 in octal, i.e.
+			 * -rwx------ We give write permissions also so that the file can be deleted at
+			 * the end of processing if desired, or e.g. overwritten if the job fails for
+			 * whatever reason and needs to be run again.
+			 */
+			ChannelSftp sftpChannel = (ChannelSftp) connection.getSession().openChannel("sftp");
+			sftpChannel.connect();
+			sftpChannel.chmod(448, remoteWorkingDirectory + shortExecName);
+			sftpChannel.disconnect();
+		}
 
 		// Now move the input files after moving the executable file
 		HashMap<String, String> inputFiles = commandConfig.getInputFileList();
