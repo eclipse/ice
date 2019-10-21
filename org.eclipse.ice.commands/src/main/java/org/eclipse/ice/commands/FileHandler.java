@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ public abstract class FileHandler implements IFileHandler {
 	 * The command member variable that will actually execute the transfer that was
 	 * requested by the user
 	 */
-	protected Command command;
+	protected AtomicReference<Command> command = new AtomicReference<Command>();
 
 	/**
 	 * A status member variable that indicates the status of the file transfer. See
@@ -182,7 +183,7 @@ public abstract class FileHandler implements IFileHandler {
 	 * @return Command - the command associated with this FileHandler
 	 */
 	public Command getCommand() {
-		return command;
+		return command.get();
 	}
 
 	/**
@@ -236,7 +237,7 @@ public abstract class FileHandler implements IFileHandler {
 	 */
 	protected CommandStatus executeTransfer(final String destination) throws IOException {
 		// Execute the file transfer
-		transferStatus = command.execute();
+		transferStatus = command.get().execute();
 		// Check that the move succeeded
 		if (!exists(destination))
 			return CommandStatus.FAILED;

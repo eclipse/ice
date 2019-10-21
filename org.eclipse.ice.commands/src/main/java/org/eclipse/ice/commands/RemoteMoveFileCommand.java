@@ -103,7 +103,10 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 			status = CommandStatus.FAILED;
 			return status;
 		}
-
+		// Disconnect channel once finished
+		channel.disconnect();
+		
+		// Set status to completed and successful 
 		status = CommandStatus.SUCCESS;
 		return status;
 	}
@@ -130,6 +133,9 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 			logger.error("Channel isn't connected and can't copy remote to remote...");
 			throw e;
 		}
+		
+		// Disconnect channel once finished
+		getConnection().getChannel().disconnect();
 
 	}
 

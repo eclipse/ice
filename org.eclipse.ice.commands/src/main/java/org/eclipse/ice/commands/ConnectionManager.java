@@ -13,6 +13,7 @@ package org.eclipse.ice.commands;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class ConnectionManager {
 	 * name of the connection and the connection itself.
 	 * 
 	 */
-	private HashMap<String, Connection> connectionList = new HashMap<String, Connection>();
+	private AtomicReference<HashMap<String, Connection>> connectionList = new AtomicReference<HashMap<String, Connection>>();
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -45,7 +46,9 @@ public class ConnectionManager {
 	 * Default Constructor
 	 */
 	public ConnectionManager() {
-
+		// Set the atomic reference hashmap to a default <String, Connection> hashmap
+		HashMap<String, Connection> dummyMap = new HashMap<String, Connection>();
+		connectionList.set(dummyMap);
 	}
 
 	/**
@@ -104,10 +107,10 @@ public class ConnectionManager {
 			}
 
 			// Add the connection to the list since it was successfully created
-			connectionList.put(newConnection.getConfiguration().getName(), newConnection);
+			connectionList.get().put(newConnection.getConfiguration().getName(), newConnection);
 
 			logger.info("Connection at " + username + "@" + hostname + " established successfully");
-
+			
 			// Upon success, return the opened connection
 			return newConnection;
 		}
@@ -126,7 +129,7 @@ public class ConnectionManager {
 	 */
 	public Connection getConnection(String connectionName) {
 		// Find the hashmap instance, and return it
-		Connection returnConnection = connectionList.get(connectionName);
+		Connection returnConnection = connectionList.get().get(connectionName);
 		if (returnConnection == null) {
 			logger.warn("The connection is null! Couldn't find a connection with the name " + connectionName);
 		}
@@ -146,6 +149,8 @@ public class ConnectionManager {
 		// Disconnect the session. If the session was not connected in the first place,
 		// it does nothing
 		connection.getSession().disconnect();
+		// Confirm with the logger
+		logger.debug("Connection " + connectionName + "@" + connection.getConfiguration().getAuthorization().getHostname() + " closed");
 
 		return;
 	}
@@ -158,15 +163,17 @@ public class ConnectionManager {
 	 */
 	public void removeConnection(String connectionName) {
 		// Remove it from the list of connections
-		connectionList.remove(connectionName);
+		connectionList.get().remove(connectionName);
 	}
 
 	/**
 	 * This function removes all particular connections from the connection list
 	 */
 	public void removeAllConnections() {
+		// First make sure all connections have been disconnected
+		closeAllConnections();
 		// Remove all of the items from the hashmap
-		connectionList.clear();
+		connectionList.get().clear();
 	}
 
 	/**
@@ -174,7 +181,7 @@ public class ConnectionManager {
 	 */
 	public void closeAllConnections() {
 		// Iterate over all available connections in the list and disconnect
-		for (Connection connection : connectionList.values()) {
+		for (Connection connection : connectionList.get().values()) {
 			connection.getSession().disconnect();
 		}
 
@@ -187,13 +194,13 @@ public class ConnectionManager {
 	 */
 	public void listAllConnections() {
 		// Iterate over all available connections
-		for (String name : connectionList.keySet()) {
+		for (String name : connectionList.get().keySet()) {
 			// Build a message
 			String msg = null;
 			// Get the host for the connection
-			String host = connectionList.get(name).getConfiguration().getAuthorization().getHostname();
+			String host = connectionList.get().get(name).getConfiguration().getAuthorization().getHostname();
 			// Get the username for the connection
-			String username = connectionList.get(name).getConfiguration().getAuthorization().getUsername();
+			String username = connectionList.get().get(name).getConfiguration().getAuthorization().getUsername();
 			// Check the status. If it is open or closed (i.e. connected or disconnected)
 			String status = "";
 			if (isConnectionOpen(name))
@@ -229,7 +236,7 @@ public class ConnectionManager {
 	 * @param connections
 	 */
 	public void setConnectionList(HashMap<String, Connection> connectionList) {
-		this.connectionList = connectionList;
+		this.connectionList = new AtomicReference<HashMap<String, Connection>>(connectionList);
 	}
 
 	/**
@@ -239,7 +246,7 @@ public class ConnectionManager {
 	 * @return
 	 */
 	public HashMap<String, Connection> getConnectionList() {
-		return connectionList;
+		return connectionList.get();
 	}
 
 }

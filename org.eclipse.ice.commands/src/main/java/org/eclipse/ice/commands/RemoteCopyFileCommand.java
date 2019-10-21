@@ -102,7 +102,11 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 			status = CommandStatus.FAILED;
 			return status;
 		}
-
+		
+		// Disconnect the channel once finished copying
+		channel.disconnect();
+		
+		// Set the status to success and return
 		status = CommandStatus.SUCCESS;
 		return status;
 	}
@@ -115,6 +119,7 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	 * @throws JSchException
 	 */
 	private void copyRemoteToRemote() throws JSchException {
+		// Open an execution channel
 		getConnection().setChannel(getConnection().getSession().openChannel("exec"));
 		// TODO - test with windows, cp probably won't work
 		// Make a copy command to execute
@@ -128,7 +133,8 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 			logger.error("Channel isn't connected and can't copy remote to remote...");
 			throw e;
 		}
-
+		// Disconnect the channel
+		getConnection().getChannel().disconnect();
 	}
 
 	/**

@@ -29,6 +29,7 @@ import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -109,6 +110,16 @@ public class CommandFactoryTest {
 
 	}
 
+	/**
+	 * Close the connections after we are finished with them in an individual test
+	 * @throws Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		manager.closeAllConnections();
+	}
+	
 	/**
 	 * Run after the tests have finished processing. This function just removes the
 	 * dummy text files that are created with log/error information from running

@@ -72,13 +72,13 @@ public abstract class Command {
 	public CommandStatus execute() {
 		// Check that the commandConfig and connectionConfig(s) file was properly
 		// instantiated in the constructor
-		if(!checkStatus(status))
+		if (!checkStatus(status))
 			return CommandStatus.INFOERROR;
 
 		// Configure the command to be ready to run.
 		status = setConfiguration();
 		// Ensure that the command was properly configured
-		if(!checkStatus(status))
+		if (!checkStatus(status))
 			return CommandStatus.INFOERROR;
 
 		// Now that all of the prerequisites have been set, start the job running
@@ -159,15 +159,27 @@ public abstract class Command {
 			return CommandStatus.INFOERROR;
 		}
 
+		// Get a string of the executable to manipulate
+		String exec = commandConfig.getExecutable();
+		// If the executable contains a prefix, remove it
+		if (exec.contains("./"))
+			exec = exec.substring(2, exec.length());
+		String separator = "/";
+		if(commandConfig.getOS().toLowerCase().contains("win"))
+			separator = "\\";
+		
 		// Check that the directory exists
 		// Get the file handler factory
 		FileHandlerFactory factory = new FileHandlerFactory();
-		boolean exists = false;
+		boolean exists = false, execExists = false, inputExists = false;
 		try {
 			// Get the handler for this particular connection, whether local or remote
 			IFileHandler handler = factory.getFileHandler(connectionConfig);
 			// Check if the working directory exists
-			exists = handler.exists(commandConfig.getWorkingDirectory());
+			String workingDir = commandConfig.getWorkingDirectory();
+			exists = handler.exists(workingDir);
+
+			execExists = handler.exists(workingDir + exec);
 
 		} catch (IOException e) {
 			// If we can't get the file handler, then there was an error in the connection
@@ -181,12 +193,11 @@ public abstract class Command {
 			logger.error("Directory containing files does not exist! Check it!");
 			return CommandStatus.INFOERROR;
 		}
-
-		// Get a string of the executable to manipulate
-		String exec = commandConfig.getExecutable();
-		// If the executable contains a prefix, remove it
-		if (exec.contains("./"))
-			exec = exec.substring(2, exec.length());
+		if(!execExists) {
+			logger.warn("Warning: Executable file could not be found");
+			logger.warn("If you are running a simple shell command, ignore this warning");
+			logger.warn("Otherwise, the job will fail");
+		}
 
 		// Set the command to actually run and execute
 		commandConfig.setFullCommand(commandConfig.getExecutableName());
@@ -273,8 +284,8 @@ public abstract class Command {
 	 * command status is not set to a flagged error, e.g. failed.
 	 * 
 	 * @param current_status
-	 * @return boolean indicating whether or not status is good to continue (true) 
-	 * or whether or not job has failed (returns false)
+	 * @return boolean indicating whether or not status is good to continue (true)
+	 *         or whether or not job has failed (returns false)
 	 */
 	public boolean checkStatus(CommandStatus current_status) {
 

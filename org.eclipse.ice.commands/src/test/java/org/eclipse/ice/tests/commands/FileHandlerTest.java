@@ -97,6 +97,7 @@ public class FileHandlerTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		
 		manager.removeAllConnections();
 	}
 

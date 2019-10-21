@@ -34,10 +34,11 @@ public class LocalFileHandler extends FileHandler {
 	 */
 	@Override
 	protected void configureMoveCommand(final String source, final String destination) {
-		command = new LocalMoveFileCommand();
+		LocalMoveFileCommand cmd = new LocalMoveFileCommand();
+		command.set(cmd);
 		// Cast the Command as a LocalMoveFileCommand to set the source and destination
 		// paths
-		((LocalMoveFileCommand) command).setConfiguration(source, destination);
+		((LocalMoveFileCommand) command.get()).setConfiguration(source, destination);
 	}
 
 	/**
@@ -46,10 +47,11 @@ public class LocalFileHandler extends FileHandler {
 	 */
 	@Override
 	protected void configureCopyCommand(final String source, final String destination) {
-		command = new LocalCopyFileCommand();
+		LocalCopyFileCommand cmd = new LocalCopyFileCommand();
+		command.set(cmd);
 		// Cast the Command as a LocalCopyFileCommand to set the source and destination
 		// paths
-		((LocalCopyFileCommand) command).setConfiguration(source, destination);
+		((LocalCopyFileCommand) command.get()).setConfiguration(source, destination);
 
 	}
 

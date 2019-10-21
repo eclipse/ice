@@ -137,7 +137,7 @@ public class CommandFactoryExample {
 		// Request a ConnectionAuthorization of type text file which contains the
 		// dummy remote host credentials
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				"/tmp/analysis-remote-creds.txt");
+				"/tmp/ice-remote-creds.txt");
 		/**
 		 * Alternatively, one can authorize with their password at the console line by
 		 * performing the following set of code

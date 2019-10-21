@@ -45,6 +45,9 @@ public class RemoteCommandTest {
 	 */
 	ConnectionConfiguration connectConfig = new ConnectionConfiguration();
 
+	// Get the present working directory
+	String pwd = System.getProperty("user.dir");
+
 	/**
 	 * This function sets up the command and connection information to hand to the
 	 * command
@@ -53,9 +56,6 @@ public class RemoteCommandTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-
-		// Get the present working directory
-		String pwd = System.getProperty("user.dir");
 
 		// Add the following directories where the tests live
 		pwd += "/src/test/java/org/eclipse/ice/tests/commands/";
@@ -125,6 +125,7 @@ public class RemoteCommandTest {
 
 		// Remove all connections that may remain from the manager
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		
 		manager.removeAllConnections();
 
 	}
@@ -189,8 +190,34 @@ public class RemoteCommandTest {
 
 		// Check that the command was successfully completed
 		assert (status == CommandStatus.SUCCESS);
-
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		manager.listAllConnections();
 		System.out.println("Finished testing remote command execute");
 	}
 
+	/**
+	 * Test method for a nonexistent executable. Expect a null pointer exception
+	 * when file transfer attempts fail
+	 */
+	@Test(expected=NullPointerException.class)
+	public void testBadExecute() {
+		CommandConfiguration badConfig = new CommandConfiguration();
+
+		badConfig.setCommandId(24);
+		badConfig.setExecutable("fake_exec.sh");
+		badConfig.addInputFile("inputfile", "inputfile");
+		badConfig.setErrFileName("errfile.txt");
+		badConfig.setOutFileName("outfile.txt");
+		badConfig.setInstallDirectory("installDir");
+		badConfig.setWorkingDirectory(pwd);
+		badConfig.setAppendInput(true);
+		badConfig.setNumProcs("1");
+		badConfig.setOS(System.getProperty("os.name"));
+
+		RemoteCommand testCommand = new RemoteCommand(badConfig, connectConfig, null);
+
+		CommandStatus testStatus = testCommand.execute();
+
+		assert (testStatus == CommandStatus.FAILED);
+	}
 }

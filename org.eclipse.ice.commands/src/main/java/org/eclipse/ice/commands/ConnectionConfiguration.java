@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * This class provides the complete configuration for a remote
  * {@link org.eclipse.ice.commands.Connection}.
@@ -33,7 +35,8 @@ public class ConnectionConfiguration {
 	 * manipulation. This is another method which allows users to decide how to
 	 * input their password.
 	 */
-	private ConnectionAuthorizationHandler authorization = null;
+	private AtomicReference<ConnectionAuthorizationHandler> authorization = 
+			new AtomicReference<ConnectionAuthorizationHandler>(null);
 
 	/**
 	 * A boolean indicating whether or not the files/directories created on the
@@ -98,7 +101,7 @@ public class ConnectionConfiguration {
 	 * @param authorization
 	 */
 	public void setAuthorization(ConnectionAuthorizationHandler authorization) {
-		this.authorization = authorization;
+		this.authorization = new AtomicReference<ConnectionAuthorizationHandler>(authorization);
 	}
 
 	/**
@@ -108,6 +111,6 @@ public class ConnectionConfiguration {
 	 * @param authorization
 	 */
 	public ConnectionAuthorizationHandler getAuthorization() {
-		return authorization;
+		return authorization.get();
 	}
 }

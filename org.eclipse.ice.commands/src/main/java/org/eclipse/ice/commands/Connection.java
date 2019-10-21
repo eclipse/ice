@@ -37,17 +37,17 @@ public class Connection {
 	/**
 	 * The secure channel provided by com.jcraft.jsch
 	 */
-	private JSch jShell = null;
+	private AtomicReference<JSch> jShell = new AtomicReference<JSch>(null);
 
 	/**
 	 * The JShell session
 	 */
-	private Session session = null;
+	private AtomicReference<Session> session = new AtomicReference<Session>(null);
 
 	/**
 	 * The ssh channel for the JSch ssh connection to execute over
 	 */
-	private Channel channel = null;
+	private AtomicReference<Channel> channel = new AtomicReference<Channel>(null);
 
 	/**
 	 * The input stream for the JSch ssh connection
@@ -91,7 +91,7 @@ public class Connection {
 	 * @param jsch
 	 */
 	public void setJShellSession(JSch jShell) {
-		this.jShell = jShell;
+		this.jShell = new AtomicReference<JSch>(jShell);
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class Connection {
 	 * @return
 	 */
 	public JSch getJShellSession() {
-		return jShell;
+		return jShell.get();
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class Connection {
 	 * @param _channel
 	 */
 	public void setChannel(Channel channel) {
-		this.channel = channel;
+		this.channel = new AtomicReference<Channel>(channel);
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class Connection {
 	 * @return
 	 */
 	public Channel getChannel() {
-		return channel;
+		return channel.get();
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class Connection {
 	 * @return {@link org.eclipse.ice.commands.Connection#session}
 	 */
 	public Session getSession() {
-		return session;
+		return session.get();
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class Connection {
 	 * @param _session
 	 */
 	public void setSession(Session session) {
-		this.session = session;
+		this.session = new AtomicReference<Session>(session);
 	}
 
 	/**

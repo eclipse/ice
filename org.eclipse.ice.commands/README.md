@@ -24,3 +24,5 @@ hostname
 The automated tests will then grab the necessary credentials from this file to run the tests. Any valid ssh connection will work. 
 
 Note that this is also a way through which ssh validation can be performed in the package for running actual remote commands/file transfers.
+
+Windows users need to put their ssh credentials into the file located at `C:\ice-remote-creds.txt` in order for the tests to properly function.

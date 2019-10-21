@@ -38,6 +38,8 @@ public class LocalCommandTest {
 	String installDir = "~/install";
 	String workingDirectory = "/";
 	String os = System.getProperty("os.name");
+	String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
+
 	/**
 	 * Put these in a command configuration instance to use
 	 */
@@ -104,8 +106,7 @@ public class LocalCommandTest {
 	@Test
 	public void testExecute() {
 
-		String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
-
+		
 		// Set the CommandConfiguration class
 		// See {@link org.eclipse.ice.commands.CommandConfiguration} for detailed info
 		// on each
@@ -150,7 +151,7 @@ public class LocalCommandTest {
 		badConfig.setErrFileName("errfile.txt");
 		badConfig.setOutFileName("outfile.txt");
 		badConfig.setInstallDirectory("installDir");
-		badConfig.setWorkingDirectory("somedirectory");
+		badConfig.setWorkingDirectory(pwd);
 		badConfig.setAppendInput(true);
 		badConfig.setNumProcs("1");
 		badConfig.setOS(os);
@@ -159,9 +160,8 @@ public class LocalCommandTest {
 
 		CommandStatus testStatus = testCommand.execute();
 
-		assert (testStatus == CommandStatus.INFOERROR);
-		System.out.println("Example incorrect executable status should be INFOERROR and is: " + testStatus);
-		System.out.println("Finished testExecute\n");
+		assert (testStatus == CommandStatus.FAILED);
+	System.out.println("Finished testExecute\n");
 	}
 
 }

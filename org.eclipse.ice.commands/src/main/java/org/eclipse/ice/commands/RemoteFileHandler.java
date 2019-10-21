@@ -19,6 +19,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 
+
 /**
  * This class inherits from FileHandler and handles the processing of remote
  * file transfer commands. Remote file transfers can be from a local-to-remote
@@ -83,6 +84,7 @@ public class RemoteFileHandler extends FileHandler {
 		// First check if there is already an existing connection open with these
 		// details
 		// TODO - is there a way to re-establish an already existing connection?
+		manager.listAllConnections();
 		if (manager.getConnection(config.getName()) == null) {
 			// If there isn't one open, try to open the connection
 			try {
@@ -186,8 +188,7 @@ public class RemoteFileHandler extends FileHandler {
 		// The destination could have a full path plus a new file name, so we need
 		// to get just the path for several existence checks
 		String destinationPath = destination.substring(0, destination.lastIndexOf("/"));
-		logger.info("Checking existence of source " + source);
-		logger.info("Checking existence of destination path " + destinationPath);
+	
 		// If the source is local, then we know it must be a local --> remote handle
 		if (isLocal(source)) {
 			// Now check that the destination exists at the remote host
@@ -202,7 +203,7 @@ public class RemoteFileHandler extends FileHandler {
 				} else {
 					// If we can't make the directory, throw an error
 					logger.error("Couldn't make remote destination, exiting.");
-					command.setStatus(CommandStatus.FAILED);
+					command.get().setStatus(CommandStatus.FAILED);
 					throw new IOException();
 				}
 			}
@@ -215,7 +216,7 @@ public class RemoteFileHandler extends FileHandler {
 				// If it doesn't, the source doesn't exist locally or remotely,
 				// so there is an issue
 				logger.error("The source file is remote, but can't be found!");
-				command.setStatus(CommandStatus.FAILED);
+				command.get().setStatus(CommandStatus.FAILED);
 				throw new IOException();
 			}
 			// Confirmed the remote source exists, so
@@ -230,7 +231,7 @@ public class RemoteFileHandler extends FileHandler {
 					// Try and make the destination path. If we can't, throw an error
 					if (!makeRemoteDirectory(destinationPath)) {
 						logger.error("The destination is remote, and doesn't exist and couldn't be made.");
-						command.setStatus(CommandStatus.FAILED);
+						command.get().setStatus(CommandStatus.FAILED);
 						throw new IOException();
 					}
 				}
@@ -243,7 +244,7 @@ public class RemoteFileHandler extends FileHandler {
 		// found
 		if (HANDLE_TYPE == 0) {
 			logger.error("Can't find the source and/or destination file! Exiting.");
-			command.setStatus(CommandStatus.INFOERROR);
+			command.get().setStatus(CommandStatus.INFOERROR);
 			throw new IOException();
 		}
 
@@ -269,15 +270,16 @@ public class RemoteFileHandler extends FileHandler {
 	protected void configureMoveCommand(String source, String destination) {
 		Connection connection = getHandlerConnection();
 		// Now instantiate the command as a RemoteMoveFileCommand
-		command = new RemoteMoveFileCommand();
+		RemoteMoveFileCommand cmd = new RemoteMoveFileCommand();
+		command.set(cmd);
 
 		// Set the command to have this connection and connection configuration
-		command.setConnectionConfiguration(connection.getConfiguration());
-		((RemoteCommand) command).setConnection(connection);
+		command.get().setConnectionConfiguration(connection.getConfiguration());
+		((RemoteCommand) command.get()).setConnection(connection);
 
 		// Cast the command as a remote move file command
-		((RemoteMoveFileCommand) command).setConfiguration(source, destination);
-		((RemoteMoveFileCommand) command).setMoveType(HANDLE_TYPE);
+		((RemoteMoveFileCommand) command.get()).setConfiguration(source, destination);
+		((RemoteMoveFileCommand) command.get()).setMoveType(HANDLE_TYPE);
 	}
 
 	/**
@@ -288,14 +290,15 @@ public class RemoteFileHandler extends FileHandler {
 	protected void configureCopyCommand(String source, String destination) {
 		Connection connection = getHandlerConnection();
 		// Now instantiate the command as a RemoteMoveFileCommand
-		command = new RemoteCopyFileCommand();
+		RemoteCopyFileCommand cmd = new RemoteCopyFileCommand();
+		command.set(cmd);
 
 		// Set the command to have this connection and connection configuration
-		command.setConnectionConfiguration(connection.getConfiguration());
-		((RemoteCommand) command).setConnection(connection);
+		command.get().setConnectionConfiguration(connection.getConfiguration());
+		((RemoteCommand) command.get()).setConnection(connection);
 		// Cast the command as a remote command
-		((RemoteCopyFileCommand) command).setConfiguration(source, destination);
-		((RemoteCopyFileCommand) command).setCopyType(HANDLE_TYPE);
+		((RemoteCopyFileCommand) command.get()).setConfiguration(source, destination);
+		((RemoteCopyFileCommand) command.get()).setCopyType(HANDLE_TYPE);
 	}
 
 	/**
@@ -339,7 +342,7 @@ public class RemoteFileHandler extends FileHandler {
 		} catch (JSchException e) {
 			// If there was a Jsch connection problem, puke
 			logger.error("Couldn't connect to the remote ssh connection! Returning info error.");
-			command.setStatus(CommandStatus.INFOERROR);
+			command.get().setStatus(CommandStatus.INFOERROR);
 			return null;
 		}
 	}
