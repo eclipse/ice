@@ -46,6 +46,9 @@ public class CommandFactoryExample {
 		// Run an example python script
 		runPythonScript();
 
+		// Run an example shell command, e.g. ls -lrt
+		runRemoteShellCommand();
+		
 		return;
 	}
 
@@ -55,7 +58,7 @@ public class CommandFactoryExample {
 	 * within gitlab to work. However, one could set their username/hostname in the
 	 * configuration, and then enter their password when prompted.
 	 */
-	static void runRemoteCommand() {
+	private static void runRemoteCommand() {
 
 		/**
 		 * Create a CommandConfiguration with the necessary information to execute the
@@ -111,6 +114,42 @@ public class CommandFactoryExample {
 	}
 
 	/**
+	 * This function shows an example of the bare minimum required to run a shell command
+	 * on a remote host. Here the setWorkingDirectory can be set to any existing directory,
+	 * since it won't explicitly be looking there for files (e.g. an executable .sh script
+	 * or input files for the job to run). 
+	 */
+	private static void runRemoteShellCommand() {
+		CommandFactory factory = new CommandFactory();
+		
+		CommandConfiguration config = new CommandConfiguration();
+		config.setExecutable("ls -lt");
+		config.setErrFileName("someRemoteLSfile.txt");
+		config.setOutFileName("SomeRemoteLSOut.txt");
+		config.setNumProcs("1");
+		config.setOS(System.getProperty("os.name"));
+		config.setRemoteWorkingDirectory("/tmp/");
+		config.setWorkingDirectory("/Users/4jo/");
+		
+		ConnectionConfiguration connection = makeDumConnectionConfig();
+		connection.setDeleteWorkingDirectory(false);
+		
+		Command command = null;
+		try {
+			command = factory.getCommand(config, connection);
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		CommandStatus status = command.execute();
+		
+		assert (status == CommandStatus.SUCCESS);
+	
+		String output = config.getStdOutputString();
+	
+	}
+	
+	/**
 	 * This function creates a connection configuration for the dummy remote host
 	 * used in CI testing. Create a ConnectionConfiguration with the necessary
 	 * information to open a remote connection. See
@@ -161,7 +200,7 @@ public class CommandFactoryExample {
 	 * This method runs a test dummy script on one's local computer. The dummy
 	 * script is locating in the JUnit test directory of the Commands API project.
 	 */
-	static void runLocalCommand() {
+	private static void runLocalCommand() {
 
 		/**
 		 * Create a CommandConfiguration with the necessary information to execute a
@@ -235,7 +274,7 @@ public class CommandFactoryExample {
 	 * be specified in the CommandConfiguration. This appends the string "python"
 	 * before the executable name, allowing it to run in python.
 	 */
-	public static void runPythonScript() {
+	private static void runPythonScript() {
 
 		System.out.println("Testing python script");
 		// Get the present working directory
