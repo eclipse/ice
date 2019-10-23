@@ -43,6 +43,11 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 	private int moveType;
 
 	/**
+	 * See {@link org.eclipse.ice.commands.RemoteFileHandler#setPermissions(String)}
+	 */
+	private int permissions = -999;
+
+	/**
 	 * Default constructor
 	 */
 	public RemoteMoveFileCommand() {
@@ -80,33 +85,32 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 		ChannelSftp channel = null;
 		try {
 			// Open the channel and connect it
-			channel = (ChannelSftp) getConnection().getSession().openChannel("sftp");
-			channel.connect();
+			channel = (ChannelSftp) getConnection().getChannel();
 
 			// Determine the move type and, thus, how to move the file
 			if (moveType == 1) { // If move type is local -> remote, use put
-				logger.info("Putting file: " + source + " to destination " + destination);
 				channel.put(source, destination);
 			} else if (moveType == 2) { // if move type is remote -> local, use get
-				logger.info("Getting file: " + source + " to destination " + destination);
 				channel.get(source, destination);
 			} else if (moveType == 3) { // if move type is remote -> remote, call function
-				logger.info("Executing mv: " + source + " to destination " + destination);
 				moveRemoteToRemote();
 			} else {
 				logger.error("Unknown move type...");
 				status = CommandStatus.FAILED;
 				return status;
 			}
+			// If permissions was actually instantiated and isn't the default, then perform
+			// a chmod
+			if (permissions != -999)
+				channel.chmod(permissions, destination);
+
 		} catch (JSchException | SftpException e) {
 			logger.error("Remote move failed. Returning failed.");
 			status = CommandStatus.FAILED;
 			return status;
 		}
-		// Disconnect channel once finished
-		channel.disconnect();
-		
-		// Set status to completed and successful 
+
+		// Set status to completed and successful
 		status = CommandStatus.SUCCESS;
 		return status;
 	}
@@ -120,22 +124,22 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 	 */
 	private void moveRemoteToRemote() throws JSchException {
 		// Open an executable channel
-		getConnection().setChannel(getConnection().getSession().openChannel("exec"));
+		ChannelExec execChannel = (ChannelExec) getConnection().getSession().openChannel("exec");
 		// TODO - test with windows, mv probably won't work
 		// Make a move command
 		String command = "mv " + source + " " + destination;
 		// Set the command
-		((ChannelExec) getConnection().getChannel()).setCommand(command);
+		execChannel.setCommand(command);
 		// If the channel isn't connected, connect and run the command
 		try {
-			getConnection().getChannel().connect();
+			execChannel.connect();
 		} catch (JSchException e) {
 			logger.error("Channel isn't connected and can't copy remote to remote...");
 			throw e;
 		}
-		
-		// Disconnect channel once finished
-		getConnection().getChannel().disconnect();
+
+		// Disconnect extra channel once finished
+		execChannel.disconnect();
 
 	}
 
@@ -164,5 +168,14 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 	 */
 	public void setMoveType(int moveType) {
 		this.moveType = moveType;
+	}
+
+	/**
+	 * Set the permissions for a chmod during file transfer
+	 * 
+	 * @param permissions
+	 */
+	protected void setPermissions(int permissions) {
+		this.permissions = permissions;
 	}
 }

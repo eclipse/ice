@@ -238,6 +238,7 @@ public abstract class FileHandler implements IFileHandler {
 	protected CommandStatus executeTransfer(final String destination) throws IOException {
 		// Execute the file transfer
 		transferStatus = command.get().execute();
+
 		// Check that the move succeeded
 		if (!exists(destination))
 			return CommandStatus.FAILED;

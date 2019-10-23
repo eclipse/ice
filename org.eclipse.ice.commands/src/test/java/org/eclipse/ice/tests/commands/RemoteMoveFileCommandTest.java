@@ -16,15 +16,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.eclipse.ice.commands.CommandStatus;
-import org.eclipse.ice.commands.Connection;
-import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
-import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
-import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.RemoteMoveFileCommand;
 import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.jcraft.jsch.ChannelSftp;
@@ -49,48 +45,21 @@ public class RemoteMoveFileCommandTest {
 	String dest = null;
 
 	/**
-	 * A connection with which to test
-	 */
-	ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
-
-	/**
-	 * A connection to move files with
-	 */
-	Connection dummyConnection = null;
-
-	/**
-	 * Connection manager to handle connections
-	 */
-	ConnectionManager manager = new ConnectionManager();
-
-	/**
-	 * Make a IFileHandlerFactoryTest to take advantage of much of the code which
+	 * Make a RemoteFileHandlerTest to take advantage of much of the code which
 	 * makes/deletes local/remote files
 	 */
-	IFileHandlerFactoryTest factory = new IFileHandlerFactoryTest();
+	RemoteFileHandlerTest handlerTest = new RemoteFileHandlerTest();
 
 	/**
+	 * This function sets up the dummy connection for file transferring
+	 * 
 	 * @throws java.lang.Exception
 	 */
-	@Before
-	public void setUp() throws Exception {
-
-		// Set the connection configuration to a dummy remote connection
-		// Get a factory which determines the type of authorization
-		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
-		// Request a ConnectionAuthorization of type text file which contains the
-		// credentials
-		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				"/tmp/ice-remote-creds.txt");
-		// Set it
-		connectionConfig.setAuthorization(auth);
-
-		connectionConfig.setName("dummyConnection");
-		connectionConfig.setDeleteWorkingDirectory(false);
-
-		dummyConnection = manager.openConnection(connectionConfig);
-		factory.setConnection(dummyConnection);
-
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		// Set up the connection using the code already established in
+		// RemoteFileHandlerTest
+		RemoteFileHandlerTest.setUpBeforeClass();
 	}
 
 	/**
@@ -111,16 +80,16 @@ public class RemoteMoveFileCommandTest {
 	@Test
 	public void testRemoteMoveFileCommand() throws Exception {
 
-		factory.createRemoteSource();
-		factory.createRemoteDestination();
-		source = factory.getSource();
-		dest = factory.getDestination();
+		handlerTest.createRemoteSource();
+		handlerTest.createRemoteDestination();
+		source = handlerTest.getSource();
+		dest = handlerTest.getDestination();
 
 		RemoteMoveFileCommand command = new RemoteMoveFileCommand();
 		// These functions are nominally handled by the FileHandler. But, when testing
 		// this class alone, we need to set them individually
 		command.setMoveType(3);
-		command.setConnection(dummyConnection);
+		command.setConnection(handlerTest.getConnection());
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();
 
@@ -132,8 +101,8 @@ public class RemoteMoveFileCommandTest {
 		assert (remotePathExists());
 
 		// Delete the temporary files that were created to test
-		factory.deleteRemoteSource();
-		factory.deleteRemoteDestination();
+		// Don't need to delete the source since it was moved
+		handlerTest.deleteRemoteDestination();
 
 	}
 
@@ -146,18 +115,18 @@ public class RemoteMoveFileCommandTest {
 	@Test
 	public void testRemoteMoveFileCommandDownload() throws Exception {
 		// Create a remote source to download
-		factory.createRemoteSource();
-		source = factory.getSource();
+		handlerTest.createRemoteSource();
+		source = handlerTest.getSource();
 
 		// Create a local destination to put that source
-		factory.createLocalDestination();
-		dest = factory.getDestination();
+		handlerTest.createLocalDestination();
+		dest = handlerTest.getDestination();
 
 		RemoteMoveFileCommand command = new RemoteMoveFileCommand();
 		// These functions are nominally handled by the FileHandler. But, when testing
 		// this class alone, we need to set them individually
 		command.setMoveType(2);
-		command.setConnection(dummyConnection);
+		command.setConnection(handlerTest.getConnection());
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();
 
@@ -169,8 +138,8 @@ public class RemoteMoveFileCommandTest {
 		assert (localPathExists());
 
 		// Delete the temporary files that were created to test
-		factory.deleteRemoteSource();
-		factory.deleteLocalDestination();
+		handlerTest.deleteRemoteSource();
+		handlerTest.deleteLocalDestination();
 
 	}
 
@@ -183,18 +152,18 @@ public class RemoteMoveFileCommandTest {
 	@Test
 	public void testRemoteMoveFileCommandUpload() throws Exception {
 		// Create a local source file to move
-		factory.createLocalSource();
-		source = factory.getSource();
+		handlerTest.createLocalSource();
+		source = handlerTest.getSource();
 		// Create a remote destination to move it to
-		factory.createRemoteDestination();
-		dest = factory.getDestination();
+		handlerTest.createRemoteDestination();
+		dest = handlerTest.getDestination();
 
 		// Create the move command
 		RemoteMoveFileCommand command = new RemoteMoveFileCommand();
 		// These functions are nominally handled by the FileHandler. But, when testing
 		// this class alone, we need to set them individually
 		command.setMoveType(1);
-		command.setConnection(dummyConnection);
+		command.setConnection(handlerTest.getConnection());
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();
 
@@ -210,8 +179,8 @@ public class RemoteMoveFileCommandTest {
 		}
 
 		// Delete the temporary files that were created to test
-		factory.deleteLocalSource();
-		factory.deleteRemoteDestination();
+		handlerTest.deleteLocalSource();
+		handlerTest.deleteRemoteDestination();
 
 	}
 
@@ -224,8 +193,7 @@ public class RemoteMoveFileCommandTest {
 	public boolean remotePathExists() throws Exception {
 
 		// Connect the channel from the connection
-		ChannelSftp sftpChannel = (ChannelSftp) dummyConnection.getSession().openChannel("sftp");
-		sftpChannel.connect();
+		ChannelSftp sftpChannel = (ChannelSftp) handlerTest.getConnection().getChannel();
 
 		try {
 			sftpChannel.lstat(dest);
@@ -233,6 +201,7 @@ public class RemoteMoveFileCommandTest {
 			// If an exception is caught, this means the file was not there.
 			return false;
 		}
+		// So if we get here, then the file exists
 		return true;
 	}
 

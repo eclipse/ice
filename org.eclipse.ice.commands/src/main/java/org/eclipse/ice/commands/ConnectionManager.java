@@ -110,7 +110,7 @@ public class ConnectionManager {
 			connectionList.get().put(newConnection.getConfiguration().getName(), newConnection);
 
 			logger.info("Connection at " + username + "@" + hostname + " established successfully");
-			
+
 			// Upon success, return the opened connection
 			return newConnection;
 		}
@@ -131,7 +131,8 @@ public class ConnectionManager {
 		// Find the hashmap instance, and return it
 		Connection returnConnection = connectionList.get().get(connectionName);
 		if (returnConnection == null) {
-			logger.warn("The connection is null! Couldn't find a connection with the name " + connectionName);
+			logger.warn(
+					"Couldn't find an existing connection with the name " + connectionName + ". Will try to open one");
 		}
 		return returnConnection;
 	}
@@ -146,22 +147,32 @@ public class ConnectionManager {
 		// Get the connection that was passed
 		Connection connection = getConnection(connectionName);
 
+		// Check the channel first
+		if (connection.getChannel() != null) {
+			if (connection.getChannel().isConnected()) {
+				connection.getChannel().disconnect();
+			}
+		}
 		// Disconnect the session. If the session was not connected in the first place,
 		// it does nothing
 		connection.getSession().disconnect();
 		// Confirm with the logger
-		logger.debug("Connection " + connectionName + "@" + connection.getConfiguration().getAuthorization().getHostname() + " closed");
+		logger.debug("Connection " + connectionName + "@"
+				+ connection.getConfiguration().getAuthorization().getHostname() + " closed");
 
 		return;
 	}
 
 	/**
-	 * This function removes a particular connection from the manager's connection
-	 * list
+	 * This function closes/disconnects and removes a particular connection from the
+	 * manager's connection list
 	 * 
 	 * @param connectionName - name of connection to remove
 	 */
 	public void removeConnection(String connectionName) {
+		// Close the connection first
+		if (!isConnectionOpen(connectionName))
+			closeConnection(connectionName);
 		// Remove it from the list of connections
 		connectionList.get().remove(connectionName);
 	}
@@ -182,6 +193,10 @@ public class ConnectionManager {
 	public void closeAllConnections() {
 		// Iterate over all available connections in the list and disconnect
 		for (Connection connection : connectionList.get().values()) {
+			if (connection.getChannel() != null) {
+				if (connection.getChannel().isConnected())
+					connection.getChannel().disconnect();
+			}
 			connection.getSession().disconnect();
 		}
 

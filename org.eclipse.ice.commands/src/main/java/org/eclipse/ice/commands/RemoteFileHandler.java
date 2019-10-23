@@ -19,7 +19,6 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 
-
 /**
  * This class inherits from FileHandler and handles the processing of remote
  * file transfer commands. Remote file transfers can be from a local-to-remote
@@ -40,23 +39,19 @@ public class RemoteFileHandler extends FileHandler {
 	 * An integer to determine what the actual handle type is to set for the command
 	 */
 	private int HANDLE_TYPE = 0;
-	/**
-	 * This is a boolean that indicates whether or not the source file is located on
-	 * the local machine or the remote machine. True if local, false if remote.
-	 */
-	protected boolean localSrc;
 
 	/**
-	 * This is a boolean that indicates whether or not the destination directory is
-	 * located on the local machine or the remote machine. True if local, false if
-	 * remote.
+	 * A connection that is associated with this remote file handler
 	 */
-	protected boolean localDest;
+	private Connection connection;
 
 	/**
-	 * A connection configuration that is associated with this remote file handler
+	 * An integer with the permissions for a new file to be changed with chmod, if
+	 * desired. Can be set via a setter and then the moved or copied file will also
+	 * have its permissions modified. Default to -999 so that we can easily check if
+	 * it was instantiated by the user or not.
 	 */
-	private ConnectionConfiguration connectionConfig;
+	private int permissions = -999;
 
 	/**
 	 * Default constructor
@@ -83,19 +78,29 @@ public class RemoteFileHandler extends FileHandler {
 
 		// First check if there is already an existing connection open with these
 		// details
-		// TODO - is there a way to re-establish an already existing connection?
-		manager.listAllConnections();
 		if (manager.getConnection(config.getName()) == null) {
 			// If there isn't one open, try to open the connection
 			try {
+				logger.info("Manager is opening a connection");
 				manager.openConnection(config);
 			} catch (JSchException e) {
 				logger.error("Connection could not be established. Transfer will fail.");
 			}
 		}
 
-		// Set the member variable for access later
-		connectionConfig = config;
+		// Set the member variables for access later
+		connection = manager.getConnection(config.getName());
+		// Open an sftp channel for this remote file handler to use
+		try {
+			// Set it for the connection
+			if (connection.getChannel() == null) {
+				connection.setChannel(connection.getSession().openChannel("sftp"));
+				connection.getChannel().connect();
+			}
+		} catch (JSchException e) {
+			logger.error(
+					"Connection seems to have an unopened channel, but there was a failure when trying to open the channel.");
+		}
 	}
 
 	/**
@@ -103,14 +108,18 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	@Override
 	public boolean exists(String file) throws IOException {
-		ChannelSftp sftpChannel = getChannel();
+
+		ChannelSftp sftpChannel = null;
 		try {
-			sftpChannel.connect();
+			// Get the sftp channel to check existence
+			sftpChannel = (ChannelSftp) connection.getChannel();
+
 			// Try to lstat the path. If an exception is thrown, it means it does not exist
 			SftpATTRS attrs = sftpChannel.lstat(file);
-		} catch (JSchException | SftpException e) {
+		} catch (SftpException e) {
 			logger.info("Couldn't find " + file + " remotely. Seeing if it exists locally.");
 			if (isLocal(file)) {
+
 				logger.info("File " + file + " exists locally.");
 				return true;
 			} else {
@@ -119,7 +128,6 @@ public class RemoteFileHandler extends FileHandler {
 			}
 		}
 
-		sftpChannel.disconnect();
 		// If an exception is not thrown when lstat is performed, the path exists
 		return true;
 
@@ -136,10 +144,11 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	private boolean makeRemoteDirectory(String file) {
 		logger.warn("Path doesn't exist on the remote host, trying to make it.");
-		ChannelSftp sftpChannel = getChannel();
+		ChannelSftp sftpChannel = null;
 		try {
-			// Connect the channel to try making the directory
-			sftpChannel.connect();
+
+			// Get the sftp channel to check existence
+			sftpChannel = (ChannelSftp) connection.getChannel();
 			// Try to make the directory on the remote host
 			// Could be many directories, so we need to iterate over each piece
 			// of the path and see if it exists. If it doesn't, then make it.
@@ -158,12 +167,12 @@ public class RemoteFileHandler extends FileHandler {
 			}
 
 			logger.info("Made new remote directory");
-		} catch (JSchException | SftpException e) {
+		} catch (SftpException e) {
 			logger.error("Couldn't make nonexistent remote directory, exiting.");
 			return false;
+		} finally {
+
 		}
-		// Disconnect the channel when finished
-		sftpChannel.disconnect();
 		// If the try was successful, then directory was made
 		return true;
 	}
@@ -188,7 +197,7 @@ public class RemoteFileHandler extends FileHandler {
 		// The destination could have a full path plus a new file name, so we need
 		// to get just the path for several existence checks
 		String destinationPath = destination.substring(0, destination.lastIndexOf("/"));
-	
+
 		// If the source is local, then we know it must be a local --> remote handle
 		if (isLocal(source)) {
 			// Now check that the destination exists at the remote host
@@ -268,7 +277,6 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	@Override
 	protected void configureMoveCommand(String source, String destination) {
-		Connection connection = getHandlerConnection();
 		// Now instantiate the command as a RemoteMoveFileCommand
 		RemoteMoveFileCommand cmd = new RemoteMoveFileCommand();
 		command.set(cmd);
@@ -280,6 +288,7 @@ public class RemoteFileHandler extends FileHandler {
 		// Cast the command as a remote move file command
 		((RemoteMoveFileCommand) command.get()).setConfiguration(source, destination);
 		((RemoteMoveFileCommand) command.get()).setMoveType(HANDLE_TYPE);
+		((RemoteMoveFileCommand) command.get()).setPermissions(permissions);
 	}
 
 	/**
@@ -288,7 +297,6 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	@Override
 	protected void configureCopyCommand(String source, String destination) {
-		Connection connection = getHandlerConnection();
 		// Now instantiate the command as a RemoteMoveFileCommand
 		RemoteCopyFileCommand cmd = new RemoteCopyFileCommand();
 		command.set(cmd);
@@ -299,52 +307,12 @@ public class RemoteFileHandler extends FileHandler {
 		// Cast the command as a remote command
 		((RemoteCopyFileCommand) command.get()).setConfiguration(source, destination);
 		((RemoteCopyFileCommand) command.get()).setCopyType(HANDLE_TYPE);
+		((RemoteCopyFileCommand) command.get()).setPermissions(permissions);
 	}
 
-	/**
-	 * This function gets the connection information from the file handler for the
-	 * command to be processed. It is important to do this up front in the command
-	 * configuration, since for remote file handling the connection must be
-	 * established.
-	 * 
-	 * @return - A connection corresponding to the connection configuration
-	 *         associated to this remote file handler
-	 */
-	private Connection getHandlerConnection() {
-		// We need to get the connection information with this file handler
-		// and pass this information to the remote command in order for the
-		// command to be run on the remote host.
-		// First get the manager to get the connection
-		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
-		String connectionName = connectionConfig.getName();
-		Connection connection = manager.getConnection(connectionName);
-
-		// Log some information
-		logger.info("Configuring handle connection with name " + connectionName);
-
-		return connection;
-	}
-
-	/**
-	 * This function opens the connection, and keeps this code condensed and out of
-	 * the way of the main "workhorse" functions
-	 */
-	private ChannelSftp getChannel() {
-		try {
-			// Get the connection associated with this configuration
-			Connection connection = ConnectionManagerFactory.getConnectionManager()
-					.getConnection(connectionConfig.getName());
-
-			// Get the sftp channel to check existence
-			ChannelSftp sftpChannel = (ChannelSftp) connection.getSession().openChannel("sftp");
-			// If we got it, return it
-			return sftpChannel;
-		} catch (JSchException e) {
-			// If there was a Jsch connection problem, puke
-			logger.error("Couldn't connect to the remote ssh connection! Returning info error.");
-			command.get().setStatus(CommandStatus.INFOERROR);
-			return null;
-		}
+	public void disconnect() {
+		connection.getChannel().disconnect();
+		connection.getSession().disconnect();
 	}
 
 	/**
@@ -354,6 +322,32 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	public HashMap<String, Integer> getHandleType() {
 		return handleType;
+	}
+
+	/**
+	 * A setter for the value of the permission to change a particular file once
+	 * transferred. See also
+	 * {@link org.eclipse.ice.commands.RemoteFileHandler#permissions}. Takes a
+	 * string of octal type and converts it to an integer of decimal type, since
+	 * JSch takes decimal type.
+	 * 
+	 * NOTE: JSch takes a decimal number, not an octal number like one would
+	 * normally expect with chmod. This function takes in an octal number, like
+	 * normal chmod, and changes it to decimal.
+	 * 
+	 * 
+	 * @param permissions
+	 */
+	public void setPermissions(String permissions) {
+		this.permissions = Integer.parseInt(permissions, 8);
+	}
+
+	public Connection getConnection() {
+		return connection;
+	}
+
+	public void setConnection(Connection connection) {
+		this.connection = connection;
 	}
 
 }

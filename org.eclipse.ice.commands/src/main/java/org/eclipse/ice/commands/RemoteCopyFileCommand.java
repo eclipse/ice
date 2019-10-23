@@ -43,6 +43,11 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	private int copyType;
 
 	/**
+	 * See {@link org.eclipse.ice.commands.RemoteFileHandler#setPermissions(String)}
+	 */
+	private int permissions = -999;
+
+	/**
 	 * Default constructor
 	 */
 	public RemoteCopyFileCommand() {
@@ -78,18 +83,14 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 		ChannelSftp channel = null;
 		try {
 			// Open the channel and connect it
-			channel = (ChannelSftp) getConnection().getSession().openChannel("sftp");
-			channel.connect();
+			channel = (ChannelSftp) getConnection().getChannel();
 
 			// Determine how to proceed given what kind of copy it is
 			if (copyType == 1) { // If move type is local -> remote, use put
-				logger.info("Copying file " + source + " to " + destination);
 				channel.put(source, destination);
 			} else if (copyType == 2) { // if move type is remote -> local, use get
-				logger.info("Copying file " + source + " to " + destination);
 				channel.get(source, destination);
 			} else if (copyType == 3) { // if move type is remote -> remote, call function
-				logger.info("Executing cp " + source + " to " + destination);
 				copyRemoteToRemote();
 			} else {
 				logger.info("Unknown handle type...");
@@ -97,15 +98,17 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 				return status;
 			}
 
+			// If permissions was actually instantiated and isn't the default, then perform
+			// a chmod
+			if (permissions != -999)
+				channel.chmod(permissions, destination);
+
 		} catch (JSchException | SftpException e) {
 			logger.error("Failed to connect to remote host. Returning failed.");
 			status = CommandStatus.FAILED;
 			return status;
 		}
-		
-		// Disconnect the channel once finished copying
-		channel.disconnect();
-		
+
 		// Set the status to success and return
 		status = CommandStatus.SUCCESS;
 		return status;
@@ -120,21 +123,21 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	 */
 	private void copyRemoteToRemote() throws JSchException {
 		// Open an execution channel
-		getConnection().setChannel(getConnection().getSession().openChannel("exec"));
+		ChannelExec execChannel = (ChannelExec) getConnection().getSession().openChannel("exec");
 		// TODO - test with windows, cp probably won't work
 		// Make a copy command to execute
 		String command = "cp " + source + " " + destination;
 		// Set the command for the JSch connection
-		((ChannelExec) getConnection().getChannel()).setCommand(command);
+		execChannel.setCommand(command);
 		// If the channel isn't connected, connect and run the command
 		try {
-			getConnection().getChannel().connect();
+			execChannel.connect();
 		} catch (JSchException e) {
 			logger.error("Channel isn't connected and can't copy remote to remote...");
 			throw e;
 		}
-		// Disconnect the channel
-		getConnection().getChannel().disconnect();
+		// Disconnect extra channel when finished
+		execChannel.disconnect();
 	}
 
 	/**
@@ -164,4 +167,12 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 		this.copyType = copyType;
 	}
 
+	/**
+	 * Set the permissions for a chmod during file transfer
+	 * 
+	 * @param permissions
+	 */
+	protected void setPermissions(int permissions) {
+		this.permissions = permissions;
+	}
 }
