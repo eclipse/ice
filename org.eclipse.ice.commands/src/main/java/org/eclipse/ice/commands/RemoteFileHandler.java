@@ -40,10 +40,6 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	private int HANDLE_TYPE = 0;
 
-	/**
-	 * A connection that is associated with this remote file handler
-	 */
-	private Connection connection;
 
 	/**
 	 * An integer with the permissions for a new file to be changed with chmod, if
@@ -342,12 +338,6 @@ public class RemoteFileHandler extends FileHandler {
 		this.permissions = Integer.parseInt(permissions, 8);
 	}
 
-	public Connection getConnection() {
-		return connection;
-	}
 
-	public void setConnection(Connection connection) {
-		this.connection = connection;
-	}
 
 }

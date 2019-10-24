@@ -22,6 +22,7 @@ import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
+import org.eclipse.ice.commands.ConnectionManagerFactory;
 
 /**
  * This class shows an example for how to use the CommandFactory class to
@@ -36,7 +37,7 @@ public class CommandFactoryExample {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
+	
 		// Run an example test script
 		runLocalCommand();
 
@@ -48,7 +49,7 @@ public class CommandFactoryExample {
 
 		// Run an example shell command, e.g. ls -lrt
 		runRemoteShellCommand();
-		
+
 		return;
 	}
 
@@ -111,6 +112,9 @@ public class CommandFactoryExample {
 
 		// Ensure it finished properly
 		assert (status == CommandStatus.SUCCESS);
+		
+		// Clear out the remaining connections to start fresh next example
+		ConnectionManagerFactory.getConnectionManager().removeAllConnections();
 	}
 
 	/**
@@ -147,6 +151,9 @@ public class CommandFactoryExample {
 	
 		String output = config.getStdOutputString();
 	
+		// Clear out the remaining connections to start fresh next example
+		ConnectionManagerFactory.getConnectionManager().removeAllConnections();
+		
 	}
 	
 	/**
@@ -262,6 +269,8 @@ public class CommandFactoryExample {
 		// Run it
 		CommandStatus status = localCommand.execute();
 
+		assert(status == CommandStatus.SUCCESS);
+		
 		// Get a string of the output that is produced from the job
 		String output = commandConfig.getStdOutputString();
 
@@ -300,6 +309,7 @@ public class CommandFactoryExample {
 		configuration.addInputFile("inputfile", "someInputFile.txt");
 		configuration.addInputFile("inputfile2", "someOtherInputFile.txt");
 		configuration.setWorkingDirectory(scriptDir);
+		configuration.setRemoteWorkingDirectory("/tmp/pythonDir/");
 
 		ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
 		// Get a factory which determines the type of authorization
@@ -307,7 +317,7 @@ public class CommandFactoryExample {
 		// Get the authorization type. In this case, local, which is basically
 		// equivalent to
 		// "no authorization"
-		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("local");
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text","/tmp/ice-remote-creds.txt");
 		// Set the connectionConfig to have access to e.g. the hostname
 		connectionConfig.setAuthorization(auth);
 
@@ -324,6 +334,10 @@ public class CommandFactoryExample {
 
 		CommandStatus status = command.execute();
 
+		assert(status == CommandStatus.SUCCESS);
+		
+		// Clear out the remaining connections to start fresh next example
+		ConnectionManagerFactory.getConnectionManager().removeAllConnections();
 	}
 
 	/**

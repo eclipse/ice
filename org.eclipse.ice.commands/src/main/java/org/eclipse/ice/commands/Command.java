@@ -74,16 +74,16 @@ public abstract class Command {
 		// instantiated in the constructor
 		if (!checkStatus(status))
 			return CommandStatus.INFOERROR;
-
+		
 		// Configure the command to be ready to run.
 		status = setConfiguration();
 		// Ensure that the command was properly configured
 		if (!checkStatus(status))
 			return CommandStatus.INFOERROR;
-
+		
 		// Now that all of the prerequisites have been set, start the job running
 		status = run();
-
+		
 		// Confirm the job finished with some status
 		logger.info("The job finished with status: " + status);
 		return status;
@@ -151,6 +151,7 @@ public abstract class Command {
 	 */
 	protected CommandStatus setConfiguration() {
 
+
 		// Check the info and return failure if something was not set
 		if (commandConfig.getExecutable() == null || commandConfig.getOutFileName() == null
 				|| commandConfig.getErrFileName() == null || commandConfig.getNumProcs() == null
@@ -174,13 +175,17 @@ public abstract class Command {
 		boolean exists = false, execExists = false, inputExists = false;
 		try {
 			// Get the handler for this particular connection, whether local or remote
-			IFileHandler handler = factory.getFileHandler(connectionConfig);
+			FileHandler handler = factory.getFileHandler(connectionConfig);
+		
 			// Check if the working directory exists
 			String workingDir = commandConfig.getWorkingDirectory();
+			
 			exists = handler.exists(workingDir);
-
+			
+			// Check if the executable exists in the working directory
 			execExists = handler.exists(workingDir + exec);
-
+		
+		
 		} catch (IOException e) {
 			// If we can't get the file handler, then there was an error in the connection
 			// configuration
@@ -194,14 +199,16 @@ public abstract class Command {
 			return CommandStatus.INFOERROR;
 		}
 		if(!execExists) {
+			// If the executable doesn't exist, we shouldn't cancel the job because it is 
+			// possible that the command is a simple shell command. So warn the user
 			logger.warn("Warning: Executable file could not be found");
 			logger.warn("If you are running a simple shell command, ignore this warning");
 			logger.warn("Otherwise, the job will fail");
 		}
-
+		
 		// Set the command to actually run and execute
 		commandConfig.setFullCommand(commandConfig.getExecutableName());
-
+	
 		// Create the output files associated to the job for logging
 		commandConfig.createOutputFiles();
 

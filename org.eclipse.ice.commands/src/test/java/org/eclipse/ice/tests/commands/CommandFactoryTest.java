@@ -64,11 +64,6 @@ public class CommandFactoryTest {
 	String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
 
 	/**
-	 * A command configuration with which to test
-	 */
-	CommandConfiguration commandConfig = new CommandConfiguration();
-
-	/**
 	 * A connection configuration with which to test
 	 */
 	ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
@@ -100,14 +95,7 @@ public class CommandFactoryTest {
 
 		// Set the CommandConfiguration class with some default things that are relevant
 		// for all the test functions here
-		commandConfig.setExecutable("./test_code_execution.sh");
-		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
-		commandConfig.setNumProcs("1");
-		commandConfig.setInstallDirectory("");
-		commandConfig.setWorkingDirectory(pwd);
-		commandConfig.setAppendInput(true);
-		commandConfig.setOS(System.getProperty("os.name"));
-
+	
 	}
 
 	/**
@@ -117,7 +105,7 @@ public class CommandFactoryTest {
 	@After
 	public void tearDown() throws Exception {
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
-		manager.closeAllConnections();
+		manager.removeAllConnections();
 	}
 	
 	/**
@@ -174,6 +162,15 @@ public class CommandFactoryTest {
 		fail("src not implemented");
 		System.out.println("\n\n\nTesting a multi-hop remote command");
 		// Set the CommandConfiguration class
+		CommandConfiguration commandConfig = new CommandConfiguration();
+		commandConfig.setExecutable("./test_code_execution.sh");
+		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
+		commandConfig.setNumProcs("1");
+		commandConfig.setInstallDirectory("");
+		commandConfig.setWorkingDirectory(pwd);
+		commandConfig.setAppendInput(true);
+		commandConfig.setOS(System.getProperty("os.name"));
+
 		commandConfig.setCommandId(99);
 		commandConfig.setErrFileName("hopRemoteErrFile.txt");
 		commandConfig.setOutFileName("hopRemoteOutFile.txt");
@@ -229,7 +226,7 @@ public class CommandFactoryTest {
 	 */
 	@Test
 	public void testBoringCommandLocally() {
-
+		System.out.println("Test boring command locally");
 		CommandConfiguration cmdCfg = new CommandConfiguration();
 		cmdCfg.setExecutable("ls -lrt");
 		cmdCfg.setNumProcs("1");
@@ -245,6 +242,7 @@ public class CommandFactoryTest {
 		handler.setHostname(hostname);
 		ctCfg.setAuthorization(handler);
 
+		
 		Command cmd = null;
 		try {
 			cmd = factory.getCommand(cmdCfg, ctCfg);
@@ -254,6 +252,7 @@ public class CommandFactoryTest {
 		CommandStatus status = cmd.execute();
 		System.out.println(status);
 		assert (status == CommandStatus.SUCCESS);
+		System.out.println("Finished boring command locally");
 	}
 
 	/**
@@ -284,21 +283,28 @@ public class CommandFactoryTest {
 		}
 		CommandStatus status = cmd.execute();
 		System.out.println(status);
-		
+
 		System.out.println("Finished remote ls test " + cmd.getCommandConfiguration().getStdOutputString());
 		assert (status == CommandStatus.SUCCESS);
 	}
 
-	
-	
 	/**
 	 * This function tests with real files to test an actual job processing. The job
 	 * executes a script with some hello world commands in it.
 	 */
 	@Test
 	public void testFunctionalLocalCommand() {
-
+		System.out.println("Test functional local command");
 		// Set some things specific to the local command
+		CommandConfiguration commandConfig = new CommandConfiguration();
+		commandConfig.setExecutable("./test_code_execution.sh");
+		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
+		commandConfig.setNumProcs("1");
+		commandConfig.setInstallDirectory("");
+		commandConfig.setWorkingDirectory(pwd);
+		commandConfig.setAppendInput(true);
+		commandConfig.setOS(System.getProperty("os.name"));
+
 		commandConfig.setCommandId(1);
 		commandConfig.setErrFileName("someLocalErrFile.txt");
 		commandConfig.setOutFileName("someLocalOutFile.txt");
@@ -318,7 +324,7 @@ public class CommandFactoryTest {
 		CommandStatus status = localCommand.execute();
 
 		assert (status == CommandStatus.SUCCESS);
-
+		System.out.println("Finished functional local command");
 	}
 
 	/**
@@ -373,6 +379,14 @@ public class CommandFactoryTest {
 
 		System.out.println("\nTesting a command where a nonexistent working directory was provided.");
 
+		CommandConfiguration commandConfig = new CommandConfiguration();
+		commandConfig.setExecutable("./test_code_execution.sh");
+		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
+		commandConfig.setNumProcs("1");
+		commandConfig.setInstallDirectory("");
+		commandConfig.setWorkingDirectory(pwd);
+		commandConfig.setAppendInput(true);
+		commandConfig.setOS(System.getProperty("os.name"));
 		// Set the commandConfig class
 		commandConfig.setCommandId(3);
 		commandConfig.setErrFileName("someLocalErrFileDir.txt");
@@ -404,7 +418,18 @@ public class CommandFactoryTest {
 	public void testFunctionalRemoteCommand() {
 
 		System.out.println("\n\n\nTesting a functional remote command");
+		
 		// Set the CommandConfiguration class
+
+		CommandConfiguration commandConfig = new CommandConfiguration();
+	
+		commandConfig.setExecutable("./test_code_execution.sh");
+		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
+		commandConfig.setNumProcs("1");
+		commandConfig.setInstallDirectory("");
+		commandConfig.setWorkingDirectory(pwd);
+		commandConfig.setAppendInput(true);
+		commandConfig.setOS(System.getProperty("os.name"));
 		commandConfig.setCommandId(4);
 		commandConfig.setErrFileName("someRemoteErrFile.txt");
 		commandConfig.setOutFileName("someRemoteOutFile.txt");
@@ -429,6 +454,7 @@ public class CommandFactoryTest {
 
 		// Delete the connections
 		manager.removeAllConnections();
+		System.out.println("Finished remote functional command");
 
 	}
 
@@ -437,7 +463,17 @@ public class CommandFactoryTest {
 	 */
 	@Test
 	public void testMultipleInputFilesRemotely() {
+		System.out.println("Test multiple input files remotely");
 		// Set the CommandConfiguration class
+
+		CommandConfiguration commandConfig = new CommandConfiguration();
+		commandConfig.setExecutable("./test_code_execution.sh");
+		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
+		commandConfig.setNumProcs("1");
+		commandConfig.setInstallDirectory("");
+		commandConfig.setWorkingDirectory(pwd);
+		commandConfig.setAppendInput(true);
+		commandConfig.setOS(System.getProperty("os.name"));
 		commandConfig.setCommandId(5);
 		commandConfig.setErrFileName("someMultRemoteErrFile.txt");
 		commandConfig.setOutFileName("someMultRemoteOutFile.txt");
@@ -460,7 +496,7 @@ public class CommandFactoryTest {
 
 		// assert that it was successful
 		assert (status == CommandStatus.SUCCESS);
-
+		System.out.println("Finished multiple input files remotely");
 	}
 
 	/**
@@ -468,8 +504,16 @@ public class CommandFactoryTest {
 	 */
 	@Test
 	public void testMultipleInputFilesLocally() {
-
+		System.out.println("test multiple input files locally");
 		// Set some things specific to the local command
+
+		CommandConfiguration commandConfig = new CommandConfiguration();
+		
+		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
+		commandConfig.setNumProcs("1");
+		commandConfig.setInstallDirectory("");
+		commandConfig.setWorkingDirectory(pwd);
+		commandConfig.setOS(System.getProperty("os.name"));
 		commandConfig.setCommandId(6);
 		commandConfig.setErrFileName("someMultLocalErrFile.txt");
 		commandConfig.setOutFileName("someMultLocalOutFile.txt");
@@ -493,7 +537,7 @@ public class CommandFactoryTest {
 		CommandStatus status = localCommand.execute();
 
 		assert (status == CommandStatus.SUCCESS);
-
+		System.out.println("Finished testing multiple input files locally");
 	}
 
 	/**
@@ -540,7 +584,7 @@ public class CommandFactoryTest {
 		CommandStatus status = command.execute();
 
 		assert (status == CommandStatus.SUCCESS);
-
+		System.out.println("finished python script test");
 	}
 
 	/**

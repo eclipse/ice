@@ -90,6 +90,7 @@ public class RemoteCommand extends Command {
 
 		// Open and set the connection(s)
 		try {
+
 			connection.set(manager.openConnection(connectConfig));
 			// Set the commandConfig hostname to that of the connectionConfig - only used
 			// for output logging info
@@ -124,6 +125,9 @@ public class RemoteCommand extends Command {
 		// Transfer the necessary files to the remote host
 		// If the transfer fails for some reason, print stack trace and return an info
 		// error
+		long a, b, c, d, f;
+		a = System.currentTimeMillis();
+
 		try {
 			status = transferFiles();
 		} catch (SftpException | JSchException | IOException e) {
@@ -131,27 +135,28 @@ public class RemoteCommand extends Command {
 			logger.error("Returning info error");
 			return CommandStatus.INFOERROR;
 		}
-
+		b = System.currentTimeMillis();
 		// Check the status to ensure file transfer was successful
 		if (!checkStatus(status))
 			return CommandStatus.INFOERROR;
 
 		// Execute the commands on the remote host
 		status = processJob();
-
+		c = System.currentTimeMillis();
 		// Check the status to ensure nothing failed
 		if (!checkStatus(status))
 			return CommandStatus.FAILED;
 
 		// Monitor the job to check its exit value and ensure it finishes correctly
 		status = monitorJob();
-
+		d = System.currentTimeMillis();
 		// Check the status to ensure job finished successfully
 		if (!checkStatus(status))
 			return CommandStatus.FAILED;
 
 		// Finish the job by cleaning up the remote directories created
 		status = finishJob();
+		f = System.currentTimeMillis();
 
 		return status;
 	}
@@ -175,6 +180,7 @@ public class RemoteCommand extends Command {
 				channel.connect();
 				// Delete the directory and all of the contents
 				deleteRemoteDirectory(channel, commandConfig.getRemoteWorkingDirectory());
+				channel.disconnect();
 			} catch (JSchException | SftpException e) {
 				// This exception just needs to be logged, since it is not harmful to
 				// the job processing in any way
@@ -266,7 +272,7 @@ public class RemoteCommand extends Command {
 			String thisCommand = completeCommands.get(i);
 			((ChannelExec) connection.get().getChannel()).setCommand(thisCommand);
 
-			logger.info("Executing command: " + thisCommand + " remotely in the working direcotry "
+			logger.info("Executing command: " + thisCommand + " remotely in the working directory "
 					+ commandConfig.getRemoteWorkingDirectory());
 
 			// Set up the input stream
@@ -326,12 +332,13 @@ public class RemoteCommand extends Command {
 	 */
 	protected CommandStatus transferFiles() throws SftpException, JSchException, IOException {
 
+		// Set up a remote file handler to transfer the files
 		RemoteFileHandler handler = new RemoteFileHandler();
+		// Give the handler the same connection as this command
 		handler.setConnectionConfiguration(connectionConfig);
 
+		// Get the directories where files live/should go
 		String remoteWorkingDirectory = commandConfig.getRemoteWorkingDirectory();
-		logger.info("The remote working directory is: " + remoteWorkingDirectory);
-
 		String workingDirectory = commandConfig.getWorkingDirectory();
 
 		// Get the executable to concatenate
@@ -347,37 +354,32 @@ public class RemoteCommand extends Command {
 		if (!remoteWorkingDirectory.endsWith("/"))
 			remoteWorkingDirectory += "/";
 
+		// Build the source and destination paths
 		String source = workingDirectory + shortExecName;
 		String destination = remoteWorkingDirectory + shortExecName;
 
 		CommandStatus fileTransfer = null;
-		
 		// Check if the source file exists. If the executable is a script, then it will
 		// transfer it to the host. If it is just a command (e.g. ls) then it will skip
 		if (handler.exists(source)) {
+			// Change the permission of the executable so that it can be executed. Give user
+			// read write execute permissions, all other users no permissions
+			// We give write permissions also so that the file can be
+			// deleted at the end of processing if desired, or e.g. overwritten if the job
+			// fails for whatever reason and needs to be run again.
+			handler.setPermissions("700");
 			fileTransfer = handler.copy(source, destination);
 			if (fileTransfer != CommandStatus.SUCCESS) {
 				logger.error("Couldn't transfer executable to remote host!");
 				throw new IOException();
 			}
-			/**
-			 * Change the permission of the executable so that it can be executed. Give user
-			 * read write execute permissions, all other users no permissions NOTE: JSch
-			 * takes a decimal number, not an octal number like one would normally expect
-			 * with chmod. So 448 here in decimal corresponds to 700 in octal, i.e.
-			 * -rwx------ We give write permissions also so that the file can be deleted at
-			 * the end of processing if desired, or e.g. overwritten if the job fails for
-			 * whatever reason and needs to be run again.
-			 */
-			ChannelSftp sftpChannel = (ChannelSftp) connection.get().getSession().openChannel("sftp");
-			sftpChannel.connect();
-			sftpChannel.chmod(448, remoteWorkingDirectory + shortExecName);
-			sftpChannel.disconnect();
 		}
 
 		// Now move the input files after moving the executable file
 		HashMap<String, String> inputFiles = commandConfig.getInputFileList();
 
+		// Give the input files permissions of reading/writing
+		handler.setPermissions("600");
 		// Iterate over each input file
 		for (Map.Entry<String, String> entry : inputFiles.entrySet()) {
 			// Get the filepath
@@ -403,6 +405,7 @@ public class RemoteCommand extends Command {
 			}
 		}
 
+		// Return that the job is running now
 		return CommandStatus.RUNNING;
 	}
 

@@ -47,6 +47,12 @@ public abstract class FileHandler implements IFileHandler {
 	protected AtomicReference<Command> command = new AtomicReference<Command>();
 
 	/**
+	 * A connection that is associated with this file handler
+	 */
+	protected Connection connection;
+
+	
+	/**
 	 * A status member variable that indicates the status of the file transfer. See
 	 * also {@link org.eclipse.ice.commands.CommandStatus}
 	 */
@@ -248,4 +254,20 @@ public abstract class FileHandler implements IFileHandler {
 
 	}
 
+	/**
+	 * Get the connection for this file handler
+	 * @return
+	 */
+	public Connection getConnection() {
+		return connection;
+	}
+
+	/**
+	 * Set the connection associated to this file handler
+	 * @param connection
+	 */
+	public void setConnection(Connection connection) {
+		this.connection = connection;
+	}
+	
 }
