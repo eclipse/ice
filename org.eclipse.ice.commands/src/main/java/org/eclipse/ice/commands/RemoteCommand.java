@@ -90,8 +90,14 @@ public class RemoteCommand extends Command {
 
 		// Open and set the connection(s)
 		try {
-
-			connection.set(manager.openConnection(connectConfig));
+			if(manager.getConnection(connectConfig.getName()) == null) {
+				connection.set(manager.openConnection(connectConfig));
+			} else {
+				connection.set(manager.getConnection(connectConfig.getName()));
+				if(connection.get().getChannel() !=null)
+					connection.get().getChannel().disconnect();
+			}
+				
 			// Set the commandConfig hostname to that of the connectionConfig - only used
 			// for output logging info
 			commandConfig.setHostname(connectConfig.getAuthorization().getHostname());
@@ -188,8 +194,13 @@ public class RemoteCommand extends Command {
 			}
 		}
 
-		// Disconnect the session and return success
+		// Disconnect the channel and the session and return success
 		connection.get().getChannel().disconnect();
+		// Set the channel to null. This is important for running several jobs over one
+		// session, since the channel has been changed to an exec channel and the next
+		// job needs it as an sftp channel for file transfer. So let the next job take
+		// care of the channel delegation.
+		connection.get().setChannel(null);
 		connection.get().getSession().disconnect();
 
 		/**

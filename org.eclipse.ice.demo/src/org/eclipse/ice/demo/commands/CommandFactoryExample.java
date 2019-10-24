@@ -37,7 +37,9 @@ public class CommandFactoryExample {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-	
+		long a, b;
+		
+		a = System.currentTimeMillis();
 		// Run an example test script
 		runLocalCommand();
 
@@ -49,7 +51,9 @@ public class CommandFactoryExample {
 
 		// Run an example shell command, e.g. ls -lrt
 		runRemoteShellCommand();
-
+		b = System.currentTimeMillis();
+		
+		System.out.println("Time to process is " + (b-a)/1000.);
 		return;
 	}
 

@@ -40,7 +40,6 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	private int HANDLE_TYPE = 0;
 
-
 	/**
 	 * An integer with the permissions for a new file to be changed with chmod, if
 	 * desired. Can be set via a setter and then the moved or copied file will also
@@ -78,14 +77,14 @@ public class RemoteFileHandler extends FileHandler {
 			// If there isn't one open, try to open the connection
 			try {
 				logger.info("Manager is opening a connection");
-				manager.openConnection(config);
+				connection = manager.openConnection(config);
 			} catch (JSchException e) {
 				logger.error("Connection could not be established. Transfer will fail.");
 			}
+		} else {
+			// Get the connection if it is already available
+			connection = manager.getConnection(config.getName());
 		}
-
-		// Set the member variables for access later
-		connection = manager.getConnection(config.getName());
 		// Open an sftp channel for this remote file handler to use
 		try {
 			// Set it for the connection
@@ -337,7 +336,5 @@ public class RemoteFileHandler extends FileHandler {
 	public void setPermissions(String permissions) {
 		this.permissions = Integer.parseInt(permissions, 8);
 	}
-
-
 
 }

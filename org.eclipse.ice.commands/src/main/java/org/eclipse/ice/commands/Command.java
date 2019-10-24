@@ -172,7 +172,7 @@ public abstract class Command {
 		// Check that the directory exists
 		// Get the file handler factory
 		FileHandlerFactory factory = new FileHandlerFactory();
-		boolean exists = false, execExists = false, inputExists = false;
+		boolean exists = false, execExists = false;
 		try {
 			// Get the handler for this particular connection, whether local or remote
 			FileHandler handler = factory.getFileHandler(connectionConfig);

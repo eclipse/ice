@@ -51,8 +51,7 @@ public class RemoteCommandTest {
 
 	@After
 	public void tearDown() throws Exception {
-		ConnectionManagerFactory.getConnectionManager().listAllConnections();
-		// ConnectionManagerFactory.getConnectionManager().removeAllConnections();
+		 ConnectionManagerFactory.getConnectionManager().listAllConnections();
 	}
 
 	/**
@@ -162,6 +161,24 @@ public class RemoteCommandTest {
 	}
 
 	/**
+	 * Test method for executing remote command
+	 * {@link org.eclipse.ice.commands.RemoteCommand#execute()}
+	 */
+	@Test
+	public void testExecute() {
+		System.out.println("\n\n\nTest remote command execute");
+
+		// Make a command and execute the command
+		RemoteCommand command = new RemoteCommand(commandConfig, connectConfig, null);
+		CommandStatus status = command.execute();
+
+		// Check that the command was successfully completed
+		assert (status == CommandStatus.SUCCESS);		
+		
+		System.out.println("Finished testing remote command execute");
+	}
+	
+	/**
 	 * This tests that the job status is set to failed if an incorrect connection is
 	 * established. Expect an exception since the connection will not be able to be
 	 * established.
@@ -187,35 +204,21 @@ public class RemoteCommandTest {
 		// Check that the command gives an error in its status due to poor connection
 		assert (command.getStatus() == CommandStatus.INFOERROR);
 	}
-
-	/**
-	 * Test method for executing remote command
-	 * {@link org.eclipse.ice.commands.RemoteCommand#execute()}
-	 */
-	@Test
-	public void testExecute() {
-		System.out.println("\n\n\nTest remote command execute");
-
-		// Make a command and execute the command
-		RemoteCommand command = new RemoteCommand(commandConfig, connectConfig, null);
-		CommandStatus status = command.execute();
-
-		// Check that the command was successfully completed
-		assert (status == CommandStatus.SUCCESS);
-
-		System.out.println("Finished testing remote command execute");
-	}
-
+	
+	
+	
 	/**
 	 * Test method for a nonexistent executable. Expect a null pointer exception
-	 * when file transfer attempts fail
+	 * because the code will try to transfer the executable, but be unable to find it.
+	 * Can't have it throw an error because of the possibility that the executable is a 
+	 * simple shell command like ls
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test(expected=NullPointerException.class)
 	public void testBadExecute() {
 		CommandConfiguration badConfig = new CommandConfiguration();
 
 		badConfig.setCommandId(24);
-		badConfig.setExecutable("fake_exec.sh");
+		badConfig.setExecutable("./fake_exec.sh");
 		badConfig.addInputFile("inputfile", "inputfile");
 		badConfig.setErrFileName("errfile.txt");
 		badConfig.setOutFileName("outfile.txt");
@@ -229,8 +232,12 @@ public class RemoteCommandTest {
 
 		CommandStatus testStatus = testCommand.execute();
 
-		assert (testStatus == CommandStatus.FAILED);
+		assert (testStatus == CommandStatus.INFOERROR);
 	}
+
+	
+
+
 
 	/**
 	 * This function tests an intentionally long running script in the background to
@@ -261,4 +268,7 @@ public class RemoteCommandTest {
 
 	}
 
+
+	
+	
 }
