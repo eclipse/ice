@@ -96,7 +96,13 @@ public class ConnectionManagerTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		
+		// Test removing all connections from the list in ConnectionManager
 		manager.removeAllConnections();
+
+		// Assert that there are no more connections in the list
+		assert (manager.getConnectionList().size() == 0);
+
 	}
 
 	/**
@@ -107,8 +113,9 @@ public class ConnectionManagerTest {
 	 */
 	@Test
 	public void testValidConnection() {
+		System.out.println("Testing valid connection");
 		testOpenConnection();
-
+	
 		testGetConnection();
 
 		testCloseConnection();
@@ -119,7 +126,8 @@ public class ConnectionManagerTest {
 	 * {@link org.eclipse.ice.commands.ConnectionManager#OpenConnection(String)}
 	 */
 	public void testOpenConnection() {
-
+		// Set the name of the configuration, in case it was overwritten by other test
+		configuration.setName("TestConnection");
 		// Try to open a connection
 		try {
 			connect = manager.openConnection(configuration);
@@ -137,8 +145,8 @@ public class ConnectionManagerTest {
 	 * {@link org.eclipse.ice.commands.ConnectionManager#GetConnection(String)}
 	 */
 	public void testGetConnection() {
-		Connection testConnection = manager.getConnection(connectionName);
-
+		Connection testConnection = null;
+		testConnection = manager.getConnection(connectionName);
 		assert (testConnection != null);
 
 		// test a bad connection that doesn't exist in the connection list
@@ -244,12 +252,8 @@ public class ConnectionManagerTest {
 		// Check that the connection is closed
 		assert (!manager.isConnectionOpen("FirstConnection"));
 
-		// Test removing all connections from the list in ConnectionManager
-		manager.removeAllConnections();
-
-		// Assert that there are no more connections in the list
-		assert (manager.getConnectionList().size() == 0);
-
 	}
 
+
+	
 }

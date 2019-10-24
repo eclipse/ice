@@ -26,6 +26,7 @@ import org.eclipse.ice.commands.RemoteCommand;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test for class {@link org.eclipse.ice.commands.RemoteCommand}.
@@ -144,7 +145,7 @@ public class RemoteCommandTest {
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.RemoteCommand()}
 	 */
-	//@Test
+	@Test
 	public void testRemoteCommand() {
 		System.out.println("Testing remote command configuration");
 
@@ -165,7 +166,7 @@ public class RemoteCommandTest {
 	 * established. Expect an exception since the connection will not be able to be
 	 * established.
 	 */
-	//@Test(expected = NullPointerException.class)
+	@Test(expected = NullPointerException.class)
 	public void testFailedConnectionRemoteCommand() {
 		System.out.println("Testing remote command with a bad connection");
 
@@ -191,7 +192,7 @@ public class RemoteCommandTest {
 	 * Test method for executing remote command
 	 * {@link org.eclipse.ice.commands.RemoteCommand#execute()}
 	 */
-	//@Test
+	@Test
 	public void testExecute() {
 		System.out.println("\n\n\nTest remote command execute");
 
@@ -209,7 +210,7 @@ public class RemoteCommandTest {
 	 * Test method for a nonexistent executable. Expect a null pointer exception
 	 * when file transfer attempts fail
 	 */
-	//@Test(expected = NullPointerException.class)
+	@Test(expected = NullPointerException.class)
 	public void testBadExecute() {
 		CommandConfiguration badConfig = new CommandConfiguration();
 
