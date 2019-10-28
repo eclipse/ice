@@ -112,13 +112,13 @@ public class RemoteFileHandler extends FileHandler {
 			// Try to lstat the path. If an exception is thrown, it means it does not exist
 			SftpATTRS attrs = sftpChannel.lstat(file);
 		} catch (SftpException e) {
-			logger.info("Couldn't find " + file + " remotely. Seeing if it exists locally.");
 			if (isLocal(file)) {
-
-				logger.info("File " + file + " exists locally.");
+				// If the file can be found locally, return true since we found it.
+				// Up to checkExistence to determine what kind of move this is (e.g. local->remote
+				// or vice versa)
 				return true;
 			} else {
-				logger.info("File " + file + " also doesn't exist locally.");
+				logger.info("File " + file + " doesn't exist remotely or locally.");
 				return false;
 			}
 		}
