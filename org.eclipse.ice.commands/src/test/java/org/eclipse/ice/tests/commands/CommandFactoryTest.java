@@ -131,7 +131,8 @@ public class CommandFactoryTest {
 		rm += " someRemoteErrFile.txt someRemoteOutFile.txt someMultLocalErrFile.txt someMultLocalOutFile.txt";
 		rm += " someLsOutFile.txt someLsErrFile.txt someMultRemoteOutFile.txt someMultRemoteErrFile.txt";
 		rm += " somePythOutFile.txt somePythErrFile.txt someLsRemoteErrFile.txt someLsRemoteOutFile.txt";
-		rm += " ../someInputFile.txt ../someOtherInputFile.txt";
+		rm += " src/test/java/org/eclipse/ice/tests/someInputFile.txt src/test/java/org/eclipse/ice/tests/someOtherInputFile.txt";
+		rm += " pythOutFile.txt pythErrFile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
 		// TODO - build this command for use in windows
