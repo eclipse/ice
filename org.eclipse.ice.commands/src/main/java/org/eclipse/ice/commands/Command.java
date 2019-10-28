@@ -154,8 +154,8 @@ public abstract class Command {
 
 		// Check the info and return failure if something was not set
 		if (commandConfig.getExecutable() == null || commandConfig.getOutFileName() == null
-				|| commandConfig.getErrFileName() == null || commandConfig.getNumProcs() == null
-				|| commandConfig.getWorkingDirectory() == null) {
+				|| commandConfig.getErrFileName() == null || commandConfig.getNumProcs() == null 
+			) {//	|| commandConfig.getWorkingDirectory() == null) {
 			logger.error("An important piece of information is missing from the CommandConfiguration. Exiting.");
 			return CommandStatus.INFOERROR;
 		}
@@ -169,6 +169,10 @@ public abstract class Command {
 		if(commandConfig.getOS().toLowerCase().contains("win"))
 			separator = "\\";
 		
+		// Check if the working directory exists
+		String workingDir = commandConfig.getWorkingDirectory();
+		
+		
 		// Check that the directory exists
 		// Get the file handler factory
 		FileHandlerFactory factory = new FileHandlerFactory();
@@ -177,10 +181,11 @@ public abstract class Command {
 			// Get the handler for this particular connection, whether local or remote
 			FileHandler handler = factory.getFileHandler(connectionConfig);
 		
-			// Check if the working directory exists
-			String workingDir = commandConfig.getWorkingDirectory();
-			
-			exists = handler.exists(workingDir);
+		
+			// If the working directory was set, check that it exists. If it wasn't set,
+			// then the paths should have been explicitly identified
+			if(workingDir != null)
+				exists = handler.exists(workingDir);
 			
 			// Check if the executable exists in the working directory
 			execExists = handler.exists(workingDir + exec);
@@ -193,16 +198,18 @@ public abstract class Command {
 			return CommandStatus.INFOERROR;
 		}
 		// If the working directory doesn't exist, we won't be able to continue the job
-		// processing
+		// processing unless the full paths were specified. Warn the user
 		if (!exists) {
-			logger.error("Directory containing files does not exist! Check it!");
-			return CommandStatus.INFOERROR;
+			logger.warn("Directory containing files does not exist!");
+			logger.warn("If you did not specify absolute paths for all your files, the job will fail!");
 		}
-		if(!execExists) {
+		// If the executable does not exist but the working directory was set, warn the
+		// user again that the executable is unavailable
+		if(!execExists && exists) {
 			// If the executable doesn't exist, we shouldn't cancel the job because it is 
 			// possible that the command is a simple shell command. So warn the user
 			logger.warn("Warning: Executable file could not be found");
-			logger.warn("If you are running a simple shell command, ignore this warning");
+			logger.warn("If you are running a simple shell command, or specified the full path to the executable, ignore this warning");
 			logger.warn("Otherwise, the job will fail");
 		}
 		

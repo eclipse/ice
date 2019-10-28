@@ -71,7 +71,7 @@ public class LocalFileHandler extends FileHandler {
 	 */
 	@Override
 	public void checkExistence(final String source, final String destination) throws IOException {
-		logger.info("Checking existence of files for local move...");
+		
 		// Check that the source file exists
 		if (!exists(source)) {
 			logger.error("Source doesn't exist! Exiting.");
@@ -85,8 +85,7 @@ public class LocalFileHandler extends FileHandler {
 				throw new IOException();
 			}
 		}
-		logger.info("Source at " + source + " exists");
-		logger.info("Destination at " + destination + " exists");
+	
 	}
 
 }

@@ -28,6 +28,7 @@ import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
+import org.eclipse.ice.commands.LocalFileHandler;
 import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -95,11 +96,12 @@ public class CommandFactoryTest {
 
 		// Set the CommandConfiguration class with some default things that are relevant
 		// for all the test functions here
-	
+
 	}
 
 	/**
 	 * Close the connections after we are finished with them in an individual test
+	 * 
 	 * @throws Exception
 	 */
 	@After
@@ -107,7 +109,7 @@ public class CommandFactoryTest {
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 		manager.removeAllConnections();
 	}
-	
+
 	/**
 	 * Run after the tests have finished processing. This function just removes the
 	 * dummy text files that are created with log/error information from running
@@ -129,6 +131,7 @@ public class CommandFactoryTest {
 		rm += " someRemoteErrFile.txt someRemoteOutFile.txt someMultLocalErrFile.txt someMultLocalOutFile.txt";
 		rm += " someLsOutFile.txt someLsErrFile.txt someMultRemoteOutFile.txt someMultRemoteErrFile.txt";
 		rm += " somePythOutFile.txt somePythErrFile.txt someLsRemoteErrFile.txt someLsRemoteOutFile.txt";
+		rm += " ../someInputFile.txt ../someOtherInputFile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
 		// TODO - build this command for use in windows
@@ -242,7 +245,6 @@ public class CommandFactoryTest {
 		handler.setHostname(hostname);
 		ctCfg.setAuthorization(handler);
 
-		
 		Command cmd = null;
 		try {
 			cmd = factory.getCommand(cmdCfg, ctCfg);
@@ -391,7 +393,7 @@ public class CommandFactoryTest {
 		commandConfig.setCommandId(3);
 		commandConfig.setErrFileName("someLocalErrFileDir.txt");
 		commandConfig.setOutFileName("someLocalOutFileDir.txt");
-		commandConfig.setWorkingDirectory("~/some_nonexistent_directory");
+		commandConfig.setWorkingDirectory("/tmp/some_nonexistent_directory");
 
 		ConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
 		handler.setHostname(hostname);
@@ -407,7 +409,7 @@ public class CommandFactoryTest {
 		// Run it and expect that it fails
 		CommandStatus status2 = localCommand2.execute();
 
-		assert (status2 == CommandStatus.INFOERROR);
+		assert (status2 == CommandStatus.FAILED);
 	}
 
 	/**
@@ -418,11 +420,11 @@ public class CommandFactoryTest {
 	public void testFunctionalRemoteCommand() {
 
 		System.out.println("\n\n\nTesting a functional remote command");
-		
+
 		// Set the CommandConfiguration class
 
 		CommandConfiguration commandConfig = new CommandConfiguration();
-	
+
 		commandConfig.setExecutable("./test_code_execution.sh");
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
 		commandConfig.setNumProcs("1");
@@ -508,7 +510,7 @@ public class CommandFactoryTest {
 		// Set some things specific to the local command
 
 		CommandConfiguration commandConfig = new CommandConfiguration();
-		
+
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
 		commandConfig.setNumProcs("1");
 		commandConfig.setInstallDirectory("");
@@ -585,6 +587,62 @@ public class CommandFactoryTest {
 
 		assert (status == CommandStatus.SUCCESS);
 		System.out.println("finished python script test");
+	}
+
+	/**
+	 * This function tests the execution of a command where the executable lives on
+	 * the remote host and the input files live on the local host
+	 */
+	@Test
+	public void testRemoteExecutableLocalInputFiles() {
+		System.out.println("Testing command where files live on different hosts.");
+		// Get the present working directory
+		String pwd = System.getProperty("user.dir");
+
+		// Create the path relative to the current directory where the test script lives
+		String inputFileDir = pwd + "/src/test/java/org/eclipse/ice/tests/";
+		
+		// Copy the input files to this directory for this test. They are removed at the
+		// end of the class. Useful for putting the input files in a different directory
+		// in the repo from where the execution script lives.
+		
+		LocalFileHandler handler = new LocalFileHandler();
+		handler.copy(inputFileDir + "commands/someInputFile.txt", inputFileDir);
+		handler.copy(inputFileDir + "commands/someOtherInputFile.txt", inputFileDir);
+		
+		// Create a command configuration corresponding to a python script
+		CommandConfiguration configuration = new CommandConfiguration();
+		// This path exists on the dummy host server
+		configuration.setExecutable("/opt/ice/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands/test_python_script.py");
+		configuration.setInterpreter("python");
+		configuration.setCommandId(9);
+		configuration.setErrFileName("pythErrFile.txt");
+		configuration.setOutFileName("pythOutFile.txt");
+		configuration.setNumProcs("1");
+		configuration.setInstallDirectory("");
+		configuration.setOS(System.getProperty("os.name"));
+		configuration.setAppendInput(true);
+		configuration.setWorkingDirectory(inputFileDir);
+		configuration.addInputFile("inputfile", "someInputFile.txt");
+		configuration.addInputFile("inputfile2", "someOtherInputFile.txt");
+		configuration.setRemoteWorkingDirectory("/tmp/pythonTest");
+
+		// Get the dummy connection configuration
+		ConnectionConfiguration connectionConfig = setupDummyConnectionConfiguration();
+
+		// Get the command and run it
+		Command command = null;
+		try {
+			command = factory.getCommand(configuration, connectionConfig);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		CommandStatus status = command.execute();
+
+		assert (status == CommandStatus.SUCCESS);
+		System.out.println("finished python script test");
+
 	}
 
 	/**
