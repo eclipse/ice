@@ -106,13 +106,18 @@ public class LocalCommandTest {
 	@Test
 	public void testExecute() {
 
-		
 		// Set the CommandConfiguration class
 		// See {@link org.eclipse.ice.commands.CommandConfiguration} for detailed info
 		// on each
 		CommandConfiguration commandConfig = new CommandConfiguration();
 		commandConfig.setCommandId(1);
 		commandConfig.setExecutable("./test_code_execution.sh");
+		// Check if the OS is windows, and thus adjust the executable if so
+		if (os.toLowerCase().contains("win")) {
+			// Two slashes so that java doesn't read it as a tab "\t"
+			executable = ".\\test_code_execution.ps1";
+			commandConfig.setInterpreter("powershell.exe");
+		}
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
 		commandConfig.setErrFileName("someLocalErrFile.txt");
 		commandConfig.setOutFileName("someLocalOutFile.txt");
@@ -161,7 +166,7 @@ public class LocalCommandTest {
 		CommandStatus testStatus = testCommand.execute();
 
 		assert (testStatus == CommandStatus.FAILED);
-	System.out.println("Finished testExecute\n");
+		System.out.println("Finished testExecute\n");
 	}
 
 }

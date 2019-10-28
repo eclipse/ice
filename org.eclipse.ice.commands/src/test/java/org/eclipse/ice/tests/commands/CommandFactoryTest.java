@@ -95,11 +95,12 @@ public class CommandFactoryTest {
 
 		// Set the CommandConfiguration class with some default things that are relevant
 		// for all the test functions here
-	
+
 	}
 
 	/**
 	 * Close the connections after we are finished with them in an individual test
+	 * 
 	 * @throws Exception
 	 */
 	@After
@@ -107,7 +108,7 @@ public class CommandFactoryTest {
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 		manager.removeAllConnections();
 	}
-	
+
 	/**
 	 * Run after the tests have finished processing. This function just removes the
 	 * dummy text files that are created with log/error information from running
@@ -229,6 +230,13 @@ public class CommandFactoryTest {
 		System.out.println("Test boring command locally");
 		CommandConfiguration cmdCfg = new CommandConfiguration();
 		cmdCfg.setExecutable("ls -lrt");
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
+			// Add powershell interpeter if os is windows
+			cmdCfg.setInterpreter("powershell.exe");
+			// just use ls because powershell automatically adds the -lrt
+			// and doesn't know what -lrt is anyway
+			cmdCfg.setExecutable("ls");
+		}
 		cmdCfg.setNumProcs("1");
 		cmdCfg.setInstallDirectory("");
 		cmdCfg.setWorkingDirectory(pwd);
@@ -242,7 +250,6 @@ public class CommandFactoryTest {
 		handler.setHostname(hostname);
 		ctCfg.setAuthorization(handler);
 
-		
 		Command cmd = null;
 		try {
 			cmd = factory.getCommand(cmdCfg, ctCfg);
@@ -298,6 +305,11 @@ public class CommandFactoryTest {
 		// Set some things specific to the local command
 		CommandConfiguration commandConfig = new CommandConfiguration();
 		commandConfig.setExecutable("./test_code_execution.sh");
+		// If it is windows, configure the test to run on windows
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
+			commandConfig.setExecutable(".\\test_code_execution.ps1");
+			commandConfig.setInterpreter("powershell.exe");
+		}
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
 		commandConfig.setNumProcs("1");
 		commandConfig.setInstallDirectory("");
@@ -418,11 +430,11 @@ public class CommandFactoryTest {
 	public void testFunctionalRemoteCommand() {
 
 		System.out.println("\n\n\nTesting a functional remote command");
-		
+
 		// Set the CommandConfiguration class
 
 		CommandConfiguration commandConfig = new CommandConfiguration();
-	
+
 		commandConfig.setExecutable("./test_code_execution.sh");
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
 		commandConfig.setNumProcs("1");
@@ -508,7 +520,7 @@ public class CommandFactoryTest {
 		// Set some things specific to the local command
 
 		CommandConfiguration commandConfig = new CommandConfiguration();
-		
+
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
 		commandConfig.setNumProcs("1");
 		commandConfig.setInstallDirectory("");
