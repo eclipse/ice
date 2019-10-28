@@ -543,6 +543,13 @@ public class CommandConfiguration {
 	 * @param workingDir
 	 */
 	public void setWorkingDirectory(String workingDirectory) {
+		// Check to see if the directory ends with a separator
+		// TODO - test with windows
+		String separator = "/";
+		if(getOS().toLowerCase().contains("win"))
+			separator = "\\";
+		if(!workingDirectory.endsWith(separator))
+			workingDirectory += separator;
 		this.workingDirectory = workingDirectory;
 		return;
 	}
