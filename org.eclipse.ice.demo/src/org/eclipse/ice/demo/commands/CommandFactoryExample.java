@@ -37,9 +37,7 @@ public class CommandFactoryExample {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		long a, b;
-		
-		a = System.currentTimeMillis();
+
 		// Run an example test script
 		runLocalCommand();
 
@@ -51,9 +49,7 @@ public class CommandFactoryExample {
 
 		// Run an example shell command, e.g. ls -lrt
 		runRemoteShellCommand();
-		b = System.currentTimeMillis();
-		
-		System.out.println("Time to process is " + (b-a)/1000.);
+
 		return;
 	}
 
@@ -116,20 +112,20 @@ public class CommandFactoryExample {
 
 		// Ensure it finished properly
 		assert (status == CommandStatus.SUCCESS);
-		
+
 		// Clear out the remaining connections to start fresh next example
 		ConnectionManagerFactory.getConnectionManager().removeAllConnections();
 	}
 
 	/**
-	 * This function shows an example of the bare minimum required to run a shell command
-	 * on a remote host. Here the setWorkingDirectory can be set to any existing directory,
-	 * since it won't explicitly be looking there for files (e.g. an executable .sh script
-	 * or input files for the job to run). 
+	 * This function shows an example of the bare minimum required to run a shell
+	 * command on a remote host. Here the setWorkingDirectory can be set to any
+	 * existing directory, since it won't explicitly be looking there for files
+	 * (e.g. an executable .sh script or input files for the job to run).
 	 */
 	private static void runRemoteShellCommand() {
 		CommandFactory factory = new CommandFactory();
-		
+
 		CommandConfiguration config = new CommandConfiguration();
 		config.setExecutable("ls -lt");
 		config.setErrFileName("someRemoteLSfile.txt");
@@ -138,28 +134,28 @@ public class CommandFactoryExample {
 		config.setOS(System.getProperty("os.name"));
 		config.setRemoteWorkingDirectory("/tmp/");
 		config.setWorkingDirectory("/Users/4jo/");
-		
+
 		ConnectionConfiguration connection = makeDumConnectionConfig();
-		connection.setDeleteWorkingDirectory(false);
-		
+		connection.deleteWorkingDirectory(false);
+
 		Command command = null;
 		try {
 			command = factory.getCommand(config, connection);
-		} catch(IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		CommandStatus status = command.execute();
-		
+
 		assert (status == CommandStatus.SUCCESS);
-	
+
 		String output = config.getStdOutputString();
-	
+
 		// Clear out the remaining connections to start fresh next example
 		ConnectionManagerFactory.getConnectionManager().removeAllConnections();
-		
+
 	}
-	
+
 	/**
 	 * This function creates a connection configuration for the dummy remote host
 	 * used in CI testing. Create a ConnectionConfiguration with the necessary
@@ -192,9 +188,9 @@ public class CommandFactoryExample {
 		 * Alternatively, one can authorize with their password at the console line by
 		 * performing the following set of code
 		 * 
-		 * ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("console");
-		 * auth.setHostname("hostname");
-		 * auth.setUsername("username");
+		 * ConnectionAuthorizationHandler auth =
+		 * authFactory.getConnectionAuthorizationHandler("console");
+		 * auth.setHostname("hostname"); auth.setUsername("username");
 		 */
 		// Set it so that the connection can authorize itself
 		connectionConfig.setAuthorization(auth);
@@ -202,7 +198,7 @@ public class CommandFactoryExample {
 		connectionConfig.setName("dummyConnection");
 
 		// Delete the remote working directory once we are finished running the job
-		connectionConfig.setDeleteWorkingDirectory(true);
+		connectionConfig.deleteWorkingDirectory(true);
 
 		return connectionConfig;
 	}
@@ -273,8 +269,8 @@ public class CommandFactoryExample {
 		// Run it
 		CommandStatus status = localCommand.execute();
 
-		assert(status == CommandStatus.SUCCESS);
-		
+		assert (status == CommandStatus.SUCCESS);
+
 		// Get a string of the output that is produced from the job
 		String output = commandConfig.getStdOutputString();
 
@@ -321,7 +317,8 @@ public class CommandFactoryExample {
 		// Get the authorization type. In this case, local, which is basically
 		// equivalent to
 		// "no authorization"
-		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text","/tmp/ice-remote-creds.txt");
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
+				"/tmp/ice-remote-creds.txt");
 		// Set the connectionConfig to have access to e.g. the hostname
 		connectionConfig.setAuthorization(auth);
 
@@ -338,8 +335,8 @@ public class CommandFactoryExample {
 
 		CommandStatus status = command.execute();
 
-		assert(status == CommandStatus.SUCCESS);
-		
+		assert (status == CommandStatus.SUCCESS);
+
 		// Clear out the remaining connections to start fresh next example
 		ConnectionManagerFactory.getConnectionManager().removeAllConnections();
 	}
