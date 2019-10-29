@@ -97,7 +97,7 @@ public class RemoteCommandTest {
 		// Delete the remote working directory when finished since we don't want the
 		// dummy
 		// host piling up with random directories
-		connectConfig.setDeleteWorkingDirectory(true);
+		connectConfig.deleteWorkingDirectory(true);
 
 		ConnectionManagerFactory.getConnectionManager().openConnection(connectConfig);
 	}

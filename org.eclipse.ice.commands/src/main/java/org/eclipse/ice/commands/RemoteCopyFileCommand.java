@@ -13,11 +13,6 @@
 
 package org.eclipse.ice.commands;
 
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.SftpException;
-
 /**
  * Child class for copying a file remotely over some connection.
  * 
@@ -80,65 +75,16 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	 */
 	@Override
 	protected CommandStatus run() {
-		ChannelSftp channel = null;
-		try {
-			// Open the channel and connect it
-			channel = (ChannelSftp) getConnection().getChannel();
-
-			// Determine how to proceed given what kind of copy it is
-			if (copyType == 1) { // If move type is local -> remote, use put
-				channel.put(source, destination);
-			} else if (copyType == 2) { // if move type is remote -> local, use get
-				channel.get(source, destination);
-			} else if (copyType == 3) { // if move type is remote -> remote, call function
-				copyRemoteToRemote();
-			} else {
-				logger.info("Unknown handle type...");
-				status = CommandStatus.FAILED;
-				return status;
-			}
-
-			// If permissions was actually instantiated and isn't the default, then perform
-			// a chmod
-			if (permissions != -999)
-				channel.chmod(permissions, destination);
-
-		} catch (JSchException | SftpException e) {
-			logger.error("Failed to connect to remote host. Returning failed.");
-			status = CommandStatus.FAILED;
-			return status;
-		}
-
-		// Set the status to success and return
-		status = CommandStatus.SUCCESS;
+		// Create a RemoteTransferExecution
+		RemoteTransferExecution transfer = new RemoteTransferExecution();
+		// Tell it that this is a copy
+		transfer.isMove(false);
+		// Do the transfer
+		status = transfer.executeTransfer(getConnection(), source, destination, permissions, copyType);
+		
 		return status;
 	}
 
-	/**
-	 * This is a function that executes a copy command on the remote host to copy a
-	 * file from one location on the remote host to another location on the remote
-	 * host.
-	 * 
-	 * @throws JSchException
-	 */
-	private void copyRemoteToRemote() throws JSchException {
-		// Open an execution channel
-		ChannelExec execChannel = (ChannelExec) getConnection().getSession().openChannel("exec");
-		// TODO - test with windows, cp probably won't work
-		// Make a copy command to execute
-		String command = "cp " + source + " " + destination;
-		// Set the command for the JSch connection
-		execChannel.setCommand(command);
-		// If the channel isn't connected, connect and run the command
-		try {
-			execChannel.connect();
-		} catch (JSchException e) {
-			logger.error("Channel isn't connected and can't copy remote to remote...");
-			throw e;
-		}
-		// Disconnect extra channel when finished
-		execChannel.disconnect();
-	}
 
 	/**
 	 * Get the source file string

@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,10 +33,22 @@ public class ConnectionAuthorizationHandlerFactory {
 	 */
 	public final Logger logger = LoggerFactory.getLogger(ConnectionAuthorizationHandlerFactory.class);
 
+	private HashMap<String, ConnectionAuthorizationHandler> handlerList = new HashMap<String, ConnectionAuthorizationHandler>();
+
 	/**
 	 * Default constructor
 	 */
 	public ConnectionAuthorizationHandlerFactory() {
+		// Add the default authorization handler classes to the hash map
+		// An authenticator where you can type your password in at the console.
+		// Requires that the username/hostname are manually set
+		handlerList.put("console", new ConsoleConnectionAuthorizationHandler());
+		// An authorization for local commands, which just requires the (local) hostname
+		handlerList.put("local", new LocalConnectionAuthorizationHandler());
+		// A text file containing all credentials. Authorization will automatically grab
+		// credentials
+		handlerList.put("text", new TxtFileConnectionAuthorizationHandler());
+
 	}
 
 	/**
@@ -58,21 +73,37 @@ public class ConnectionAuthorizationHandlerFactory {
 	public ConnectionAuthorizationHandler getConnectionAuthorizationHandler(String type, String path) {
 		ConnectionAuthorizationHandler auth = null;
 
-		// Get an authenticator where you can type your password in at the console.
-		// Requires that the username/hostname are manually set
-		if (type.equals("console"))
-			auth = new ConsoleConnectionAuthorizationHandler();
-		// A text file containing all credentials. Authorization will automatically grab
-		// credentials
-		else if (type.equals("text"))
+		// Iterate over the default authorization types
+		for (Map.Entry<String, ConnectionAuthorizationHandler> entry : handlerList.entrySet()) {
+			// Check if the type matches, and set the auth variable
+			if (type.equals(entry.getKey())) {
+				auth = entry.getValue();
+			}
+		}
+
+		// Have a separate set for a text file authorization since it needs to take the
+		// path as
+		// a constructor argument
+		// TODO - think about if there is a better way to do this - don't want to have
+		// to add an additional if statement for each non-default constructor
+		if (type.equals("text"))
 			auth = new TxtFileConnectionAuthorizationHandler(path);
-		// An authorization for local commands, which just requires the (local) hostname
-		else if (type.equals("local"))
-			auth = new LocalConnectionAuthorizationHandler();
-		else
+
+		if (auth == null)
 			logger.error("Unknown authorization type! Will return null.");
 
 		return auth;
 	}
 
+	/**
+	 * This function allows a client to add another type of authorization handler, should they have
+	 * developed their own type. The factory will then add this to the list and then check for it
+	 * when determining what type of ConnectionAuthorizationHandler to return.
+	 * @param type
+	 * @param auth
+	 */
+	public void addConnectionAuthorizationHandlerType(String type, ConnectionAuthorizationHandler auth) {
+		handlerList.put(type, auth);
+	}
+	
 }

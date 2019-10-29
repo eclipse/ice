@@ -7,11 +7,18 @@ Examples can be found in either the `src/test/java/org/eclipse/ice/tests/command
 
 ### Build Instructions
 Building the package can be performed like any other maven package, where the end result is a jar file that can be included as a dependency
+
 ```
 $ mvn clean install
 ```
 
-To skip the tests, include `-DskipTests` in your build. 
+This installs the jar file to the local repository in `~/.m2`. It is also possible to build the package without installing by running
+
+```
+$ mvn clean verify
+```
+
+In both cases one can skip the tests by including `-DskipTests` in your build. 
 
 #### Note about tests
 The automated testing is performed with a dummy remote host, which has private credentials. Thus, if the tests are built with the package, a significant portion of the tests will fail due to the fact that the dummy remote host credentials are not distributed publicly. To solve this, one may enter any generic remote host credentials into the file `/tmp/ice-remote-creds.txt` in the following order

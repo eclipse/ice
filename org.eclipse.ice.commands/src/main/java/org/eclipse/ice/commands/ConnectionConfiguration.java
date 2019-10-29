@@ -79,10 +79,10 @@ public class ConnectionConfiguration {
 	 * 
 	 * @return
 	 */
-	public boolean getDeleteWorkingDirectory() {
+	public boolean deleteWorkingDirectory() {
 		return deleteWorkingDirectory;
 	}
-
+	
 	/**
 	 * Setter for whether or not to delete the remote working directory upon
 	 * completion
@@ -90,9 +90,10 @@ public class ConnectionConfiguration {
 	 * 
 	 * @param
 	 */
-	public void setDeleteWorkingDirectory(boolean _delete) {
-		deleteWorkingDirectory = _delete;
+	public void deleteWorkingDirectory(boolean deleteWorkingDirectory) {
+		this.deleteWorkingDirectory = deleteWorkingDirectory;
 	}
+
 
 	/**
 	 * Setter for the authorization method, if desired. See

@@ -317,7 +317,7 @@ public class RemoteFileHandlerTest {
 
 		config.setName(name);
 
-		config.setDeleteWorkingDirectory(false);
+		config.deleteWorkingDirectory(false);
 
 		return config;
 	}
