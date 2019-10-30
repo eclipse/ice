@@ -43,6 +43,7 @@ import org.junit.Test;
  */
 public class CommandFactoryTest {
 
+	
 	/**
 	 * The hostname for which the job should run on. Default to local host name for
 	 * now

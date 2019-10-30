@@ -35,15 +35,4 @@ Note that this is also a way through which ssh validation can be performed in th
 Windows users need to put their ssh credentials into the file located at `C:\ice-remote-creds.txt` in order for the tests to properly function.
 
 
-### Note on Dependencies
-If you use this package as a dependency in your own Maven project, you may find that an error arises when building if you also include the log4j package in your dependencies. If you are trying to use log4j in your own Maven project, simply add the following snip of code to the Commands pom file inside the `<dependency>` tag:
 
-```
-<exclusions>
-	<exclusion>
-		<groupId>org.slf4j</groupId>
-		<artifactId>*</artifactId>
-	</exclusion>
-</exclusions>
-```
-This will remove the Commands dependency on log4j. Note that the same structure would apply to any other dependency that Commands and some parent package might both depend on.
