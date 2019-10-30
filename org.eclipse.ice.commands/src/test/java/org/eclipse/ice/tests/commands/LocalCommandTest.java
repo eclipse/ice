@@ -93,7 +93,12 @@ public class LocalCommandTest {
 		String rm = "someLocalErrFile.txt someLocalOutFile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
-		// TODO - build this command for use in windows
+		if(System.getProperty("os.name").toLowerCase().contains("win")) {
+			command.add("powershell.exe");
+		} else {
+			command.add("/bin/bash");
+			command.add("-c");
+		}
 		command.add("/bin/bash");
 		command.add("-c");
 		command.add("rm " + rm);
