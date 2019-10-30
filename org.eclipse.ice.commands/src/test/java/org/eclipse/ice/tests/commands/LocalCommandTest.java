@@ -11,11 +11,16 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.LocalCommand;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -79,6 +84,29 @@ public class LocalCommandTest {
 		commandConfig.setOS(os);
 	}
 
+	/**
+	 * This class runs at the end of test execution and just deletes the outfiles that 
+	 * were created in the testing.
+	 */
+	@AfterClass
+	public static void tearDownAfterClass() throws IOException, InterruptedException {
+		String rm = "someLocalErrFile.txt someLocalOutFile.txt";
+		ArrayList<String> command = new ArrayList<String>();
+		// Build a command
+		// TODO - build this command for use in windows
+		command.add("/bin/bash");
+		command.add("-c");
+		command.add("rm " + rm);
+		// Execute the command with the process builder api
+		ProcessBuilder builder = new ProcessBuilder(command);
+		// Files exist in the top most directory of the package
+		String topDir = System.getProperty("user.dir");
+		File file = new File(topDir);
+		builder.directory(file);
+		// Process it
+		Process job = builder.start();
+		job.waitFor(); // wait for it to finish
+	}
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.LocalCommand()} Tests check
 	 * for proper configuration and checking of the LocalCommand member variables so
@@ -153,8 +181,8 @@ public class LocalCommandTest {
 		badConfig.setCommandId(2);
 		badConfig.setExecutable("fake_exec.sh");
 		badConfig.addInputFile("inputfile", "inputfile");
-		badConfig.setErrFileName("errfile.txt");
-		badConfig.setOutFileName("outfile.txt");
+		badConfig.setErrFileName("someLocalErrFile.txt");
+		badConfig.setOutFileName("someLocalOutFile.txt");
 		badConfig.setInstallDirectory("installDir");
 		badConfig.setWorkingDirectory(pwd);
 		badConfig.setAppendInput(true);

@@ -28,6 +28,7 @@ import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
+import org.eclipse.ice.commands.LocalFileHandler;
 import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -130,6 +131,8 @@ public class CommandFactoryTest {
 		rm += " someRemoteErrFile.txt someRemoteOutFile.txt someMultLocalErrFile.txt someMultLocalOutFile.txt";
 		rm += " someLsOutFile.txt someLsErrFile.txt someMultRemoteOutFile.txt someMultRemoteErrFile.txt";
 		rm += " somePythOutFile.txt somePythErrFile.txt someLsRemoteErrFile.txt someLsRemoteOutFile.txt";
+		rm += " src/test/java/org/eclipse/ice/tests/someInputFile.txt src/test/java/org/eclipse/ice/tests/someOtherInputFile.txt";
+		rm += " pythOutFile.txt pythErrFile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
 		// TODO - build this command for use in windows
@@ -163,15 +166,10 @@ public class CommandFactoryTest {
 		fail("src not implemented");
 		System.out.println("\n\n\nTesting a multi-hop remote command");
 		// Set the CommandConfiguration class
-		CommandConfiguration commandConfig = new CommandConfiguration();
+		CommandConfiguration commandConfig = setupDefaultCommandConfig();
 		commandConfig.setExecutable("./test_code_execution.sh");
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
-		commandConfig.setNumProcs("1");
-		commandConfig.setInstallDirectory("");
-		commandConfig.setWorkingDirectory(pwd);
 		commandConfig.setAppendInput(true);
-		commandConfig.setOS(System.getProperty("os.name"));
-
 		commandConfig.setCommandId(99);
 		commandConfig.setErrFileName("hopRemoteErrFile.txt");
 		commandConfig.setOutFileName("hopRemoteOutFile.txt");
@@ -193,13 +191,13 @@ public class CommandFactoryTest {
 		// Note the password can be input at the console by not setting the
 		// the password explicitly in the connection configuration
 		connectionConfig.setName("executeConnection");
-		connectionConfig.setDeleteWorkingDirectory(true);
+		connectionConfig.deleteWorkingDirectory(true);
 
 		ConnectionConfiguration intermConnection = new ConnectionConfiguration();
 		// TODO - this will have to be changed to some other remote connection
 		intermConnection.setAuthorization(auth);
 		intermConnection.setName("intermediateConnection");
-		intermConnection.setDeleteWorkingDirectory(false);
+		intermConnection.deleteWorkingDirectory(false);
 
 		// Get the command
 		Command remoteCommand = null;
@@ -228,8 +226,10 @@ public class CommandFactoryTest {
 	@Test
 	public void testBoringCommandLocally() {
 		System.out.println("Test boring command locally");
-		CommandConfiguration cmdCfg = new CommandConfiguration();
+		// Make the command configuration
+		CommandConfiguration cmdCfg = setupDefaultCommandConfig();
 		cmdCfg.setExecutable("ls -lrt");
+
 		if (System.getProperty("os.name").toLowerCase().contains("win")) {
 			// Add powershell interpeter if os is windows
 			cmdCfg.setInterpreter("powershell.exe");
@@ -241,15 +241,17 @@ public class CommandFactoryTest {
 		cmdCfg.setInstallDirectory("");
 		cmdCfg.setWorkingDirectory(pwd);
 		cmdCfg.setAppendInput(false);
-		cmdCfg.setOS(System.getProperty("os.name"));
 		cmdCfg.setCommandId(1);
 		cmdCfg.setErrFileName("someLsErrFile.txt");
 		cmdCfg.setOutFileName("someLsOutFile.txt");
+		
+		// Make the connection configuration
 		ConnectionConfiguration ctCfg = new ConnectionConfiguration();
 		ConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
 		handler.setHostname(hostname);
 		ctCfg.setAuthorization(handler);
 
+		// Get and run the command
 		Command cmd = null;
 		try {
 			cmd = factory.getCommand(cmdCfg, ctCfg);
@@ -257,7 +259,8 @@ public class CommandFactoryTest {
 			e.printStackTrace();
 		}
 		CommandStatus status = cmd.execute();
-		System.out.println(status);
+		
+		// Check that it properly finished
 		assert (status == CommandStatus.SUCCESS);
 		System.out.println("Finished boring command locally");
 	}
@@ -270,18 +273,19 @@ public class CommandFactoryTest {
 	@Test
 	public void testBoringCommandRemotely() {
 		System.out.println("Test remotely ls");
-		CommandConfiguration cmdCfg = new CommandConfiguration();
+		// Setup the command configuration
+		CommandConfiguration cmdCfg = setupDefaultCommandConfig();
 		cmdCfg.setExecutable("ls -lrt");
-		cmdCfg.setNumProcs("1");
-		cmdCfg.setWorkingDirectory(pwd);
 		cmdCfg.setAppendInput(false);
-		cmdCfg.setOS(System.getProperty("os.name"));
 		cmdCfg.setRemoteWorkingDirectory("/tmp/");
 		cmdCfg.setCommandId(1);
 		cmdCfg.setErrFileName("someLsRemoteErrFile.txt");
 		cmdCfg.setOutFileName("someLsRemoteOutFile.txt");
+
+		// Setup the connection configuration
 		ConnectionConfiguration ctCfg = setupDummyConnectionConfiguration();
-		ctCfg.setDeleteWorkingDirectory(false);
+		ctCfg.deleteWorkingDirectory(false);
+		// Get and run the command
 		Command cmd = null;
 		try {
 			cmd = factory.getCommand(cmdCfg, ctCfg);
@@ -289,9 +293,8 @@ public class CommandFactoryTest {
 			e.printStackTrace();
 		}
 		CommandStatus status = cmd.execute();
-		System.out.println(status);
-
-		System.out.println("Finished remote ls test " + cmd.getCommandConfiguration().getStdOutputString());
+	
+		// Assert that it finished correctly
 		assert (status == CommandStatus.SUCCESS);
 	}
 
@@ -303,7 +306,7 @@ public class CommandFactoryTest {
 	public void testFunctionalLocalCommand() {
 		System.out.println("Test functional local command");
 		// Set some things specific to the local command
-		CommandConfiguration commandConfig = new CommandConfiguration();
+		CommandConfiguration commandConfig = setupDefaultCommandConfig();
 		commandConfig.setExecutable("./test_code_execution.sh");
 		// If it is windows, configure the test to run on windows
 		if (System.getProperty("os.name").toLowerCase().contains("win")) {
@@ -311,15 +314,12 @@ public class CommandFactoryTest {
 			commandConfig.setInterpreter("powershell.exe");
 		}
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
-		commandConfig.setNumProcs("1");
-		commandConfig.setInstallDirectory("");
-		commandConfig.setWorkingDirectory(pwd);
 		commandConfig.setAppendInput(true);
-		commandConfig.setOS(System.getProperty("os.name"));
-
 		commandConfig.setCommandId(1);
 		commandConfig.setErrFileName("someLocalErrFile.txt");
 		commandConfig.setOutFileName("someLocalOutFile.txt");
+		
+		// Make a default boring connection authorization
 		ConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
 		handler.setHostname(hostname);
 		connectionConfig.setAuthorization(handler);
@@ -391,19 +391,17 @@ public class CommandFactoryTest {
 
 		System.out.println("\nTesting a command where a nonexistent working directory was provided.");
 
-		CommandConfiguration commandConfig = new CommandConfiguration();
+		CommandConfiguration commandConfig = setupDefaultCommandConfig();
 		commandConfig.setExecutable("./test_code_execution.sh");
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
-		commandConfig.setNumProcs("1");
-		commandConfig.setInstallDirectory("");
-		commandConfig.setWorkingDirectory(pwd);
+		
 		commandConfig.setAppendInput(true);
-		commandConfig.setOS(System.getProperty("os.name"));
+		
 		// Set the commandConfig class
 		commandConfig.setCommandId(3);
 		commandConfig.setErrFileName("someLocalErrFileDir.txt");
 		commandConfig.setOutFileName("someLocalOutFileDir.txt");
-		commandConfig.setWorkingDirectory("~/some_nonexistent_directory");
+		commandConfig.setWorkingDirectory("/tmp/some_nonexistent_directory");
 
 		ConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
 		handler.setHostname(hostname);
@@ -419,7 +417,7 @@ public class CommandFactoryTest {
 		// Run it and expect that it fails
 		CommandStatus status2 = localCommand2.execute();
 
-		assert (status2 == CommandStatus.INFOERROR);
+		assert (status2 == CommandStatus.FAILED);
 	}
 
 	/**
@@ -432,16 +430,11 @@ public class CommandFactoryTest {
 		System.out.println("\n\n\nTesting a functional remote command");
 
 		// Set the CommandConfiguration class
-
-		CommandConfiguration commandConfig = new CommandConfiguration();
+		CommandConfiguration commandConfig = setupDefaultCommandConfig();
 
 		commandConfig.setExecutable("./test_code_execution.sh");
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
-		commandConfig.setNumProcs("1");
-		commandConfig.setInstallDirectory("");
-		commandConfig.setWorkingDirectory(pwd);
 		commandConfig.setAppendInput(true);
-		commandConfig.setOS(System.getProperty("os.name"));
 		commandConfig.setCommandId(4);
 		commandConfig.setErrFileName("someRemoteErrFile.txt");
 		commandConfig.setOutFileName("someRemoteOutFile.txt");
@@ -478,14 +471,10 @@ public class CommandFactoryTest {
 		System.out.println("Test multiple input files remotely");
 		// Set the CommandConfiguration class
 
-		CommandConfiguration commandConfig = new CommandConfiguration();
+		CommandConfiguration commandConfig = setupDefaultCommandConfig();
 		commandConfig.setExecutable("./test_code_execution.sh");
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
-		commandConfig.setNumProcs("1");
-		commandConfig.setInstallDirectory("");
-		commandConfig.setWorkingDirectory(pwd);
 		commandConfig.setAppendInput(true);
-		commandConfig.setOS(System.getProperty("os.name"));
 		commandConfig.setCommandId(5);
 		commandConfig.setErrFileName("someMultRemoteErrFile.txt");
 		commandConfig.setOutFileName("someMultRemoteOutFile.txt");
@@ -519,18 +508,17 @@ public class CommandFactoryTest {
 		System.out.println("test multiple input files locally");
 		// Set some things specific to the local command
 
-		CommandConfiguration commandConfig = new CommandConfiguration();
+
+		CommandConfiguration commandConfig = setupDefaultCommandConfig();
 
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
-		commandConfig.setNumProcs("1");
-		commandConfig.setInstallDirectory("");
-		commandConfig.setWorkingDirectory(pwd);
-		commandConfig.setOS(System.getProperty("os.name"));
 		commandConfig.setCommandId(6);
 		commandConfig.setErrFileName("someMultLocalErrFile.txt");
 		commandConfig.setOutFileName("someMultLocalOutFile.txt");
 		// Add another input file
 		commandConfig.addInputFile("someOtherFile", "someOtherInputFile.txt");
+		// Also tests case where append input is set to false and the arguments
+		// are passed as variables as follows
 		commandConfig.setExecutable("./test_code_execution.sh ${someInputFile} ${someOtherFile}");
 		commandConfig.setAppendInput(false);
 		ConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
@@ -567,15 +555,12 @@ public class CommandFactoryTest {
 		String scriptDir = pwd + "/src/test/java/org/eclipse/ice/tests/commands/";
 
 		// Create a command configuration corresponding to a python script
-		CommandConfiguration configuration = new CommandConfiguration();
+		CommandConfiguration configuration = setupDefaultCommandConfig();
 		configuration.setExecutable("test_python_script.py");
 		configuration.setInterpreter("python");
 		configuration.setCommandId(9);
 		configuration.setErrFileName("somePythErrFile.txt");
 		configuration.setOutFileName("somePythOutFile.txt");
-		configuration.setNumProcs("1");
-		configuration.setInstallDirectory("");
-		configuration.setOS(System.getProperty("os.name"));
 		configuration.setAppendInput(true);
 		configuration.addInputFile("inputfile", "someInputFile.txt");
 		configuration.addInputFile("inputfile2", "someOtherInputFile.txt");
@@ -600,6 +585,74 @@ public class CommandFactoryTest {
 	}
 
 	/**
+	 * This function tests the execution of a command where the executable lives on
+	 * the remote host and the input files live on the local host
+	 */
+	@Test
+	public void testRemoteExecutableLocalInputFiles() {
+		System.out.println("Testing command where files live on different hosts.");
+		// Get the present working directory
+		String pwd = System.getProperty("user.dir");
+
+		// Create the path relative to the current directory where the test script lives
+		String inputFileDir = pwd + "/src/test/java/org/eclipse/ice/tests/";
+		
+		// Copy the input files to this directory for this test. They are removed at the
+		// end of the class. Useful for putting the input files in a different directory
+		// in the repo from where the execution script lives.
+		
+		LocalFileHandler handler = new LocalFileHandler();
+		handler.copy(inputFileDir + "commands/someInputFile.txt", inputFileDir);
+		handler.copy(inputFileDir + "commands/someOtherInputFile.txt", inputFileDir);
+		
+		// Create a command configuration corresponding to a python script
+		CommandConfiguration configuration = setupDefaultCommandConfig();
+		// This path exists on the dummy host server
+		configuration.setExecutable("/opt/ice/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands/test_python_script.py");
+		configuration.setInterpreter("python");
+		configuration.setCommandId(9);
+		configuration.setErrFileName("pythErrFile.txt");
+		configuration.setOutFileName("pythOutFile.txt");
+		configuration.setAppendInput(true);
+		configuration.setWorkingDirectory(inputFileDir);
+		configuration.addInputFile("inputfile", "someInputFile.txt");
+		configuration.addInputFile("inputfile2", "someOtherInputFile.txt");
+		configuration.setRemoteWorkingDirectory("/tmp/pythonTest");
+
+		// Get the dummy connection configuration
+		ConnectionConfiguration connectionConfig = setupDummyConnectionConfiguration();
+
+		// Get the command and run it
+		Command command = null;
+		try {
+			command = factory.getCommand(configuration, connectionConfig);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		CommandStatus status = command.execute();
+
+		assert (status == CommandStatus.SUCCESS);
+		System.out.println("finished python script test");
+
+	}
+
+	/**
+	 * This function sets up and returns a default case of a command configuration
+	 * for use throughout the tests. 
+	 * @return
+	 */
+	private CommandConfiguration setupDefaultCommandConfig() {
+		CommandConfiguration config = new CommandConfiguration();
+		config.setNumProcs("1");
+		config.setInstallDirectory("");
+		config.setWorkingDirectory(pwd);
+		config.setOS(System.getProperty("os.name"));
+		
+		return config;
+	}
+	
+	/**
 	 * A helper function to return the dummy connection configuration for remote
 	 * testing
 	 * 
@@ -621,7 +674,7 @@ public class CommandFactoryTest {
 		// Note the password can be input at the console by not setting the
 		// the password explicitly in the connection configuration
 		cfg.setName("dummyConnection");
-		cfg.setDeleteWorkingDirectory(true);
+		cfg.deleteWorkingDirectory(true);
 
 		return cfg;
 	}

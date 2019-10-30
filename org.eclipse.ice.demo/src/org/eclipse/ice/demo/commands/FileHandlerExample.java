@@ -397,7 +397,7 @@ public class FileHandlerExample {
 		// the password explicitly in the connection configuration
 		config.setName("dummyConnection");
 
-		config.setDeleteWorkingDirectory(true);
+		config.deleteWorkingDirectory(true);
 
 		return config;
 	}

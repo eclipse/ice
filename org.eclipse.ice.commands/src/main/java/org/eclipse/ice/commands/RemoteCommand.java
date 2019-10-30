@@ -178,7 +178,7 @@ public class RemoteCommand extends Command {
 	@Override
 	protected CommandStatus finishJob() {
 		// If the user would like to delete the remote working directory, delete it
-		if (connection.get().getConfiguration().getDeleteWorkingDirectory()) {
+		if (connection.get().getConfiguration().deleteWorkingDirectory()) {
 			logger.info("Removing remote working directory");
 			try {
 				// Open an sftp channel so that we can ls the contents of the path

@@ -13,11 +13,6 @@
 
 package org.eclipse.ice.commands;
 
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.SftpException;
-
 /**
  * Child class for remotely moving a file over some connection
  * 
@@ -81,66 +76,14 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 	 */
 	@Override
 	protected CommandStatus run() {
-		// Try to open the channel to transfer the file first
-		ChannelSftp channel = null;
-		try {
-			// Open the channel and connect it
-			channel = (ChannelSftp) getConnection().getChannel();
+		// Create a RemoteTransferExecution
+		RemoteTransferExecution transfer = new RemoteTransferExecution();
+		// Tell it that this is a move
+		transfer.isMove(true);
+		// Do the transfer
+		status = transfer.executeTransfer(getConnection(), source, destination, permissions, moveType);
 
-			// Determine the move type and, thus, how to move the file
-			if (moveType == 1) { // If move type is local -> remote, use put
-				channel.put(source, destination);
-			} else if (moveType == 2) { // if move type is remote -> local, use get
-				channel.get(source, destination);
-			} else if (moveType == 3) { // if move type is remote -> remote, call function
-				moveRemoteToRemote();
-			} else {
-				logger.error("Unknown move type...");
-				status = CommandStatus.FAILED;
-				return status;
-			}
-			// If permissions was actually instantiated and isn't the default, then perform
-			// a chmod
-			if (permissions != -999)
-				channel.chmod(permissions, destination);
-
-		} catch (JSchException | SftpException e) {
-			logger.error("Remote move failed. Returning failed.");
-			status = CommandStatus.FAILED;
-			return status;
-		}
-
-		// Set status to completed and successful
-		status = CommandStatus.SUCCESS;
 		return status;
-	}
-
-	/**
-	 * This is a function that contains the logic to move a file from a remote
-	 * destination to another remote destination, where the remote destination is
-	 * the same
-	 * 
-	 * @throws JSchException
-	 */
-	private void moveRemoteToRemote() throws JSchException {
-		// Open an executable channel
-		ChannelExec execChannel = (ChannelExec) getConnection().getSession().openChannel("exec");
-		// TODO - test with windows, mv probably won't work
-		// Make a move command
-		String command = "mv " + source + " " + destination;
-		// Set the command
-		execChannel.setCommand(command);
-		// If the channel isn't connected, connect and run the command
-		try {
-			execChannel.connect();
-		} catch (JSchException e) {
-			logger.error("Channel isn't connected and can't copy remote to remote...");
-			throw e;
-		}
-
-		// Disconnect extra channel once finished
-		execChannel.disconnect();
-
 	}
 
 	/**

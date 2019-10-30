@@ -73,7 +73,7 @@ public class CommandTest {
 		// Set it
 		connectConfig.setAuthorization(auth);
 		connectConfig.setName("dummyConnection");
-		connectConfig.setDeleteWorkingDirectory(true);
+		connectConfig.deleteWorkingDirectory(true);
 
 		// Make the command and execute it
 		Command remoteCommand = new RemoteCommand(commandConfig, connectConfig, null);

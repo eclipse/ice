@@ -35,10 +35,10 @@ public class LocalFileHandler extends FileHandler {
 	@Override
 	protected void configureMoveCommand(final String source, final String destination) {
 		LocalMoveFileCommand cmd = new LocalMoveFileCommand();
+		// Set the source and destination of the command
+		cmd.setConfiguration(source, destination);
+		// Set the member variable
 		command.set(cmd);
-		// Cast the Command as a LocalMoveFileCommand to set the source and destination
-		// paths
-		((LocalMoveFileCommand) command.get()).setConfiguration(source, destination);
 	}
 
 	/**
@@ -48,11 +48,10 @@ public class LocalFileHandler extends FileHandler {
 	@Override
 	protected void configureCopyCommand(final String source, final String destination) {
 		LocalCopyFileCommand cmd = new LocalCopyFileCommand();
+		// Set the source and destination of the command
+		cmd.setConfiguration(source,destination);
+		// Set the member variable
 		command.set(cmd);
-		// Cast the Command as a LocalCopyFileCommand to set the source and destination
-		// paths
-		((LocalCopyFileCommand) command.get()).setConfiguration(source, destination);
-
 	}
 
 	/**
@@ -71,7 +70,7 @@ public class LocalFileHandler extends FileHandler {
 	 */
 	@Override
 	public void checkExistence(final String source, final String destination) throws IOException {
-		logger.info("Checking existence of files for local move...");
+		
 		// Check that the source file exists
 		if (!exists(source)) {
 			logger.error("Source doesn't exist! Exiting.");
@@ -85,8 +84,7 @@ public class LocalFileHandler extends FileHandler {
 				throw new IOException();
 			}
 		}
-		logger.info("Source at " + source + " exists");
-		logger.info("Destination at " + destination + " exists");
+	
 	}
 
 }

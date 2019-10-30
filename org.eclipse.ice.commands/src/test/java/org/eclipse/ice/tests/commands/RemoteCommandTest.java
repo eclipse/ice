@@ -97,7 +97,7 @@ public class RemoteCommandTest {
 		// Delete the remote working directory when finished since we don't want the
 		// dummy
 		// host piling up with random directories
-		connectConfig.setDeleteWorkingDirectory(true);
+		connectConfig.deleteWorkingDirectory(true);
 
 		ConnectionManagerFactory.getConnectionManager().openConnection(connectConfig);
 	}
@@ -117,7 +117,7 @@ public class RemoteCommandTest {
 		// in these tests.
 
 		// Make a string of all the output file names in this test
-		String rm = "someOutFile.txt someErrFile.txt";
+		String rm = "someOutFile.txt someErrFile.txt errfile.txt outfile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
 		// TODO build this command for use in windows

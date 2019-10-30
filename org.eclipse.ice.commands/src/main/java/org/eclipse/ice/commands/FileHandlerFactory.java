@@ -55,10 +55,9 @@ public class FileHandlerFactory {
 		if (isLocal) {
 			handler = new LocalFileHandler();
 		} else {
-			handler = new RemoteFileHandler();
-
-			// Set the connection information for the remote file handler
-			((RemoteFileHandler) handler).setConnectionConfiguration(connectionConfig);
+			RemoteFileHandler remoteHandler = new RemoteFileHandler();
+			remoteHandler.setConnectionConfiguration(connectionConfig);
+			handler = remoteHandler;
 		}
 
 		return handler;

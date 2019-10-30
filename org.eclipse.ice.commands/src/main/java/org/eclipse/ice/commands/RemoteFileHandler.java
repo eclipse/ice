@@ -274,16 +274,17 @@ public class RemoteFileHandler extends FileHandler {
 	protected void configureMoveCommand(String source, String destination) {
 		// Now instantiate the command as a RemoteMoveFileCommand
 		RemoteMoveFileCommand cmd = new RemoteMoveFileCommand();
-		command.set(cmd);
-
+		// Configure the command
+		cmd.setConfiguration(source, destination);
+		cmd.setMoveType(HANDLE_TYPE);
+		cmd.setPermissions(permissions);
 		// Set the command to have this connection and connection configuration
-		command.get().setConnectionConfiguration(connection.getConfiguration());
-		((RemoteCommand) command.get()).setConnection(connection);
-
-		// Cast the command as a remote move file command
-		((RemoteMoveFileCommand) command.get()).setConfiguration(source, destination);
-		((RemoteMoveFileCommand) command.get()).setMoveType(HANDLE_TYPE);
-		((RemoteMoveFileCommand) command.get()).setPermissions(permissions);
+		cmd.setConnectionConfiguration(connection.getConfiguration());
+		cmd.setConnection(connection);
+		
+		// Now set the member variable of type Command
+		command.set(cmd);
+	
 	}
 
 	/**
@@ -294,15 +295,15 @@ public class RemoteFileHandler extends FileHandler {
 	protected void configureCopyCommand(String source, String destination) {
 		// Now instantiate the command as a RemoteMoveFileCommand
 		RemoteCopyFileCommand cmd = new RemoteCopyFileCommand();
+		// Configure the command
+		cmd.setConfiguration(source, destination);
+		cmd.setCopyType(HANDLE_TYPE);
+		cmd.setPermissions(permissions);
+		// Set the command to have this connection and connection configuration
+		cmd.setConnectionConfiguration(connection.getConfiguration());
+		cmd.setConnection(connection);
 		command.set(cmd);
 
-		// Set the command to have this connection and connection configuration
-		command.get().setConnectionConfiguration(connection.getConfiguration());
-		((RemoteCommand) command.get()).setConnection(connection);
-		// Cast the command as a remote command
-		((RemoteCopyFileCommand) command.get()).setConfiguration(source, destination);
-		((RemoteCopyFileCommand) command.get()).setCopyType(HANDLE_TYPE);
-		((RemoteCopyFileCommand) command.get()).setPermissions(permissions);
 	}
 
 	public void disconnect() {

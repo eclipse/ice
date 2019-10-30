@@ -34,7 +34,7 @@ public class ConnectionConfigurationTest {
 		assert (config.getName().equals(""));
 
 		// Check that this defaults to false
-		assert (config.getDeleteWorkingDirectory() == false);
+		assert (config.deleteWorkingDirectory() == false);
 
 	}
 }
