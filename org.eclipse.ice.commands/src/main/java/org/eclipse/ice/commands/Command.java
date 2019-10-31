@@ -160,9 +160,7 @@ public abstract class Command {
 
 		// Check the info and return failure if something was not set
 		if (commandConfig.getExecutable() == null || commandConfig.getOutFileName() == null
-				|| commandConfig.getErrFileName() == null || commandConfig.getNumProcs() == null) {// ||
-																									// commandConfig.getWorkingDirectory()
-																									// == null) {
+				|| commandConfig.getErrFileName() == null || commandConfig.getNumProcs() == null) {
 			logger.error("An important piece of information is missing from the CommandConfiguration. Exiting.");
 			return CommandStatus.INFOERROR;
 		}
