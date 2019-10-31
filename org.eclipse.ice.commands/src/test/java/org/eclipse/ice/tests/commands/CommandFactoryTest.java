@@ -136,9 +136,12 @@ public class CommandFactoryTest {
 		rm += " pythOutFile.txt pythErrFile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
-		// TODO - build this command for use in windows
-		command.add("/bin/bash");
-		command.add("-c");
+		if(System.getProperty("os.name").toLowerCase().contains("win")) {
+			command.add("powershell.exe");
+		} else {
+			command.add("/bin/bash");
+			command.add("-c");
+		}
 		command.add("rm " + rm);
 		// Execute the command with the process builder api
 		ProcessBuilder builder = new ProcessBuilder(command);
