@@ -236,16 +236,6 @@ public class RemoteCommand extends Command {
 			// If the connection was closed and the job didn't finish, something bad
 			// happened...
 			if (connection.get().getChannel().isClosed() && exitValue != 0) {
-				// Iterate over the exceptional cases to ensure that this is not a particularly
-				// special case (e.g. grep with exit value of 1)
-				for (Map.Entry<String, Integer> entry : exitValueExceptions.entrySet()) {
-					if (commandConfig.getFullCommand().toLowerCase().contains(entry.getKey())) {
-						if (exitValue == entry.getValue()) {
-							return CommandStatus.SUCCESS;
-						}
-					}
-				}
-				
 				logger.error("Connection was closed before job was finished, failed " + exitValue);
 				return CommandStatus.FAILED;
 			}

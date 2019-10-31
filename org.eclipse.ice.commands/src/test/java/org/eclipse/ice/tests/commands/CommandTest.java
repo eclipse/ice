@@ -154,49 +154,5 @@ public class CommandTest {
 		assert (!command.checkStatus(status));
 	}
 	
-	/**
-	 * This function tests a command with an acceptable exit value that is non zero, for 
-	 * example the grep command for a file in a directory with no files (grep returns 1, but
-	 * this is just indicating that it did not find anything).
-	 */
-	@Test
-	public void testExceptionalExitValue() {
-		ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
-        // Set the connection configuration to a dummy remote connection
-        // Get a factory which determines the type of authorization
-        ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
-        // Request a ConnectionAuthorization of type text file which contains the
-        // dummy remote host credentials
-        ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-                "/tmp/ice-remote-creds.txt");
-        // Set it so that the connection can authorize itself
-        connectionConfig.setAuthorization(auth);
-        // Give the connection a name
-        connectionConfig.setName("DummyConnection");
-
-        String script = "ls -lt /home/dummy/emptyDir | grep \"^-\"";
-
-        CommandConfiguration commandConfiguration = new CommandConfiguration();
-        commandConfiguration.setCommandId(2);
-        commandConfiguration.setExecutable(script);
-        commandConfiguration.setErrFileName("someRemoteErrFile.txt"); 
-		commandConfiguration.setOutFileName("someRemoteOutFile.txt"); 
-		commandConfiguration.setNumProcs("1");
-        commandConfiguration.setOS(System.getProperty("os.name"));
-        commandConfiguration.setWorkingDirectory("/");
-        commandConfiguration.setRemoteWorkingDirectory("");
-        
-        System.out.println("script is : " + script);
-        
-        // Get the command
-        Command command = new RemoteCommand(commandConfiguration, connectionConfig, null);
-        
-        // Run the command
-        CommandStatus status = command.execute(); 
-        
-        assert (status == CommandStatus.SUCCESS);
-        // Check that the empty directory really did return nothing from the grep command
-        assert (command.getCommandConfiguration().getStdOutputString().equals(""));
-	}
 
 }

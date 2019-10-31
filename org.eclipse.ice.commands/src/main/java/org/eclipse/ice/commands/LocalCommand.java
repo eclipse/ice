@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -292,15 +291,6 @@ public class LocalCommand extends Command {
 		// failed. If it is not 0, mark the job as failed (since it finished).
 		logger.info("Job finished with exit value = " + exitValue);
 
-		// Iterate over the exceptional cases to ensure that this is not a particularly
-		// special case (e.g. grep with exit value of 1)
-		for (Map.Entry<String, Integer> entry : exitValueExceptions.entrySet()) {
-			if (commandConfig.getFullCommand().toLowerCase().contains(entry.getKey())) {
-				if (exitValue == entry.getValue()) {
-					return CommandStatus.SUCCESS;
-				}
-			}
-		}
 		// Otherwise return failed if the job was not successful
 		if (exitValue != 0) {
 			return CommandStatus.FAILED;
@@ -368,15 +358,6 @@ public class LocalCommand extends Command {
 
 		logger.info("Finished monitoring job with exit value: " + exitValue);
 
-		// Iterate over the exceptional cases to ensure that this is not a particularly
-		// special case (e.g. grep with exit value of 1)
-		for (Map.Entry<String, Integer> entry : exitValueExceptions.entrySet()) {
-			if (commandConfig.getFullCommand().toLowerCase().contains(entry.getKey())) {
-				if (exitValue == entry.getValue()) {
-					return CommandStatus.SUCCESS;
-				}
-			}
-		}
 
 		// If exit value is anything other than 0, then the job had an error
 		if (exitValue != 0)

@@ -16,7 +16,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,28 +57,16 @@ public abstract class Command {
 	protected static final Logger logger = LoggerFactory.getLogger(Command.class);
 
 	/**
-	 * An exit value that is determined when the job is processing. The convention is that
-	 * anything other than 0 indicates a failure. Set by default to -1 to indicate that 
-	 * the job is not running (or hasn't finished).
+	 * An exit value that is determined when the job is processing. The convention
+	 * is that anything other than 0 indicates a failure. Set by default to -1 to
+	 * indicate that the job is not running (or hasn't finished).
 	 */
 	protected int exitValue = -1;
-	
-	/**
-	 * This is a hashmap of exit value exceptions for return codes from job processing. It is
-	 * iterated over to check for the exceptions at the end of the job processing. The layout
-	 * is a string for a type of command and the corresponding exit code it comes with. A 
-	 * concrete example is the grep command, which returns exit code of 1 if grep does not
-	 * find anything. This shouldn't necessarily be flagged as a failure, because finding
-	 * nothing is still a legitimate result.
-	 */
-	protected HashMap<String, Integer> exitValueExceptions = new HashMap<String, Integer>();
-	
+
 	/**
 	 * Default constructor
 	 */
 	public Command() {
-		// Add the exit value exceptions
-		exitValueExceptions.put("grep", 1);
 	}
 
 	/**
@@ -94,16 +81,16 @@ public abstract class Command {
 		// instantiated in the constructor
 		if (!checkStatus(status))
 			return CommandStatus.INFOERROR;
-		
+
 		// Configure the command to be ready to run.
 		status = setConfiguration();
 		// Ensure that the command was properly configured
 		if (!checkStatus(status))
 			return CommandStatus.INFOERROR;
-		
+
 		// Now that all of the prerequisites have been set, start the job running
 		status = run();
-		
+
 		// Confirm the job finished with some status
 		logger.info("The job finished with status: " + status);
 		return status;
@@ -171,11 +158,11 @@ public abstract class Command {
 	 */
 	protected CommandStatus setConfiguration() {
 
-
 		// Check the info and return failure if something was not set
 		if (commandConfig.getExecutable() == null || commandConfig.getOutFileName() == null
-				|| commandConfig.getErrFileName() == null || commandConfig.getNumProcs() == null 
-			) {//	|| commandConfig.getWorkingDirectory() == null) {
+				|| commandConfig.getErrFileName() == null || commandConfig.getNumProcs() == null) {// ||
+																									// commandConfig.getWorkingDirectory()
+																									// == null) {
 			logger.error("An important piece of information is missing from the CommandConfiguration. Exiting.");
 			return CommandStatus.INFOERROR;
 		}
@@ -186,13 +173,12 @@ public abstract class Command {
 		if (exec.contains("./"))
 			exec = exec.substring(2, exec.length());
 		String separator = "/";
-		if(commandConfig.getOS().toLowerCase().contains("win"))
+		if (commandConfig.getOS().toLowerCase().contains("win"))
 			separator = "\\";
-		
+
 		// Check if the working directory exists
 		String workingDir = commandConfig.getWorkingDirectory();
-		
-		
+
 		// Check that the directory exists
 		// Get the file handler factory
 		FileHandlerFactory factory = new FileHandlerFactory();
@@ -200,17 +186,15 @@ public abstract class Command {
 		try {
 			// Get the handler for this particular connection, whether local or remote
 			FileHandler handler = factory.getFileHandler(connectionConfig);
-		
-		
+
 			// If the working directory was set, check that it exists. If it wasn't set,
 			// then the paths should have been explicitly identified
-			if(workingDir != null)
+			if (workingDir != null)
 				exists = handler.exists(workingDir);
-			
+
 			// Check if the executable exists in the working directory
 			execExists = handler.exists(workingDir + exec);
-		
-		
+
 		} catch (IOException e) {
 			// If we can't get the file handler, then there was an error in the connection
 			// configuration
@@ -225,17 +209,18 @@ public abstract class Command {
 		}
 		// If the executable does not exist but the working directory was set, warn the
 		// user again that the executable is unavailable
-		if(!execExists && exists) {
-			// If the executable doesn't exist, we shouldn't cancel the job because it is 
+		if (!execExists && exists) {
+			// If the executable doesn't exist, we shouldn't cancel the job because it is
 			// possible that the command is a simple shell command. So warn the user
 			logger.warn("Warning: Executable file could not be found");
-			logger.warn("If you are running a simple shell command, or specified the full path to the executable, ignore this warning");
+			logger.warn(
+					"If you are running a simple shell command, or specified the full path to the executable, ignore this warning");
 			logger.warn("Otherwise, the job will fail");
 		}
-		
+
 		// Set the command to actually run and execute
 		commandConfig.setFullCommand(commandConfig.getExecutableName());
-	
+
 		// Create the output files associated to the job for logging
 		commandConfig.createOutputFiles();
 
@@ -393,15 +378,4 @@ public abstract class Command {
 		this.connectionConfig = connectionConfig;
 	}
 
-	/**
-	 * This function allows the user to add an exit value exception value to the hash map, in 
-	 * the event their particular job returns some non-trivial exit value for a particular
-	 * command.
-	 * @param name
-	 * @param integer
-	 */
-	public void addExitValueException(String name, Integer integer) {
-		exitValueExceptions.put(name, integer);
-	}
-	
 }
