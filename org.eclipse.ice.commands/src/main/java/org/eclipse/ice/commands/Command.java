@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,9 +58,28 @@ public abstract class Command {
 	protected static final Logger logger = LoggerFactory.getLogger(Command.class);
 
 	/**
+	 * An exit value that is determined when the job is processing. The convention is that
+	 * anything other than 0 indicates a failure. Set by default to -1 to indicate that 
+	 * the job is not running (or hasn't finished).
+	 */
+	protected int exitValue = -1;
+	
+	/**
+	 * This is a hashmap of exit value exceptions for return codes from job processing. It is
+	 * iterated over to check for the exceptions at the end of the job processing. The layout
+	 * is a string for a type of command and the corresponding exit code it comes with. A 
+	 * concrete example is the grep command, which returns exit code of 1 if grep does not
+	 * find anything. This shouldn't necessarily be flagged as a failure, because finding
+	 * nothing is still a legitimate result.
+	 */
+	protected HashMap<String, Integer> exitValueExceptions = new HashMap<String, Integer>();
+	
+	/**
 	 * Default constructor
 	 */
 	public Command() {
+		// Add the exit value exceptions
+		exitValueExceptions.put("grep", 1);
 	}
 
 	/**
@@ -373,4 +393,15 @@ public abstract class Command {
 		this.connectionConfig = connectionConfig;
 	}
 
+	/**
+	 * This function allows the user to add an exit value exception value to the hash map, in 
+	 * the event their particular job returns some non-trivial exit value for a particular
+	 * command.
+	 * @param name
+	 * @param integer
+	 */
+	public void addExitValueException(String name, Integer integer) {
+		exitValueExceptions.put(name, integer);
+	}
+	
 }

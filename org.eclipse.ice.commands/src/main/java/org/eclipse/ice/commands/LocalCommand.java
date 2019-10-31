@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -105,7 +106,7 @@ public class LocalCommand extends Command {
 			status = finishJob();
 
 			// Check the status to ensure the job hasn't failed
-			if(!checkStatus(status))
+			if (!checkStatus(status))
 				return CommandStatus.FAILED;
 
 			// Monitor the job to ensure it finished successfully or to watch it
@@ -116,7 +117,7 @@ public class LocalCommand extends Command {
 			}
 
 			// Now check again to see if the job succeeded
-			if(!checkStatus(status))
+			if (!checkStatus(status))
 				return CommandStatus.FAILED;
 
 		}
@@ -290,6 +291,17 @@ public class LocalCommand extends Command {
 		// By convention exit values other than zero mean that the program
 		// failed. If it is not 0, mark the job as failed (since it finished).
 		logger.info("Job finished with exit value = " + exitValue);
+
+		// Iterate over the exceptional cases to ensure that this is not a particularly
+		// special case (e.g. grep with exit value of 1)
+		for (Map.Entry<String, Integer> entry : exitValueExceptions.entrySet()) {
+			if (commandConfig.getFullCommand().toLowerCase().contains(entry.getKey())) {
+				if (exitValue == entry.getValue()) {
+					return CommandStatus.SUCCESS;
+				}
+			}
+		}
+		// Otherwise return failed if the job was not successful
 		if (exitValue != 0) {
 			return CommandStatus.FAILED;
 		}
@@ -302,9 +314,6 @@ public class LocalCommand extends Command {
 	 */
 	@Override
 	protected CommandStatus monitorJob() {
-
-		// Local Declarations
-		int exitValue = -1; // Totally arbitrary
 
 		// Wait until the job exits. By convention an exit code of
 		// zero means that the job has succeeded. Watch it until it
@@ -352,11 +361,23 @@ public class LocalCommand extends Command {
 		try {
 			commandConfig.getStdOut().write("INFO: Command::monitorJob Message: Exit value = " + exitValue + "\n");
 		} catch (IOException e) {
-			logger.error("Couldn't write final command exit value to the std out file. Returning failed. Exit value = " + exitValue);
+			logger.error("Couldn't write final command exit value to the std out file. Returning failed. Exit value = "
+					+ exitValue);
 			return CommandStatus.FAILED;
 		}
 
 		logger.info("Finished monitoring job with exit value: " + exitValue);
+
+		// Iterate over the exceptional cases to ensure that this is not a particularly
+		// special case (e.g. grep with exit value of 1)
+		for (Map.Entry<String, Integer> entry : exitValueExceptions.entrySet()) {
+			if (commandConfig.getFullCommand().toLowerCase().contains(entry.getKey())) {
+				if (exitValue == entry.getValue()) {
+					return CommandStatus.SUCCESS;
+				}
+			}
+		}
+
 		// If exit value is anything other than 0, then the job had an error
 		if (exitValue != 0)
 			return CommandStatus.FAILED;

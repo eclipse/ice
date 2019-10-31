@@ -90,14 +90,14 @@ public class RemoteCommand extends Command {
 
 		// Open and set the connection(s)
 		try {
-			if(manager.getConnection(connectConfig.getName()) == null) {
+			if (manager.getConnection(connectConfig.getName()) == null) {
 				connection.set(manager.openConnection(connectConfig));
 			} else {
 				connection.set(manager.getConnection(connectConfig.getName()));
-				if(connection.get().getChannel() !=null)
+				if (connection.get().getChannel() != null)
 					connection.get().getChannel().disconnect();
 			}
-				
+
 			// Set the commandConfig hostname to that of the connectionConfig - only used
 			// for output logging info
 			commandConfig.setHostname(connectConfig.getAuthorization().getHostname());
@@ -205,7 +205,7 @@ public class RemoteCommand extends Command {
 		// Don't disconnect the session in the event that a user wants to run multiple
 		// jobs over the same session. Let session management be handled by the job
 		// running and the connection manager
-		
+
 		/**
 		 * Note that output doesn't have to explicitly be logged - JSch takes care of
 		 * this for you in {@link org.eclipse.ice.commands.RemoteCommand#loopCommands}
@@ -221,8 +221,7 @@ public class RemoteCommand extends Command {
 	protected CommandStatus monitorJob() {
 		// Poll until the command is complete. If it isn't finished, give it a second
 		// to try and finish up
-		// Set exitValue to an arbitrary number indicating job not finished
-		int exitValue = -1;
+
 		while (exitValue != 0) {
 			try {
 				// Give it a second to finish up
@@ -237,6 +236,16 @@ public class RemoteCommand extends Command {
 			// If the connection was closed and the job didn't finish, something bad
 			// happened...
 			if (connection.get().getChannel().isClosed() && exitValue != 0) {
+				// Iterate over the exceptional cases to ensure that this is not a particularly
+				// special case (e.g. grep with exit value of 1)
+				for (Map.Entry<String, Integer> entry : exitValueExceptions.entrySet()) {
+					if (commandConfig.getFullCommand().toLowerCase().contains(entry.getKey())) {
+						if (exitValue == entry.getValue()) {
+							return CommandStatus.SUCCESS;
+						}
+					}
+				}
+				
 				logger.error("Connection was closed before job was finished, failed " + exitValue);
 				return CommandStatus.FAILED;
 			}

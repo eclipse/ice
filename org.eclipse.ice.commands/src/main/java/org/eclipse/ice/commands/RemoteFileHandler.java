@@ -118,7 +118,6 @@ public class RemoteFileHandler extends FileHandler {
 				// or vice versa)
 				return true;
 			} else {
-				logger.info("File " + file + " doesn't exist remotely or locally.");
 				return false;
 			}
 		}
