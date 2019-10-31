@@ -136,9 +136,12 @@ public class CommandFactoryTest {
 		rm += " pythOutFile.txt pythErrFile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
-		// TODO - build this command for use in windows
-		command.add("/bin/bash");
-		command.add("-c");
+		if(System.getProperty("os.name").toLowerCase().contains("win")) {
+			command.add("powershell.exe");
+		} else {
+			command.add("/bin/bash");
+			command.add("-c");
+		}
 		command.add("rm " + rm);
 		// Execute the command with the process builder api
 		ProcessBuilder builder = new ProcessBuilder(command);
@@ -230,6 +233,17 @@ public class CommandFactoryTest {
 		// Make the command configuration
 		CommandConfiguration cmdCfg = setupDefaultCommandConfig();
 		cmdCfg.setExecutable("ls -lrt");
+
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
+			// Add powershell interpeter if os is windows
+			cmdCfg.setInterpreter("powershell.exe");
+			// just use ls because powershell automatically adds the -lrt
+			// and doesn't know what -lrt is anyway
+			cmdCfg.setExecutable("ls");
+		}
+		cmdCfg.setNumProcs("1");
+		cmdCfg.setInstallDirectory("");
+		cmdCfg.setWorkingDirectory(pwd);
 		cmdCfg.setAppendInput(false);
 		cmdCfg.setCommandId(1);
 		cmdCfg.setErrFileName("someLsErrFile.txt");
@@ -298,6 +312,11 @@ public class CommandFactoryTest {
 		// Set some things specific to the local command
 		CommandConfiguration commandConfig = setupDefaultCommandConfig();
 		commandConfig.setExecutable("./test_code_execution.sh");
+		// If it is windows, configure the test to run on windows
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
+			commandConfig.setExecutable(".\\test_code_execution.ps1");
+			commandConfig.setInterpreter("powershell.exe");
+		}
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
 		commandConfig.setAppendInput(true);
 		commandConfig.setCommandId(1);
@@ -415,7 +434,6 @@ public class CommandFactoryTest {
 		System.out.println("\n\n\nTesting a functional remote command");
 
 		// Set the CommandConfiguration class
-
 		CommandConfiguration commandConfig = setupDefaultCommandConfig();
 
 		commandConfig.setExecutable("./test_code_execution.sh");
@@ -493,6 +511,7 @@ public class CommandFactoryTest {
 	public void testMultipleInputFilesLocally() {
 		System.out.println("test multiple input files locally");
 		// Set some things specific to the local command
+
 
 		CommandConfiguration commandConfig = setupDefaultCommandConfig();
 

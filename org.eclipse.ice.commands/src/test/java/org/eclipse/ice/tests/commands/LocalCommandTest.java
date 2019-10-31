@@ -90,12 +90,17 @@ public class LocalCommandTest {
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws IOException, InterruptedException {
+		System.out.println("processing tear down");
 		String rm = "someLocalErrFile.txt someLocalOutFile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
-		// TODO - build this command for use in windows
-		command.add("/bin/bash");
-		command.add("-c");
+		if(System.getProperty("os.name").toLowerCase().contains("win")) {
+			command.add("powershell.exe");
+		} else {
+			command.add("/bin/bash");
+			command.add("-c");
+		}
+	
 		command.add("rm " + rm);
 		// Execute the command with the process builder api
 		ProcessBuilder builder = new ProcessBuilder(command);
@@ -107,6 +112,7 @@ public class LocalCommandTest {
 		Process job = builder.start();
 		job.waitFor(); // wait for it to finish
 	}
+	
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.LocalCommand()} Tests check
 	 * for proper configuration and checking of the LocalCommand member variables so
@@ -133,14 +139,19 @@ public class LocalCommandTest {
 	 */
 	@Test
 	public void testExecute() {
-
-		
+		System.out.println("begin normal test execute");
 		// Set the CommandConfiguration class
 		// See {@link org.eclipse.ice.commands.CommandConfiguration} for detailed info
 		// on each
 		CommandConfiguration commandConfig = new CommandConfiguration();
 		commandConfig.setCommandId(1);
 		commandConfig.setExecutable("./test_code_execution.sh");
+		// Check if the OS is windows, and thus adjust the executable if so
+		if (os.toLowerCase().contains("win")) {
+			// Two slashes so that java doesn't read it as a tab "\t"
+			executable = ".\\test_code_execution.ps1";
+			commandConfig.setInterpreter("powershell.exe");
+		}
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
 		commandConfig.setErrFileName("someLocalErrFile.txt");
 		commandConfig.setOutFileName("someLocalOutFile.txt");
@@ -189,7 +200,7 @@ public class LocalCommandTest {
 		CommandStatus testStatus = testCommand.execute();
 
 		assert (testStatus == CommandStatus.FAILED);
-	System.out.println("Finished testExecute\n");
+		System.out.println("Finished testExecute\n");
 	}
 
 }

@@ -94,13 +94,19 @@ public class CommandTest {
 	@Test
 	public void testLocalCommand() {
 		System.out.println("\n\n\n\nTest a local command!");
-
+		String os = System.getProperty("os.name");
 		// Set the CommandConfiguration class
 		// See {@link org.eclipse.ice.commands.CommandConfiguration} for detailed info
 		// on each
 		CommandConfiguration commandConfig = new CommandConfiguration();
 		commandConfig.setCommandId(1);
 		commandConfig.setExecutable("./test_code_execution.sh");
+		// If the os is windows, set the executable appropriately
+		if (os.toLowerCase().contains("win")) {
+			// two slashes so that java doesn't read it as a tab
+			commandConfig.setExecutable(".\\test_code_execution.ps1");
+			commandConfig.setInterpreter("powershell.exe");
+		}
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
 		commandConfig.setErrFileName("someLocalErrFile.txt");
 		commandConfig.setOutFileName("someLocalOutFile.txt");
