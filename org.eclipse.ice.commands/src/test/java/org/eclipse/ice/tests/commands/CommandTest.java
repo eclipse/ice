@@ -179,9 +179,9 @@ public class CommandTest {
         CommandConfiguration commandConfiguration = new CommandConfiguration();
         commandConfiguration.setCommandId(2);
         commandConfiguration.setExecutable(script);
-        commandConfiguration.setErrFileName("someRemoteErrFile.txt");
-        commandConfiguration.setOutFileName("outputFileName.txt");
-        commandConfiguration.setNumProcs("1");
+        commandConfiguration.setErrFileName("someRemoteErrFile.txt"); 
+		commandConfiguration.setOutFileName("someRemoteOutFile.txt"); 
+		commandConfiguration.setNumProcs("1");
         commandConfiguration.setOS(System.getProperty("os.name"));
         commandConfiguration.setWorkingDirectory("/");
         commandConfiguration.setRemoteWorkingDirectory("");
