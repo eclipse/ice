@@ -90,6 +90,7 @@ public class LocalCommandTest {
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws IOException, InterruptedException {
+		System.out.println("processing tear down");
 		String rm = "someLocalErrFile.txt someLocalOutFile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
@@ -99,8 +100,7 @@ public class LocalCommandTest {
 			command.add("/bin/bash");
 			command.add("-c");
 		}
-		command.add("/bin/bash");
-		command.add("-c");
+	
 		command.add("rm " + rm);
 		// Execute the command with the process builder api
 		ProcessBuilder builder = new ProcessBuilder(command);
@@ -112,6 +112,7 @@ public class LocalCommandTest {
 		Process job = builder.start();
 		job.waitFor(); // wait for it to finish
 	}
+	
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.LocalCommand()} Tests check
 	 * for proper configuration and checking of the LocalCommand member variables so
@@ -138,7 +139,7 @@ public class LocalCommandTest {
 	 */
 	@Test
 	public void testExecute() {
-
+		System.out.println("begin normal test execute");
 		// Set the CommandConfiguration class
 		// See {@link org.eclipse.ice.commands.CommandConfiguration} for detailed info
 		// on each
