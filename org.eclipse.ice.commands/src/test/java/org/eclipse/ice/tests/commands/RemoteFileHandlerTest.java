@@ -495,14 +495,14 @@ public class RemoteFileHandlerTest {
 		ChannelSftp sftpChannel = (ChannelSftp) fileTransferConn.getChannel();
 
 		// Get the path to the source file
-		String separator = FileSystems.getDefault().getSeparator();
-		if(System.getProperty("os.name").toLowerCase().contains("win"))
-			separator += "\\";
+		//Leave this as unix command since the remote system is unix
+		String separator = "/";
 		String[] tokens = theSource.split(separator);
 		String sourcePath = "";
 		// Build the source path
-		for (int i = 0; i < tokens.length - 1; i++)
+		for (int i = 0; i < tokens.length - 1; i++) {
 			sourcePath += tokens[i] + separator;
+		}
 
 		// Recursively delete the source directory and its contents
 		deleteRemoteDirectory(sftpChannel, sourcePath);
