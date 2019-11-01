@@ -309,7 +309,7 @@ public class RemoteFileHandlerTest {
 		// credentials
 		String credFile = "/tmp/ice-remote-creds.txt";
 		if(System.getProperty("os.name").toLowerCase().contains("win"))
-			credFile = "C:\\Users\\Administrator\\ice-remotecreds.txt";
+			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
 				credFile);
 		// Set it
