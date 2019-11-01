@@ -14,6 +14,7 @@ package org.eclipse.ice.tests.commands;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.file.FileSystems;
 
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
@@ -276,7 +277,8 @@ public class IFileHandlerFactoryTest {
 
 		// Get the file transfer handler
 		IFileHandler handler = factory.getFileHandler(fileCreator.getConnection().getConfiguration());
-		String filename = theSource.substring(theSource.lastIndexOf("/"));
+		String separator = FileSystems.getDefault().getSeparator();
+		String filename = theSource.substring(theSource.lastIndexOf(separator));
 		// Now try to copy the file
 
 		CommandStatus status = handler.copy(theSource, theDestination);
@@ -307,7 +309,8 @@ public class IFileHandlerFactoryTest {
 
 		// Get the file transfer handler
 		IFileHandler handler = factory.getFileHandler(fileCreator.getConnection().getConfiguration());
-		String filename = theSource.substring(theSource.lastIndexOf("/"));
+		String separator = FileSystems.getDefault().getSeparator();
+		String filename = theSource.substring(theSource.lastIndexOf(separator));
 		// Now try to move the file
 		CommandStatus status = handler.move(theSource, theDestination);
 		assert (status == CommandStatus.SUCCESS);
