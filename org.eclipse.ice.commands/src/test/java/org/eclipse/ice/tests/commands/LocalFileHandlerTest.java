@@ -12,6 +12,7 @@
 package org.eclipse.ice.tests.commands;
 
 import java.io.IOException;
+import java.nio.file.FileSystems;
 
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.Connection;
@@ -96,7 +97,8 @@ public class LocalFileHandlerTest {
 		// Try to make a local temp file to play with
 		createLocalTempFile();
 		// Get the filename for testing exists later
-		String filename = localSource.substring(localSource.lastIndexOf("/"));
+		String separator = FileSystems.getDefault().getSeparator();
+		String filename = localSource.substring(localSource.lastIndexOf(separator));
 
 		FileHandler handler = null;
 		handler = new LocalFileHandler();
@@ -130,7 +132,8 @@ public class LocalFileHandlerTest {
 		// Try to make a local temp file to play with
 		createLocalTempFile();
 		// Get the filename for testing exists later
-		String filename = localSource.substring(localSource.lastIndexOf("/"));
+		String separator = FileSystems.getDefault().getSeparator();
+		String filename = localSource.substring(localSource.lastIndexOf(separator));
 		FileHandler handler = null;
 		handler = new LocalFileHandler();
 
