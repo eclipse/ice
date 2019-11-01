@@ -77,6 +77,7 @@ public class RemoteTransferExecution {
 
 		} catch (JSchException | SftpException e) {
 			logger.error("Failed to connect or obtain file to/from remote host. Returning failed.");
+			e.printStackTrace();
 			status = CommandStatus.FAILED;
 			return status;
 		}
