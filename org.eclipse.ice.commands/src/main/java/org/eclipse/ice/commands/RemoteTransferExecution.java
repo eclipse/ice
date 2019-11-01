@@ -76,7 +76,7 @@ public class RemoteTransferExecution {
 				channel.chmod(permissions, destination);
 
 		} catch (JSchException | SftpException e) {
-			logger.error("Failed to connect to remote host. Returning failed.");
+			logger.error("Failed to connect or obtain file to/from remote host. Returning failed.");
 			status = CommandStatus.FAILED;
 			return status;
 		}

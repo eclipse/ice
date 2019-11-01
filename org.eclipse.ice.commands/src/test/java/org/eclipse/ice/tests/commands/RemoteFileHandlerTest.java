@@ -6,6 +6,7 @@ package org.eclipse.ice.tests.commands;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -306,8 +307,11 @@ public class RemoteFileHandlerTest {
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
+		String credFile = "/tmp/ice-remote-creds.txt";
+		if(System.getProperty("os.name").toLowerCase().contains("win"))
+			credFile = "C:\\Users\\Administrator\\ice-remotecreds.txt";
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				"/tmp/ice-remote-creds.txt");
+				credFile);
 		// Set it
 		config.setAuthorization(auth);
 
@@ -430,11 +434,9 @@ public class RemoteFileHandlerTest {
 	 * @throws Exception
 	 */
 	public void createRemoteSource() throws Exception {
-		long a, b, c, d, f, g, h, i, j;
-		a = System.currentTimeMillis();
+	
 		ChannelSftp sftpChannel = (ChannelSftp) fileTransferConn.getChannel();
 
-		b = System.currentTimeMillis();
 		String remoteDest = "/tmp/remoteFileHandlerSource/";
 
 		// Check if the directory already exists
@@ -449,20 +451,23 @@ public class RemoteFileHandlerTest {
 			// Create a remote source directory
 			sftpChannel.mkdir(remoteDest);
 		}
-		c = System.currentTimeMillis();
+	
 		// Create a local source file since JSch doesn't have a way to make a dummy
 		// file
 		createLocalSource();
 
 		// Get the filename by splitting the path by "/"
-		String[] tokens = theSource.split("/");
+		String separator = FileSystems.getDefault().getSeparator();
+		if(System.getProperty("os.name").toLowerCase().contains("win"))
+			separator += "\\";
+		String[] tokens = theSource.split(separator);
 
 		// Get the last index of tokens, which will be the filename
 		String filename = tokens[tokens.length - 1];
-		d = System.currentTimeMillis();
+	
 		// Move it to the remote host
 		sftpChannel.put(theSource, remoteDest);
-		f = System.currentTimeMillis();
+		
 
 		// Delete the local directory that was created since it is no longer needed
 		Path path = Paths.get(theSource);
@@ -478,15 +483,6 @@ public class RemoteFileHandlerTest {
 
 		System.out.println("Moved source file to new remote source destination " + theSource);
 
-		g = System.currentTimeMillis();
-		/**
-		 * System.out.println("Creating remote source!!!!!!!!!!!!!!!");
-		 * System.out.println("Connect " + (b - a) / 1000.);
-		 * System.out.println("lstat/mkdir " + (c - b) / 1000.);
-		 * System.out.println("creat lsource " + (d - c) / 1000.);
-		 * System.out.println("put " + (f - d) / 1000.);
-		 * System.out.println("delete/disconnect " + (g - f) / 1000.);
-		 */
 	}
 
 	/**
@@ -499,11 +495,14 @@ public class RemoteFileHandlerTest {
 		ChannelSftp sftpChannel = (ChannelSftp) fileTransferConn.getChannel();
 
 		// Get the path to the source file
-		String[] tokens = theSource.split("/");
+		String separator = FileSystems.getDefault().getSeparator();
+		if(System.getProperty("os.name").toLowerCase().contains("win"))
+			separator += "\\";
+		String[] tokens = theSource.split(separator);
 		String sourcePath = "";
 		// Build the source path
 		for (int i = 0; i < tokens.length - 1; i++)
-			sourcePath += tokens[i] + "/";
+			sourcePath += tokens[i] + separator;
 
 		// Recursively delete the source directory and its contents
 		deleteRemoteDirectory(sftpChannel, sourcePath);
@@ -592,6 +591,7 @@ public class RemoteFileHandlerTest {
 		for (ChannelSftp.LsEntry file : fileList) {
 			// If it isn't a directory delete it
 			if (!file.getAttrs().isDir()) {
+				// Can use / here because we know the dummy directory is on linux, not windows
 				sftpChannel.rm(path + "/" + file.getFilename());
 			} else if (!(".".equals(file.getFilename()) || "..".equals(file.getFilename()))) { // If it is a subdir.
 				// Otherwise its a subdirectory, so try deleting it
