@@ -91,16 +91,18 @@ public class CommandTest {
 	 * Tests a command where the script is local and the input is remote
 	 * 
 	 */
-	@Test
+	//@Test
 	public void testlocalScriptRemoteInput() {
 
 		CommandConfiguration commandConfig = new CommandConfiguration();
 		commandConfig.setCommandId(4); 
-		commandConfig.setExecutable("./test_code_execution.sh input.txt"); 
+		commandConfig.setExecutable("./test_code_execution.sh"); 
 		commandConfig.setErrFileName("someRemoteErrFile.txt"); 
 		commandConfig.setOutFileName("someRemoteOutFile.txt");
 		commandConfig.setWorkingDirectory(pwd); 
 		commandConfig.setAppendInput(true); 
+		commandConfig.setAppendInput(false);
+		commandConfig.addInputFile("input","input.txt");
 		commandConfig.setNumProcs("1"); 
 		commandConfig.setOS(System.getProperty("os.name"));
 	
