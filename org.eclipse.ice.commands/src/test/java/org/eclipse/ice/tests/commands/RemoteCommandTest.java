@@ -51,7 +51,7 @@ public class RemoteCommandTest {
 
 	@After
 	public void tearDown() throws Exception {
-		 ConnectionManagerFactory.getConnectionManager().listAllConnections();
+		ConnectionManagerFactory.getConnectionManager().listAllConnections();
 	}
 
 	/**
@@ -71,6 +71,8 @@ public class RemoteCommandTest {
 		// Set the command to configure to a dummy hello world command
 		// See {@link org.eclipse.ice.commands.CommandConfiguration} for detailed info
 		// on each
+		// This should stay *nix style since it is being executed on the dummy remote
+		// host
 		commandConfig.setCommandId(0);
 		commandConfig.setExecutable("./test_code_execution.sh");
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
@@ -90,13 +92,10 @@ public class RemoteCommandTest {
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
 		String credFile = "/tmp/ice-remote-creds.txt";
-		if(System.getProperty("os.name").toLowerCase().contains("win")) {
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
 			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
-			commandConfig.setExecutable("test_code_execution.ps1");
-			commandConfig.setInterpreter("powershell.exe");
 		}
-		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				credFile);
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
 		// Set it
 		connectConfig.setAuthorization(auth);
 		connectConfig.setName("dummyConnection");
@@ -126,9 +125,12 @@ public class RemoteCommandTest {
 		String rm = "someOutFile.txt someErrFile.txt errfile.txt outfile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
-		// TODO build this command for use in windows
-		command.add("/bin/bash");
-		command.add("-c");
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
+			command.add("powershell.exe");
+		} else {
+			command.add("/bin/bash");
+			command.add("-c");
+		}
 		command.add("rm " + rm);
 		// Execute the command with the process builder api
 		ProcessBuilder builder = new ProcessBuilder(command);
@@ -179,11 +181,11 @@ public class RemoteCommandTest {
 		CommandStatus status = command.execute();
 
 		// Check that the command was successfully completed
-		assert (status == CommandStatus.SUCCESS);		
-		
+		assert (status == CommandStatus.SUCCESS);
+
 		System.out.println("Finished testing remote command execute");
 	}
-	
+
 	/**
 	 * This tests that the job status is set to failed if an incorrect connection is
 	 * established. Expect an exception since the connection will not be able to be
@@ -210,16 +212,14 @@ public class RemoteCommandTest {
 		// Check that the command gives an error in its status due to poor connection
 		assert (command.getStatus() == CommandStatus.INFOERROR);
 	}
-	
-	
-	
+
 	/**
 	 * Test method for a nonexistent executable. Expect a null pointer exception
-	 * because the code will try to transfer the executable, but be unable to find it.
-	 * Can't have it throw an error because of the possibility that the executable is a 
-	 * simple shell command like ls
+	 * because the code will try to transfer the executable, but be unable to find
+	 * it. Can't have it throw an error because of the possibility that the
+	 * executable is a simple shell command like ls
 	 */
-	@Test(expected=NullPointerException.class)
+	@Test(expected = NullPointerException.class)
 	public void testBadExecute() {
 		CommandConfiguration badConfig = new CommandConfiguration();
 
@@ -241,19 +241,14 @@ public class RemoteCommandTest {
 		assert (testStatus == CommandStatus.INFOERROR);
 	}
 
-	
-
-
-
 	/**
 	 * This function tests an intentionally long running script in the background to
-	 * determine what JSch response is to connections being broken, etc. It is commented out
-	 * for now since it doesn't test different functionality for the above tests. It will be 
-	 * useful in the future when we want to test things like querying the status, job monitoring
-	 * on remote hosts, etc.
-	 * TODO 
+	 * determine what JSch response is to connections being broken, etc. It is
+	 * commented out for now since it doesn't test different functionality for the
+	 * above tests. It will be useful in the future when we want to test things like
+	 * querying the status, job monitoring on remote hosts, etc. TODO
 	 */
-	//@Test
+	// @Test
 	public void testLongRemoteJob() {
 
 		CommandConfiguration longConfig = new CommandConfiguration();
@@ -274,7 +269,4 @@ public class RemoteCommandTest {
 
 	}
 
-
-	
-	
 }

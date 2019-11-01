@@ -89,7 +89,7 @@ public class CommandTest {
 
 	/**
 	 * Tests a command where the script is local and the input is remote
-	 * 
+	 * TODO - return to this test
 	 */
 	//@Test
 	public void testlocalScriptRemoteInput() {

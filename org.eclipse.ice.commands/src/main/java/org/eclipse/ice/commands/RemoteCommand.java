@@ -263,7 +263,13 @@ public class RemoteCommand extends Command {
 		// the execution. The commands are then split by the semi-colon
 		ArrayList<String> completeCommands = new ArrayList<String>();
 		for (String i : commandConfig.getSplitCommand()) {
-			completeCommands.add("cd " + commandConfig.getRemoteWorkingDirectory() + "; " + i);
+			String completeCommand = "cd " + commandConfig.getRemoteWorkingDirectory() + "; ";
+			// If launched from windows, we need to remove the dos carriage returns ^M from
+			// the bash script. thanks a lot dos.
+			if(commandConfig.getOS().toLowerCase().contains("win"))
+				completeCommand += "sed -i -e 's/\\r//' " + commandConfig.getExecutable() + "; ";
+			completeCommand += i;
+			completeCommands.add(completeCommand);
 		}
 
 		// Now loop over all commands and run them via JSch
