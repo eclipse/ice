@@ -79,7 +79,12 @@ public class ConnectionManagerTest {
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
+		ConnectionAuthorizationHandler auth = null;
+		if(System.getProperty("os.name").toLowerCase().contains("win"))
+			auth = authFactory.getConnectionAuthorizationHandler("text",
+					"C:\\Users\\Administrator\\ice-remote-creds.txt");
+		else
+			auth = authFactory.getConnectionAuthorizationHandler("text",
 				"/tmp/ice-remote-creds.txt");
 		// Set it
 		configuration.setAuthorization(auth);
@@ -179,7 +184,12 @@ public class ConnectionManagerTest {
 	public void testMultipleConnections() {
 
 		// Read in a dummy configuration file that contains credentials
-		File file = new File("/tmp/ice-remote-creds.txt");
+		File file = null;
+		String credFile = "/tmp/ice-remote-creds.txt";
+		if(System.getProperty("os.name").toLowerCase().contains("win"))
+			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		
+		file = new File(credFile);
 		Scanner scanner = null;
 		try {
 			scanner = new Scanner(file);
@@ -202,7 +212,7 @@ public class ConnectionManagerTest {
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				"/tmp/ice-remote-creds.txt");
+				credFile);
 		// Set it
 		configuration.setAuthorization(auth);
 		configuration.setName("FirstConnection");
@@ -210,7 +220,7 @@ public class ConnectionManagerTest {
 		// Make another one
 		ConnectionConfiguration conf2 = new ConnectionConfiguration();
 		ConnectionAuthorizationHandler auth2 = authFactory.getConnectionAuthorizationHandler("text",
-				"/tmp/ice-remote-creds.txt");
+				credFile);
 		conf2.setAuthorization(auth2);
 		conf2.setName("someOtherConnection");
 
