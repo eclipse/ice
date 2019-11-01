@@ -190,7 +190,14 @@ public class RemoteFileHandler extends FileHandler {
 
 		// The destination could have a full path plus a new file name, so we need
 		// to get just the path for several existence checks
-		String destinationPath = destination.substring(0, destination.lastIndexOf("/"));
+		String destinationPath = "";
+		try{
+			// Check for *nix based systems
+			destinationPath = destination.substring(0, destination.lastIndexOf("/"));
+		} catch(StringIndexOutOfBoundsException e) {
+			// If that throws an exception, try for a windows type system
+			destinationPath = destination.substring(0, destination.lastIndexOf("\\"));
+		}
 
 		// If the source is local, then we know it must be a local --> remote handle
 		if (isLocal(source)) {
