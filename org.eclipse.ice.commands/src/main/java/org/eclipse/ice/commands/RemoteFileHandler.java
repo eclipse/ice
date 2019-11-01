@@ -79,7 +79,7 @@ public class RemoteFileHandler extends FileHandler {
 				logger.info("Manager is opening a connection");
 				connection = manager.openConnection(config);
 			} catch (JSchException e) {
-				logger.error("Connection could not be established. Transfer will fail.");
+				logger.error("Connection could not be established. Transfer will fail.", e);
 			}
 		} else {
 			// Get the connection if it is already available
@@ -94,7 +94,7 @@ public class RemoteFileHandler extends FileHandler {
 			}
 		} catch (JSchException e) {
 			logger.error(
-					"Connection seems to have an unopened channel, but there was a failure when trying to open the channel.");
+					"Connection seems to have an unopened channel, but there was a failure when trying to open the channel.", e);
 		}
 	}
 
@@ -111,13 +111,16 @@ public class RemoteFileHandler extends FileHandler {
 
 			// Try to lstat the path. If an exception is thrown, it means it does not exist
 			SftpATTRS attrs = sftpChannel.lstat(file);
+			logger.info("File " + file + " found remotely");
 		} catch (SftpException e) {
 			if (isLocal(file)) {
+				logger.info("File " + file + " found locally");
 				// If the file can be found locally, return true since we found it.
 				// Up to checkExistence to determine what kind of move this is (e.g. local->remote
 				// or vice versa)
 				return true;
 			} else {
+				logger.info("File " + file + " couldn't be found ");
 				return false;
 			}
 		}
@@ -162,7 +165,7 @@ public class RemoteFileHandler extends FileHandler {
 
 			logger.info("Made new remote directory");
 		} catch (SftpException e) {
-			logger.error("Couldn't make nonexistent remote directory, exiting.");
+			logger.error("Couldn't make nonexistent remote directory, exiting.", e);
 			return false;
 		} finally {
 

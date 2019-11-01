@@ -77,7 +77,7 @@ public class LocalCopyFileCommand extends LocalCommand {
 			Files.copy(source, destination.resolve(source.getFileName()), REPLACE_EXISTING);
 		} catch (IOException e) {
 			status = CommandStatus.FAILED;
-			logger.error("Local copy failed! Returning failed.");
+			logger.error("Local copy failed! Returning failed.", e);
 			return status;
 		}
 		return CommandStatus.SUCCESS;

@@ -196,7 +196,7 @@ public abstract class Command {
 		} catch (IOException e) {
 			// If we can't get the file handler, then there was an error in the connection
 			// configuration
-			logger.error("Unable to connect to filehandler and check file existence. Exiting.");
+			logger.error("Unable to connect to filehandler and check file existence. Exiting.", e);
 			return CommandStatus.INFOERROR;
 		}
 		// If the working directory doesn't exist, we won't be able to continue the job
@@ -288,7 +288,7 @@ public abstract class Command {
 			}
 		} catch (IOException e) {
 			// Or fail and complain about it.
-			logger.error("Could not logOutput, returning error!");
+			logger.error("Could not logOutput, returning error!", e);
 			return false;
 		}
 

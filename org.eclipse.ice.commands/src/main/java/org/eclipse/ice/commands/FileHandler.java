@@ -81,7 +81,7 @@ public abstract class FileHandler implements IFileHandler {
 		try {
 			checkExistence(source, destination);
 		} catch (IOException e) {
-			logger.error("The source and/or destination file could not be confirmed to exist...");
+			logger.error("The source and/or destination file could not be confirmed to exist...", e);
 			return CommandStatus.INFOERROR;
 		}
 
@@ -92,7 +92,7 @@ public abstract class FileHandler implements IFileHandler {
 		try {
 			transferStatus = executeTransfer(destination);
 		} catch (IOException e) {
-			logger.error("Destination file does not exist! File transfer failed!");
+			logger.error("Destination file does not exist! File transfer failed!", e);
 			return CommandStatus.FAILED;
 		}
 
@@ -117,7 +117,7 @@ public abstract class FileHandler implements IFileHandler {
 		try {
 			checkExistence(source, destination);
 		} catch (IOException e1) {
-			logger.error("The source and/or destination file could not be confirmed to exist...");
+			logger.error("The source and/or destination file could not be confirmed to exist...", e1);
 			return CommandStatus.INFOERROR;
 		}
 
@@ -128,7 +128,7 @@ public abstract class FileHandler implements IFileHandler {
 		try {
 			transferStatus = executeTransfer(destination);
 		} catch (IOException e) {
-			logger.error("Destination file does not exist! File transfer failed!");
+			logger.error("Destination file does not exist! File transfer failed!", e);
 			return CommandStatus.FAILED;
 		}
 
@@ -224,7 +224,7 @@ public abstract class FileHandler implements IFileHandler {
 				// If an exception wasn't thrown, then destination now exists
 				exists = exists(dest);
 			} catch (IOException e) {
-				logger.error("Couldn't create directory for local move! Failed.");
+				logger.error("Couldn't create directory for local move! Failed.", e);
 				return false;
 			}
 		}

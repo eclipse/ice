@@ -127,7 +127,7 @@ public class LocalCommand extends Command {
 			commandConfig.getStdErr().close();
 		} catch (IOException e) {
 			status = CommandStatus.FAILED;
-			logger.error("Could not close the output and/or error files, returning INFOERROR");
+			logger.error("Could not close the output and/or error files, returning INFOERROR", e);
 			return status;
 		}
 
@@ -195,7 +195,7 @@ public class LocalCommand extends Command {
 			if (!os.toLowerCase().contains("win")) {
 				// If there is an error, add it to errMsg
 				commandConfig.addToErrString(e.getMessage() + "\n");
-				logger.error("Couldn't start job on unix based machine...");
+				logger.error("Couldn't start job on unix based machine...", e);
 				return CommandStatus.FAILED;
 			} else {
 				// If this is a windows machine, try to run in the command prompt
@@ -213,7 +213,7 @@ public class LocalCommand extends Command {
 					if (status != CommandStatus.CANCELED)
 						job = jobBuilder.start();
 				} catch (IOException e2) {
-					logger.error("Could not start processing job on windows machine...");
+					logger.error("Could not start processing job on windows machine...", e2);
 					// If there is an error, add it to errMsg
 					commandConfig.addToErrString(e2.getMessage() + "\n");
 					return CommandStatus.FAILED;
@@ -258,7 +258,7 @@ public class LocalCommand extends Command {
 				commandConfig.getStdOut().close();
 				commandConfig.getStdErr().close();
 			} catch (IOException e) {
-				logger.error("There were errors in the job running, but they could not write to the error log file!");
+				logger.error("There were errors in the job running, but they could not write to the error log file!", e);
 				return CommandStatus.FAILED;
 			}
 
@@ -319,7 +319,7 @@ public class LocalCommand extends Command {
 					logger.warn("IllegalThreadStateException, still going to keep monitoring the job...");
 					commandConfig.getStdErr().write(getClass().getName() + "IllegalThreadStateException!: " + e);
 				} catch (IOException e1) {
-					logger.error("Couldn't write to stderr file! Returning failed.");
+					logger.error("Couldn't write to stderr file! Returning failed.", e1);
 					return CommandStatus.FAILED;
 				}
 			}
@@ -334,7 +334,7 @@ public class LocalCommand extends Command {
 					logger.error("Couldn't wait for the job to finish...");
 					commandConfig.getStdErr().write(getClass().getName() + " InterruptedException!: " + e);
 				} catch (IOException e1) {
-					logger.error("Couldn't write exception to error file! Returning failed.");
+					logger.error("Couldn't write exception to error file! Returning failed.", e1);
 					return CommandStatus.FAILED;
 				}
 			}
@@ -352,7 +352,7 @@ public class LocalCommand extends Command {
 			commandConfig.getStdOut().write("INFO: Command::monitorJob Message: Exit value = " + exitValue + "\n");
 		} catch (IOException e) {
 			logger.error("Couldn't write final command exit value to the std out file. Returning failed. Exit value = "
-					+ exitValue);
+					+ exitValue, e);
 			return CommandStatus.FAILED;
 		}
 

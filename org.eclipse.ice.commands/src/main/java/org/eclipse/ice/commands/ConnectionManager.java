@@ -83,7 +83,7 @@ public class ConnectionManager {
 			try {
 				newConnection.setSession(newConnection.getJShellSession().getSession(username, hostname));
 			} catch (JSchException e) {
-				logger.error("Couldn't open session with given username and hostname. Exiting.");
+				logger.error("Couldn't open session with given username and hostname. Exiting.", e);
 				throw new JSchException();
 			}
 
@@ -101,7 +101,7 @@ public class ConnectionManager {
 			try {
 				newConnection.getSession().connect();
 			} catch (JSchException e) {
-				logger.error("Couldn't connect to session with given username and/or password. Exiting.");
+				logger.error("Couldn't connect to session with given username and/or password. Exiting.", e);
 				throw new JSchException();
 			}
 

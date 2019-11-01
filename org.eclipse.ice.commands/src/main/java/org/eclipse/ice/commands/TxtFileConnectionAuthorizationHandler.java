@@ -67,7 +67,7 @@ public class TxtFileConnectionAuthorizationHandler extends ConnectionAuthorizati
 		try {
 			scanner = new Scanner(credFile);
 		} catch (FileNotFoundException e) {
-			logger.error("A path was given where the ssh credentials live, but that path doesn't exist!");
+			logger.error("A path was given where the ssh credentials live, but that path doesn't exist!", e);
 			return null;
 		}
 		// Skip the username since it has already been set
@@ -91,7 +91,7 @@ public class TxtFileConnectionAuthorizationHandler extends ConnectionAuthorizati
 		try {
 			scanner = new Scanner(credFile);
 		} catch (FileNotFoundException e) {
-			logger.error("A path was given where the ssh credentials live, but that path doesn't exist!");
+			logger.error("A path was given where the ssh credentials live, but that path doesn't exist!", e);
 		}
 		username = scanner.next();
 		// Get the next line, and then set it to null so that it is picked up by the

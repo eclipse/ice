@@ -52,7 +52,7 @@ public class ConsoleConnectionAuthorizationHandler extends ConnectionAuthorizati
 			password = in.readLine();
 			in.close();
 		} catch (IOException e) {
-			logger.error("Couldn't read the password...");
+			logger.error("Couldn't read the password...", e);
 			return null;
 		}
 

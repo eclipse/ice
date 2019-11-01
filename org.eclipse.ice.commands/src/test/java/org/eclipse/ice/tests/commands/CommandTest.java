@@ -88,6 +88,47 @@ public class CommandTest {
 	}
 
 	/**
+	 * Tests a command where the script is local and the input is remote
+	 * 
+	 */
+	@Test
+	public void testlocalScriptRemoteInput() {
+
+		CommandConfiguration commandConfig = new CommandConfiguration();
+		commandConfig.setCommandId(4); 
+		commandConfig.setExecutable("./test_code_execution.sh input.txt"); 
+		commandConfig.setErrFileName("someRemoteErrFile.txt"); 
+		commandConfig.setOutFileName("someRemoteOutFile.txt");
+		commandConfig.setWorkingDirectory(pwd); 
+		commandConfig.setAppendInput(true); 
+		commandConfig.setNumProcs("1"); 
+		commandConfig.setOS(System.getProperty("os.name"));
+	
+		commandConfig.setRemoteWorkingDirectory("/tmp/localScriptRemoteInput");
+		
+		
+		// Make the ConnectionConfiguration and set it up
+		ConnectionConfiguration connectConfig = new ConnectionConfiguration();
+		// Make the connection configuration
+		// Get a factory which determines the type of authorization
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Request a ConnectionAuthorization of type text file which contains the
+		// credentials
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
+				"/tmp/ice-remote-creds.txt");
+		// Set it
+		connectConfig.setAuthorization(auth);
+		connectConfig.setName("dummyConnection");
+		
+		Command command = new RemoteCommand(commandConfig, connectConfig, null);
+		
+	
+		CommandStatus status = command.execute();
+		
+		assert(status == CommandStatus.SUCCESS);
+	}
+
+	/**
 	 * Test method for {@link org.eclipse.ice.commands.Command#Command()} with a
 	 * particular instance of LocalCommand.
 	 */
@@ -153,6 +194,5 @@ public class CommandTest {
 		// status is checked
 		assert (!command.checkStatus(status));
 	}
-	
 
 }

@@ -188,7 +188,7 @@ public class CommandConfiguration {
 			stdErr.write(stdErrHeader);
 			stdErr.close();
 		} catch (IOException e) {
-			logger.error("Could not write header logs to output files!");
+			logger.error("Could not write header logs to output files!", e);
 		}
 
 		return;
@@ -211,7 +211,7 @@ public class CommandConfiguration {
 			try {
 				writer = new FileWriter(filename, true);
 			} catch (IOException e) {
-				logger.error("Could not retrieve a file writer for buffer writing");
+				logger.error("Could not retrieve a file writer for buffer writing", e);
 				return null;
 			}
 			bufferedWriter = new BufferedWriter(writer);
@@ -238,7 +238,7 @@ public class CommandConfiguration {
 			InetAddress addr = InetAddress.getLocalHost();
 			localHostname = addr.getHostName();
 		} catch (UnknownHostException e) {
-			logger.error("Could not identify local host name in output header creation.");
+			logger.error("Could not identify local host name in output header creation.", e);
 			// To handle this exception, we can just set the local host name since it's only
 			// purpose is for logging in the header file
 			localHostname = "UNKNOWN";

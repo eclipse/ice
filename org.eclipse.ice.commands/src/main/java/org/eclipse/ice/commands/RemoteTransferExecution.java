@@ -76,8 +76,7 @@ public class RemoteTransferExecution {
 				channel.chmod(permissions, destination);
 
 		} catch (JSchException | SftpException e) {
-			logger.error("Failed to connect or obtain file to/from remote host. Returning failed.");
-			e.printStackTrace();
+			logger.error("Failed to connect or obtain file to/from remote host. Returning failed.", e);
 			status = CommandStatus.FAILED;
 			return status;
 		}
@@ -112,7 +111,7 @@ public class RemoteTransferExecution {
 		try {
 			execChannel.connect();
 		} catch (JSchException e) {
-			logger.error("Channel isn't connected and can't copy remote to remote...");
+			logger.error("Channel isn't connected and can't copy remote to remote...", e);
 			throw e;
 		}
 		// Disconnect extra channel when finished

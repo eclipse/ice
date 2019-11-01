@@ -89,8 +89,14 @@ public class RemoteCommandTest {
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
+		String credFile = "/tmp/ice-remote-creds.txt";
+		if(System.getProperty("os.name").toLowerCase().contains("win")) {
+			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+			commandConfig.setExecutable("test_code_execution.ps1");
+			commandConfig.setInterpreter("powershell.exe");
+		}
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				"/tmp/ice-remote-creds.txt");
+				credFile);
 		// Set it
 		connectConfig.setAuthorization(auth);
 		connectConfig.setName("dummyConnection");

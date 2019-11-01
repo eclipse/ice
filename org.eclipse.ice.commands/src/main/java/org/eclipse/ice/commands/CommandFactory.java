@@ -120,7 +120,7 @@ public class CommandFactory {
 		try {
 			addr = InetAddress.getLocalHost();
 		} catch (UnknownHostException e) {
-			logger.error("Could not identify local host in determining Command type");
+			logger.error("Could not identify local host in determining Command type", e);
 		}
 		// Get the local host name from the operating system
 		String hostname = addr.getHostName();
