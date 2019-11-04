@@ -25,8 +25,11 @@ import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.RemoteCommand;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.jcraft.jsch.JSchException;
 
 /**
  * Test for class {@link org.eclipse.ice.commands.RemoteCommand}.
@@ -46,26 +49,17 @@ public class RemoteCommandTest {
 	 */
 	static ConnectionConfiguration connectConfig = new ConnectionConfiguration();
 
-	// Get the present working directory
-	static String pwd = System.getProperty("user.dir");
+	// Get the present working directory and add the extra directories to get the
+	// directory where the executable lives
+	static String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
 
 	@After
 	public void tearDown() throws Exception {
 		ConnectionManagerFactory.getConnectionManager().listAllConnections();
 	}
 
-	/**
-	 * This function sets up the command and connection information to hand to the
-	 * command
-	 * 
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-
-		// Add the following directories where the tests live
-		pwd += "/src/test/java/org/eclipse/ice/tests/commands/";
-
+	@Before
+	public void setUp() throws Exception {
 		commandConfig = new CommandConfiguration();
 
 		// Set the command to configure to a dummy hello world command
@@ -85,6 +79,15 @@ public class RemoteCommandTest {
 		commandConfig.setOS(System.getProperty("os.name"));
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
 
+	}
+	/**
+	 * This function sets up the command and connection information to hand to the
+	 * command
+	 * 
+	 * @throws java.lang.Exception
+	 */
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
 		// Set the connection configuration to a dummy remote connection
 		// Make the connection configuration
 		// Get a factory which determines the type of authorization
@@ -168,23 +171,7 @@ public class RemoteCommandTest {
 		System.out.println("Finished remote command configuration test.");
 	}
 
-	/**
-	 * Test method for executing remote command
-	 * {@link org.eclipse.ice.commands.RemoteCommand#execute()}
-	 */
-	@Test
-	public void testExecute() {
-		System.out.println("\n\n\nTest remote command execute");
 
-		// Make a command and execute the command
-		RemoteCommand command = new RemoteCommand(commandConfig, connectConfig, null);
-		CommandStatus status = command.execute();
-
-		// Check that the command was successfully completed
-		assert (status == CommandStatus.SUCCESS);
-
-		System.out.println("Finished testing remote command execute");
-	}
 
 	/**
 	 * This tests that the job status is set to failed if an incorrect connection is
@@ -207,20 +194,23 @@ public class RemoteCommandTest {
 		// Set it
 		cfg.setAuthorization(auth);
 		// Make a command with a bad connection
-		RemoteCommand command = new RemoteCommand(commandConfig, connectConfig, null);
+		RemoteCommand command = new RemoteCommand(commandConfig, cfg, null);
 
 		// Check that the command gives an error in its status due to poor connection
 		assert (command.getStatus() == CommandStatus.INFOERROR);
 	}
 
+
+	
 	/**
 	 * Test method for a nonexistent executable. Expect a null pointer exception
 	 * because the code will try to transfer the executable, but be unable to find
 	 * it. Can't have it throw an error because of the possibility that the
 	 * executable is a simple shell command like ls
+	 * @throws JSchException 
 	 */
 	@Test(expected = NullPointerException.class)
-	public void testBadExecute() {
+	public void testBadExecute() throws JSchException {
 		CommandConfiguration badConfig = new CommandConfiguration();
 
 		badConfig.setCommandId(24);
@@ -234,13 +224,48 @@ public class RemoteCommandTest {
 		badConfig.setNumProcs("1");
 		badConfig.setOS(System.getProperty("os.name"));
 
-		RemoteCommand testCommand = new RemoteCommand(badConfig, connectConfig, null);
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		String credFile = "/tmp/ice-remote-creds.txt";
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
+			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		}
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
+		// Set it
+		ConnectionConfiguration cfg = new ConnectionConfiguration();
+		cfg.setAuthorization(auth);
+		cfg.setName("connectionForBadExec");
+		// Delete the remote working directory when finished since we don't want the
+		// dummy host piling up with random directories
+		cfg.deleteWorkingDirectory(true);
+		
+		RemoteCommand testCommand = new RemoteCommand(badConfig, cfg, null);
 
 		CommandStatus testStatus = testCommand.execute();
 
-		assert (testStatus == CommandStatus.INFOERROR);
 	}
 
+
+	
+	/**
+	 * Test method for executing remote command
+	 * {@link org.eclipse.ice.commands.RemoteCommand#execute()}
+	 */
+	@Test
+	public void testExecute() {
+		System.out.println("\n\n\nTest remote command execute");
+
+		
+		// Make a command and execute the command
+		RemoteCommand command = new RemoteCommand(commandConfig, connectConfig, null);
+		CommandStatus status = command.execute();
+
+		// Check that the command was successfully completed
+		assert (status == CommandStatus.SUCCESS);
+
+		System.out.println("Finished testing remote command execute");
+	}
+	
+	
 	/**
 	 * This function tests an intentionally long running script in the background to
 	 * determine what JSch response is to connections being broken, etc. It is
