@@ -32,7 +32,6 @@ import org.eclipse.ice.commands.LocalFileHandler;
 import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -81,24 +80,6 @@ public class CommandFactoryTest {
 	public CommandFactoryTest() {
 	}
 
-	/**
-	 * Set up a hello world command configuration
-	 * 
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-
-		/**
-		 * Create a CommandConfiguration with the necessary information to execute a
-		 * Command. See {@link org.eclipse.ice.commands.CommandConfiguration} for
-		 * relevant member variables/constructor.
-		 */
-
-		// Set the CommandConfiguration class with some default things that are relevant
-		// for all the test functions here
-
-	}
 
 	/**
 	 * Close the connections after we are finished with them in an individual test
@@ -524,6 +505,10 @@ public class CommandFactoryTest {
 		// Also tests case where append input is set to false and the arguments
 		// are passed as variables as follows
 		commandConfig.setExecutable("./test_code_execution.sh ${someInputFile} ${someOtherFile}");
+		if(System.getProperty("os.name").toLowerCase().contains("win")) {
+			commandConfig.setInterpreter("powershell.exe");
+			commandConfig.setExecutable(".\\test_code_execution.ps1");
+		}
 		commandConfig.setAppendInput(false);
 		ConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
 		handler.setHostname(hostname);
@@ -670,8 +655,11 @@ public class CommandFactoryTest {
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
+		String credFile = "/tmp/ice-remote-creds.txt";
+		if(System.getProperty("os.name").toLowerCase().contains("win"))
+			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				"/tmp/ice-remote-creds.txt");
+				credFile);
 		// Set it
 		cfg.setAuthorization(auth);
 
