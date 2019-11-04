@@ -80,12 +80,12 @@ public class ConnectionManagerTest {
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
 		ConnectionAuthorizationHandler auth = null;
-		if(System.getProperty("os.name").toLowerCase().contains("win"))
-			auth = authFactory.getConnectionAuthorizationHandler("text",
-					"C:\\Users\\Administrator\\ice-remote-creds.txt");
-		else
-			auth = authFactory.getConnectionAuthorizationHandler("text",
-				"/tmp/ice-remote-creds.txt");
+		String credFile = "/tmp/ice-remote-creds.txt";
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
+			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		
+		auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
+		
 		// Set it
 		configuration.setAuthorization(auth);
 		configuration.setName(connectionName);
@@ -101,7 +101,7 @@ public class ConnectionManagerTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
-		
+
 		// Test removing all connections from the list in ConnectionManager
 		manager.removeAllConnections();
 
@@ -120,7 +120,7 @@ public class ConnectionManagerTest {
 	public void testValidConnection() {
 		System.out.println("Testing valid connection");
 		testOpenConnection();
-	
+
 		testGetConnection();
 
 		testCloseConnection();
@@ -186,9 +186,9 @@ public class ConnectionManagerTest {
 		// Read in a dummy configuration file that contains credentials
 		File file = null;
 		String credFile = "/tmp/ice-remote-creds.txt";
-		if(System.getProperty("os.name").toLowerCase().contains("win"))
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
 			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
-		
+
 		file = new File(credFile);
 		Scanner scanner = null;
 		try {
@@ -211,16 +211,14 @@ public class ConnectionManagerTest {
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				credFile);
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
 		// Set it
 		configuration.setAuthorization(auth);
 		configuration.setName("FirstConnection");
 
 		// Make another one
 		ConnectionConfiguration conf2 = new ConnectionConfiguration();
-		ConnectionAuthorizationHandler auth2 = authFactory.getConnectionAuthorizationHandler("text",
-				credFile);
+		ConnectionAuthorizationHandler auth2 = authFactory.getConnectionAuthorizationHandler("text", credFile);
 		conf2.setAuthorization(auth2);
 		conf2.setName("someOtherConnection");
 
@@ -264,6 +262,4 @@ public class ConnectionManagerTest {
 
 	}
 
-
-	
 }

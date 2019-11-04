@@ -49,7 +49,7 @@ public class LocalFileHandler extends FileHandler {
 	protected void configureCopyCommand(final String source, final String destination) {
 		LocalCopyFileCommand cmd = new LocalCopyFileCommand();
 		// Set the source and destination of the command
-		cmd.setConfiguration(source,destination);
+		cmd.setConfiguration(source, destination);
 		// Set the member variable
 		command.set(cmd);
 	}
@@ -70,7 +70,7 @@ public class LocalFileHandler extends FileHandler {
 	 */
 	@Override
 	public void checkExistence(final String source, final String destination) throws IOException {
-		
+
 		// Check that the source file exists
 		if (!exists(source)) {
 			logger.error("Source doesn't exist! Exiting.");
@@ -84,7 +84,7 @@ public class LocalFileHandler extends FileHandler {
 				throw new IOException();
 			}
 		}
-	
+
 	}
 
 }

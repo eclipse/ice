@@ -88,13 +88,13 @@ public class RemoteFileHandler extends FileHandler {
 		// Open an sftp channel for this remote file handler to use
 		try {
 			// Set it for the connection
-			if (connection.get().getChannel() == null) {
-				connection.get().setChannel(connection.get().getSession().openChannel("sftp"));
-				connection.get().getChannel().connect();
-			}
+			connection.get().setSftpChannel(connection.get().getSession().openChannel("sftp"));
+			connection.get().getSftpChannel().connect();
+
 		} catch (JSchException e) {
 			logger.error(
-					"Connection seems to have an unopened channel, but there was a failure when trying to open the channel.", e);
+					"Connection seems to have an unopened channel, but there was a failure when trying to open the channel.",
+					e);
 		}
 	}
 
@@ -107,14 +107,15 @@ public class RemoteFileHandler extends FileHandler {
 		ChannelSftp sftpChannel = null;
 		try {
 			// Get the sftp channel to check existence
-			sftpChannel = (ChannelSftp) connection.get().getChannel();
+			sftpChannel = connection.get().getSftpChannel();
 
 			// Try to lstat the path. If an exception is thrown, it means it does not exist
 			SftpATTRS attrs = sftpChannel.lstat(file);
 		} catch (SftpException e) {
 			if (isLocal(file)) {
 				// If the file can be found locally, return true since we found it.
-				// Up to checkExistence to determine what kind of move this is (e.g. local->remote
+				// Up to checkExistence to determine what kind of move this is (e.g.
+				// local->remote
 				// or vice versa)
 				return true;
 			} else {
@@ -142,7 +143,8 @@ public class RemoteFileHandler extends FileHandler {
 		try {
 
 			// Get the sftp channel to check existence
-			sftpChannel = (ChannelSftp) connection.get().getChannel();
+			sftpChannel = connection.get().getSftpChannel();
+
 			// Try to make the directory on the remote host
 			// Could be many directories, so we need to iterate over each piece
 			// of the path and see if it exists. If it doesn't, then make it.
@@ -164,8 +166,6 @@ public class RemoteFileHandler extends FileHandler {
 		} catch (SftpException e) {
 			logger.error("Couldn't make nonexistent remote directory, exiting.", e);
 			return false;
-		} finally {
-
 		}
 		// If the try was successful, then directory was made
 		return true;
@@ -191,10 +191,10 @@ public class RemoteFileHandler extends FileHandler {
 		// The destination could have a full path plus a new file name, so we need
 		// to get just the path for several existence checks
 		String destinationPath = "";
-		try{
+		try {
 			// Check for *nix based systems
 			destinationPath = destination.substring(0, destination.lastIndexOf("/"));
-		} catch(StringIndexOutOfBoundsException e) {
+		} catch (StringIndexOutOfBoundsException e) {
 			// If that throws an exception, try for a windows type system
 			destinationPath = destination.substring(0, destination.lastIndexOf("\\"));
 		}
@@ -287,10 +287,10 @@ public class RemoteFileHandler extends FileHandler {
 		// Set the command to have this connection and connection configuration
 		cmd.setConnectionConfiguration(connection.get().getConfiguration());
 		cmd.setConnection(connection.get());
-		
+
 		// Now set the member variable of type Command
 		command.set(cmd);
-	
+
 	}
 
 	/**

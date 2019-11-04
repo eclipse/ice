@@ -46,8 +46,8 @@ public class ConnectionManager {
 	 */
 	public ConnectionManager() {
 		// Set the atomic reference hashmap to a default <String, Connection> hashmap
-		//HashMap<String, Connection> dummyMap = new HashMap<String, Connection>();
-		//connectionList.set(dummyMap);
+		// HashMap<String, Connection> dummyMap = new HashMap<String, Connection>();
+		// connectionList.set(dummyMap);
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class ConnectionManager {
 			connectionList.put(newConnection.getConfiguration().getName(), newConnection);
 
 			logger.info("Connection at " + username + "@" + hostname + " established successfully");
-			
+
 			// Upon success, return the opened connection
 			return newConnection;
 		}
@@ -130,8 +130,7 @@ public class ConnectionManager {
 		// Find the hashmap instance, and return it
 		Connection returnConnection = connectionList.get(connectionName);
 		if (returnConnection == null) {
-			logger.warn(
-					"Couldn't find an existing connection with the name " + connectionName + ".");
+			logger.warn("Couldn't find an existing connection with the name " + connectionName + ".");
 		}
 		return returnConnection;
 	}
@@ -146,10 +145,15 @@ public class ConnectionManager {
 		// Get the connection that was passed
 		Connection connection = getConnection(connectionName);
 
-		// Check the channel first
-		if (connection.getChannel() != null) {
-			if (connection.getChannel().isConnected()) {
-				connection.getChannel().disconnect();
+		// Check the channels first
+		if (connection.getExecChannel() != null) {
+			if (connection.getExecChannel().isConnected()) {
+				connection.getExecChannel().disconnect();
+			}
+		}
+		if (connection.getSftpChannel() != null) {
+			if (connection.getSftpChannel().isConnected()) {
+				connection.getSftpChannel().disconnect();
 			}
 		}
 		// Disconnect the session. If the session was not connected in the first place,
@@ -192,9 +196,15 @@ public class ConnectionManager {
 	public void closeAllConnections() {
 		// Iterate over all available connections in the list and disconnect
 		for (Connection connection : connectionList.values()) {
-			if (connection.getChannel() != null) {
-				if (connection.getChannel().isConnected())
-					connection.getChannel().disconnect();
+			if (connection.getExecChannel() != null) {
+				if (connection.getExecChannel().isConnected()) {
+					connection.getExecChannel().disconnect();
+				}
+			}
+			if (connection.getSftpChannel() != null) {
+				if (connection.getSftpChannel().isConnected()) {
+					connection.getSftpChannel().disconnect();
+				}
 			}
 			connection.getSession().disconnect();
 		}

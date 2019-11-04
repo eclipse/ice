@@ -96,14 +96,16 @@ public class ConnectionAuthorizationHandlerFactory {
 	}
 
 	/**
-	 * This function allows a client to add another type of authorization handler, should they have
-	 * developed their own type. The factory will then add this to the list and then check for it
-	 * when determining what type of ConnectionAuthorizationHandler to return.
+	 * This function allows a client to add another type of authorization handler,
+	 * should they have developed their own type. The factory will then add this to
+	 * the list and then check for it when determining what type of
+	 * ConnectionAuthorizationHandler to return.
+	 * 
 	 * @param type
 	 * @param auth
 	 */
 	public void addConnectionAuthorizationHandlerType(String type, ConnectionAuthorizationHandler auth) {
 		handlerList.put(type, auth);
 	}
-	
+
 }

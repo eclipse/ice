@@ -42,7 +42,6 @@ import org.junit.Test;
  */
 public class CommandFactoryTest {
 
-	
 	/**
 	 * The hostname for which the job should run on. Default to local host name for
 	 * now
@@ -80,7 +79,6 @@ public class CommandFactoryTest {
 	public CommandFactoryTest() {
 	}
 
-
 	/**
 	 * Close the connections after we are finished with them in an individual test
 	 * 
@@ -117,7 +115,7 @@ public class CommandFactoryTest {
 		rm += " pythOutFile.txt pythErrFile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
-		if(System.getProperty("os.name").toLowerCase().contains("win")) {
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
 			command.add("powershell.exe");
 		} else {
 			command.add("/bin/bash");
@@ -229,7 +227,7 @@ public class CommandFactoryTest {
 		cmdCfg.setCommandId(1);
 		cmdCfg.setErrFileName("someLsErrFile.txt");
 		cmdCfg.setOutFileName("someLsOutFile.txt");
-		
+
 		// Make the connection configuration
 		ConnectionConfiguration ctCfg = new ConnectionConfiguration();
 		ConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
@@ -244,7 +242,7 @@ public class CommandFactoryTest {
 			e.printStackTrace();
 		}
 		CommandStatus status = cmd.execute();
-		
+
 		// Check that it properly finished
 		assert (status == CommandStatus.SUCCESS);
 		System.out.println("Finished boring command locally");
@@ -278,7 +276,7 @@ public class CommandFactoryTest {
 			e.printStackTrace();
 		}
 		CommandStatus status = cmd.execute();
-	
+
 		// Assert that it finished correctly
 		assert (status == CommandStatus.SUCCESS);
 	}
@@ -303,7 +301,7 @@ public class CommandFactoryTest {
 		commandConfig.setCommandId(1);
 		commandConfig.setErrFileName("someLocalErrFile.txt");
 		commandConfig.setOutFileName("someLocalOutFile.txt");
-		
+
 		// Make a default boring connection authorization
 		ConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
 		handler.setHostname(hostname);
@@ -379,9 +377,9 @@ public class CommandFactoryTest {
 		CommandConfiguration commandConfig = setupDefaultCommandConfig();
 		commandConfig.setExecutable("./test_code_execution.sh");
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
-		
+
 		commandConfig.setAppendInput(true);
-		
+
 		// Set the commandConfig class
 		commandConfig.setCommandId(3);
 		commandConfig.setErrFileName("someLocalErrFileDir.txt");
@@ -493,7 +491,6 @@ public class CommandFactoryTest {
 		System.out.println("test multiple input files locally");
 		// Set some things specific to the local command
 
-
 		CommandConfiguration commandConfig = setupDefaultCommandConfig();
 
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
@@ -505,7 +502,7 @@ public class CommandFactoryTest {
 		// Also tests case where append input is set to false and the arguments
 		// are passed as variables as follows
 		commandConfig.setExecutable("./test_code_execution.sh ${someInputFile} ${someOtherFile}");
-		if(System.getProperty("os.name").toLowerCase().contains("win")) {
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
 			commandConfig.setInterpreter("powershell.exe");
 			commandConfig.setExecutable(".\\test_code_execution.ps1");
 		}
@@ -585,19 +582,20 @@ public class CommandFactoryTest {
 
 		// Create the path relative to the current directory where the test script lives
 		String inputFileDir = pwd + "/src/test/java/org/eclipse/ice/tests/";
-		
+
 		// Copy the input files to this directory for this test. They are removed at the
 		// end of the class. Useful for putting the input files in a different directory
 		// in the repo from where the execution script lives.
-		
+
 		LocalFileHandler handler = new LocalFileHandler();
 		handler.copy(inputFileDir + "commands/someInputFile.txt", inputFileDir);
 		handler.copy(inputFileDir + "commands/someOtherInputFile.txt", inputFileDir);
-		
+
 		// Create a command configuration corresponding to a python script
 		CommandConfiguration configuration = setupDefaultCommandConfig();
 		// This path exists on the dummy host server
-		configuration.setExecutable("/opt/ice/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands/test_python_script.py");
+		configuration.setExecutable(
+				"/opt/ice/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands/test_python_script.py");
 		configuration.setInterpreter("python");
 		configuration.setCommandId(9);
 		configuration.setErrFileName("pythErrFile.txt");
@@ -628,7 +626,8 @@ public class CommandFactoryTest {
 
 	/**
 	 * This function sets up and returns a default case of a command configuration
-	 * for use throughout the tests. 
+	 * for use throughout the tests.
+	 * 
 	 * @return
 	 */
 	private CommandConfiguration setupDefaultCommandConfig() {
@@ -637,10 +636,10 @@ public class CommandFactoryTest {
 		config.setInstallDirectory("");
 		config.setWorkingDirectory(pwd);
 		config.setOS(System.getProperty("os.name"));
-		
+
 		return config;
 	}
-	
+
 	/**
 	 * A helper function to return the dummy connection configuration for remote
 	 * testing
@@ -656,10 +655,9 @@ public class CommandFactoryTest {
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
 		String credFile = "/tmp/ice-remote-creds.txt";
-		if(System.getProperty("os.name").toLowerCase().contains("win"))
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
 			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
-		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				credFile);
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
 		// Set it
 		cfg.setAuthorization(auth);
 

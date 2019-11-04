@@ -21,10 +21,7 @@ import java.util.Scanner;
  * lives on the users computer. This ensures that the password is never held in
  * a String. Note that in order for the connection to work, the text file must
  * contain the username, password, and hostname and _nothing_ else. An example
- * of what the text file must look like would be: 
- * username
- * password 
- * hostname
+ * of what the text file must look like would be: username password hostname
  * 
  * @author Joe Osborn
  *

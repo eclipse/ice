@@ -24,7 +24,8 @@ import org.junit.Test;
 public class ConnectionConfigurationTest {
 
 	/**
-	 * Test some getters and setters. ConnectionConfiguration is a POJO so not much to test
+	 * Test some getters and setters. ConnectionConfiguration is a POJO so not much
+	 * to test
 	 */
 	@Test
 	public void testConstructor() {

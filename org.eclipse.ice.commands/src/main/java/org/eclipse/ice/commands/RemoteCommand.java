@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
@@ -94,8 +93,11 @@ public class RemoteCommand extends Command {
 				connection.set(manager.openConnection(connectConfig));
 			} else {
 				connection.set(manager.getConnection(connectConfig.getName()));
-				if (connection.get().getChannel() != null)
-					connection.get().getChannel().disconnect();
+				// Make sure the connections are starting fresh from scratch
+				if (connection.get().getExecChannel() != null)
+					connection.get().getExecChannel().disconnect();
+				if (connection.get().getSftpChannel() != null)
+					connection.get().getSftpChannel().disconnect();
 			}
 
 			// Set the commandConfig hostname to that of the connectionConfig - only used
@@ -179,13 +181,13 @@ public class RemoteCommand extends Command {
 			logger.info("Removing remote working directory");
 			try {
 				// Open an sftp channel so that we can ls the contents of the path
-				
+
 				ChannelSftp channel = (ChannelSftp) connection.get().getSession().openChannel("sftp");
 				channel.connect();
 				// Delete the directory and all of the contents
 				deleteRemoteDirectory(channel, commandConfig.getRemoteWorkingDirectory());
 				channel.disconnect();
-				} catch (JSchException | SftpException e) {
+			} catch (JSchException | SftpException e) {
 				// This exception just needs to be logged, since it is not harmful to
 				// the job processing in any way
 				logger.warn("Unable to delete remote directory tree.");
@@ -193,12 +195,13 @@ public class RemoteCommand extends Command {
 		}
 
 		// Disconnect the channel and return success
-		connection.get().getChannel().disconnect();
+		connection.get().getExecChannel().disconnect();
+		connection.get().getSftpChannel().disconnect();
 		// Set the channel to null. This is important for running several jobs over one
 		// session, since the channel has been changed to an exec channel and the next
 		// job needs it as an sftp channel for file transfer. So let the next job take
 		// care of the channel delegation.
-		connection.get().setChannel(null);
+		connection.get().setExecChannel(null);
 
 		// Don't disconnect the session in the event that a user wants to run multiple
 		// jobs over the same session. Let session management be handled by the job
@@ -229,11 +232,11 @@ public class RemoteCommand extends Command {
 				logger.error("Thread couldn't wait for another second while monitoring job...", e);
 			}
 			// Query the exit status. 0 is normal completion, everything else is abnormal
-			exitValue = ((ChannelExec) connection.get().getChannel()).getExitStatus();
+			exitValue = connection.get().getExecChannel().getExitStatus();
 
 			// If the connection was closed and the job didn't finish, something bad
 			// happened...
-			if (connection.get().getChannel().isClosed() && exitValue != 0) {
+			if (connection.get().getExecChannel().isClosed() && exitValue != 0) {
 				logger.error("Connection is closed with exit value " + exitValue + ", failed ");
 				return CommandStatus.FAILED;
 			}
@@ -268,7 +271,7 @@ public class RemoteCommand extends Command {
 			String completeCommand = "cd " + commandConfig.getRemoteWorkingDirectory() + "; ";
 			// If launched from windows, we need to remove the dos carriage returns ^M from
 			// the bash script. thanks a lot dos.
-			if(commandConfig.getOS().toLowerCase().contains("win"))
+			if (commandConfig.getOS().toLowerCase().contains("win"))
 				completeCommand += "sed -i -e 's/\\r//' " + commandConfig.getExecutable() + "; ";
 			completeCommand += i;
 			completeCommands.add(completeCommand);
@@ -278,7 +281,7 @@ public class RemoteCommand extends Command {
 		for (int i = 0; i < completeCommands.size(); i++) {
 			// Open the channel for the executable to be run on
 			try {
-				connection.get().setChannel(connection.get().getSession().openChannel("exec"));
+				connection.get().setExecChannel(connection.get().getSession().openChannel("exec"));
 			} catch (JSchException e) {
 				logger.error("Execution channel could not be opened over JSch... Returning failed.", e);
 				// If it can't be opened, fail
@@ -287,16 +290,16 @@ public class RemoteCommand extends Command {
 
 			// Give the command to the channel connection
 			String thisCommand = completeCommands.get(i);
-			((ChannelExec) connection.get().getChannel()).setCommand(thisCommand);
+			connection.get().getExecChannel().setCommand(thisCommand);
 
 			logger.info("Executing command: " + thisCommand + " remotely in the working directory "
 					+ commandConfig.getRemoteWorkingDirectory());
 
 			// Set up the input stream
-			connection.get().getChannel().setInputStream(null);
+			connection.get().getExecChannel().setInputStream(null);
 			try {
 				// Set the input stream for the connection object
-				connection.get().setInputStream(connection.get().getChannel().getInputStream());
+				connection.get().setInputStream(connection.get().getExecChannel().getInputStream());
 			} catch (IOException e) {
 				logger.error("Input stream could not be set in JSch... Returning failed.", e);
 				// If we can't set the input stream, fail
@@ -309,8 +312,8 @@ public class RemoteCommand extends Command {
 				stdOutStream = new FileOutputStream(commandConfig.getOutFileName(), true);
 				BufferedOutputStream stdOutBufferedStream = new BufferedOutputStream(stdOutStream);
 				// Give the streams to the channel now that their names are appropriately set
-				connection.get().getChannel().setOutputStream(stdOutBufferedStream);
-				((ChannelExec) connection.get().getChannel()).setErrStream(stdErrStream);
+				connection.get().getExecChannel().setOutputStream(stdOutBufferedStream);
+				connection.get().getExecChannel().setErrStream(stdErrStream);
 			} catch (FileNotFoundException e) {
 				logger.error("Logging streams could not be set in JSch... Returning failed.", e);
 				// If logging streams can't be set, return failed since we won't be
@@ -321,11 +324,11 @@ public class RemoteCommand extends Command {
 			// Make sure the channel is connected
 			try {
 				// Connect and run the executable
-				connection.get().getChannel().connect();
+				connection.get().getExecChannel().connect();
 
 				// Log the output and error streams
-				logOutput(connection.get().getChannel().getInputStream(),
-						((ChannelExec) connection.get().getChannel()).getErrStream());
+				logOutput(connection.get().getExecChannel().getInputStream(),
+						connection.get().getExecChannel().getErrStream());
 			} catch (JSchException e) {
 				logger.error("Couldn't connect the channel to run the executable! Returning failed.", e);
 				return CommandStatus.FAILED;

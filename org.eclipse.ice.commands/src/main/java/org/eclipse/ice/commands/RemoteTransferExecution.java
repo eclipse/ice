@@ -39,13 +39,13 @@ public class RemoteTransferExecution {
 	 * A status to track the status of the execution
 	 */
 	private CommandStatus status;
-	
+
 	/**
-	 * A boolean indicating whether or not the transfer is a move or a copy. True for move,
-	 * false for copy
+	 * A boolean indicating whether or not the transfer is a move or a copy. True
+	 * for move, false for copy
 	 */
 	private boolean isMove;
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -56,7 +56,7 @@ public class RemoteTransferExecution {
 			int transferType) {
 		ChannelSftp channel = null;
 		try {
-			channel = (ChannelSftp) connection.getChannel();
+			channel = connection.getSftpChannel();
 			// Determine how to proceed given what kind of copy it is
 			if (transferType == 1) { // If move type is local -> remote, use put
 				channel.put(source, destination);
@@ -100,9 +100,9 @@ public class RemoteTransferExecution {
 		// Make a transfer command to execute
 		// First check if it is a move or copy
 		String moveType = "cp ";
-		if(isMove)
+		if (isMove)
 			moveType = "mv ";
-		
+
 		// Build the command to execute
 		String command = moveType + source + " " + destination;
 		// Set the command for the JSch connection
@@ -119,11 +119,13 @@ public class RemoteTransferExecution {
 	}
 
 	/**
-	 * Setter function to tell the class whether or not the transfer is a move or a copy
+	 * Setter function to tell the class whether or not the transfer is a move or a
+	 * copy
+	 * 
 	 * @param isMove
 	 */
 	protected void isMove(boolean isMove) {
 		this.isMove = isMove;
 	}
-	
+
 }

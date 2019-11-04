@@ -76,8 +76,8 @@ public class RemoteFileHandlerTest {
 
 		fileTransferConn = manager.openConnection(config);
 
-		fileTransferConn.setChannel(fileTransferConn.getSession().openChannel("sftp"));
-		fileTransferConn.getChannel().connect();
+		fileTransferConn.setSftpChannel(fileTransferConn.getSession().openChannel("sftp"));
+		fileTransferConn.getSftpChannel().connect();
 
 	}
 
@@ -122,7 +122,7 @@ public class RemoteFileHandlerTest {
 
 		assert (handler.getConnection().getSession().isConnected());
 
-		assert (handler.getConnection().getChannel().isConnected());
+		assert (handler.getConnection().getSftpChannel().isConnected());
 
 		System.out.println("all finished testing set connection");
 	}
@@ -134,7 +134,7 @@ public class RemoteFileHandlerTest {
 		handler.setConnectionConfiguration(config);
 
 		assert (handler.getConnection().getSession().isConnected());
-		assert (handler.getConnection().getChannel().isConnected());
+		assert (handler.getConnection().getSftpChannel().isConnected());
 
 		ConnectionManagerFactory.getConnectionManager().removeConnection(config.getName());
 	}
@@ -189,7 +189,7 @@ public class RemoteFileHandlerTest {
 		handler.setConnectionConfiguration(fileTransferConn.getConfiguration());
 
 		String src = theSource;
-	
+
 		// Now try to move the file
 		CommandStatus status = handler.move(src, theDestination);
 
@@ -314,10 +314,9 @@ public class RemoteFileHandlerTest {
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
 		String credFile = "/tmp/ice-remote-creds.txt";
-		if(System.getProperty("os.name").toLowerCase().contains("win"))
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
 			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
-		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				credFile);
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
 		// Set it
 		config.setAuthorization(auth);
 
@@ -440,8 +439,8 @@ public class RemoteFileHandlerTest {
 	 * @throws Exception
 	 */
 	public void createRemoteSource() throws Exception {
-	
-		ChannelSftp sftpChannel = (ChannelSftp) fileTransferConn.getChannel();
+
+		ChannelSftp sftpChannel = fileTransferConn.getSftpChannel();
 
 		String remoteDest = "/tmp/remoteFileHandlerSource/";
 
@@ -457,23 +456,22 @@ public class RemoteFileHandlerTest {
 			// Create a remote source directory
 			sftpChannel.mkdir(remoteDest);
 		}
-	
+
 		// Create a local source file since JSch doesn't have a way to make a dummy
 		// file
 		createLocalSource();
 
 		// Get the filename by splitting the path by "/"
 		String separator = FileSystems.getDefault().getSeparator();
-		if(System.getProperty("os.name").toLowerCase().contains("win"))
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
 			separator += "\\";
 		String[] tokens = theSource.split(separator);
 
 		// Get the last index of tokens, which will be the filename
 		String filename = tokens[tokens.length - 1];
-	
+
 		// Move it to the remote host
 		sftpChannel.put(theSource, remoteDest);
-		
 
 		// Delete the local directory that was created since it is no longer needed
 		Path path = Paths.get(theSource);
@@ -498,10 +496,10 @@ public class RemoteFileHandlerTest {
 	 */
 	public void deleteRemoteSource() throws Exception {
 		// Connect the channel from the connection
-		ChannelSftp sftpChannel = (ChannelSftp) fileTransferConn.getChannel();
+		ChannelSftp sftpChannel = fileTransferConn.getSftpChannel();
 
 		// Get the path to the source file
-		//Leave this as unix command since the remote system is unix
+		// Leave this as unix command since the remote system is unix
 		String separator = "/";
 		String[] tokens = theSource.split(separator);
 		String sourcePath = "";
@@ -523,7 +521,7 @@ public class RemoteFileHandlerTest {
 	 */
 	public void createRemoteDestination() throws Exception {
 		// Connect the channel from the connection
-		ChannelSftp sftpChannel = (ChannelSftp) fileTransferConn.getChannel();
+		ChannelSftp sftpChannel = fileTransferConn.getSftpChannel();
 
 		String remoteDest = "/tmp/remoteFileHandlerDestination/";
 
@@ -554,7 +552,7 @@ public class RemoteFileHandlerTest {
 	 */
 	public void deleteRemoteDestination() throws Exception {
 		// Connect the channel from the connection
-		ChannelSftp sftpChannel = (ChannelSftp) fileTransferConn.getChannel();
+		ChannelSftp sftpChannel = fileTransferConn.getSftpChannel();
 
 		System.out.println("Deleting remote destination at : " + theDestination);
 		// Recurisvely delete the directory and its contents

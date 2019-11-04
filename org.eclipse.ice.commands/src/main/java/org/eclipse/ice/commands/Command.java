@@ -91,6 +91,8 @@ public abstract class Command {
 		// Now that all of the prerequisites have been set, start the job running
 		status = run();
 
+		status = cleanUp();
+
 		// Confirm the job finished with some status
 		logger.info("The job finished with status: " + status);
 		return status;
@@ -148,6 +150,24 @@ public abstract class Command {
 	}
 
 	/**
+	 * This function is intended to clean up any (possible) remaining loose ends
+	 * after the job is finished processing.
+	 * 
+	 * @return
+	 */
+	protected CommandStatus cleanUp() {
+
+		// Clear the command list, so as to not inadvertently concatenate more commands
+		// if the same instance of Command is used again.
+		// Same for input file list
+		commandConfig.getSplitCommand().clear();
+		commandConfig.getInputFileList().clear();
+		
+		// Return the already set status once the job was finished processing
+		return status;
+	}
+
+	/**
 	 * This function sets up the configuration in preparation for the job running.
 	 * It checks to make sure the necessary strings are set and then constructs the
 	 * executable to be run. It also creates the output files which contain
@@ -176,7 +196,7 @@ public abstract class Command {
 
 		// Check if the working directory exists
 		String workingDir = commandConfig.getWorkingDirectory();
-		if(!workingDir.endsWith(separator))
+		if (!workingDir.endsWith(separator))
 			workingDir += separator;
 
 		// Check that the directory exists

@@ -16,6 +16,8 @@ import java.io.OutputStream;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 
@@ -47,7 +49,12 @@ public class Connection {
 	/**
 	 * The ssh channel for the JSch ssh connection to execute over
 	 */
-	private AtomicReference<Channel> channel = new AtomicReference<Channel>(null);
+	private AtomicReference<ChannelExec> execChannel = new AtomicReference<ChannelExec>(null);
+
+	/**
+	 * The ssh channel for the JSch ssh connection to perform sftp transfers over
+	 */
+	private AtomicReference<ChannelSftp> sftpChannel = new AtomicReference<ChannelSftp>(null);
 
 	/**
 	 * The input stream for the JSch ssh connection
@@ -104,21 +111,41 @@ public class Connection {
 	}
 
 	/**
-	 * Set the channel {@link org.eclipse.ice.commands.Connection#channel}
+	 * Set the execution channel
+	 * {@link org.eclipse.ice.commands.Connection#execChannel}
 	 * 
-	 * @param _channel
+	 * @param execChannel
 	 */
-	public void setChannel(Channel channel) {
-		this.channel = new AtomicReference<Channel>(channel);
+	public void setExecChannel(Channel execChannel) {
+		this.execChannel = new AtomicReference<ChannelExec>((ChannelExec) execChannel);
 	}
 
 	/**
-	 * Get the channel {@link org.eclipse.ice.commands.Connection#channel}
+	 * Get the sftp channel {@link org.eclipse.ice.commands.Connection#sftpChannel}
 	 * 
 	 * @return
 	 */
-	public Channel getChannel() {
-		return channel.get();
+	public ChannelSftp getSftpChannel() {
+		return sftpChannel.get();
+	}
+
+	/**
+	 * Set the sftp channel {@link org.eclipse.ice.commands.Connection#sftpChannel}
+	 * 
+	 * @param sftpChannel
+	 */
+	public void setSftpChannel(Channel sftpChannel) {
+		this.sftpChannel = new AtomicReference<ChannelSftp>((ChannelSftp) sftpChannel);
+	}
+
+	/**
+	 * Get the execution channel
+	 * {@link org.eclipse.ice.commands.Connection#execChannel}
+	 * 
+	 * @return
+	 */
+	public ChannelExec getExecChannel() {
+		return execChannel.get();
 	}
 
 	/**

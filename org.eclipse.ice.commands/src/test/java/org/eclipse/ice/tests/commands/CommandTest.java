@@ -12,16 +12,22 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
 import org.eclipse.ice.commands.Command;
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
+import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.LocalCommand;
 import org.eclipse.ice.commands.RemoteCommand;
 import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 import com.jcraft.jsch.JSchException;
@@ -39,6 +45,47 @@ public class CommandTest {
 	 * tests live
 	 */
 	String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
+
+	/**
+	 * Remove output files after tests finish running
+	 * 
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	@AfterClass
+	public static void tearDownAfterClass() throws IOException, InterruptedException {
+
+		// Make and execute a simple command to remove the text files created
+		// in these tests.
+
+		// Make a string of all the output file names in this test
+		String rm = "someRemoteErrFile.txt someRemoteOutFile.txt someLocalOutFile.txt someLocalErrFile.txt";
+		rm += " someRemoteErrFile1.txt someRemoteErrFile2.txt someRemoteOutFile1.txt someRemoteOutFile2.txt";
+		ArrayList<String> command = new ArrayList<String>();
+		// Build a command
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
+			command.add("powershell.exe");
+		} else {
+			command.add("/bin/bash");
+			command.add("-c");
+		}
+		command.add("rm " + rm);
+		// Execute the command with the process builder api
+		ProcessBuilder builder = new ProcessBuilder(command);
+		// Files exist in the top most directory of the package
+		String topDir = System.getProperty("user.dir");
+		File file = new File(topDir);
+		builder.directory(file);
+		// Process it
+		Process job = builder.start();
+		job.waitFor(); // wait for it to finish
+
+		// Remove all connections that may remain from the manager
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+
+		manager.removeAllConnections();
+
+	}
 
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.Command#Command()} with a
@@ -210,25 +257,20 @@ public class CommandTest {
 
 		// Assert that it finished correctly
 		assert (status == CommandStatus.SUCCESS);
-		
-		
+
+		// Try a second command with the same instance of command configuration and
+		// remote command
 		commandConfig.setCommandId(4);
+		commandConfig.addInputFile("someOtherFile", "someOtherInputFile.txt");
 		commandConfig.setErrFileName("someRemoteErrFile2.txt");
 		commandConfig.setOutFileName("someRemoteOutFile2.txt");
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory2/");
-		
-		
+
 		remoteCommand = new RemoteCommand(commandConfig, connectConfig, null);
 		status = remoteCommand.execute();
-		
-		assert(status == CommandStatus.SUCCESS);
-		
-		
-		
-		
-		
-		
-		
+
+		// Assert successful completion
+		assert (status == CommandStatus.SUCCESS);
 
 	}
 

@@ -193,7 +193,7 @@ public class RemoteMoveFileCommandTest {
 	public boolean remotePathExists() throws Exception {
 
 		// Connect the channel from the connection
-		ChannelSftp sftpChannel = (ChannelSftp) handlerTest.getConnection().getChannel();
+		ChannelSftp sftpChannel = handlerTest.getConnection().getSftpChannel();
 
 		try {
 			sftpChannel.lstat(dest);

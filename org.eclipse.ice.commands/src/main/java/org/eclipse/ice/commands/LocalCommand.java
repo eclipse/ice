@@ -258,7 +258,8 @@ public class LocalCommand extends Command {
 				commandConfig.getStdOut().close();
 				commandConfig.getStdErr().close();
 			} catch (IOException e) {
-				logger.error("There were errors in the job running, but they could not write to the error log file!", e);
+				logger.error("There were errors in the job running, but they could not write to the error log file!",
+						e);
 				return CommandStatus.FAILED;
 			}
 
@@ -357,7 +358,6 @@ public class LocalCommand extends Command {
 		}
 
 		logger.info("Finished monitoring job with exit value: " + exitValue);
-
 
 		// If exit value is anything other than 0, then the job had an error
 		if (exitValue != 0)

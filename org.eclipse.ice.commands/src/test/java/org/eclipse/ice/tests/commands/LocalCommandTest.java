@@ -85,8 +85,8 @@ public class LocalCommandTest {
 	}
 
 	/**
-	 * This class runs at the end of test execution and just deletes the outfiles that 
-	 * were created in the testing.
+	 * This class runs at the end of test execution and just deletes the outfiles
+	 * that were created in the testing.
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws IOException, InterruptedException {
@@ -94,13 +94,13 @@ public class LocalCommandTest {
 		String rm = "someLocalErrFile.txt someLocalOutFile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
-		if(System.getProperty("os.name").toLowerCase().contains("win")) {
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
 			command.add("powershell.exe");
 		} else {
 			command.add("/bin/bash");
 			command.add("-c");
 		}
-	
+
 		command.add("rm " + rm);
 		// Execute the command with the process builder api
 		ProcessBuilder builder = new ProcessBuilder(command);
@@ -112,7 +112,7 @@ public class LocalCommandTest {
 		Process job = builder.start();
 		job.waitFor(); // wait for it to finish
 	}
-	
+
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.LocalCommand()} Tests check
 	 * for proper configuration and checking of the LocalCommand member variables so

@@ -200,7 +200,7 @@ public class RemoteCopyFileCommandTest {
 	public boolean remotePathExists() throws Exception {
 
 		// Get the connected channel from the connection
-		ChannelSftp sftpChannel = (ChannelSftp) handlerTest.getConnection().getChannel();
+		ChannelSftp sftpChannel = handlerTest.getConnection().getSftpChannel();
 
 		try {
 			sftpChannel.lstat(dest);

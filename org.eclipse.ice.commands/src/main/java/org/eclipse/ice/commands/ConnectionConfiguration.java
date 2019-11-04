@@ -35,8 +35,8 @@ public class ConnectionConfiguration {
 	 * manipulation. This is another method which allows users to decide how to
 	 * input their password.
 	 */
-	private AtomicReference<ConnectionAuthorizationHandler> authorization = 
-			new AtomicReference<ConnectionAuthorizationHandler>(null);
+	private AtomicReference<ConnectionAuthorizationHandler> authorization = new AtomicReference<ConnectionAuthorizationHandler>(
+			null);
 
 	/**
 	 * A boolean indicating whether or not the files/directories created on the
@@ -82,7 +82,7 @@ public class ConnectionConfiguration {
 	public boolean deleteWorkingDirectory() {
 		return deleteWorkingDirectory;
 	}
-	
+
 	/**
 	 * Setter for whether or not to delete the remote working directory upon
 	 * completion
@@ -93,7 +93,6 @@ public class ConnectionConfiguration {
 	public void deleteWorkingDirectory(boolean deleteWorkingDirectory) {
 		this.deleteWorkingDirectory = deleteWorkingDirectory;
 	}
-
 
 	/**
 	 * Setter for the authorization method, if desired. See

@@ -89,7 +89,7 @@ public class LocalCopyFileCommandTest {
 		// Get the individual directories
 		String delims = "[/]";
 		String separator = FileSystems.getDefault().getSeparator();
-		if(System.getProperty("os.name").toLowerCase().contains("win")) {
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
 			// Add an extra \ for windows
 			separator += "\\";
 			delims = separator;

@@ -80,6 +80,7 @@ public class RemoteCommandTest {
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
 
 	}
+
 	/**
 	 * This function sets up the command and connection information to hand to the
 	 * command
@@ -171,8 +172,6 @@ public class RemoteCommandTest {
 		System.out.println("Finished remote command configuration test.");
 	}
 
-
-
 	/**
 	 * This tests that the job status is set to failed if an incorrect connection is
 	 * established. Expect an exception since the connection will not be able to be
@@ -200,14 +199,13 @@ public class RemoteCommandTest {
 		assert (command.getStatus() == CommandStatus.INFOERROR);
 	}
 
-
-	
 	/**
 	 * Test method for a nonexistent executable. Expect a null pointer exception
 	 * because the code will try to transfer the executable, but be unable to find
 	 * it. Can't have it throw an error because of the possibility that the
 	 * executable is a simple shell command like ls
-	 * @throws JSchException 
+	 * 
+	 * @throws JSchException
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testBadExecute() throws JSchException {
@@ -237,15 +235,13 @@ public class RemoteCommandTest {
 		// Delete the remote working directory when finished since we don't want the
 		// dummy host piling up with random directories
 		cfg.deleteWorkingDirectory(true);
-		
+
 		RemoteCommand testCommand = new RemoteCommand(badConfig, cfg, null);
 
 		CommandStatus testStatus = testCommand.execute();
 
 	}
 
-
-	
 	/**
 	 * Test method for executing remote command
 	 * {@link org.eclipse.ice.commands.RemoteCommand#execute()}
@@ -254,7 +250,6 @@ public class RemoteCommandTest {
 	public void testExecute() {
 		System.out.println("\n\n\nTest remote command execute");
 
-		
 		// Make a command and execute the command
 		RemoteCommand command = new RemoteCommand(commandConfig, connectConfig, null);
 		CommandStatus status = command.execute();
@@ -264,8 +259,7 @@ public class RemoteCommandTest {
 
 		System.out.println("Finished testing remote command execute");
 	}
-	
-	
+
 	/**
 	 * This function tests an intentionally long running script in the background to
 	 * determine what JSch response is to connections being broken, etc. It is

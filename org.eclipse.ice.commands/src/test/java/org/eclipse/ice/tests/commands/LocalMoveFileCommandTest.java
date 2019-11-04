@@ -81,13 +81,13 @@ public class LocalMoveFileCommandTest {
 	 * 
 	 * @throws java.lang.Exception
 	 */
-	
+
 	public void deleteFiles() throws Exception {
 
 		// Need to get the filename individually
 		String delims = "[/]";
 		String separator = FileSystems.getDefault().getSeparator();
-		if(System.getProperty("os.name").toLowerCase().contains("win")) {
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
 			// Have to add another forward slash for windows
 			separator += "\\";
 			delims = separator;
@@ -102,7 +102,7 @@ public class LocalMoveFileCommandTest {
 		Path destFile = Paths.get(fullDestination);
 		Path destDir = Paths.get(dest);
 		Path srcFile = Paths.get(source);
-		
+
 		// Delete the files
 		// Only need to delete the moved file and destination directory,
 		// since the source file was created in the default system directory
@@ -112,7 +112,7 @@ public class LocalMoveFileCommandTest {
 		try {
 			Files.deleteIfExists(destFile);
 			Files.deleteIfExists(srcFile);
-			
+
 		} catch (IOException e) {
 			System.err.println(e);
 		}
@@ -125,9 +125,10 @@ public class LocalMoveFileCommandTest {
 	}
 
 	/**
-	 * Test for method {@link org.eclipse.ice.commands.LocalMoveFileCommand()}
-	 * Tests moving a file to a different directory, with the same name
-	 * @throws Exception 
+	 * Test for method {@link org.eclipse.ice.commands.LocalMoveFileCommand()} Tests
+	 * moving a file to a different directory, with the same name
+	 * 
+	 * @throws Exception
 	 */
 	@Test
 	public void testLocalMoveFileCommand() throws Exception {
@@ -138,7 +139,7 @@ public class LocalMoveFileCommandTest {
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();
 		String filename = "";
-		if(System.getProperty("os.name").toLowerCase().contains("win")) {
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
 			filename = source.substring(source.lastIndexOf("\\"));
 		} else {
 			filename = source.substring(source.lastIndexOf("/"));
@@ -146,7 +147,7 @@ public class LocalMoveFileCommandTest {
 		// Check if the path exists now
 		Path path = Paths.get(dest + filename);
 		assert (Files.exists(path));
-		
+
 		deleteFiles();
 
 	}
@@ -154,7 +155,8 @@ public class LocalMoveFileCommandTest {
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.LocalMoveFileCommand()} where
 	 * the file doesn't change directories and just changes names
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 * 
 	 */
 	@Test
@@ -162,32 +164,33 @@ public class LocalMoveFileCommandTest {
 		// First just delete the temp directory that was created, since we don't need it
 		Path destDir = Paths.get(dest);
 		Files.deleteIfExists(destDir);
-		
+
 		String separator = FileSystems.getDefault().getSeparator();
 		// Change the name of dest to a new name with the same path structure
-		String fullPath = source.substring(0,source.lastIndexOf(separator)+1);
+		String fullPath = source.substring(0, source.lastIndexOf(separator) + 1);
 		// Give dest the full path + a new file name
 		dest = fullPath + "newFileName.txt";
 		System.out.println("Moving: " + source + " to destination: " + dest);
-		
+
 		// Make the command and execute the move
 		LocalMoveFileCommand command = new LocalMoveFileCommand();
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();
 
-		assert(status == CommandStatus.SUCCESS);
-		
+		assert (status == CommandStatus.SUCCESS);
+
 		// Check that the file exists with the new name
 		Path path = Paths.get(dest);
 		assert (Files.exists(path));
-		
+
 		deleteFiles();
 	}
-	
+
 	/**
 	 * Test for method {@link org.eclipse.ice.commands.LocalMoveFileCommand()} where
 	 * the file changes directories and changes names
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	@Test
 	public void testLocalMoveNewName() throws Exception {
@@ -200,18 +203,15 @@ public class LocalMoveFileCommandTest {
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();
 
-		assert(status == CommandStatus.SUCCESS);
-		
+		assert (status == CommandStatus.SUCCESS);
+
 		// Check if the path exists now
 		Path path = Paths.get(dest);
 		assert (Files.exists(path));
-		
+
 		deleteFiles();
 		// Delete the extra directory
 		Files.deleteIfExists(Paths.get(destDir));
 	}
-	
-	
-	
-	
+
 }

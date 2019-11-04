@@ -81,10 +81,9 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 		transfer.isMove(false);
 		// Do the transfer
 		status = transfer.executeTransfer(getConnection(), source, destination, permissions, copyType);
-		
+
 		return status;
 	}
-
 
 	/**
 	 * Get the source file string
