@@ -104,6 +104,7 @@ public class RemoteCommand extends Command {
 
 			// If there is an extra connection so that we are multi-hopping, then open it
 			// too
+			// TODO - the multi-hop API isn't implemented yet - need to work on it
 			if (extraConnection != null) {
 				secondConnection = manager.openConnection(extraConnection);
 				// Set the commandConfig hostname to be the extra connection, since this is
@@ -178,12 +179,13 @@ public class RemoteCommand extends Command {
 			logger.info("Removing remote working directory");
 			try {
 				// Open an sftp channel so that we can ls the contents of the path
+				
 				ChannelSftp channel = (ChannelSftp) connection.get().getSession().openChannel("sftp");
 				channel.connect();
 				// Delete the directory and all of the contents
 				deleteRemoteDirectory(channel, commandConfig.getRemoteWorkingDirectory());
 				channel.disconnect();
-			} catch (JSchException | SftpException e) {
+				} catch (JSchException | SftpException e) {
 				// This exception just needs to be logged, since it is not harmful to
 				// the job processing in any way
 				logger.warn("Unable to delete remote directory tree.");

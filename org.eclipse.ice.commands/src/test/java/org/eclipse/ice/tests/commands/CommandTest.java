@@ -18,10 +18,13 @@ import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
+import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.LocalCommand;
 import org.eclipse.ice.commands.RemoteCommand;
 import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
 import org.junit.Test;
+
+import com.jcraft.jsch.JSchException;
 
 /**
  * Test for class {@link org.eclipse.ice.commands.Command}.
@@ -69,10 +72,9 @@ public class CommandTest {
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
 		String credFile = "/tmp/ice-remote-creds.txt";
-		if(System.getProperty("os.name").toLowerCase().contains("win"))
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
 			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
-		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				credFile);
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
 		// Set it
 		connectConfig.setAuthorization(auth);
 		connectConfig.setName("dummyConnection");
@@ -88,49 +90,8 @@ public class CommandTest {
 		// You can get the output in string form if desired
 		String output = remoteCommand.getCommandConfiguration().getStdOutputString();
 		System.out.println(output);
-	}
-
-	/**
-	 * Tests a command where the script is local and the input is remote
-	 * TODO - return to this test
-	 */
-	//@Test
-	public void testlocalScriptRemoteInput() {
-
-		CommandConfiguration commandConfig = new CommandConfiguration();
-		commandConfig.setCommandId(4); 
-		commandConfig.setExecutable("./test_code_execution.sh"); 
-		commandConfig.setErrFileName("someRemoteErrFile.txt"); 
-		commandConfig.setOutFileName("someRemoteOutFile.txt");
-		commandConfig.setWorkingDirectory(pwd); 
-		commandConfig.setAppendInput(true); 
-		commandConfig.setAppendInput(false);
-		commandConfig.addInputFile("input","input.txt");
-		commandConfig.setNumProcs("1"); 
-		commandConfig.setOS(System.getProperty("os.name"));
-	
-		commandConfig.setRemoteWorkingDirectory("/tmp/localScriptRemoteInput");
-		
-		
-		// Make the ConnectionConfiguration and set it up
-		ConnectionConfiguration connectConfig = new ConnectionConfiguration();
-		// Make the connection configuration
-		// Get a factory which determines the type of authorization
-		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
-		// Request a ConnectionAuthorization of type text file which contains the
-		// credentials
-		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				"/tmp/ice-remote-creds.txt");
-		// Set it
-		connectConfig.setAuthorization(auth);
-		connectConfig.setName("dummyConnection");
-		
-		Command command = new RemoteCommand(commandConfig, connectConfig, null);
-		
-	
-		CommandStatus status = command.execute();
-		
-		assert(status == CommandStatus.SUCCESS);
+		// Remove the connection from the manager to close it appropriately
+		ConnectionManagerFactory.getConnectionManager().removeConnection("dummyConnection");
 	}
 
 	/**
@@ -198,6 +159,77 @@ public class CommandTest {
 		// Check to make sure that an exception is thrown for a bad status when the
 		// status is checked
 		assert (!command.checkStatus(status));
+	}
+
+	/**
+	 * Tests a command where the script is local and the input is remote
+	 */
+	@Test
+	public void testMultipleRemoteCommands() {
+
+		// Make the ConnectionConfiguration and set it up
+		ConnectionConfiguration connectConfig = new ConnectionConfiguration();
+		// Make the connection configuration
+		// Get a factory which determines the type of authorization
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Request a ConnectionAuthorization of type text file which contains the
+		// credentials
+		String credFile = "/tmp/ice-remote-creds.txt";
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
+			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
+		// Set it
+		connectConfig.setAuthorization(auth);
+		connectConfig.setName("dummyConnection");
+		connectConfig.deleteWorkingDirectory(false);
+
+		// Open the connection
+		try {
+			ConnectionManagerFactory.getConnectionManager().openConnection(connectConfig);
+		} catch (JSchException e) {
+			e.printStackTrace();
+		}
+
+		// Set up a command configuration with instructions on how to run the script
+		CommandConfiguration commandConfig = new CommandConfiguration();
+		commandConfig.setCommandId(3);
+		commandConfig.setExecutable("./test_code_execution.sh");
+		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
+		commandConfig.setErrFileName("someRemoteErrFile1.txt");
+		commandConfig.setOutFileName("someRemoteOutFile1.txt");
+		commandConfig.setInstallDirectory("");
+		commandConfig.setWorkingDirectory(pwd);
+		commandConfig.setAppendInput(true);
+		commandConfig.setNumProcs("1");
+		commandConfig.setOS(System.getProperty("os.name"));
+		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
+
+		// Make the command and execute it
+		Command remoteCommand = new RemoteCommand(commandConfig, connectConfig, null);
+		CommandStatus status = remoteCommand.execute();
+
+		// Assert that it finished correctly
+		assert (status == CommandStatus.SUCCESS);
+		
+		
+		commandConfig.setCommandId(4);
+		commandConfig.setErrFileName("someRemoteErrFile2.txt");
+		commandConfig.setOutFileName("someRemoteOutFile2.txt");
+		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory2/");
+		
+		
+		remoteCommand = new RemoteCommand(commandConfig, connectConfig, null);
+		status = remoteCommand.execute();
+		
+		assert(status == CommandStatus.SUCCESS);
+		
+		
+		
+		
+		
+		
+		
+
 	}
 
 }

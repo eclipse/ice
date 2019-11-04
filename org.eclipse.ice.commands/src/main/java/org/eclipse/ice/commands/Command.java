@@ -176,6 +176,8 @@ public abstract class Command {
 
 		// Check if the working directory exists
 		String workingDir = commandConfig.getWorkingDirectory();
+		if(!workingDir.endsWith(separator))
+			workingDir += separator;
 
 		// Check that the directory exists
 		// Get the file handler factory

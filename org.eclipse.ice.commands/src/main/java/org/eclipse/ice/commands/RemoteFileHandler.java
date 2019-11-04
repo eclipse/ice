@@ -77,20 +77,20 @@ public class RemoteFileHandler extends FileHandler {
 			// If there isn't one open, try to open the connection
 			try {
 				logger.info("Manager is opening a connection");
-				connection = manager.openConnection(config);
+				connection.set(manager.openConnection(config));
 			} catch (JSchException e) {
 				logger.error("Connection could not be established. Transfer will fail.", e);
 			}
 		} else {
 			// Get the connection if it is already available
-			connection = manager.getConnection(config.getName());
+			connection.set(manager.getConnection(config.getName()));
 		}
 		// Open an sftp channel for this remote file handler to use
 		try {
 			// Set it for the connection
-			if (connection.getChannel() == null) {
-				connection.setChannel(connection.getSession().openChannel("sftp"));
-				connection.getChannel().connect();
+			if (connection.get().getChannel() == null) {
+				connection.get().setChannel(connection.get().getSession().openChannel("sftp"));
+				connection.get().getChannel().connect();
 			}
 		} catch (JSchException e) {
 			logger.error(
@@ -107,20 +107,17 @@ public class RemoteFileHandler extends FileHandler {
 		ChannelSftp sftpChannel = null;
 		try {
 			// Get the sftp channel to check existence
-			sftpChannel = (ChannelSftp) connection.getChannel();
+			sftpChannel = (ChannelSftp) connection.get().getChannel();
 
 			// Try to lstat the path. If an exception is thrown, it means it does not exist
 			SftpATTRS attrs = sftpChannel.lstat(file);
-			logger.info("File " + file + " found remotely");
 		} catch (SftpException e) {
 			if (isLocal(file)) {
-				logger.info("File " + file + " found locally");
 				// If the file can be found locally, return true since we found it.
 				// Up to checkExistence to determine what kind of move this is (e.g. local->remote
 				// or vice versa)
 				return true;
 			} else {
-				logger.info("File " + file + " couldn't be found ");
 				return false;
 			}
 		}
@@ -145,7 +142,7 @@ public class RemoteFileHandler extends FileHandler {
 		try {
 
 			// Get the sftp channel to check existence
-			sftpChannel = (ChannelSftp) connection.getChannel();
+			sftpChannel = (ChannelSftp) connection.get().getChannel();
 			// Try to make the directory on the remote host
 			// Could be many directories, so we need to iterate over each piece
 			// of the path and see if it exists. If it doesn't, then make it.
@@ -288,8 +285,8 @@ public class RemoteFileHandler extends FileHandler {
 		cmd.setMoveType(HANDLE_TYPE);
 		cmd.setPermissions(permissions);
 		// Set the command to have this connection and connection configuration
-		cmd.setConnectionConfiguration(connection.getConfiguration());
-		cmd.setConnection(connection);
+		cmd.setConnectionConfiguration(connection.get().getConfiguration());
+		cmd.setConnection(connection.get());
 		
 		// Now set the member variable of type Command
 		command.set(cmd);
@@ -309,15 +306,10 @@ public class RemoteFileHandler extends FileHandler {
 		cmd.setCopyType(HANDLE_TYPE);
 		cmd.setPermissions(permissions);
 		// Set the command to have this connection and connection configuration
-		cmd.setConnectionConfiguration(connection.getConfiguration());
-		cmd.setConnection(connection);
+		cmd.setConnectionConfiguration(connection.get().getConfiguration());
+		cmd.setConnection(connection.get());
 		command.set(cmd);
 
-	}
-
-	public void disconnect() {
-		connection.getChannel().disconnect();
-		connection.getSession().disconnect();
 	}
 
 	/**
