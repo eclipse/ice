@@ -110,21 +110,6 @@ public class ConnectionManagerTest {
 
 	}
 
-	/**
-	 * Function that performs all of the tests below to ensure that they are
-	 * performed in order, since e.g. one can't close a connection if it isn't
-	 * opened in the first place. This is to test a valid opening and closing of a
-	 * real connection, in the case where no exceptions are to be thrown.
-	 */
-	@Test
-	public void testValidConnection() {
-		System.out.println("Testing valid connection");
-		testOpenConnection();
-
-		testGetConnection();
-
-		testCloseConnection();
-	}
 
 	/**
 	 * Test method for
@@ -132,7 +117,7 @@ public class ConnectionManagerTest {
 	 */
 	public void testOpenConnection() {
 		// Set the name of the configuration, in case it was overwritten by other test
-		configuration.setName("TestConnection");
+		configuration.setName(connectionName);
 		// Try to open a connection
 		try {
 			connect = manager.openConnection(configuration);
@@ -243,10 +228,6 @@ public class ConnectionManagerTest {
 		// List all available connections to the console screen
 		manager.listAllConnections();
 
-		// Check that get name returns the appropriate connection in the list
-		assert (connections.get("someOtherConnection").getConfiguration().getAuthorization().getHostname()
-				.equals(hostname));
-
 		// Check that the name returns the appropriate connection from ConnectionManager
 		assert (manager.getConnection("FirstConnection").getConfiguration().getName().equals("FirstConnection"));
 
@@ -262,4 +243,19 @@ public class ConnectionManagerTest {
 
 	}
 
+	/**
+	 * Function that performs all of the tests below to ensure that they are
+	 * performed in order, since e.g. one can't close a connection if it isn't
+	 * opened in the first place. This is to test a valid opening and closing of a
+	 * real connection, in the case where no exceptions are to be thrown.
+	 */
+	@Test
+	public void testValidConnection() {
+		System.out.println("Testing valid connection");
+		testOpenConnection();
+
+		testGetConnection();
+
+		testCloseConnection();
+	}
 }

@@ -91,6 +91,8 @@ public abstract class Command {
 		// Now that all of the prerequisites have been set, start the job running
 		status = run();
 
+		// Clean up any remaining items from the job, in preparation for a (potential)
+		// next job to be run
 		status = cleanUp();
 
 		// Confirm the job finished with some status
@@ -110,7 +112,7 @@ public abstract class Command {
 	protected abstract CommandStatus run();
 
 	/**
-	 * This function runs the job through the relevant API and executes the process.
+	 * This function runs the job through the relevant API and performs the process.
 	 * 
 	 * @return - CommandStatus indicating the result of the function.
 	 */
@@ -143,7 +145,6 @@ public abstract class Command {
 	 * @return CommandStatus - indicates whether or not the Command was properly
 	 *         cancelled.
 	 */
-
 	public CommandStatus cancel() {
 		status = CommandStatus.CANCELED;
 		return status;
@@ -162,7 +163,7 @@ public abstract class Command {
 		// Same for input file list
 		commandConfig.getSplitCommand().clear();
 		commandConfig.getInputFileList().clear();
-		
+
 		// Return the already set status once the job was finished processing
 		return status;
 	}

@@ -72,6 +72,13 @@ public class CommandConfiguration {
 	private HashMap<String, String> inputFiles = new HashMap<String, String>();
 
 	/**
+	 * This is a list of arguments that the user might want to append to the executable
+	 * name that are _not_ input files. These will not be explicitly checked by the 
+	 * file handler for whether or not they exist, as they are presumed to be 
+	 * flags/arguments for the job to run.
+	 */
+	private ArrayList<String> argumentList = new ArrayList<String>();
+	/**
 	 * The name of the file that will contain the output of the job
 	 */
 	private String stdOutFileName;
@@ -304,7 +311,7 @@ public class CommandConfiguration {
 			fixedExecutableName += " " + getInputFiles();
 
 		fullCommand = fixedExecutableName;
-
+		
 		// Determine the proper separator
 		if (installDirectory != null && installDirectory.contains(":\\"))
 			separator = "\\";
@@ -313,6 +320,11 @@ public class CommandConfiguration {
 		if (installDirectory != null && !installDirectory.endsWith(separator))
 			installDirectory = installDirectory + separator;
 
+		// Add the arguments to the executable name
+		for(String arg : argumentList) {
+			fullCommand += " " + arg;
+		}
+		
 		// Search for and replace the ${inputFile} to properly configure the input file
 		for (Map.Entry<String, String> entry : inputFiles.entrySet()) {
 			if (fixedExecutableName.contains("${" + entry.getKey() + "}") && !appendInput)
@@ -784,5 +796,21 @@ public class CommandConfiguration {
 	public String getInterpreter() {
 		return interpreter;
 	}
+	
+	/**
+	 * Getter for argument list {@link org.eclipse.ice.commands.CommandConfiguration#argumentList}
+	 * @return
+	 */
+	public ArrayList<String> getArgumentList(){
+		return argumentList;
+	}
 
+	/**
+	 * Function that adds an argument to the argument list
+	 * @param argument
+	 */
+	public void addArgument(String argument) {
+		argumentList.add(argument);
+	}
+	
 }
