@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.eclipse.ice.commands.CommandStatus;
@@ -127,7 +128,7 @@ public class RemoteFileHandlerTest {
 		System.out.println("all finished testing set connection");
 	}
 
-	// @Test
+	@Test
 	public void testSetNewConnection() throws Exception {
 		ConnectionConfiguration config = makeConnectionConfiguration();
 		RemoteFileHandler handler = new RemoteFileHandler();
@@ -286,8 +287,6 @@ public class RemoteFileHandlerTest {
 		handler.setConnectionConfiguration(fileTransferConn.getConfiguration());
 
 		String src = theSource;
-		// Get the filename to check for existence
-		String filename = src.substring(src.lastIndexOf("/"));
 
 		// Now try to move the file
 		CommandStatus status = handler.move(src, theDestination);
@@ -296,6 +295,132 @@ public class RemoteFileHandlerTest {
 
 		deleteRemoteDestination();
 		deleteRemoteSource();
+
+	}
+
+	/**
+	 * Function to execute the remote file browsing and remote directory browsing
+	 * test. We call one main function so that a file structure can be created at the
+	 * beginning of the test, accessed by both "subtests", and then deleted at the
+	 * end
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testRemoteBrowsing() throws Exception {
+		// We'll create our own code here to create the file structure rather than
+		// using the already developed functions, since we need multiple files and
+		// directories
+		String topDirectory = "/tmp/fileBrowsingDir";
+		createRemoteFileStructure(topDirectory);
+
+		testRemoteFileBrowsing(topDirectory);
+
+		testRemoteDirectoryBrowsing(topDirectory);
+
+		deleteRemoteFileStructure(topDirectory);
+
+	}
+
+	/**
+	 * Test for file browsing on remote system
+	 */
+	public void testRemoteFileBrowsing(String topDirectory) {
+
+	
+		RemoteFileHandler handler = new RemoteFileHandler();
+		handler.setConnectionConfiguration(fileTransferConn.getConfiguration());
+
+		ArrayList<String> files = handler.listFiles(topDirectory);
+
+		// files should only be 4 entries since there are only 4 files in the tree
+		// structure we created
+		assert (files.size() == 4);
+
+		// Get (only) the filename from the source
+		String filename = theSource.substring(theSource.lastIndexOf("/"));
+		assert(files.get(0).equals(topDirectory + filename));
+	}
+
+	/**
+	 * Test for directory browsing on remote system
+	 */
+	public void testRemoteDirectoryBrowsing(String topDirectory) {
+
+		RemoteFileHandler handler = new RemoteFileHandler();
+		handler.setConnectionConfiguration(fileTransferConn.getConfiguration());
+
+		ArrayList<String> files = handler.listDirectories(topDirectory);
+
+		// directories should only be 3 entries since there are only 3 directories in the tree
+		// structure we created
+		assert (files.size() == 3);
+
+		// Get (only) the filename from the source
+		String filename = theSource.substring(theSource.lastIndexOf("/"));
+		assert(files.get(1).equals(topDirectory + "/dir2/"));
+		
+	}
+
+	/**
+	 * Function that creates a dummy remote file structure tree to test the file
+	 * browsing source code
+	 * 
+	 * @param - topDirectory - refers to top directory whose contents will hold the
+	 *          dummy directories/files
+	 * @throws SftpException
+	 */
+	protected void createRemoteFileStructure(String topDirectory) throws Exception, SftpException {
+
+		ChannelSftp sftpChannel = fileTransferConn.getSftpChannel();
+
+		// Check if the directory already exists
+		SftpATTRS attrs = null;
+		try {
+			attrs = sftpChannel.lstat(topDirectory);
+		} catch (Exception e) {
+			System.out.println("Remote directory not found, trying to make it");
+		}
+		if (attrs == null) {
+			// Remote directory doesn't exist, so make it
+			// Create a remote source directory
+			sftpChannel.mkdir(topDirectory);
+		}
+
+		// make another directory in top directory
+		sftpChannel.cd(topDirectory);
+		sftpChannel.mkdir("dir1");
+		sftpChannel.mkdir("dir2");
+		sftpChannel.mkdir("dir3");
+		
+		// create a local file to put there
+		createLocalSource();
+		// Get the filename that was just created
+		String filename = theSource;
+		// put it in a few places in the directory structure
+		sftpChannel.put(filename, topDirectory);
+		sftpChannel.put(filename, topDirectory + "/dir1/");
+		sftpChannel.put(filename, topDirectory + "/dir3/");
+		sftpChannel.put(filename, topDirectory + "/dir3/newfile.txt");
+
+	}
+
+	/**
+	 * Function that deletes the remote file structure tree created for testing file
+	 * browsing
+	 * 
+	 * @param - topDirectory - refers to top directory whose contents hold the dummy
+	 *          directories/files
+	 * @throws JSchException
+	 * @throws SftpException
+	 */
+	protected void deleteRemoteFileStructure(String topDirectory) throws SftpException, JSchException {
+		// Connect the channel from the connection
+		ChannelSftp sftpChannel = fileTransferConn.getSftpChannel();
+
+		System.out.println("Deleting remote destination at : " + topDirectory);
+		// Recursively delete the directory and its contents
+		deleteRemoteDirectory(sftpChannel, topDirectory);
 
 	}
 
@@ -555,7 +680,7 @@ public class RemoteFileHandlerTest {
 		ChannelSftp sftpChannel = fileTransferConn.getSftpChannel();
 
 		System.out.println("Deleting remote destination at : " + theDestination);
-		// Recurisvely delete the directory and its contents
+		// Recursively delete the directory and its contents
 		deleteRemoteDirectory(sftpChannel, theDestination);
 
 	}
