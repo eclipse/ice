@@ -12,6 +12,7 @@
 package org.eclipse.ice.commands;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * This interface defines and lays out the design for the FileHandler structures
@@ -65,5 +66,25 @@ public interface IFileHandler {
 	 * @throws IOException
 	 */
 	public abstract void checkExistence(final String source, final String destination) throws IOException;
+
+	/**
+	 * This method returns the list of files and their relative paths to the passed
+	 * argument topDirectory. The argument should be the top-most directory that one wants
+	 * to search through.
+	 * 
+	 * @param topDirectory
+	 * @return
+	 */
+	public abstract ArrayList<String> listFiles(final String topDirectory);
+
+	/**
+	 * This method returns the list of directories and their relative paths to the passed
+	 * argument topDirectory. The argument should be the top-most directory that one wants
+	 * to search through.
+	 * 
+	 * @param topDirectory
+	 * @return
+	 */
+	public abstract ArrayList<String> listDirectories(final String topDirectory);
 
 }

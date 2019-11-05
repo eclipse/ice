@@ -12,6 +12,10 @@
 package org.eclipse.ice.commands;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 
 /**
  * This class inherits from FileHandler and deals with the processing of local
@@ -87,4 +91,56 @@ public class LocalFileHandler extends FileHandler {
 
 	}
 
+	/**
+	 * See {@link org.eclipse.ice.commands.IFileHandler#listFiles(String)}
+	 */
+	@Override
+	public ArrayList<String> listFiles(String topDirectory) {
+		logger.info("Searching " + topDirectory);
+		// Get the local file walker which executes the file walking logic
+		LocalFileWalker walker = walkTree(topDirectory);
+		
+		// Return the resulting file list hash map
+		return walker.getFileList();
+	}
+
+	/**
+	 * See {@link org.eclipse.ice.commands.IFileHandler#listDirectories(String)}
+	 */
+	@Override
+	public ArrayList<String> listDirectories(String topDirectory) {
+		logger.info("Searching " + topDirectory);
+		// Get the local file walker which executes the file walking logic
+		LocalFileWalker walker = walkTree(topDirectory);
+		
+		// Return the resulting directory array list
+		return walker.getDirectoryList();
+	}
+
+	/**
+	 * This function performs the action of walking the file tree for the file browsing 
+	 * capabilities of LocalFileHandler. It returns a LocalFileWalker so that the 
+	 * files or directories could be obtained
+	 * @return
+	 */
+	private LocalFileWalker walkTree(String topDirectory) {
+		
+		// Make a path variable of the topDirectory
+		Path topPath = Paths.get(topDirectory);
+		// Make a dummy path that just gets the return top directory from
+		// Files.walkFileTree
+		Path path = null;
+		
+		// Make a local file walker instance, which contains the logic of what to do
+		// with the results from Files.walkFileTree
+		LocalFileWalker walker = new LocalFileWalker();
+		try {
+			path = Files.walkFileTree(topPath, walker);
+		} catch (IOException e) {
+			logger.error("Unable to walk file tree at path " + topPath.toString(), e);
+		}
+		
+		return walker;
+	}
+	
 }

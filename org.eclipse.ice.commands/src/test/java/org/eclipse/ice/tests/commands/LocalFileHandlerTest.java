@@ -207,27 +207,43 @@ public class LocalFileHandlerTest {
 	 * 
 	 * @throws IOException
 	 */
-	public void testLocalFileBrowsing(Path topPath) {
+	public void testLocalFileBrowsing(Path topPath) throws IOException {
 		LocalFileHandler handler = new LocalFileHandler();
 
 		ArrayList<String> files = handler.listFiles(topPath.toString());
 
+		// four files were created
 		assert (files.size() == 4);
 
-		assert (files.get(2).equals(topPath.toString() + "/dir2/newfile.txt"));
+		// Let's assert that each file we created is in the list
+		for (int i = 0; i < files.size(); i++) {
+			String file = files.get(i);
+			
+			assert(handler.exists(file));
+		}
+
 	}
 
 	/**
 	 * Test for directory browsing on local system
 	 */
-	public void testLocalDirectoryBrowsing(Path topPath) {
+	public void testLocalDirectoryBrowsing(Path topPath) throws IOException {
 		LocalFileHandler handler = new LocalFileHandler();
 
 		ArrayList<String> files = handler.listDirectories(topPath.toString());
+		for (int i = 0; i < files.size(); i++) {
+			System.out.println(files.get(i));
+		}
+		// Four directories total, including the top directory
+		assert (files.size() == 4);
 
-		assert (files.size() == 3);
-
-		assert (files.get(1).equals(topPath.toString() + "/dir2/"));
+		// Let's assert that each directory we created is in the list
+		for (int i = 0; i < files.size(); i++) {
+			String file = files.get(i);
+			
+			assert(handler.exists(file));
+		}
+		
 	}
 
 	/**
