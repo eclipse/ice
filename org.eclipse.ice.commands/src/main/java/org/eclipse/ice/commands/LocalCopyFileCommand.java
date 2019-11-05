@@ -31,19 +31,18 @@ public class LocalCopyFileCommand extends LocalCommand {
 	/**
 	 * The path to the source file which is to be copied
 	 */
-	Path source;
+	private Path source;
 
 	/**
 	 * The path of the destination for which the source file will be copied to
 	 */
-	Path destination;
+	private Path destination;
 
 	/**
 	 * Default constructor
 	 */
 	public LocalCopyFileCommand() {
 	}
-
 
 	/**
 	 * This function actually executes the copy file command. It checks that the
@@ -72,28 +71,22 @@ public class LocalCopyFileCommand extends LocalCommand {
 	protected CommandStatus run() {
 		// Try to copy from source to destination, overwriting if the file already
 		// exists at the destination. If it can't, complain.
+		logger.info("Copying " + source + " to " + destination);
 		try {
+			status = CommandStatus.RUNNING;
 			Files.copy(source, destination.resolve(source.getFileName()), REPLACE_EXISTING);
 		} catch (IOException e) {
-			e.printStackTrace();
+			status = CommandStatus.FAILED;
+			logger.error("Local copy failed! Returning failed.", e);
+			return status;
 		}
-		return CommandStatus.RUNNING;
+		return CommandStatus.SUCCESS;
 	}
 
-	/**
-	 * This function cancels the command when called. See also
-	 * {@link org.eclipse.ice.commands.Command#cancel()}
-	 */
-	@Override
-	public CommandStatus cancel() {
-		status = CommandStatus.CANCELED;
-		return CommandStatus.CANCELED;
-	}
-
-	
 	/**
 	 * This function sets the Paths for source and destination to the given strings
-	 * @param src - string corresponding to the source file
+	 * 
+	 * @param src  - string corresponding to the source file
 	 * @param dest - string corresponding to the destination file
 	 */
 	public void setConfiguration(String src, String dest) {
@@ -101,7 +94,7 @@ public class LocalCopyFileCommand extends LocalCommand {
 		destination = Paths.get(dest);
 		return;
 	}
-	
+
 	/**
 	 * A function that returns the source path in string form
 	 * 
@@ -110,8 +103,7 @@ public class LocalCopyFileCommand extends LocalCommand {
 	public String getSource() {
 		return source.toString();
 	}
-	
-	
+
 	/**
 	 * A function that returns the destination path in string form
 	 * 

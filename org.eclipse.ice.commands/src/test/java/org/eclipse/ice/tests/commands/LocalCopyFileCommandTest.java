@@ -13,6 +13,7 @@ package org.eclipse.ice.tests.commands;
 
 import java.io.IOException;
 import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -87,6 +88,12 @@ public class LocalCopyFileCommandTest {
 
 		// Get the individual directories
 		String delims = "[/]";
+		String separator = FileSystems.getDefault().getSeparator();
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
+			// Add an extra \ for windows
+			separator += "\\";
+			delims = separator;
+		}
 		String[] tokens = source.split(delims);
 		String filename = tokens[tokens.length - 1];
 

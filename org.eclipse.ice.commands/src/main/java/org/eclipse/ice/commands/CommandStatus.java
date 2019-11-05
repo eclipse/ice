@@ -28,7 +28,9 @@ package org.eclipse.ice.commands;
  * 			    and is maintained until the job completes or fails.
  * INFOERROR  - This indicates that there was some information that was not provided that the
  * 			    job needs to run, for example, if the executable could not be found in the
- * 			    working directory in which the user specified.
+ * 			    working directory in which the user specified. It could also indicate that some of the
+ * 				info that was provided was not correct, for example if an incorrect password/username
+ * 				was given for a remote command.
  * FAILED     - The job failed. This status is set if the ProcessBuilder returned an atypical
  * 			    exit value (anything other than 0). It is also set if there is any error that
  * 			    is registered during the job running.

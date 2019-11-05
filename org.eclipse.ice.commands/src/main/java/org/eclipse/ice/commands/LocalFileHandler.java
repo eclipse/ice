@@ -12,9 +12,6 @@
 package org.eclipse.ice.commands;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * This class inherits from FileHandler and deals with the processing of local
@@ -32,39 +29,38 @@ public class LocalFileHandler extends FileHandler {
 	}
 
 	/**
-	 * See {@link org.eclipse.ice.commands.FileHandler#setConfiguration(String, String)}
+	 * See
+	 * {@link org.eclipse.ice.commands.FileHandler#setConfiguration(String, String)}
 	 */
 	@Override
 	protected void configureMoveCommand(final String source, final String destination) {
-		command = new LocalMoveFileCommand();
-		// Cast the Command as a LocalMoveFileCommand to set the source and destination paths
-		((LocalMoveFileCommand) command).setConfiguration(source, destination);
+		LocalMoveFileCommand cmd = new LocalMoveFileCommand();
+		// Set the source and destination of the command
+		cmd.setConfiguration(source, destination);
+		// Set the member variable
+		command.set(cmd);
 	}
 
 	/**
-	 * See {@link org.eclipse.ice.commands.FileHandler#setConfiguration(String, String)}
+	 * See
+	 * {@link org.eclipse.ice.commands.FileHandler#setConfiguration(String, String)}
 	 */
 	@Override
 	protected void configureCopyCommand(final String source, final String destination) {
-		command = new LocalCopyFileCommand();
-		// Cast the Command as a LocalCopyFileCommand to set the source and destination paths
-		((LocalCopyFileCommand) command).setConfiguration(source, destination);
-
+		LocalCopyFileCommand cmd = new LocalCopyFileCommand();
+		// Set the source and destination of the command
+		cmd.setConfiguration(source, destination);
+		// Set the member variable
+		command.set(cmd);
 	}
 
-	
 	/**
 	 * See {@link org.eclipse.ice.commands.FileHandler#exists(String)}
 	 */
 	@Override
 	public boolean exists(final String file) throws IOException {
-
-		// Get the path from the passed string
-		Path path = Paths.get(file);
-
-		// Check if the path exists or not. Symbolic links are followed
-		// by default, see {@link java.nio.file.Files#exists}
-		return Files.exists(path);
+		// See {@link org.eclipse.ice.commands.FileHandler#isLocal(String)}
+		return isLocal(file);
 
 	}
 
@@ -74,6 +70,8 @@ public class LocalFileHandler extends FileHandler {
 	 */
 	@Override
 	public void checkExistence(final String source, final String destination) throws IOException {
+
+		// Check that the source file exists
 		if (!exists(source)) {
 			logger.error("Source doesn't exist! Exiting.");
 			throw new IOException();
@@ -86,6 +84,7 @@ public class LocalFileHandler extends FileHandler {
 				throw new IOException();
 			}
 		}
+
 	}
 
 }

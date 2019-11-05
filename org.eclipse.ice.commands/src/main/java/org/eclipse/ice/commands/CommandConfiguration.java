@@ -21,6 +21,8 @@ import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +43,7 @@ public class CommandConfiguration {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	protected static final Logger logger = LoggerFactory.getLogger(CommandConfiguration.class);
+	private static final Logger logger = LoggerFactory.getLogger(CommandConfiguration.class);
 
 	/**
 	 * An integer ID to associate with a job
@@ -49,16 +51,33 @@ public class CommandConfiguration {
 	private int commandId;
 
 	/**
+	 * A string that lets the user optionally set an interpreter name to be attached
+	 * before the executable name. For example, if the executable is script.py,
+	 * interpreter would allow the user to put python2 or python3 in front of
+	 * script.py to run it in either version of python. Set to null by default,
+	 * which means by default the interpreter is bash
+	 */
+	private String interpreter = null;
+
+	/**
 	 * The file name of the executable that is to be processed or run
 	 */
 	private String executable;
 
 	/**
-	 * The input file that the executable needs or takes as an argument in its
-	 * processing
+	 * The input file(s) that the executable needs or takes as an argument in its
+	 * processing. The first string is the name of the file as in the executable
+	 * string, while the second string is the path to that file
 	 */
-	private String inputFile;
+	private HashMap<String, String> inputFiles = new HashMap<String, String>();
 
+	/**
+	 * This is a list of arguments that the user might want to append to the executable
+	 * name that are _not_ input files. These will not be explicitly checked by the 
+	 * file handler for whether or not they exist, as they are presumed to be 
+	 * flags/arguments for the job to run.
+	 */
+	private ArrayList<String> argumentList = new ArrayList<String>();
 	/**
 	 * The name of the file that will contain the output of the job
 	 */
@@ -88,13 +107,21 @@ public class CommandConfiguration {
 	private String workingDirectory;
 
 	/**
-	 * The operating system that the command will be run on. Set as a default to the local OS
+	 * A string which contains the directory in which to execute the job on the
+	 * remote system, if necessary
 	 */
-	private String os;
+	private String remoteWorkingDirectory = "";
+
+	/**
+	 * The operating system that the command will be run on. Set by default to the
+	 * local OS
+	 */
+	private String os = System.getProperty("os.name");
+
 	/**
 	 * The hostname that the command will be executed on. This is the same as the
-	 * hostname in {@link org.eclipse.ice.commands.Connection} and is just used for
-	 * output file purposes.
+	 * hostname in {@link org.eclipse.ice.commands.Connection} and is only used here
+	 * for logging purposes in the output files.
 	 */
 	private String hostname;
 
@@ -106,9 +133,19 @@ public class CommandConfiguration {
 	/**
 	 * This is a string that contains all of the output of the job. This is the same
 	 * text that gets written out to
-	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOut}
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOut}, just in string
+	 * form. It is used for easy access to the output at the end of the job
+	 * processing, if desired.
 	 */
-	String stdOutput = "";
+	private String stdOutput = "";
+
+	/**
+	 * This is a string that contains all of the error output from the job. This is
+	 * the same text that gets written out to
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdErr}, just in string
+	 * form for easy access and for the same purposes as stdOutput above.
+	 */
+	private String errMsg = "";
 
 	/**
 	 * A flag to mark whether or not the input file name should be appended to the
@@ -135,7 +172,6 @@ public class CommandConfiguration {
 	public CommandConfiguration() {
 		// Assume some default variables
 		commandId = -999;
-		os = System.getProperty("os.name");
 	}
 
 	/**
@@ -155,14 +191,14 @@ public class CommandConfiguration {
 		// Now write them out
 		try {
 			stdOut.write(stdOutHeader);
-			stdOut.write("# Executable to be run is: " + fullCommand + "\n");
 			stdOut.close();
 			stdErr.write(stdErrHeader);
 			stdErr.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Could not write header logs to output files!", e);
 		}
 
+		return;
 	}
 
 	/**
@@ -182,12 +218,15 @@ public class CommandConfiguration {
 			try {
 				writer = new FileWriter(filename, true);
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("Could not retrieve a file writer for buffer writing", e);
+				return null;
 			}
 			bufferedWriter = new BufferedWriter(writer);
 			return bufferedWriter;
-		} else
-			return null;
+		}
+
+		// If filename is null, then we need to return null
+		return null;
 	}
 
 	/**
@@ -206,7 +245,10 @@ public class CommandConfiguration {
 			InetAddress addr = InetAddress.getLocalHost();
 			localHostname = addr.getHostName();
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			logger.error("Could not identify local host name in output header creation.", e);
+			// To handle this exception, we can just set the local host name since it's only
+			// purpose is for logging in the header file
+			localHostname = "UNKNOWN";
 		}
 
 		// Add the header file name so that it can be identified
@@ -217,7 +259,7 @@ public class CommandConfiguration {
 		header += new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "\n";
 
 		// Add the point of origin
-		header += "# Launch host: " + hostname + "\n";
+		header += "# Launch host: " + localHostname + "\n";
 
 		// Add the target machine
 		header += "# Target host: " + hostname + "\n";
@@ -226,7 +268,10 @@ public class CommandConfiguration {
 		header += "# Command Executed: " + fullCommand + "\n";
 
 		// Add the input file name
-		header += "# Input file: " + inputFile + "\n";
+		header += "# Input files: " + getInputFiles() + "\n";
+
+		// Add the install directory name
+		header += "# Install directory: " + installDirectory + "\n";
 
 		// Add an empty line
 		header += "\n";
@@ -248,15 +293,30 @@ public class CommandConfiguration {
 
 		// Get the information from the executable dictionary
 		int numProcsInt = Math.max(1, Integer.parseInt(numProcs));
-		String fixedExecutableName = executable;
+
+		// Make the full executable to be processed
+		String fixedExecutableName = "";
+
+		// Check to see if this is a python script or a bash script
+		if (interpreter != null) {
+			// If it is a python script, add "python" in front
+			fixedExecutableName += interpreter + " ";
+		}
+
+		fixedExecutableName += executable;
 		String separator = "/";
 
-		// If the input file should be appended, append it
+		// Add the arguments to the executable name
+		for(String arg : argumentList) {
+			fixedExecutableName += " " + arg;
+		}
+		
+		// If the input files should be appended, append it
 		if (appendInput)
-			fixedExecutableName += " " + inputFile;
+			fixedExecutableName += " " + getInputFiles();
 
 		fullCommand = fixedExecutableName;
-
+		
 		// Determine the proper separator
 		if (installDirectory != null && installDirectory.contains(":\\"))
 			separator = "\\";
@@ -265,10 +325,13 @@ public class CommandConfiguration {
 		if (installDirectory != null && !installDirectory.endsWith(separator))
 			installDirectory = installDirectory + separator;
 
-		// Search for and replace the ${inputFile} to properly configure the input file
-		if (fixedExecutableName.contains("${inputFile}") && !appendInput)
-			fixedExecutableName = fixedExecutableName.replace("${inputFile}", inputFile);
 
+		
+		// Search for and replace the ${inputFile} to properly configure the input file
+		for (Map.Entry<String, String> entry : inputFiles.entrySet()) {
+			if (fixedExecutableName.contains("${" + entry.getKey() + "}") && !appendInput)
+				fixedExecutableName = fixedExecutableName.replace("${" + entry.getKey() + "}", entry.getValue());
+		}
 		if (fixedExecutableName.contains("${installDir}") && installDirectory != null)
 			fixedExecutableName = fixedExecutableName.replace("${installDir}", installDirectory);
 
@@ -281,7 +344,8 @@ public class CommandConfiguration {
 
 		// Split the full command into its stages, if there are any.
 		if (!fixedExecutableName.contains(";"))
-			splitCommand.add(fixedExecutableName);
+			// Add a ; to the end so that the command is properly closed
+			splitCommand.add(fixedExecutableName + ";");
 		// Otherwise split the full command and put it into
 		// CommandConfiguration.splitCommand
 		else {
@@ -293,7 +357,7 @@ public class CommandConfiguration {
 		// Print launch stages so that user can confirm
 		for (int i = 0; i < splitCommand.size(); i++) {
 			String cmd = splitCommand.get(i);
-			logger.info("LocalCommand Message: Launch stage " + i + " = " + cmd);
+			logger.info("CommandConfiguration Message: Launch stage " + i + " = " + cmd);
 		}
 
 		return fixedExecutableName;
@@ -311,8 +375,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param _commandId
 	 */
-	public void setCommandId(int _commandId) {
-		commandId = _commandId;
+	public void setCommandId(int commandId) {
+		this.commandId = commandId;
 		return;
 	}
 
@@ -332,8 +396,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param exec
 	 */
-	public void setExecutable(String exec) {
-		executable = exec;
+	public void setExecutable(String executable) {
+		this.executable = executable;
 		return;
 	}
 
@@ -353,19 +417,33 @@ public class CommandConfiguration {
 	 * 
 	 * @param input
 	 */
-	public void setInputFile(String input) {
-		inputFile = input;
+	public void addInputFile(String name, String path) {
+		inputFiles.put(name, path);
 		return;
 	}
 
 	/**
-	 * Getter for inputFile, see
-	 * {@link org.eclipse.ice.commands.CommandConfiguration#inputFile}
+	 * Getter for a concatenated string of inputFiles, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#inputFiles}
 	 * 
 	 * @return inputFile
 	 */
-	public String getInputFile() {
-		return inputFile;
+	public String getInputFiles() {
+		String files = "";
+		for (Map.Entry<String, String> entry : inputFiles.entrySet()) {
+			files += entry.getValue() + " ";
+		}
+		return files;
+	}
+
+	/**
+	 * Getter for the inputFile hashmap itself, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#inputFiles}
+	 * 
+	 * @return inputFile
+	 */
+	public HashMap<String, String> getInputFileList() {
+		return inputFiles;
 	}
 
 	/**
@@ -374,8 +452,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param errFile
 	 */
-	public void setErrFileName(String errFile) {
-		stdErrFileName = errFile;
+	public void setErrFileName(String stdErrFileName) {
+		this.stdErrFileName = stdErrFileName;
 		return;
 	}
 
@@ -395,8 +473,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param outFile
 	 */
-	public void setOutFileName(String outFile) {
-		stdOutFileName = outFile;
+	public void setOutFileName(String stdOutFileName) {
+		this.stdOutFileName = stdOutFileName;
 		return;
 	}
 
@@ -416,8 +494,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param procs
 	 */
-	public void setNumProcs(String procs) {
-		numProcs = procs;
+	public void setNumProcs(String numProcs) {
+		this.numProcs = numProcs;
 		return;
 	}
 
@@ -437,8 +515,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param installDir
 	 */
-	public void setInstallDirectory(String installDir) {
-		installDirectory = installDir;
+	public void setInstallDirectory(String installDirectory) {
+		this.installDirectory = installDirectory;
 		return;
 	}
 
@@ -453,8 +531,7 @@ public class CommandConfiguration {
 	}
 
 	/**
-	 * Getter for os, see
-	 * {@link org.eclipse.ice.commands.CommandConfiguration#os}
+	 * Getter for os, see {@link org.eclipse.ice.commands.CommandConfiguration#os}
 	 * Note that this is set to the default of the local OS
 	 * 
 	 * @return os
@@ -469,8 +546,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param OS
 	 */
-	public void setOS(String OS) {
-		os = OS;
+	public void setOS(String os) {
+		this.os = os;
 	}
 
 	/**
@@ -479,8 +556,15 @@ public class CommandConfiguration {
 	 * 
 	 * @param workingDir
 	 */
-	public void setWorkingDirectory(String workingDir) {
-		workingDirectory = workingDir;
+	public void setWorkingDirectory(String workingDirectory) {
+		// Check to see if the directory ends with a separator
+		// TODO - test with windows
+		String separator = "/";
+		if (getOS().toLowerCase().contains("win"))
+			separator = "\\";
+		if (!workingDirectory.endsWith(separator))
+			workingDirectory += separator;
+		this.workingDirectory = workingDirectory;
 		return;
 	}
 
@@ -500,8 +584,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param _appendInput
 	 */
-	public void setAppendInput(boolean _appendInput) {
-		appendInput = _appendInput;
+	public void setAppendInput(boolean appendInput) {
+		this.appendInput = appendInput;
 		return;
 	}
 
@@ -518,13 +602,13 @@ public class CommandConfiguration {
 	/**
 	 * Setter for hostname, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#hostname}. Make the
-	 * setter protected so that only ConnectionConfiguration can modify this member
-	 * variable.
+	 * setter protected with the intent that only ConnectionConfiguration can modify
+	 * this member variable.
 	 * 
 	 * @param host
 	 */
-	protected void setHostname(String host) {
-		hostname = host;
+	protected void setHostname(String hostname) {
+		this.hostname = hostname;
 		return;
 	}
 
@@ -544,8 +628,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param writer
 	 */
-	public void setStdErr(BufferedWriter writer) {
-		stdErr = writer;
+	public void setStdErr(BufferedWriter stdErr) {
+		this.stdErr = stdErr;
 		return;
 	}
 
@@ -565,8 +649,8 @@ public class CommandConfiguration {
 	 * 
 	 * @param writer
 	 */
-	public void setStdOut(BufferedWriter writer) {
-		stdOut = writer;
+	public void setStdOut(BufferedWriter stdOut) {
+		this.stdOut = stdOut;
 		return;
 	}
 
@@ -586,8 +670,8 @@ public class CommandConfiguration {
 	 * 
 	 * @return stdOutput
 	 */
-	public void setStdOutputString(String out) {
-		stdOutput = out;
+	public void setStdOutputString(String stdOutput) {
+		this.stdOutput = stdOutput;
 	}
 
 	/**
@@ -597,7 +681,7 @@ public class CommandConfiguration {
 	 * @param string
 	 */
 	public void addToStdOutputString(String string) {
-		stdOutput += " " + string;
+		stdOutput += "\n" + string;
 	}
 
 	/**
@@ -630,8 +714,8 @@ public class CommandConfiguration {
 	 *
 	 * 
 	 */
-	protected void setFullCommand(String command) {
-		fullCommand = command;
+	protected void setFullCommand(String fullCommand) {
+		this.fullCommand = fullCommand;
 		return;
 	}
 
@@ -644,4 +728,91 @@ public class CommandConfiguration {
 	public String getFullCommand() {
 		return fullCommand;
 	}
+
+	/**
+	 * Add to error message string, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#errMsg}
+	 * 
+	 * @param
+	 */
+	public void addToErrString(String errMsg) {
+		this.errMsg += errMsg;
+	}
+
+	/**
+	 * Setter for error message string, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#errMsg}
+	 * 
+	 * @param
+	 */
+	public void setErrString(String errMsg) {
+		this.errMsg = errMsg;
+	}
+
+	/**
+	 * Getter for error message string, see
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#errMsg}
+	 * 
+	 * @return
+	 */
+	public String getErrString() {
+		return errMsg;
+	}
+
+	/**
+	 * Setter for the remote working directory
+	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#workingDirectory}
+	 * 
+	 * @param dir
+	 */
+	public void setRemoteWorkingDirectory(String remoteWorkingDirectory) {
+		this.remoteWorkingDirectory = remoteWorkingDirectory;
+	}
+
+	/**
+	 * Getter for the remote working directory
+	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#workingDirectory}
+	 * 
+	 * @return
+	 */
+	public String getRemoteWorkingDirectory() {
+		return remoteWorkingDirectory;
+	}
+
+	/**
+	 * Setter for interpreter
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#interpreter}
+	 * 
+	 * @param interpreter
+	 */
+	public void setInterpreter(String interpreter) {
+		this.interpreter = interpreter;
+	}
+
+	/**
+	 * Getter for interpreter
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#interpreter}
+	 * 
+	 * @return
+	 */
+	public String getInterpreter() {
+		return interpreter;
+	}
+	
+	/**
+	 * Getter for argument list {@link org.eclipse.ice.commands.CommandConfiguration#argumentList}
+	 * @return
+	 */
+	public ArrayList<String> getArgumentList(){
+		return argumentList;
+	}
+
+	/**
+	 * Function that adds an argument to the argument list
+	 * @param argument
+	 */
+	public void addArgument(String argument) {
+		argumentList.add(argument);
+	}
+	
 }

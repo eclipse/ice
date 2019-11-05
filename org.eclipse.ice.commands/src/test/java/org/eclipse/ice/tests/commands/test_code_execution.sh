@@ -28,13 +28,22 @@ echo $STRING
 ls -lrt
 
 # Read in a dummy file
-echo "I will read from file "$1
+echo "I will read from files "$1 "and "$2
 
 # Set a variable to the argument value
 input=$1
+otherinput=$2
 
 # Read in the data
-while IFS= read -r line
+#while IFS= read -r lineA
+#do
+#    echo "$lineA"
+#done < "$input"
+
+paste $input $otherinput | while IFS="$(printf '\t')" read -r f1 f2
 do
-    echo "$line"
-done < "$input"
+    printf 'first file: %s\n' "$f1"
+    printf 'second file: %s\n' "$f2"
+done
+
+

@@ -13,22 +13,18 @@
 package org.eclipse.ice.commands;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * This class is the instantiation class of the CommandFactory class and thus is
- * responsible for executing particular commands. It is the base class for local
- * and remote commands, and thus delegates the creation of a LocalCommand or
- * RemoteCommand, depending on the hostname.
+ * responsible for executing particular commands. It is the super class for
+ * local and remote commands, and thus delegates the creation of a LocalCommand
+ * or RemoteCommand, depending on the hostname.
  * 
  * @author Joe Osborn
  *
@@ -50,7 +46,8 @@ public abstract class Command {
 	 * The connection configuration parameters of the command - this will contain
 	 * information about whether or not the command should be run locally or
 	 * remotely. If remote, it contains all of the necessary ssh information for
-	 * opening the remote connection.
+	 * opening the remote connection. This is the configuration to connect to the
+	 * host that will ultimately perform the job.
 	 */
 	protected ConnectionConfiguration connectionConfig;
 
@@ -60,14 +57,11 @@ public abstract class Command {
 	protected static final Logger logger = LoggerFactory.getLogger(Command.class);
 
 	/**
-	 * Reference to the Java process that is the job to be executed
+	 * An exit value that is determined when the job is processing. The convention
+	 * is that anything other than 0 indicates a failure. Set by default to -1 to
+	 * indicate that the job is not running (or hasn't finished).
 	 */
-	private Process job;
-
-	/**
-	 * The variable that actually handles the job execution at the command line
-	 */
-	protected ProcessBuilder jobBuilder;
+	protected int exitValue = -1;
 
 	/**
 	 * Default constructor
@@ -82,29 +76,68 @@ public abstract class Command {
 	 * @return CommandStatus - indicating whether or not the Command was properly
 	 *         executed
 	 */
-	public abstract CommandStatus execute();
+	public CommandStatus execute() {
+		// Check that the commandConfig and connectionConfig(s) file was properly
+		// instantiated in the constructor
+		if (!checkStatus(status))
+			return CommandStatus.INFOERROR;
 
-	/**
-	 * This function sets the CommandConfiguration for a particular command. It also
-	 * prepares various files for job launch (e.g. logfiles) and is called at
-	 * construction time. It is overriden by LocalCommand and RemoteCommand
-	 * 
-	 * @param config - the configuration to be used for a particular command.
-	 * @return CommandStatus - status indicating whether the configuration was
-	 *         properly set
-	 */
-	protected CommandStatus setConfiguration(CommandConfiguration config) {
-		commandConfig = config;
-		return CommandStatus.PROCESSING;
+		// Configure the command to be ready to run.
+		status = setConfiguration();
+		// Ensure that the command was properly configured
+		if (!checkStatus(status))
+			return CommandStatus.INFOERROR;
+
+		// Now that all of the prerequisites have been set, start the job running
+		status = run();
+
+		// Clean up any remaining items from the job, in preparation for a (potential)
+		// next job to be run
+		status = cleanUp();
+
+		// Confirm the job finished with some status
+		logger.info("The job finished with status: " + status);
+		return status;
+
 	}
 
 	/**
 	 * This function actually runs the particular command in question. It is called
-	 * in execute() after all of the setup for the job execution is finished.
+	 * in execute() after all of the setup for the job execution is finished. It
+	 * processes the several steps required to run the job, e.g. setting it up,
+	 * monitoring it, etc.
 	 * 
 	 * @return - CommandStatus indicating the result of the function.
 	 */
 	protected abstract CommandStatus run();
+
+	/**
+	 * This function runs the job through the relevant API and performs the process.
+	 * 
+	 * @return - CommandStatus indicating the result of the function.
+	 */
+	protected abstract CommandStatus processJob();
+
+	/**
+	 * This operation is responsible for monitoring the exit value of the running
+	 * job. If it does not finish after some time then the function will print a
+	 * message to the error output file. If the job has failed then it stops
+	 * monitoring and returns that the exit value of the job was unsuccessful. The
+	 * function also writes to the output logfile what the actual final job exit
+	 * value is, so the user can always see if their job finished successfully.
+	 * 
+	 * @return - CommandStatus indicating the result of the function.
+	 */
+	protected abstract CommandStatus monitorJob();
+
+	/**
+	 * This function is responsible for cleaning up any remaining things from the
+	 * job after the process builder or JSch API has submitted the job to be
+	 * processed. These are things related to, for example, logging output.
+	 * 
+	 * @return - CommandStatus indicating the result of the function.
+	 */
+	protected abstract CommandStatus finishJob();
 
 	/**
 	 * This function cancels the already submitted command, if possible.
@@ -112,46 +145,27 @@ public abstract class Command {
 	 * @return CommandStatus - indicates whether or not the Command was properly
 	 *         cancelled.
 	 */
-	public abstract CommandStatus cancel();
-
-	/**
-	 * This function returns the status for a particular command at a given time in
-	 * the operation of the command.
-	 * 
-	 * @return - return current status for a particular command
-	 */
-	public CommandStatus getStatus() {
+	public CommandStatus cancel() {
+		status = CommandStatus.CANCELED;
 		return status;
 	}
 
 	/**
-	 * This function sets the status for a particular command to be stat
+	 * This function is intended to clean up any (possible) remaining loose ends
+	 * after the job is finished processing.
 	 * 
-	 * @param stat - new CommandStatus to be set
+	 * @return
 	 */
-	public void setStatus(CommandStatus stat) {
-		status = stat;
-		return;
-	}
+	protected CommandStatus cleanUp() {
 
-	/**
-	 * This function returns to the user the configuration that was used to create a
-	 * particular command.
-	 * 
-	 * @return - the particular configuration for this command
-	 */
-	public CommandConfiguration getCommandConfiguration() {
-		return commandConfig;
-	}
+		// Clear the command list, so as to not inadvertently concatenate more commands
+		// if the same instance of Command is used again.
+		// Same for input file list
+		commandConfig.getSplitCommand().clear();
+		commandConfig.getInputFileList().clear();
 
-	/**
-	 * This function returns to the user the configuration that was used to set up a
-	 * particular connection.
-	 * 
-	 * @return - the particular connection configuration for this command
-	 */
-	public ConnectionConfiguration getConnectionConfiguration() {
-		return connectionConfig;
+		// Return the already set status once the job was finished processing
+		return status;
 	}
 
 	/**
@@ -166,10 +180,64 @@ public abstract class Command {
 	protected CommandStatus setConfiguration() {
 
 		// Check the info and return failure if something was not set
-		if (commandConfig.getExecutable() == null || commandConfig.getInputFile() == null
-				|| commandConfig.getOutFileName() == null || commandConfig.getErrFileName() == null
-				|| commandConfig.getNumProcs() == null || commandConfig.getWorkingDirectory() == null)
+		if (commandConfig.getExecutable() == null || commandConfig.getOutFileName() == null
+				|| commandConfig.getErrFileName() == null || commandConfig.getNumProcs() == null) {
+			logger.error("An important piece of information is missing from the CommandConfiguration. Exiting.");
 			return CommandStatus.INFOERROR;
+		}
+
+		// Get a string of the executable to manipulate
+		String exec = commandConfig.getExecutable();
+		// If the executable contains a prefix, remove it
+		if (exec.contains("./"))
+			exec = exec.substring(2, exec.length());
+		String separator = "/";
+		if (commandConfig.getOS().toLowerCase().contains("win"))
+			separator = "\\";
+
+		// Check if the working directory exists
+		String workingDir = commandConfig.getWorkingDirectory();
+		if (!workingDir.endsWith(separator))
+			workingDir += separator;
+
+		// Check that the directory exists
+		// Get the file handler factory
+		FileHandlerFactory factory = new FileHandlerFactory();
+		boolean exists = false, execExists = false;
+		try {
+			// Get the handler for this particular connection, whether local or remote
+			FileHandler handler = factory.getFileHandler(connectionConfig);
+
+			// If the working directory was set, check that it exists. If it wasn't set,
+			// then the paths should have been explicitly identified
+			if (workingDir != null)
+				exists = handler.exists(workingDir);
+
+			// Check if the executable exists in the working directory
+			execExists = handler.exists(workingDir + exec);
+
+		} catch (IOException e) {
+			// If we can't get the file handler, then there was an error in the connection
+			// configuration
+			logger.error("Unable to connect to filehandler and check file existence. Exiting.", e);
+			return CommandStatus.INFOERROR;
+		}
+		// If the working directory doesn't exist, we won't be able to continue the job
+		// processing unless the full paths were specified. Warn the user
+		if (!exists) {
+			logger.warn("Directory containing files does not exist!");
+			logger.warn("If you did not specify absolute paths for all your files, the job will fail!");
+		}
+		// If the executable does not exist but the working directory was set, warn the
+		// user again that the executable is unavailable
+		if (!execExists && exists) {
+			// If the executable doesn't exist, we shouldn't cancel the job because it is
+			// possible that the command is a simple shell command. So warn the user
+			logger.warn("Warning: Executable file could not be found");
+			logger.warn(
+					"If you are running a simple shell command, or specified the full path to the executable, ignore this warning");
+			logger.warn("Otherwise, the job will fail");
+		}
 
 		// Set the command to actually run and execute
 		commandConfig.setFullCommand(commandConfig.getExecutableName());
@@ -179,229 +247,6 @@ public abstract class Command {
 
 		// All setup completed, return that the job will now run
 		return CommandStatus.RUNNING;
-	}
-
-	/**
-	 * This function sets up the ProcessBuilder member variable to prepare for
-	 * actually submitting the job process to the command line from Java. The
-	 * function adjusts the command based on the OS on which it shall run, and then
-	 * creates the variables necessary for the command line execution.
-	 * 
-	 * @param command - Command to be prepared for shell execution
-	 */
-	protected CommandStatus setupProcessBuilder(String command) {
-
-		// Local declarations
-		String os = commandConfig.getOS();
-		ArrayList<String> commandList = new ArrayList<String>();
-
-		// If the OS is anything other than Windows, then the process builder
-		// needs to be configured to launch bash in command mode to avoid weird
-		// escape sequences.
-		if (!os.toLowerCase().contains("win")) {
-			commandList.add("/bin/bash");
-			commandList.add("-c");
-		}
-
-		// Now add the actual command to be processed, prepended with /bin/bash -c if
-		// the OS is not windows
-		commandList.add(command);
-
-		logger.info("Full command going to ProcessBuilder is: " + commandList);
-		// Make the ProcessBuilder to execute the command
-		jobBuilder = new ProcessBuilder(commandList);
-
-		// Set the directory to execute the job in
-		File directory = new File(commandConfig.getWorkingDirectory());
-		jobBuilder.directory(directory);
-		jobBuilder.redirectErrorStream(false);
-
-		return CommandStatus.RUNNING;
-	}
-
-	/**
-	 * This function is responsible for actually running the Process in the command
-	 * line. It catches exceptions in the event that the job can't be started.
-	 * 
-	 */
-	protected CommandStatus runProcessBuilder() {
-
-		String os = commandConfig.getOS();
-		List<String> commandList = jobBuilder.command();
-		String errMsg = "";
-
-		// Check that the job hasn't been canceled and is ready to run
-		try {
-			if (status != CommandStatus.CANCELED)
-				job = jobBuilder.start();
-		} catch (IOException e) {
-
-			// If not a windows machine, there was an error
-			if (!os.toLowerCase().contains("win")) {
-				// If there is an error, add it to errMsg
-				errMsg += e.getMessage() + "\n";
-			} else {
-				// If this is a windows machine, try to run in the command prompt
-				commandList.add(0, "CMD");
-				commandList.add(1, "/C");
-
-				// Reset the ProcessBuilder to reflect these changes
-				jobBuilder = new ProcessBuilder(commandList);
-				File directory = new File(commandConfig.getWorkingDirectory());
-				jobBuilder.directory(directory);
-				jobBuilder.redirectErrorStream(false);
-
-				// Now try again to start the job
-				try {
-					if (status != CommandStatus.CANCELED)
-						job = jobBuilder.start();
-				} catch (IOException e2) {
-					// If there is an error, add it to errMsg
-					errMsg += e2.getMessage() + "\n";
-				}
-			}
-		}
-
-		// Clean up and log the output of the job
-		status = cleanProcessBuilder(errMsg);
-
-		return status;
-
-	}
-
-	/**
-	 * This function cleans up the remaining tasks left after job processing. This
-	 * is mostly logging output files, and checking that the process actually
-	 * finished successfully according to the ProcessBuilder
-	 * 
-	 * @param errorMessage - A string of any potential errors that were thrown
-	 *                     during job execution
-	 * @return - CommandStatus indicating whether or not the function processed
-	 *         correctly
-	 */
-	protected CommandStatus cleanProcessBuilder(String errorMessage) {
-
-		InputStream stdOutStream = null, stdErrStream = null;
-		String stdErrFileName = null, stdOutFileName = null;
-
-		// Get the output file names
-		stdErrFileName = commandConfig.getErrFileName();
-		stdOutFileName = commandConfig.getOutFileName();
-
-		int exitValue = -1; // arbitrary value indicating not completed (yet)
-
-		// If errMsg is not an empty String, then there were some errors and they
-		// should be written out to the log file
-		if (errorMessage != "") {
-			try {
-				// Get the filenames so that they can be written to
-				commandConfig.setStdErr(commandConfig.getBufferedWriter(stdErrFileName));
-				commandConfig.setStdOut(commandConfig.getBufferedWriter(stdOutFileName));
-
-				// Write and close
-				commandConfig.getStdErr().write(errorMessage);
-				commandConfig.getStdOut().close();
-				commandConfig.getStdErr().close();
-			} catch (IOException e) {
-				logger.error("There were errors in the job running, but they could not write to the error log file!");
-				return CommandStatus.FAILED;
-			}
-
-			return CommandStatus.FAILED;
-		}
-
-		// Log the output of the job execution
-		stdOutStream = job.getInputStream();
-		stdErrStream = job.getErrorStream();
-
-		// Check that output was correctly logged. If not, return error
-		if (logOutput(stdOutStream, stdErrStream) == false) {
-			return CommandStatus.FAILED;
-		}
-
-		// Try to get the exit value of the job
-		try {
-			exitValue = job.exitValue();
-		} catch (IllegalThreadStateException e) {
-			// The job is still running, so it should be watched by the
-			// {@link org.eclipse.ice.commands.Command.monitorJob()} function
-
-			logger.info("Job didn't finish, going to monitorJob now");
-			return CommandStatus.RUNNING;
-		}
-		// By convention exit values other than zero mean that the program
-		// failed. If it is not 0, mark the job as failed (since it finished).
-		if (exitValue == 0) {
-			return CommandStatus.SUCCESS;
-		} else {
-			return CommandStatus.FAILED;
-		}
-
-	}
-
-	/**
-	 * This operation is responsible for monitoring the exit value of the running
-	 * job. If it does not finish after some time then the function will print a
-	 * message to the error output file. If the job has failed then it stops
-	 * monitoring and returns that the exit value of the job was unsuccessful. The
-	 * function also writes to the output logfile what the actual final job exit
-	 * value is, so the user can always see if their job finished successfully.
-	 */
-	protected CommandStatus monitorJob() {
-
-		// Local Declarations
-		int exitValue = -1; // Totally arbitrary
-
-		// Wait until the job exits. By convention an exit code of
-		// zero means that the job has succeeded. Watch it until it
-		// finishes.
-		while (exitValue != 0) {
-			// Try to get the exit value of the job
-			// If the job completed successfully this will be 0
-			try {
-				exitValue = job.exitValue();
-			} catch (IllegalThreadStateException e) {
-				// Complain, but keep watching
-				try {
-					commandConfig.getStdErr().write(getClass().getName() + "IllegalThreadStateException!: " + e);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-			// Give it a second
-			try {
-				job.waitFor(1000, TimeUnit.MILLISECONDS);
-				// Try again
-				exitValue = job.exitValue();
-			} catch (InterruptedException e) {
-				// Complain
-				try {
-					commandConfig.getStdErr().write(getClass().getName() + " InterruptedException!: " + e);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-
-			// If for some reason the job has failed,
-			// it shouldn't be alive and we should break;
-			if (!job.isAlive()) {
-				logger.info("Job is no longer alive, done monitoring");
-				break;
-			}
-		}
-
-		// Print the final exitValue of the job to the output log file
-		try {
-			commandConfig.getStdOut().write("INFO: Command::monitorJob Message: Exit value = " + exitValue + "\n");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		logger.info("Finished monitoring job with exit value: " + exitValue);
-		if (exitValue == 0)
-			return CommandStatus.SUCCESS;
-		else
-			return CommandStatus.FAILED;
 	}
 
 	/**
@@ -426,32 +271,47 @@ public abstract class Command {
 		// Setup the BufferedReader that will get stderr from the process.
 		stdErrStreamReader = new InputStreamReader(errors);
 		stdErrReader = new BufferedReader(stdErrStreamReader);
+
+		// Set the objects to the updated readers
 		commandConfig.setStdErr(commandConfig.getBufferedWriter(commandConfig.getErrFileName()));
 		commandConfig.setStdOut(commandConfig.getBufferedWriter(commandConfig.getOutFileName()));
+
+		// Make a new line for writing out the output
+		String newLine = "\n";
+		// Add a \r for Windows systems.
+		if (commandConfig.getOS().contains("windows"))
+			newLine = "\r\n";
 
 		// Catch the stdout and stderr output
 		try {
 			// Write to the stdOut file
 			while ((nextLine = stdOutReader.readLine()) != null) {
+
 				commandConfig.getStdOut().write(nextLine);
-				
-				commandConfig.addToStdOutputString(nextLine);
-				// MUST put a new line for this type of writer. "\r\n" works on
-				// Windows and Unix-based systems.
-				commandConfig.getStdOut().write("\r\n");
+				// Only add to the string if it is not a commented out line
+				if (!nextLine.startsWith("#")) {
+					commandConfig.addToStdOutputString(nextLine);
+				}
+				// MUST put a new line for this type of writer
+				commandConfig.getStdOut().write(newLine);
 				commandConfig.getStdOut().flush();
 			}
+
 			// Write to the stdErr file
 			while ((nextLine = stdErrReader.readLine()) != null) {
 				commandConfig.getStdErr().write(nextLine);
-				// MUST put a new line for this type of writer. "\r\n" works on
-				// Windows and Unix-based systems.
-				commandConfig.getStdErr().write("\r\n");
+				// If the next line isn't commented out, add it to the error string
+				if (!nextLine.startsWith("#")) {
+					commandConfig.addToErrString(nextLine);
+				}
+
+				// MUST put a new line for this type of writer
+				commandConfig.getStdErr().write(newLine);
 				commandConfig.getStdErr().flush();
 			}
 		} catch (IOException e) {
 			// Or fail and complain about it.
-			logger.error("Could not logOutput, returning error!");
+			logger.error("Could not logOutput, returning error!", e);
 			return false;
 		}
 
@@ -464,18 +324,79 @@ public abstract class Command {
 	 * command status is not set to a flagged error, e.g. failed.
 	 * 
 	 * @param current_status
+	 * @return boolean indicating whether or not status is good to continue (true)
+	 *         or whether or not job has failed (returns false)
 	 */
-	public void checkStatus(CommandStatus current_status) throws IOException {
+	public boolean checkStatus(CommandStatus current_status) {
 
 		if (current_status != CommandStatus.FAILED && current_status != CommandStatus.INFOERROR) {
 			logger.info("The current status is: " + current_status);
-			return;
+			return true;
 		} else {
 			logger.error("The job failed with status: " + current_status);
 			logger.error("Check your error logfile for more details! Exiting now!");
-			throw new IOException();
+			return false;
 		}
 
+	}
+
+	/**
+	 * This function returns the status for a particular command at a given time in
+	 * the operation of the command.
+	 * 
+	 * @return - return current status for a particular command
+	 */
+	public CommandStatus getStatus() {
+		return status;
+	}
+
+	/**
+	 * This function sets the status for a particular command to be stat
+	 * 
+	 * @param stat - new CommandStatus to be set
+	 */
+	public void setStatus(CommandStatus status) {
+		this.status = status;
+		return;
+	}
+
+	/**
+	 * This function returns to the user the configuration that was used to create a
+	 * particular command.
+	 * 
+	 * @return - the particular configuration for this command
+	 */
+	public CommandConfiguration getCommandConfiguration() {
+		return commandConfig;
+	}
+
+	/**
+	 * This function sets the command configuration for a particular command
+	 * 
+	 * @param config
+	 */
+	public void setCommandConfiguration(CommandConfiguration commandConfig) {
+		this.commandConfig = commandConfig;
+	}
+
+	/**
+	 * This function returns to the user the configuration that was used to set up a
+	 * particular connection.
+	 * 
+	 * @return - the particular connection configuration for this command
+	 */
+	public ConnectionConfiguration getConnectionConfiguration() {
+		return connectionConfig;
+	}
+
+	/**
+	 * This function sets the configuration that is to be used to set up a
+	 * particular connection.
+	 * 
+	 * @param connect
+	 */
+	public void setConnectionConfiguration(ConnectionConfiguration connectionConfig) {
+		this.connectionConfig = connectionConfig;
 	}
 
 }

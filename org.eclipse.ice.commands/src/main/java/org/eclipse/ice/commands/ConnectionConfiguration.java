@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * This class provides the complete configuration for a remote
  * {@link org.eclipse.ice.commands.Connection}.
@@ -21,20 +23,28 @@ package org.eclipse.ice.commands;
 public class ConnectionConfiguration {
 
 	/**
-	 * Username to configure a particular connection
+	 * A name given to this particular connection configuration, which can be used
+	 * to identify the forthcoming connection and, for example, get it from the
+	 * ConnectionManager class
 	 */
-	private String username = "";
+	private String name = "";
 
 	/**
-	 * Password to configure a particular connection
+	 * This is a connection authorization handler which deals with the method
+	 * through which remote connections are authorized, i.e. the password
+	 * manipulation. This is another method which allows users to decide how to
+	 * input their password.
 	 */
-	private String password = "";
+	private AtomicReference<ConnectionAuthorizationHandler> authorization = new AtomicReference<ConnectionAuthorizationHandler>(
+			null);
 
 	/**
-	 * The hostname on which to host the particular session, or where the
-	 * RemoteCommand will eventually be run
+	 * A boolean indicating whether or not the files/directories created on the
+	 * remote host should be deleted or not. Default set to false, for obvious
+	 * reasons. This will delete the working directory of a remote command on the
+	 * remote host, if it is set to true.
 	 */
-	protected String hostname = "";
+	private boolean deleteWorkingDirectory = false;
 
 	/**
 	 * Default constructor
@@ -43,35 +53,64 @@ public class ConnectionConfiguration {
 	}
 
 	/**
-	 * Constructor which gives a particular hostname. Most useful for local command
-	 * execution since a username/password is unnecessary.
+	 * A getter to access
+	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#name}
 	 * 
-	 * @param hname - hostname
+	 * @return - name
 	 */
-	public ConnectionConfiguration(String hname) {
-		hostname = hname;
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * Constructor which gives a particular username, password, and hostname
+	 * A setter to access
+	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#name}
 	 * 
-	 * @param uname - username for a connection
-	 * @param pwd   - password for the connection
-	 * @param hname - hostname for the connection
+	 * @return - name
 	 */
-	public ConnectionConfiguration(String uname, String pwd, String hname) {
-		username = uname;
-		password = pwd;
-		hostname = hname;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
-	 * Create getter and setter functions to access member variables
+	 * Getter for whether or not to delete the remote working directory upon
+	 * completion
+	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#deleteWorkingDirectory}
+	 * 
+	 * @return
 	 */
-	
-	public String getHostname() {
-		return hostname;
-	
+	public boolean deleteWorkingDirectory() {
+		return deleteWorkingDirectory;
 	}
-	
+
+	/**
+	 * Setter for whether or not to delete the remote working directory upon
+	 * completion
+	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#deleteWorkingDirectory}
+	 * 
+	 * @param
+	 */
+	public void deleteWorkingDirectory(boolean deleteWorkingDirectory) {
+		this.deleteWorkingDirectory = deleteWorkingDirectory;
+	}
+
+	/**
+	 * Setter for the authorization method, if desired. See
+	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#authorization}
+	 * 
+	 * @param authorization
+	 */
+	public void setAuthorization(ConnectionAuthorizationHandler authorization) {
+		this.authorization = new AtomicReference<ConnectionAuthorizationHandler>(authorization);
+	}
+
+	/**
+	 * Getter for the authorization method, if desired. See
+	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#authorization}
+	 * 
+	 * @param authorization
+	 */
+	public ConnectionAuthorizationHandler getAuthorization() {
+		return authorization.get();
+	}
 }

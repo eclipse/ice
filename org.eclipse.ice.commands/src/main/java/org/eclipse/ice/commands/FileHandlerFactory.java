@@ -31,7 +31,7 @@ public class FileHandlerFactory {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	protected static final Logger logger = LoggerFactory.getLogger(CommandFactory.class);
+	protected static final Logger logger = LoggerFactory.getLogger(FileHandlerFactory.class);
 
 	/**
 	 * Default constructor
@@ -45,16 +45,19 @@ public class FileHandlerFactory {
 	 * 
 	 * @return FileHandler - instance of FileHandler that does the transfer
 	 */
-	public IFileHandler getFileHandler() throws IOException {
-		IFileHandler handler = null;
+	public FileHandler getFileHandler(ConnectionConfiguration connectionConfig) throws IOException {
+		FileHandler handler = null;
 
-		// TODO - determine how to identify local vs. remote FileHandler
-		boolean isLocal = true;
+		// Determine if the hostname in the config is local or not
+		boolean isLocal = isLocal(connectionConfig.getAuthorization().getHostname());
 
+		// If it is, return a local file handler, otherwise remote
 		if (isLocal) {
 			handler = new LocalFileHandler();
 		} else {
-			handler = new RemoteFileHandler();
+			RemoteFileHandler remoteHandler = new RemoteFileHandler();
+			remoteHandler.setConnectionConfiguration(connectionConfig);
+			handler = remoteHandler;
 		}
 
 		return handler;
@@ -75,7 +78,7 @@ public class FileHandlerFactory {
 		try {
 			addr = InetAddress.getLocalHost();
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			logger.error("Could not identify local host in file handling. FileHandler will fail.", e);
 		}
 
 		String hostname = addr.getHostName();
@@ -83,8 +86,8 @@ public class FileHandlerFactory {
 		// If the local hostname is the same as the hostname provided, then it is local
 		if (hostname == host)
 			return true;
-		else
-			return false;
+		// Otherwise it is remote, so return false
+		return false;
 
 	}
 }

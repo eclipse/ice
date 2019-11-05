@@ -11,32 +11,29 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import static org.junit.Assert.fail;
-
-import org.junit.BeforeClass;
+import org.eclipse.ice.commands.Connection;
 import org.junit.Test;
 
 /**
- * This class tests {@link org.eclipse.ice.commands.Connection}.
+ * This class tests {@link org.eclipse.ice.commands.Connection}. Connection is
+ * mostly a POJO so there are only some getters/setters to test
  * 
- * @author Jay Jay Billings
+ * @author Joe Osborn, Jay Jay Billings
  *
  */
 public class ConnectionTest {
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
 
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.Connection#Connection()}.
 	 */
 	@Test
 	public void testConnection() {
-		fail("Not yet implemented");
+		Connection connection = new Connection();
+
+		// Check that the default connection leaves the configuration empty
+		assert (connection.getConfiguration().getName().equals(""));
+
+		assert (connection.getSession() == null);
 	}
 
 }

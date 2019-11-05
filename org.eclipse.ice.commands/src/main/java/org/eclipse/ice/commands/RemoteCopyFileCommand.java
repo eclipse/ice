@@ -13,9 +13,6 @@
 
 package org.eclipse.ice.commands;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 /**
  * Child class for copying a file remotely over some connection.
  * 
@@ -23,19 +20,28 @@ import java.nio.file.Paths;
  *
  */
 public class RemoteCopyFileCommand extends RemoteCommand {
-	
 
 	/**
 	 * The path to the source file which is to be copied
 	 */
-	Path source;
+	private String source;
 
 	/**
 	 * The path of the destination for which the source file will be copied to
 	 */
-	Path destination;
+	private String destination;
 
-	
+	/**
+	 * An int which determines what kind of file handle type it is, e.g.
+	 * local->remote, remote->local, or remote->remote
+	 */
+	private int copyType;
+
+	/**
+	 * See {@link org.eclipse.ice.commands.RemoteFileHandler#setPermissions(String)}
+	 */
+	private int permissions = -999;
+
 	/**
 	 * Default constructor
 	 */
@@ -43,35 +49,75 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	}
 
 	/**
-	 * Constructor which sets the two paths, source and destination, to those given
-	 * by the arguments of the constructor. See
-	 * {@link org.eclipse.ice.tests.commands.CopyFileCommand} for member variable
-	 * descriptions.
+	 * Function which sets the two paths, source and destination, to those given by
+	 * the arguments. The ConnectionConfiguration also gives the remote connection
+	 * configuration for setting up the ssh and sftp channels.
 	 * 
-	 * @param src
-	 * @param dest
+	 * @param src  - source file to be moved
+	 * @param dest - destination for source file to be moved to
 	 */
-	public RemoteCopyFileCommand(String src, String dest) {
-		source = Paths.get(src);
-		destination = Paths.get(dest);
+	public void setConfiguration(String src, String dest) {
+		source = src;
+		destination = dest;
 	}
 
+	/**
+	 * See {@link org.eclipse.ice.commands.Command#execute()}
+	 */
 	@Override
 	public CommandStatus execute() {
-		// TODO Auto-generated method stub
-		return null;
+		status = run();
+		return status;
 	}
 
+	/**
+	 * See {@link org.eclipse.ice.commands.Command#run()}
+	 */
 	@Override
 	protected CommandStatus run() {
-		// TODO Auto-generated method stub
-		return null;
+		// Create a RemoteTransferExecution
+		RemoteTransferExecution transfer = new RemoteTransferExecution();
+		// Tell it that this is a copy
+		transfer.isMove(false);
+		// Do the transfer
+		status = transfer.executeTransfer(getConnection(), source, destination, permissions, copyType);
+
+		return status;
 	}
 
-	@Override
-	public CommandStatus cancel() {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * Get the source file string
+	 * 
+	 * @return
+	 */
+	public String getSource() {
+		return source;
 	}
 
+	/**
+	 * Get the destination file string
+	 * 
+	 * @return
+	 */
+	public String getDestination() {
+		return destination;
+	}
+
+	/**
+	 * Set the copy type variable
+	 * 
+	 * @param type
+	 */
+	public void setCopyType(int copyType) {
+		this.copyType = copyType;
+	}
+
+	/**
+	 * Set the permissions for a chmod during file transfer
+	 * 
+	 * @param permissions
+	 */
+	protected void setPermissions(int permissions) {
+		this.permissions = permissions;
+	}
 }

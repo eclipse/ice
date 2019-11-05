@@ -40,7 +40,7 @@ public class CommandConfigurationTest {
 		config.setExecutable("./some_executable.sh");
 		config.setErrFileName("errorFile.txt");
 		config.setOutFileName("outFile.txt");
-		
+
 		// Assert whether or not things are/aren't set
 		assert (config.getOutFileName() != null);
 		assert (config.getOS() != null);
@@ -50,12 +50,11 @@ public class CommandConfigurationTest {
 
 		// Assert that the default local OS is set
 		assert (config.getOS().equals(System.getProperty("os.name")));
-		
+
 		config.setOS("JoeOsbornOS");
-		
+
 		assert (config.getOS().equals("JoeOsbornOS"));
-		
-		
+
 	}
 
 	/**
@@ -67,23 +66,45 @@ public class CommandConfigurationTest {
 
 		// Test that if one wants to append inputfile, it is appended
 		config.setCommandId(1);
+		config.setInterpreter("bash");
 		config.setExecutable("./test_code_execution.sh");
-		config.setInputFile("someInputFile.txt");
+		config.addInputFile("someInputFile", "someInputFile.txt");
 		config.setNumProcs("1");
 		config.setAppendInput(true);
-		config.setOS("osx");
+		config.setOS(System.getProperty("os.name"));
 		String executable = config.getExecutableName();
-		assert (executable.equals("./test_code_execution.sh someInputFile.txt"));
+		assert (executable.equals("bash ./test_code_execution.sh someInputFile.txt"));
 
 		// Test that if num processes is more than 1, mpi options are added
 		config.setNumProcs("4"); // arbitrary number
 		// We can test append input as well when it is false
 		config.setAppendInput(false);
 		executable = config.getExecutableName();
-		assert (executable.equals("mpirun -np 4 ./test_code_execution.sh"));
+		assert (executable.equals("mpirun -np 4 bash ./test_code_execution.sh"));
 
 	}
 
+	/**
+	 * This function tests a command where one wants to add input file(s) and argument(s)
+	 */
+	@Test
+	public void testArgumentAndInputFileConfiguration() {
+		
+		CommandConfiguration configuration = new CommandConfiguration();
+		configuration.setCommandId(5);
+		configuration.setInterpreter("python");
+		configuration.setExecutable("random_python_script.py");
+		configuration.addInputFile("someInputFile", "someInputFile.txt");
+		configuration.setNumProcs("1");
+		configuration.setAppendInput(true);
+		configuration.addArgument("some_arg");
+		configuration.addArgument("some_other_arg");
+		
+		String executable = configuration.getExecutableName();
+	
+		assert(executable.equals("python random_python_script.py some_arg some_other_arg someInputFile.txt"));
+	}
+	
 	/**
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#getExecutableName()} and
@@ -93,18 +114,19 @@ public class CommandConfigurationTest {
 	public void testGetExecutableNameSplitCommand() {
 		CommandConfiguration splitConfig = new CommandConfiguration();
 		splitConfig.setCommandId(2);
-		splitConfig
-				.setExecutable("./dummy.sh ${inputFile}; ./next_file.sh ${inputFile}; ./other_file.sh ${installDir}");
+		splitConfig.setExecutable(
+				"./dummy.sh ${inputfile}; ./next_file.sh ${otherinputfile}; ./other_file.sh ${installDir}");
 		// Test if the user falsifies append input whether or not the environment
 		// variable is replaced
 		splitConfig.setAppendInput(false);
 		splitConfig.setNumProcs("1");
-		splitConfig.setInputFile("inputfile.txt");
+		splitConfig.addInputFile("inputfile", "inputfile.txt");
+		splitConfig.addInputFile("otherinputfile", "/some/dummy/path/to/an/inputfile.txt");
 		splitConfig.setInstallDirectory("~/install_dir");
-		splitConfig.setOS("osx");
+		splitConfig.setOS(System.getProperty("os.name"));
 		String executable = splitConfig.getExecutableName();
-		assert (executable
-				.equals("./dummy.sh inputfile.txt; ./next_file.sh inputfile.txt; ./other_file.sh ~/install_dir/"));
+		assert (executable.equals(
+				"./dummy.sh inputfile.txt; ./next_file.sh /some/dummy/path/to/an/inputfile.txt; ./other_file.sh ~/install_dir/"));
 
 		ArrayList<String> split = new ArrayList<String>();
 		split = splitConfig.getSplitCommand();
@@ -112,7 +134,7 @@ public class CommandConfigurationTest {
 		// Create an array list to check the split command against
 		ArrayList<String> checkSplit = new ArrayList<String>();
 		checkSplit.add("./dummy.sh inputfile.txt");
-		checkSplit.add("./next_file.sh inputfile.txt");
+		checkSplit.add("./next_file.sh /some/dummy/path/to/an/inputfile.txt");
 		checkSplit.add("./other_file.sh ~/install_dir/");
 
 		for (int i = 0; i < split.size(); i++) {
