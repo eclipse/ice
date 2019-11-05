@@ -1,6 +1,6 @@
 ## Commands Package
 
-This README serves as an overview of the commands package, which is a standalone maven package that can be used within or outside of ICE. The package provides the necessary API to set up and run jobs on either one's local computer or a remote host. Additionally, the API includes file transfer capabilities, with the option to move or copy files on the local host or remote host. 
+This README serves as an overview of the commands package, which is a standalone maven package that can be used within or outside of ICE. The package provides the necessary API to set up and run jobs on either one's local computer or a remote host. Additionally, the API includes file transfer capabilities, with the option to move or copy files on the local host or remote host. It is suggested that users encode their file processing logic into a bash/python/powershell script to be run locally/remotely
 
 Examples can be found in either the `src/test/java/org/eclipse/ice/tests/commands` directory or in the standalone package within ICE `org/eclipse/ice/demo/commands/`. 
 

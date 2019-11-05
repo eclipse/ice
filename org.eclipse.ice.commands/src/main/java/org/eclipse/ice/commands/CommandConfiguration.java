@@ -306,6 +306,11 @@ public class CommandConfiguration {
 		fixedExecutableName += executable;
 		String separator = "/";
 
+		// Add the arguments to the executable name
+		for(String arg : argumentList) {
+			fixedExecutableName += " " + arg;
+		}
+		
 		// If the input files should be appended, append it
 		if (appendInput)
 			fixedExecutableName += " " + getInputFiles();
@@ -320,10 +325,7 @@ public class CommandConfiguration {
 		if (installDirectory != null && !installDirectory.endsWith(separator))
 			installDirectory = installDirectory + separator;
 
-		// Add the arguments to the executable name
-		for(String arg : argumentList) {
-			fullCommand += " " + arg;
-		}
+
 		
 		// Search for and replace the ${inputFile} to properly configure the input file
 		for (Map.Entry<String, String> entry : inputFiles.entrySet()) {

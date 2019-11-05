@@ -71,7 +71,7 @@ public class CommandConfigurationTest {
 		config.addInputFile("someInputFile", "someInputFile.txt");
 		config.setNumProcs("1");
 		config.setAppendInput(true);
-		config.setOS("osx");
+		config.setOS(System.getProperty("os.name"));
 		String executable = config.getExecutableName();
 		assert (executable.equals("bash ./test_code_execution.sh someInputFile.txt"));
 
@@ -84,6 +84,27 @@ public class CommandConfigurationTest {
 
 	}
 
+	/**
+	 * This function tests a command where one wants to add input file(s) and argument(s)
+	 */
+	@Test
+	public void testArgumentAndInputFileConfiguration() {
+		
+		CommandConfiguration configuration = new CommandConfiguration();
+		configuration.setCommandId(5);
+		configuration.setInterpreter("python");
+		configuration.setExecutable("random_python_script.py");
+		configuration.addInputFile("someInputFile", "someInputFile.txt");
+		configuration.setNumProcs("1");
+		configuration.setAppendInput(true);
+		configuration.addArgument("some_arg");
+		configuration.addArgument("some_other_arg");
+		
+		String executable = configuration.getExecutableName();
+	
+		assert(executable.equals("python random_python_script.py some_arg some_other_arg someInputFile.txt"));
+	}
+	
 	/**
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#getExecutableName()} and
