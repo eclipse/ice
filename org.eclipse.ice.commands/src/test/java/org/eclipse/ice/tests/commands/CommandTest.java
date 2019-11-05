@@ -228,7 +228,7 @@ public class CommandTest {
 		// Set it
 		connectConfig.setAuthorization(auth);
 		connectConfig.setName("dummyConnection");
-		connectConfig.deleteWorkingDirectory(false);
+		connectConfig.deleteWorkingDirectory(true);
 
 		// Open the connection
 		try {
@@ -270,6 +270,60 @@ public class CommandTest {
 		status = remoteCommand.execute();
 
 		// Assert successful completion
+		assert (status == CommandStatus.SUCCESS);
+
+	}
+
+	/**
+	 * This tests a command with a few input files and an argument that is not an input file,
+	 * just something that the script needs.
+	 */
+	@Test
+	public void testArgumentCommand() {
+		// Make the ConnectionConfiguration and set it up
+		ConnectionConfiguration connectConfig = new ConnectionConfiguration();
+		// Make the connection configuration
+		// Get a factory which determines the type of authorization
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Request a ConnectionAuthorization of type text file which contains the
+		// credentials
+		String credFile = "/tmp/ice-remote-creds.txt";
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
+			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
+		// Set it
+		connectConfig.setAuthorization(auth);
+		connectConfig.setName("dummyConnection");
+		connectConfig.deleteWorkingDirectory(false);
+
+		// Open the connection
+		try {
+			ConnectionManagerFactory.getConnectionManager().openConnection(connectConfig);
+		} catch (JSchException e) {
+			e.printStackTrace();
+		}
+
+		// Set up a command configuration with instructions on how to run the script
+		CommandConfiguration commandConfig = new CommandConfiguration();
+		commandConfig.setCommandId(3);
+		commandConfig.setExecutable("./test_codearg_execution.sh");
+		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
+		commandConfig.addInputFile("someOtherInputFile", "someOtherInputFile.txt");
+		commandConfig.addArgument("someString");
+		commandConfig.setErrFileName("someRemoteErrFile1.txt");
+		commandConfig.setOutFileName("someRemoteOutFile1.txt");
+		commandConfig.setInstallDirectory("");
+		commandConfig.setWorkingDirectory(pwd);
+		commandConfig.setAppendInput(true);
+		commandConfig.setNumProcs("1");
+		commandConfig.setOS(System.getProperty("os.name"));
+		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
+
+		// Make the command and execute it
+		Command remoteCommand = new RemoteCommand(commandConfig, connectConfig, null);
+		CommandStatus status = remoteCommand.execute();
+
+		// Assert that it finished correctly
 		assert (status == CommandStatus.SUCCESS);
 
 	}
