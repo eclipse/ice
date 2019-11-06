@@ -376,9 +376,8 @@ public class RemoteFileHandlerTest {
 		// the tree structure we created
 		assert (files.size() == 3);
 
-		String separator = FileSystems.getDefault().getSeparator();
-		if (System.getProperty("os.name").toLowerCase().contains("win"))
-			separator += "\\";
+		// Use the default separator of the remote dummy system
+		String separator = "/";
 
 		for (int i = 0; i < files.size(); i++) {
 			assert (handler.exists(files.get(i)));
