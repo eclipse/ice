@@ -24,12 +24,12 @@ import org.slf4j.LoggerFactory;
  * @author Joe Osborn
  *
  */
-public interface FileWalker {
+public interface FileBrowser {
 
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	static final Logger logger = LoggerFactory.getLogger(LocalFileWalker.class);
+	static final Logger logger = LoggerFactory.getLogger(LocalFileBrowser.class);
 
 	/**
 	 * An array list of files that are visited within the top directory

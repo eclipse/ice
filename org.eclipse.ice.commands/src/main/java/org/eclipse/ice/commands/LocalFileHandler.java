@@ -98,7 +98,7 @@ public class LocalFileHandler extends FileHandler {
 	public ArrayList<String> listFiles(String topDirectory) {
 		logger.info("Searching " + topDirectory);
 		// Get the local file walker which executes the file walking logic
-		LocalFileWalker walker = walkTree(topDirectory);
+		LocalFileBrowser walker = walkTree(topDirectory);
 		
 		// Return the resulting file list hash map
 		return walker.getFileList();
@@ -111,7 +111,7 @@ public class LocalFileHandler extends FileHandler {
 	public ArrayList<String> listDirectories(String topDirectory) {
 		logger.info("Searching " + topDirectory);
 		// Get the local file walker which executes the file walking logic
-		LocalFileWalker walker = walkTree(topDirectory);
+		LocalFileBrowser walker = walkTree(topDirectory);
 		
 		// Return the resulting directory array list
 		return walker.getDirectoryList();
@@ -123,7 +123,7 @@ public class LocalFileHandler extends FileHandler {
 	 * files or directories could be obtained
 	 * @return
 	 */
-	private LocalFileWalker walkTree(String topDirectory) {
+	private LocalFileBrowser walkTree(String topDirectory) {
 		
 		// Make a path variable of the topDirectory
 		Path topPath = Paths.get(topDirectory);
@@ -133,7 +133,7 @@ public class LocalFileHandler extends FileHandler {
 		
 		// Make a local file walker instance, which contains the logic of what to do
 		// with the results from Files.walkFileTree
-		LocalFileWalker walker = new LocalFileWalker();
+		LocalFileBrowser walker = new LocalFileBrowser();
 		try {
 			path = Files.walkFileTree(topPath, walker);
 		} catch (IOException e) {

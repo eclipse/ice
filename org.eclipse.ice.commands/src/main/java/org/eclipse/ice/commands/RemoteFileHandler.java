@@ -278,7 +278,7 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	@Override
 	public ArrayList<String> listFiles(final String topDirectory) {
-		RemoteFileWalker walker = new RemoteFileWalker();
+		RemoteFileBrowser walker = new RemoteFileBrowser();
 		walker.fillArrays(topDirectory, connection.get().getSftpChannel());
 		
 		return walker.getFileList();
@@ -289,7 +289,7 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	@Override
 	public ArrayList<String> listDirectories(final String topDirectory) {
-		RemoteFileWalker walker = new RemoteFileWalker();
+		RemoteFileBrowser walker = new RemoteFileBrowser();
 		walker.fillArrays(topDirectory, connection.get().getSftpChannel());
 		
 		return walker.getDirectoryList();

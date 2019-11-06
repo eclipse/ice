@@ -63,6 +63,8 @@ public class RemoteFileHandlerTest {
 	 */
 	static Connection fileTransferConn = new Connection();
 
+	static String separator = FileSystems.getDefault().getSeparator();
+
 	/**
 	 * Setup the dummy connection so that the file transfer tests can access an ssh
 	 * connection
@@ -79,7 +81,8 @@ public class RemoteFileHandlerTest {
 
 		fileTransferConn.setSftpChannel(fileTransferConn.getSession().openChannel("sftp"));
 		fileTransferConn.getSftpChannel().connect();
-
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
+			separator += "\\";
 	}
 
 	/**
@@ -98,7 +101,7 @@ public class RemoteFileHandlerTest {
 	 * 
 	 * @throws Exception
 	 */
-	//@Test(expected = Exception.class)
+	@Test(expected = Exception.class)
 	public void testNonexistentSource() throws Exception {
 		System.out.println("Test nonexistent source");
 		RemoteFileHandler handler = new RemoteFileHandler();
@@ -113,7 +116,7 @@ public class RemoteFileHandlerTest {
 	/**
 	 * Test setting the connection for the remote file handler
 	 */
-	//@Test
+	@Test
 	public void testSetConnection() throws Exception {
 		System.out.println("Test set connection");
 		ConnectionConfiguration config = fileTransferConn.getConfiguration();
@@ -128,7 +131,7 @@ public class RemoteFileHandlerTest {
 		System.out.println("all finished testing set connection");
 	}
 
-	//@Test
+	@Test
 	public void testSetNewConnection() throws Exception {
 		ConnectionConfiguration config = makeConnectionConfiguration();
 		RemoteFileHandler handler = new RemoteFileHandler();
@@ -143,7 +146,7 @@ public class RemoteFileHandlerTest {
 	/**
 	 * Test the exists function for remote file handlers
 	 */
-	//@Test
+	@Test
 	public void testRemoteExists() throws Exception {
 		System.out.println("Testing remote exists function");
 
@@ -179,7 +182,7 @@ public class RemoteFileHandlerTest {
 	 * to the local host. Also tests throwing an exception for a nonexistent local
 	 * directory
 	 */
-	//@Test
+	@Test
 	public void testRemoteToLocalMove() throws Exception {
 
 		// Make a remote file to play with and a local directory to move it to
@@ -216,7 +219,7 @@ public class RemoteFileHandlerTest {
 	 * Test method for testing remote moving capabilities when moving a local file
 	 * to a remote host
 	 */
-	//@Test
+	@Test
 	public void testLocalToRemoteMove() throws Exception {
 
 		// Make a local test file to play with
@@ -253,7 +256,7 @@ public class RemoteFileHandlerTest {
 	 * copying needs an additional test, because the functionality is identical
 	 * except for the remote-to-remote handling
 	 */
-	//@Test
+	@Test
 	public void testRemoteToRemoteCopy() throws Exception {
 		createRemoteSource();
 		createRemoteDestination();
@@ -278,7 +281,7 @@ public class RemoteFileHandlerTest {
 	/**
 	 * This function tests remote to remote file handling
 	 */
-	//@Test
+	@Test
 	public void testRemoteToRemoteMove() throws Exception {
 		createRemoteSource();
 		createRemoteDestination();
@@ -300,9 +303,9 @@ public class RemoteFileHandlerTest {
 
 	/**
 	 * Function to execute the remote file browsing and remote directory browsing
-	 * test. We call one main function so that a file structure can be created at the
-	 * beginning of the test, accessed by both "subtests", and then deleted at the
-	 * end
+	 * test. We call one main function so that a file structure can be created at
+	 * the beginning of the test, accessed by both "subtests", and then deleted at
+	 * the end
 	 * 
 	 * @throws Exception
 	 */
@@ -312,8 +315,9 @@ public class RemoteFileHandlerTest {
 		// using the already developed functions, since we need multiple files and
 		// directories
 		String topDirectory = "/tmp/fileBrowsingDir/";
+
 		createRemoteFileStructure(topDirectory);
-		
+
 		testRemoteFileBrowsing(topDirectory);
 
 		testRemoteDirectoryBrowsing(topDirectory);
@@ -324,47 +328,70 @@ public class RemoteFileHandlerTest {
 
 	/**
 	 * Test for file browsing on remote system
+	 * 
+	 * @throws IOException
+	 * @throws SftpException
 	 */
-	public void testRemoteFileBrowsing(String topDirectory) {
+	public void testRemoteFileBrowsing(String topDirectory) throws IOException, SftpException {
 
-	
 		RemoteFileHandler handler = new RemoteFileHandler();
 		handler.setConnectionConfiguration(fileTransferConn.getConfiguration());
 
 		ArrayList<String> files = handler.listFiles(topDirectory);
 
-		for(int i=0; i<files.size(); i++) {
-			System.out.println(files.get(i));
-		}
 		// files should only be 4 entries since there are only 4 files in the tree
 		// structure we created
 		assert (files.size() == 4);
 
-		// Get (only) the filename from the source
-		String filename = theSource.substring(theSource.lastIndexOf("/"));
-		assert(files.get(0).equals(topDirectory + filename));
+		for (int i = 0; i < files.size(); i++) {
+			// Assert that the file exists
+			assert (handler.exists(files.get(i)));
+
+			ChannelSftp channel = fileTransferConn.getSftpChannel();
+			Collection<ChannelSftp.LsEntry> structure = channel.ls(files.get(i));
+			// This should just be a one file vector, since we are ls-ing the filename
+			for (ChannelSftp.LsEntry filename : structure) {
+				// Assert that the file is indeed a regular file
+				assert (filename.getAttrs().isReg());
+			}
+		}
 	}
 
 	/**
 	 * Test for directory browsing on remote system
+	 * 
+	 * @throws IOException
+	 * @throws SftpException
 	 */
-	public void testRemoteDirectoryBrowsing(String topDirectory) {
+	public void testRemoteDirectoryBrowsing(String topDirectory) throws IOException, SftpException {
 
 		RemoteFileHandler handler = new RemoteFileHandler();
 		handler.setConnectionConfiguration(fileTransferConn.getConfiguration());
 
 		ArrayList<String> files = handler.listDirectories(topDirectory);
-		for(int i=0; i<files.size(); i++) {
-			System.out.println(files.get(i));
-		}
-		// directories should only be 3 entries since there are only 3 directories in the tree
-		// structure we created
+
+		// directories should only be 3 entries since there are only 3 directories in
+		// the tree structure we created
 		assert (files.size() == 3);
 
-		// Get (only) the filename from the source
-		String filename = theSource.substring(theSource.lastIndexOf("/"));
-		assert(files.get(1).equals(topDirectory + "/dir2/"));
-		
+		for (int i = 0; i < files.size(); i++) {
+			assert (handler.exists(files.get(i)));
+			ChannelSftp channel = fileTransferConn.getSftpChannel();
+
+			// ls the previous directory so that we can look at the subdirectories
+			Collection<ChannelSftp.LsEntry> structure = channel
+					.ls(files.get(i).substring(0, files.get(i).lastIndexOf(separator)));
+			// Iterate through the ls
+			for (ChannelSftp.LsEntry filename : structure) {
+				// Check that the ls filename is actually in the directory list (and thus is a
+				// directory)
+				if (files.get(i).contains(filename.getFilename())) {
+					// assert that it is a directory
+					assert (filename.getAttrs().isDir());
+				}
+			}
+		}
+
 	}
 
 	/**
@@ -397,7 +424,7 @@ public class RemoteFileHandlerTest {
 		sftpChannel.mkdir("dir1");
 		sftpChannel.mkdir("dir2");
 		sftpChannel.mkdir("dir3");
-		
+
 		// create a local file to put there
 		createLocalSource();
 		// Get the filename that was just created
@@ -592,9 +619,7 @@ public class RemoteFileHandlerTest {
 		createLocalSource();
 
 		// Get the filename by splitting the path by "/"
-		String separator = FileSystems.getDefault().getSeparator();
-		if (System.getProperty("os.name").toLowerCase().contains("win"))
-			separator += "\\";
+
 		String[] tokens = theSource.split(separator);
 
 		// Get the last index of tokens, which will be the filename
@@ -630,12 +655,12 @@ public class RemoteFileHandlerTest {
 
 		// Get the path to the source file
 		// Leave this as unix command since the remote system is unix
-		String separator = "/";
-		String[] tokens = theSource.split(separator);
+		String remoteSeparator = "/";
+		String[] tokens = theSource.split(remoteSeparator);
 		String sourcePath = "";
 		// Build the source path
 		for (int i = 0; i < tokens.length - 1; i++) {
-			sourcePath += tokens[i] + separator;
+			sourcePath += tokens[i] + remoteSeparator;
 		}
 
 		// Recursively delete the source directory and its contents

@@ -23,13 +23,13 @@ import com.jcraft.jsch.SftpException;
  * @author Joe Osborn
  *
  */
-public class RemoteFileWalker implements FileWalker {
+public class RemoteFileBrowser implements FileBrowser {
 
 	/**
 	 * Default constructor
 	 */
-	public RemoteFileWalker() {
-		// Make sure we start with a fresh list
+	public RemoteFileBrowser() {
+		// Make sure we start with a fresh list everytime the walker is called
 		fileList.clear();
 		directoryList.clear();
 	}
@@ -57,16 +57,16 @@ public class RemoteFileWalker implements FileWalker {
 			Collection<ChannelSftp.LsEntry> directoryStructure = channel.ls(topDirectory);
 			// Iterate through the structure
 			for (ChannelSftp.LsEntry file : directoryStructure) {
-				// If it is a directory add it to the directory list. Otherwise add it to the
-				// file list
-				if (file.getAttrs().isDir()) {
-					// Add this directory
-					directoryList.add(topDirectory + file.getFilename());
-					// Need to also search for files in this subdirectory
-					
-				}
-				else
+				if(!file.getAttrs().isDir()) {
 					fileList.add(topDirectory + file.getFilename());
+					// Else if it is a subdirectory and not '.' or '..'
+				} else if (!(".".equals(file.getFilename()) || "..".equals(file.getFilename()))) {
+					// Then add it to the directory list
+					directoryList.add(topDirectory + file.getFilename());
+					// Recursively iterate over this subdirectory to get its contents
+					fillArrays(topDirectory + file.getFilename(), channel);
+				}
+		
 			}
 
 		} catch (SftpException e) {
@@ -76,7 +76,7 @@ public class RemoteFileWalker implements FileWalker {
 	}
 
 	/**
-	 * See {@link org.eclipse.ice.commands.FileWalker#getDirectoryList()}
+	 * See {@link org.eclipse.ice.commands.FileBrowser#getDirectoryList()}
 	 * 
 	 * @return
 	 */
@@ -86,7 +86,7 @@ public class RemoteFileWalker implements FileWalker {
 	}
 
 	/**
-	 * See {@link org.eclipse.ice.commands.FileWalker#getFileList()}
+	 * See {@link org.eclipse.ice.commands.FileBrowser#getFileList()}
 	 * 
 	 * @return
 	 */

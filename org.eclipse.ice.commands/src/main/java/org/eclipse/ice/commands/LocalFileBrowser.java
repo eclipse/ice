@@ -24,12 +24,12 @@ import java.util.ArrayList;
  * @author Joe Osborn
  *
  */
-public class LocalFileWalker extends SimpleFileVisitor<Path> implements FileWalker {
+public class LocalFileBrowser extends SimpleFileVisitor<Path> implements FileBrowser {
 
 	/**
 	 * Default constructor
 	 */
-	public LocalFileWalker() {
+	public LocalFileBrowser() {
 		// Make sure we are starting with a fresh file/directory list
 		fileList.clear();
 		directoryList.clear();
@@ -65,7 +65,7 @@ public class LocalFileWalker extends SimpleFileVisitor<Path> implements FileWalk
 	}
 
 	/**
-	 * See {@link org.eclipse.ice.commands.FileWalker#getFileList()}
+	 * See {@link org.eclipse.ice.commands.FileBrowser#getFileList()}
 	 * 
 	 * @return
 	 */
@@ -75,7 +75,7 @@ public class LocalFileWalker extends SimpleFileVisitor<Path> implements FileWalk
 	}
 
 	/**
-	 * See {@link org.eclipse.ice.commands.FileWalker#getDirectoryList()}
+	 * See {@link org.eclipse.ice.commands.FileBrowser#getDirectoryList()}
 	 * 
 	 * @return
 	 */
