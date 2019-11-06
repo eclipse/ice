@@ -63,7 +63,7 @@ public class RemoteFileHandlerTest {
 	 */
 	static Connection fileTransferConn = new Connection();
 
-	static String separator = FileSystems.getDefault().getSeparator();
+
 
 	/**
 	 * Setup the dummy connection so that the file transfer tests can access an ssh
@@ -81,8 +81,7 @@ public class RemoteFileHandlerTest {
 
 		fileTransferConn.setSftpChannel(fileTransferConn.getSession().openChannel("sftp"));
 		fileTransferConn.getSftpChannel().connect();
-		if (System.getProperty("os.name").toLowerCase().contains("win"))
-			separator += "\\";
+	
 	}
 
 	/**
@@ -373,7 +372,11 @@ public class RemoteFileHandlerTest {
 		// directories should only be 3 entries since there are only 3 directories in
 		// the tree structure we created
 		assert (files.size() == 3);
-
+		
+		String separator = FileSystems.getDefault().getSeparator();
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
+			separator += "\\";
+		
 		for (int i = 0; i < files.size(); i++) {
 			assert (handler.exists(files.get(i)));
 			ChannelSftp channel = fileTransferConn.getSftpChannel();
@@ -619,7 +622,9 @@ public class RemoteFileHandlerTest {
 		createLocalSource();
 
 		// Get the filename by splitting the path by "/"
-
+		String separator = FileSystems.getDefault().getSeparator();
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
+			separator += "\\";
 		String[] tokens = theSource.split(separator);
 
 		// Get the last index of tokens, which will be the filename
