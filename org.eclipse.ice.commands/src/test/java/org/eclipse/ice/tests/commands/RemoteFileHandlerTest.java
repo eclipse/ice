@@ -63,8 +63,6 @@ public class RemoteFileHandlerTest {
 	 */
 	static Connection fileTransferConn = new Connection();
 
-
-
 	/**
 	 * Setup the dummy connection so that the file transfer tests can access an ssh
 	 * connection
@@ -81,7 +79,7 @@ public class RemoteFileHandlerTest {
 
 		fileTransferConn.setSftpChannel(fileTransferConn.getSession().openChannel("sftp"));
 		fileTransferConn.getSftpChannel().connect();
-	
+
 	}
 
 	/**
@@ -315,14 +313,19 @@ public class RemoteFileHandlerTest {
 		// directories
 		String topDirectory = "/tmp/fileBrowsingDir/";
 
-		createRemoteFileStructure(topDirectory);
+		// put this in a try and finally so that the remote file structure
+		// always gets deleted. Otherwise the next test run might fail when it
+		// tries to build the remote file structure and see that it already
+		// exists
+		try {
+			createRemoteFileStructure(topDirectory);
 
-		testRemoteFileBrowsing(topDirectory);
+			testRemoteFileBrowsing(topDirectory);
 
-		testRemoteDirectoryBrowsing(topDirectory);
-
-		deleteRemoteFileStructure(topDirectory);
-
+			testRemoteDirectoryBrowsing(topDirectory);
+		} finally {
+			deleteRemoteFileStructure(topDirectory);
+		}
 	}
 
 	/**
@@ -372,11 +375,11 @@ public class RemoteFileHandlerTest {
 		// directories should only be 3 entries since there are only 3 directories in
 		// the tree structure we created
 		assert (files.size() == 3);
-		
+
 		String separator = FileSystems.getDefault().getSeparator();
 		if (System.getProperty("os.name").toLowerCase().contains("win"))
 			separator += "\\";
-		
+
 		for (int i = 0; i < files.size(); i++) {
 			assert (handler.exists(files.get(i)));
 			ChannelSftp channel = fileTransferConn.getSftpChannel();
