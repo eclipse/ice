@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
-import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -45,7 +44,10 @@ public class RemoteFileBrowser implements FileBrowser {
 	 */
 	protected void fillArrays(String topDirectory, ChannelSftp channel) {
 		// Make sure the top directory ends with the appropriate separator
-		String separator = FileSystems.getDefault().getSeparator();
+		//TODO - figure out how to get a separator from a remote system rather
+		// than the system the job is launching from with e.g.
+		// FileSystems.getDefault().getSeparator();
+		String separator = "/";
 		// Now check the path name
 		if(!topDirectory.endsWith(separator))
 			topDirectory += separator;
