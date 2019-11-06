@@ -218,8 +218,13 @@ public class LocalFileHandlerTest {
 		// Let's assert that each file we created is in the list
 		for (int i = 0; i < files.size(); i++) {
 			String file = files.get(i);
-			
+			// assert that the file is actually there
 			assert(handler.exists(file));
+			Path path = Paths.get(file);
+			
+			// assert that it is a file
+			assert (Files.isRegularFile(path));
+			
 		}
 
 	}
@@ -240,8 +245,12 @@ public class LocalFileHandlerTest {
 		// Let's assert that each directory we created is in the list
 		for (int i = 0; i < files.size(); i++) {
 			String file = files.get(i);
-			
+			// assert that it exists
 			assert(handler.exists(file));
+			
+			// assert that it is a directory
+			Path path = Paths.get(file);
+			assert(Files.isDirectory(path));
 		}
 		
 	}

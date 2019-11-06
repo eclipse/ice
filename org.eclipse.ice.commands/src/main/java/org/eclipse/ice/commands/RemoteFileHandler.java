@@ -277,16 +277,22 @@ public class RemoteFileHandler extends FileHandler {
 	 * See {@link org.eclipse.ice.commands.IFileHandler#listFiles(String)}
 	 */
 	@Override
-	public ArrayList<String> listFiles(String topDirectory) {
-		return null;
+	public ArrayList<String> listFiles(final String topDirectory) {
+		RemoteFileWalker walker = new RemoteFileWalker();
+		walker.fillArrays(topDirectory, connection.get().getSftpChannel());
+		
+		return walker.getFileList();
 	}
 
 	/**
 	 * See {@link org.eclipse.ice.commands.IFileHandler#listDirectories(String)}
 	 */
 	@Override
-	public ArrayList<String> listDirectories(String topDirectory) {
-		return null;
+	public ArrayList<String> listDirectories(final String topDirectory) {
+		RemoteFileWalker walker = new RemoteFileWalker();
+		walker.fillArrays(topDirectory, connection.get().getSftpChannel());
+		
+		return walker.getDirectoryList();
 	}
 
 	/**

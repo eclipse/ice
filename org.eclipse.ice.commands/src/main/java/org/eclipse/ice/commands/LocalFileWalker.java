@@ -18,45 +18,31 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
+ * This class allows for local file and directory browsing on a remote host
+ * 
  * @author Joe Osborn
  *
  */
-public class LocalFileWalker extends SimpleFileVisitor<Path> {
-
-
-	/**
-	 * Logger for handling event messages and other information.
-	 */
-	protected static final Logger logger = LoggerFactory.getLogger(LocalFileWalker.class);
-	
-	/**
-	 * An array list of files that are visited within the top directory
-	 */
-	private ArrayList<String> fileList = new ArrayList<String>();
-
-	/**
-	 * An array list of directories that are visited within the top directory
-	 */
-	private ArrayList<String> directoryList = new ArrayList<String>();
+public class LocalFileWalker extends SimpleFileVisitor<Path> implements FileWalker {
 
 	/**
 	 * Default constructor
 	 */
 	public LocalFileWalker() {
+		// Make sure we are starting with a fresh file/directory list
+		fileList.clear();
+		directoryList.clear();
 	}
 
 	// Add the file path tp fileList
 	@Override
 	public FileVisitResult visitFile(Path file, BasicFileAttributes attr) {
 		// Add the file, depending on it's attribute
-		if(!attr.isDirectory()) {
+		if (!attr.isDirectory()) {
 			fileList.add(file.toString());
-		} 
-		
+		}
+
 		return FileVisitResult.CONTINUE;
 	}
 
@@ -77,21 +63,25 @@ public class LocalFileWalker extends SimpleFileVisitor<Path> {
 		fileList.add(file.toString());
 		return FileVisitResult.CONTINUE;
 	}
-	
+
 	/**
-	 * Getter for the hashmap which contains the file list paths
+	 * See {@link org.eclipse.ice.commands.FileWalker#getFileList()}
+	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<String> getFileList() {
 		return fileList;
 	}
+
 	/**
-	 * Getter for the array list which contains the directory list paths
+	 * See {@link org.eclipse.ice.commands.FileWalker#getDirectoryList()}
+	 * 
 	 * @return
 	 */
-	public ArrayList<String> getDirectoryList(){
+	@Override
+	public ArrayList<String> getDirectoryList() {
 		return directoryList;
 	}
-	
-	
+
 }
