@@ -17,6 +17,8 @@ import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jcraft.jsch.HostKey;
+import com.jcraft.jsch.HostKeyRepository;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 
@@ -42,12 +44,15 @@ public class ConnectionManager {
 	private final Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
 
 	/**
+	 * A boolean that the user can set to disable ssh StrictHostKeyChecking.
+	 * Set to true by default since this is the most secure way.
+	 */
+	private boolean requireStrictHostKeyChecking = true;
+	
+	/**
 	 * Default Constructor
 	 */
 	public ConnectionManager() {
-		// Set the atomic reference hashmap to a default <String, Connection> hashmap
-		// HashMap<String, Connection> dummyMap = new HashMap<String, Connection>();
-		// connectionList.set(dummyMap);
 	}
 
 	/**
@@ -64,7 +69,11 @@ public class ConnectionManager {
 		Connection newConnection = new Connection(config);
 
 		// Create the shell
-		newConnection.setJShellSession(new JSch());
+		JSch jsch = new JSch();
+		// TODO check for windows, wherever ~/.ssh is located in windows
+		jsch.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
+		logger.info(System.getProperty("user.home") + "/.ssh/known_hosts");
+		newConnection.setJShellSession(jsch);
 
 		logger.info("Trying to open the connection");
 
@@ -93,10 +102,29 @@ public class ConnectionManager {
 			// Erase contents of pwd and fill with null
 			Arrays.fill(pwd, Character.MIN_VALUE);
 
-			// Set the authentication requirements
-			newConnection.getSession().setConfig("StrictHostKeyChecking", "no");
-			newConnection.getSession().setConfig("PreferredAuthentications", "password");
+			// JSch default requests ssh-rsa host checking, but some keys
+			// request ecdsa-sha2-nistp256. So loop through the available
+			// host keys that were grabbed from known_hosts and check what
+			// type the user-given hostname needs
+			HostKeyRepository hkr = jsch.getHostKeyRepository();
+			for (HostKey hk : hkr.getHostKey()) {
+				// If this hostkey contains the hostname that was supplied by
+				// the user
+				if (hk.getHost().contains(hostname)) {
+					String type = hk.getType();
+					// Set the session configuration key type to that hosts type
+					newConnection.getSession().setConfig("server_host_key", type);
+				}
+			}
 
+			// Set the authentication requirements
+			newConnection.getSession().setConfig("PreferredAuthentications", "publickey,password");
+
+			// If the user wants to disable StrictHostKeyChecking, add it to the
+			// session configuration
+			if(!requireStrictHostKeyChecking)
+				newConnection.getSession().setConfig("StrictHostKeyChecking", "no");
+			
 			// Connect the session
 			try {
 				newConnection.getSession().connect();
@@ -271,6 +299,15 @@ public class ConnectionManager {
 	 */
 	public HashMap<String, Connection> getConnectionList() {
 		return connectionList;
+	}
+	
+	/**
+	 * Setter for whether or not connections should be open with the requirement
+	 * of StrictHostKeyChecking
+	 * @param requireStrictHostKeyChecking
+	 */
+	public void setrequireStrictHostKeyChecking(boolean requireStrictHostKeyChecking) {
+		this.requireStrictHostKeyChecking = requireStrictHostKeyChecking;
 	}
 
 }
