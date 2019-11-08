@@ -28,6 +28,7 @@ import org.eclipse.ice.commands.LocalCommand;
 import org.eclipse.ice.commands.RemoteCommand;
 import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.jcraft.jsch.JSchException;
@@ -87,6 +88,16 @@ public class CommandTest {
 
 	}
 
+	/**
+	 * Set no strict host key checking just for tests
+	 * 
+	 * @throws Exception
+	 */
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		ConnectionManagerFactory.getConnectionManager().setRequireStrictHostKeyChecking(false);
+	}
+	
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.Command#Command()} with a
 	 * particular instance of a RemoteCommand
@@ -275,8 +286,8 @@ public class CommandTest {
 	}
 
 	/**
-	 * This tests a command with a few input files and an argument that is not an input file,
-	 * just something that the script needs.
+	 * This tests a command with a few input files and an argument that is not an
+	 * input file, just something that the script needs.
 	 */
 	@Test
 	public void testArgumentCommand() {
