@@ -306,7 +306,7 @@ public class ConnectionManager {
 	 * of StrictHostKeyChecking
 	 * @param requireStrictHostKeyChecking
 	 */
-	public void setrequireStrictHostKeyChecking(boolean requireStrictHostKeyChecking) {
+	public void setRequireStrictHostKeyChecking(boolean requireStrictHostKeyChecking) {
 		this.requireStrictHostKeyChecking = requireStrictHostKeyChecking;
 	}
 

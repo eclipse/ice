@@ -89,7 +89,8 @@ public class ConnectionManagerTest {
 		// Set it
 		configuration.setAuthorization(auth);
 		configuration.setName(connectionName);
-
+		ConnectionManagerFactory.getConnectionManager().setRequireStrictHostKeyChecking(false);
+		
 	}
 
 	/**
