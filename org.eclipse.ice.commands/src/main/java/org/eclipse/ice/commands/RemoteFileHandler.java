@@ -12,6 +12,7 @@
 package org.eclipse.ice.commands;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.jcraft.jsch.ChannelSftp;
@@ -270,6 +271,28 @@ public class RemoteFileHandler extends FileHandler {
 		logger.info(
 				"FileHandler is moving/copying " + source + " to " + destination + " with the handle type " + handle);
 
+	}
+
+	/**
+	 * See {@link org.eclipse.ice.commands.IFileHandler#listFiles(String)}
+	 */
+	@Override
+	public ArrayList<String> listFiles(final String topDirectory) {
+		RemoteFileBrowser walker = new RemoteFileBrowser();
+		walker.fillArrays(topDirectory, connection.get().getSftpChannel());
+		
+		return walker.getFileList();
+	}
+
+	/**
+	 * See {@link org.eclipse.ice.commands.IFileHandler#listDirectories(String)}
+	 */
+	@Override
+	public ArrayList<String> listDirectories(final String topDirectory) {
+		RemoteFileBrowser walker = new RemoteFileBrowser();
+		walker.fillArrays(topDirectory, connection.get().getSftpChannel());
+		
+		return walker.getDirectoryList();
 	}
 
 	/**
