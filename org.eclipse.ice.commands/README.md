@@ -28,7 +28,7 @@ username
 password
 hostname
 ```
-The automated tests will then grab the necessary credentials from this file to run the tests. Any valid ssh connection will work. 
+The automated tests will then grab the necessary credentials from this file to run the tests. Any valid ssh connection will work. If you still find that the tests fail, ensure that the ssh connection you are using has been logged into before from your host computer such that there is a key fingerprint associated to that host in your `~/.ssh/known_hosts` file. The Commands package (at the moment) requires that this key exists in order for authentication to proceed.
 
 Note that this is also a way through which ssh validation can be performed in the package for running actual remote commands/file transfers.
 
