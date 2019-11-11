@@ -78,7 +78,6 @@ public class RemoteCommandTest {
 		commandConfig.setNumProcs("1");
 		commandConfig.setOS(System.getProperty("os.name"));
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
-		ConnectionManagerFactory.getConnectionManager().setRequireStrictHostKeyChecking(false);
 		
 	}
 

@@ -61,7 +61,6 @@ public class RemoteCopyFileCommandTest {
 		// RemoteFileHandlerTest
 		RemoteFileHandlerTest.setUpBeforeClass();
 		
-		ConnectionManagerFactory.getConnectionManager().setRequireStrictHostKeyChecking(false);
 		
 	}
 

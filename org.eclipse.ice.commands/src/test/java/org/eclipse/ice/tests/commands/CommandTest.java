@@ -95,8 +95,7 @@ public class CommandTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		ConnectionManagerFactory.getConnectionManager().setRequireStrictHostKeyChecking(false);
-	}
+}
 	
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.Command#Command()} with a
