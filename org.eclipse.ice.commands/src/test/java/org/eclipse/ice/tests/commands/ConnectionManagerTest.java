@@ -40,13 +40,6 @@ import com.jcraft.jsch.JSchException;
 public class ConnectionManagerTest {
 
 	/**
-	 * A boolean indicating whether or not the prompt should require the user to
-	 * input the password or just read from a dummy text file. Default to false to
-	 * use the dummy ssh connection
-	 */
-	static boolean require_password = false;
-
-	/**
 	 * A dummy connection to perform a few tests with
 	 */
 	static Connection connect = null;
