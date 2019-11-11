@@ -59,8 +59,7 @@ public class RemoteMoveFileCommandTest {
 	public static void setUpBeforeClass() throws Exception {
 		// Set up the connection using the code already established in
 		// RemoteFileHandlerTest
-		ConnectionManagerFactory.getConnectionManager().setRequireStrictHostKeyChecking(false);
-		
+	
 		RemoteFileHandlerTest.setUpBeforeClass();
 		
 	}

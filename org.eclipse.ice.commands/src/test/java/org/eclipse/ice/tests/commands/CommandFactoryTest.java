@@ -93,7 +93,6 @@ public class CommandFactoryTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		ConnectionManagerFactory.getConnectionManager().setRequireStrictHostKeyChecking(false);
 	}
 	
 	/**

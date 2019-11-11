@@ -50,6 +50,11 @@ public class ConnectionManager {
 	private boolean requireStrictHostKeyChecking = true;
 	
 	/**
+	 * String containing the path to the known hosts directory. Can be set to 
+	 * something else if the user has a different default known_host
+	 */
+	private String knownHosts = System.getProperty("user.home") + "/.ssh/known_hosts";
+	/**
 	 * Default Constructor
 	 */
 	public ConnectionManager() {
@@ -71,8 +76,7 @@ public class ConnectionManager {
 		// Create the shell
 		JSch jsch = new JSch();
 		// TODO check for windows, wherever ~/.ssh is located in windows
-		jsch.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
-		logger.info(System.getProperty("user.home") + "/.ssh/known_hosts");
+		jsch.setKnownHosts(knownHosts);
 		newConnection.setJShellSession(jsch);
 
 		logger.info("Trying to open the connection");
@@ -308,6 +312,14 @@ public class ConnectionManager {
 	 */
 	public void setRequireStrictHostKeyChecking(boolean requireStrictHostKeyChecking) {
 		this.requireStrictHostKeyChecking = requireStrictHostKeyChecking;
+	}
+	
+	/**
+	 * Setter for known host directory path {@link org.eclipse.ice.commands.ConnectionManager#knownHosts}
+	 * @param knownHosts
+	 */
+	public void setKnownHosts(String knownHosts) {
+		this.knownHosts = knownHosts;
 	}
 
 }
