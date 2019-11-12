@@ -122,6 +122,8 @@ public class ConnectionManager {
 				}
 			}
 
+			
+			
 			// Set the authentication requirements
 			newConnection.getSession().setConfig("PreferredAuthentications", "publickey,password");
 
