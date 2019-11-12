@@ -111,21 +111,17 @@ public class ConnectionManager {
 			// host keys that were grabbed from known_hosts and check what
 			// type the user-given hostname needs
 			HostKeyRepository hkr = jsch.getHostKeyRepository();
-			HostKey hostkey = null;
+
 			for (HostKey hk : hkr.getHostKey()) {
 				// If this hostkey contains the hostname that was supplied by
 				// the user
 				if (hk.getHost().contains(hostname)) {
 					String type = hk.getType();
-					hostkey = hk;
 					// Set the session configuration key type to that hosts type
 					newConnection.getSession().setConfig("server_host_key", type);
 				}
 			}
 
-			logger.debug("HostKey has " + hostkey.getHost());
-			logger.debug("HostKey has " + hostkey.getFingerPrint(newConnection.getJShellSession()));
-			
 			// Set the authentication requirements
 			newConnection.getSession().setConfig("PreferredAuthentications", "publickey,password");
 
