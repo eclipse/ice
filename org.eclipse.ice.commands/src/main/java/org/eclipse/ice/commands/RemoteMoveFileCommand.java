@@ -35,7 +35,7 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 	 * The type of move being performed, i.e. local-->remote, remote-->local, or
 	 * remote-->remote
 	 */
-	private int moveType;
+	private HandleType moveType;
 
 	/**
 	 * See {@link org.eclipse.ice.commands.RemoteFileHandler#setPermissions(String)}
@@ -109,7 +109,7 @@ public class RemoteMoveFileCommand extends RemoteCommand {
 	 * 
 	 * @param type
 	 */
-	public void setMoveType(int moveType) {
+	public void setMoveType(HandleType moveType) {
 		this.moveType = moveType;
 	}
 

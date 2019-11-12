@@ -13,7 +13,6 @@ package org.eclipse.ice.commands;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
@@ -29,17 +28,9 @@ import com.jcraft.jsch.SftpException;
  *
  */
 
+
+
 public class RemoteFileHandler extends FileHandler {
-
-	/**
-	 * Map keys for identifying what kind of "remote" file move is happening
-	 */
-	HashMap<String, Integer> handleType = new HashMap<String, Integer>();
-
-	/**
-	 * An integer to determine what the actual handle type is to set for the command
-	 */
-	private int HANDLE_TYPE = 0;
 
 	/**
 	 * An integer with the permissions for a new file to be changed with chmod, if
@@ -53,10 +44,6 @@ public class RemoteFileHandler extends FileHandler {
 	 * Default constructor
 	 */
 	public RemoteFileHandler() {
-		// Define and set the hash map for the different type of file handles
-		handleType.put("localRemote", 1);
-		handleType.put("remoteLocal", 2);
-		handleType.put("remoteRemote", 3);
 	}
 
 	/**
@@ -200,17 +187,33 @@ public class RemoteFileHandler extends FileHandler {
 			destinationPath = destination.substring(0, destination.lastIndexOf("\\"));
 		}
 
-		// If the source is local, then we know it must be a local --> remote handle
+		// If the user set the handle type explicitly, check their existence
+		// and return if they are confirmed to exist
+		if(HANDLE_TYPE != null) {
+			if(HANDLE_TYPE == HandleType.localRemote) {
+				if(isLocal(source) && exists(destination))
+					return;
+			} else if (HANDLE_TYPE == HandleType.remoteLocal) {
+				if(isLocal(destination) && exists(source))
+					return;
+			} else {
+				if(exists(destination) && exists(source))
+					return;
+			}
+		}
+		
+		// Otherwise try and figure out what kind of file transfer is
+		// If the source is local, then try a local --> remote handle
 		if (isLocal(source)) {
 			// Now check that the destination exists at the remote host
 			if (exists(destinationPath)) {
-				HANDLE_TYPE = handleType.get("localRemote");
+				HANDLE_TYPE = HandleType.localRemote;
 			}
 			// If remote directory doesn't exist, try to make it
 			else {
 				// If we can make it, great
 				if (makeRemoteDirectory(destinationPath)) {
-					HANDLE_TYPE = handleType.get("localRemote");
+					HANDLE_TYPE = HandleType.localRemote;
 				} else {
 					// If we can't make the directory, throw an error
 					logger.error("Couldn't make remote destination, exiting.");
@@ -234,7 +237,7 @@ public class RemoteFileHandler extends FileHandler {
 			// now check if the destination is local or remote
 			if (isLocal(destinationPath)) {
 				// If the destination path exists locally, then it we'll download it
-				HANDLE_TYPE = handleType.get("remoteLocal");
+				HANDLE_TYPE = HandleType.remoteLocal;
 			} else {
 				// If the local destination path doesn't exist, then it is a remote --> remote
 				// move so check to make sure the remote destination exists
@@ -247,29 +250,21 @@ public class RemoteFileHandler extends FileHandler {
 					}
 				}
 				// Otherwise the destination was made and we are ready to move
-				HANDLE_TYPE = handleType.get("remoteRemote");
+				HANDLE_TYPE = HandleType.remoteRemote;
 			}
 		}
 
 		// If the handle type is still 0, then it was never set and thus couldn't be
 		// found
-		if (HANDLE_TYPE == 0) {
+		if (HANDLE_TYPE == null) {
 			logger.error("Can't find the source and/or destination file! Exiting.");
 			command.get().setStatus(CommandStatus.INFOERROR);
 			throw new IOException();
 		}
 
 		// Print out the determined handle type for informational purposes
-		String handle = "";
-		// Loop over the entries in the map and find the one that matches
-		for (String type : handleType.keySet()) {
-			if (handleType.get(type) == HANDLE_TYPE) {
-				handle = type;
-			}
-		}
-
 		logger.info(
-				"FileHandler is moving/copying " + source + " to " + destination + " with the handle type " + handle);
+				"FileHandler is moving/copying " + source + " to " + destination + " with the handle type " + HANDLE_TYPE);
 
 	}
 
@@ -335,14 +330,7 @@ public class RemoteFileHandler extends FileHandler {
 
 	}
 
-	/**
-	 * A getter function to return the list of possible remote file transfers
-	 * 
-	 * @return
-	 */
-	public HashMap<String, Integer> getHandleType() {
-		return handleType;
-	}
+
 
 	/**
 	 * A setter for the value of the permission to change a particular file once

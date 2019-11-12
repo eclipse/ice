@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
+import org.eclipse.ice.commands.HandleType;
 import org.eclipse.ice.commands.RemoteCopyFileCommand;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -90,7 +91,7 @@ public class RemoteCopyFileCommandTest {
 		RemoteCopyFileCommand command = new RemoteCopyFileCommand();
 		// These functions are nominally handled by the FileHandler. But, when testing
 		// this class alone, we need to set them individually
-		command.setCopyType(3);
+		command.setCopyType(HandleType.remoteRemote);
 		command.setConnection(handlerTest.getConnection());
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();
@@ -127,7 +128,7 @@ public class RemoteCopyFileCommandTest {
 		RemoteCopyFileCommand command = new RemoteCopyFileCommand();
 		// These functions are nominally handled by the FileHandler. But, when testing
 		// this class alone, we need to set them individually
-		command.setCopyType(2);
+		command.setCopyType(HandleType.remoteLocal);
 		command.setConnection(handlerTest.getConnection());
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();
@@ -164,7 +165,7 @@ public class RemoteCopyFileCommandTest {
 		// These functions are nominally handled by the FileHandler. But, when testing
 		// this class alone, we need to set them individually
 		command.setConnection(handlerTest.getConnection());
-		command.setCopyType(1);
+		command.setCopyType(HandleType.localRemote);
 		command.setConfiguration(source, dest);
 
 		// execute the command

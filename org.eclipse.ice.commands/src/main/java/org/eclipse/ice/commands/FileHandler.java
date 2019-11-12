@@ -59,6 +59,14 @@ public abstract class FileHandler implements IFileHandler {
 	protected CommandStatus transferStatus;
 
 	/**
+	 * An enun to determine what the actual handle type is to set for the command.
+	 * Default to null so that the RemoteFileHandler tries to determine it on its
+	 * own - however, user can set this explicitly.
+	 */
+	protected HandleType HANDLE_TYPE = null;
+
+	
+	/**
 	 * Default constructor
 	 */
 	public FileHandler() {
@@ -242,6 +250,15 @@ public abstract class FileHandler implements IFileHandler {
 
 	}
 
+	/**
+	 * A setter to set the type of file handle this is. See 
+	 * {@link org.eclipse.ice.commands.RemoteFileHandler#HANDLE_TYPE}
+	 * @param HANDLE_TYPE
+	 */
+	public void setHandleType(HandleType HANDLE_TYPE) {
+		this.HANDLE_TYPE = HANDLE_TYPE;
+	}
+	
 	/**
 	 * Get the connection for this file handler
 	 * 
