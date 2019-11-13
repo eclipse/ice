@@ -29,7 +29,7 @@ public interface FileBrowser {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	static final Logger logger = LoggerFactory.getLogger(LocalFileBrowser.class);
+	static final Logger logger = LoggerFactory.getLogger(FileBrowser.class);
 
 	/**
 	 * An array list of files that are visited within the top directory
