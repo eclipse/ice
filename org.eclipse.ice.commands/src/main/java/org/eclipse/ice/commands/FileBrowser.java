@@ -55,4 +55,24 @@ public interface FileBrowser {
 	 */
 	public ArrayList<String> getFileList();
 
+	/**
+	 * This method returns the list of files and their relative paths to the passed
+	 * argument topDirectory. The argument should be the top-most directory that one
+	 * wants to search through.
+	 * 
+	 * @param topDirectory
+	 * @return
+	 */
+	public abstract ArrayList<String> listFiles(final String topDirectory);
+
+	/**
+	 * This method returns the list of directories and their relative paths to the
+	 * passed argument topDirectory. The argument should be the top-most directory
+	 * that one wants to search through.
+	 * 
+	 * @param topDirectory
+	 * @return
+	 */
+	public abstract ArrayList<String> listDirectories(final String topDirectory);
+
 }

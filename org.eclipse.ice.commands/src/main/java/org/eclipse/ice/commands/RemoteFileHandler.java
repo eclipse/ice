@@ -12,7 +12,6 @@
 package org.eclipse.ice.commands;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.jcraft.jsch.ChannelSftp;
@@ -274,28 +273,6 @@ public class RemoteFileHandler extends FileHandler {
 	}
 
 	/**
-	 * See {@link org.eclipse.ice.commands.IFileHandler#listFiles(String)}
-	 */
-	@Override
-	public ArrayList<String> listFiles(final String topDirectory) {
-		RemoteFileBrowser walker = new RemoteFileBrowser();
-		walker.fillArrays(topDirectory, connection.get().getSftpChannel());
-		
-		return walker.getFileList();
-	}
-
-	/**
-	 * See {@link org.eclipse.ice.commands.IFileHandler#listDirectories(String)}
-	 */
-	@Override
-	public ArrayList<String> listDirectories(final String topDirectory) {
-		RemoteFileBrowser walker = new RemoteFileBrowser();
-		walker.fillArrays(topDirectory, connection.get().getSftpChannel());
-		
-		return walker.getDirectoryList();
-	}
-
-	/**
 	 * See
 	 * {@link org.eclipse.ice.commands.FileHandler#configureMoveCommand(String, String)}
 	 */
@@ -360,6 +337,15 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	public void setPermissions(String permissions) {
 		this.permissions = Integer.parseInt(permissions, 8);
+	}
+
+	/**
+	 * See {@link org.eclipse.ice.commands.IFileHandler#getFileBrowser()}
+	 */
+	@Override
+	public FileBrowser getFileBrowser() {
+		RemoteFileBrowser browser = new RemoteFileBrowser(connection.get());
+		return browser;
 	}
 
 }

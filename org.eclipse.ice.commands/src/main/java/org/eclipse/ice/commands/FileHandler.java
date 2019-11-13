@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
@@ -159,16 +158,10 @@ public abstract class FileHandler implements IFileHandler {
 	public abstract void checkExistence(final String source, final String destination) throws IOException;
 
 	/**
-	 * See {@link org.eclipse.ice.commands.IFileHandler#listFiles(String)}
+	 * See {@link org.eclipse.ice.commands.IFileHandler#getFileBrowser()}
 	 */
 	@Override
-	public abstract ArrayList<String> listFiles(final String topDirectory);
-
-	/**
-	 * See {@link org.eclipse.ice.commands.IFileHandler#listDirectories(String)}
-	 */
-	@Override
-	public abstract ArrayList<String> listDirectories(final String topDirectory);
+	public abstract FileBrowser getFileBrowser();
 	
 	/**
 	 * This function gets and returns the private member variable command of type
