@@ -13,7 +13,9 @@ package org.eclipse.ice.commands;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -82,6 +84,59 @@ public class LocalFileBrowser extends SimpleFileVisitor<Path> implements FileBro
 	@Override
 	public ArrayList<String> getDirectoryList() {
 		return directoryList;
+	}
+
+	/**
+	 * See {@link org.eclipse.ice.commands.IFileHandler#listFiles(String)}
+	 */
+	@Override
+	public ArrayList<String> listFiles(String topDirectory) {
+		logger.info("Searching " + topDirectory);
+		// Execute the file walking logic
+		walkTree(topDirectory);
+
+		// Return the resulting file list hash map
+		return getFileList();
+	}
+
+	/**
+	 * See {@link org.eclipse.ice.commands.IFileHandler#listDirectories(String)}
+	 */
+	@Override
+	public ArrayList<String> listDirectories(String topDirectory) {
+		logger.info("Searching " + topDirectory);
+		// Executes the file walking logic
+		walkTree(topDirectory);
+
+		// Return the resulting directory array list
+		return getDirectoryList();
+	}
+
+	/**
+	 * This function performs the action of walking the file tree for the file
+	 * browsing capabilities of LocalFileHandler. It returns a LocalFileWalker so
+	 * that the files or directories could be obtained
+	 * 
+	 * @return
+	 */
+	private void walkTree(String topDirectory) {
+
+		// Make a path variable of the topDirectory
+		Path topPath = Paths.get(topDirectory);
+		// Make a dummy path that just gets the return top directory from
+		// Files.walkFileTree
+		Path path = null;
+
+		// Make a local file walker instance, which contains the logic of what to do
+		// with the results from Files.walkFileTree
+
+		try {
+			path = Files.walkFileTree(topPath, this);
+		} catch (IOException e) {
+			logger.error("Unable to walk file tree at path " + topPath.toString(), e);
+		}
+
+		return;
 	}
 
 }

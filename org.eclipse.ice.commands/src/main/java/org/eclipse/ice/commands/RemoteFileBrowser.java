@@ -26,12 +26,18 @@ import com.jcraft.jsch.SftpException;
 public class RemoteFileBrowser implements FileBrowser {
 
 	/**
+	 * A connection with which to browse files
+	 */
+	private Connection connection;
+
+	/**
 	 * Default constructor
 	 */
-	public RemoteFileBrowser() {
+	public RemoteFileBrowser(Connection connection) {
 		// Make sure we start with a fresh list everytime the walker is called
 		fileList.clear();
 		directoryList.clear();
+		this.connection = connection;
 	}
 
 	/**
@@ -44,20 +50,20 @@ public class RemoteFileBrowser implements FileBrowser {
 	 */
 	protected void fillArrays(String topDirectory, ChannelSftp channel) {
 		// Make sure the top directory ends with the appropriate separator
-		//TODO - figure out how to get a separator from a remote system rather
+		// TODO - figure out how to get a separator from a remote system rather
 		// than the system the job is launching from with e.g.
 		// FileSystems.getDefault().getSeparator();
 		String separator = "/";
 		// Now check the path name
-		if(!topDirectory.endsWith(separator))
+		if (!topDirectory.endsWith(separator))
 			topDirectory += separator;
-		
+
 		try {
 			// Get the path's directory structure
 			Collection<ChannelSftp.LsEntry> directoryStructure = channel.ls(topDirectory);
 			// Iterate through the structure
 			for (ChannelSftp.LsEntry file : directoryStructure) {
-				if(!file.getAttrs().isDir()) {
+				if (!file.getAttrs().isDir()) {
 					fileList.add(topDirectory + file.getFilename());
 					// Else if it is a subdirectory and not '.' or '..'
 				} else if (!(".".equals(file.getFilename()) || "..".equals(file.getFilename()))) {
@@ -66,7 +72,7 @@ public class RemoteFileBrowser implements FileBrowser {
 					// Recursively iterate over this subdirectory to get its contents
 					fillArrays(topDirectory + file.getFilename(), channel);
 				}
-		
+
 			}
 
 		} catch (SftpException e) {
@@ -93,6 +99,26 @@ public class RemoteFileBrowser implements FileBrowser {
 	@Override
 	public ArrayList<String> getFileList() {
 		return fileList;
+	}
+
+	/**
+	 * See {@link org.eclipse.ice.commands.FileBrowser#listFiles(String)}
+	 */
+	@Override
+	public ArrayList<String> listFiles(final String topDirectory) {
+		fillArrays(topDirectory, connection.getSftpChannel());
+
+		return getFileList();
+	}
+
+	/**
+	 * See {@link org.eclipse.ice.commands.FileBrowser#listDirectories(String)}
+	 */
+	@Override
+	public ArrayList<String> listDirectories(final String topDirectory) {
+		fillArrays(topDirectory, connection.getSftpChannel());
+
+		return getDirectoryList();
 	}
 
 }

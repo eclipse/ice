@@ -29,7 +29,7 @@ public interface FileBrowser {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	static final Logger logger = LoggerFactory.getLogger(LocalFileBrowser.class);
+	static final Logger logger = LoggerFactory.getLogger(FileBrowser.class);
 
 	/**
 	 * An array list of files that are visited within the top directory
@@ -54,5 +54,25 @@ public interface FileBrowser {
 	 * @return
 	 */
 	public ArrayList<String> getFileList();
+
+	/**
+	 * This method returns the list of files and their relative paths to the passed
+	 * argument topDirectory. The argument should be the top-most directory that one
+	 * wants to search through.
+	 * 
+	 * @param topDirectory
+	 * @return
+	 */
+	public abstract ArrayList<String> listFiles(final String topDirectory);
+
+	/**
+	 * This method returns the list of directories and their relative paths to the
+	 * passed argument topDirectory. The argument should be the top-most directory
+	 * that one wants to search through.
+	 * 
+	 * @param topDirectory
+	 * @return
+	 */
+	public abstract ArrayList<String> listDirectories(final String topDirectory);
 
 }
