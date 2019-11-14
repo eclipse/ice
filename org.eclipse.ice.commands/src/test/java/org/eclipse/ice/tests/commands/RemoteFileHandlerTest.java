@@ -127,7 +127,7 @@ public class RemoteFileHandlerTest {
 		System.out.println("all finished testing set connection");
 	}
 
-	// @Test
+	@Test
 	public void testSetNewConnection() throws Exception {
 		ConnectionConfiguration config = makeConnectionConfiguration();
 		RemoteFileHandler handler = new RemoteFileHandler();
@@ -286,8 +286,6 @@ public class RemoteFileHandlerTest {
 		handler.setConnectionConfiguration(fileTransferConn.getConfiguration());
 
 		String src = theSource;
-		// Get the filename to check for existence
-		String filename = src.substring(src.lastIndexOf("/"));
 
 		// Now try to move the file
 		CommandStatus status = handler.move(src, theDestination);
@@ -298,6 +296,7 @@ public class RemoteFileHandlerTest {
 		deleteRemoteSource();
 
 	}
+
 
 	/**
 	 * Dummy function which makes the connection configuration for the dummy remote
@@ -500,12 +499,12 @@ public class RemoteFileHandlerTest {
 
 		// Get the path to the source file
 		// Leave this as unix command since the remote system is unix
-		String separator = "/";
-		String[] tokens = theSource.split(separator);
+		String remoteSeparator = "/";
+		String[] tokens = theSource.split(remoteSeparator);
 		String sourcePath = "";
 		// Build the source path
 		for (int i = 0; i < tokens.length - 1; i++) {
-			sourcePath += tokens[i] + separator;
+			sourcePath += tokens[i] + remoteSeparator;
 		}
 
 		// Recursively delete the source directory and its contents
@@ -555,7 +554,7 @@ public class RemoteFileHandlerTest {
 		ChannelSftp sftpChannel = fileTransferConn.getSftpChannel();
 
 		System.out.println("Deleting remote destination at : " + theDestination);
-		// Recurisvely delete the directory and its contents
+		// Recursively delete the directory and its contents
 		deleteRemoteDirectory(sftpChannel, theDestination);
 
 	}

@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 
@@ -173,6 +174,24 @@ public class LocalFileHandlerTest {
 		fileCreator.deleteLocalSource();
 
 		System.out.println("Finished testing testExists()");
+	}
+
+	/**
+	 * A simple test method to recursively delete temporary files/directories
+	 * created in this test class
+	 * 
+	 * @param directory - top level directory from which to delete everything
+	 *                  underneath
+	 * @return - boolean - true if everything deleted, false if not
+	 */
+	private boolean deleteLocalDirectory(File directory) {
+		File[] contents = directory.listFiles();
+		if (contents != null) {
+			for (File file : contents) {
+				deleteLocalDirectory(file);
+			}
+		}
+		return directory.delete();
 	}
 
 }

@@ -87,4 +87,13 @@ public class LocalFileHandler extends FileHandler {
 
 	}
 
+	/**
+	 * See {@link org.eclipse.ice.commands.IFileHandler#getFileBrowser()}
+	 */
+	@Override
+	public FileBrowser getFileBrowser() {
+		LocalFileBrowser browser = new LocalFileBrowser();
+		return browser;
+	}
+
 }

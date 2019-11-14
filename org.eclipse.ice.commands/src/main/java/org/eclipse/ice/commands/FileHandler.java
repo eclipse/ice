@@ -64,12 +64,7 @@ public abstract class FileHandler implements IFileHandler {
 	}
 
 	/**
-	 * This method is responsible for moving a file from a source to a destination
-	 * path. If the operation fails, an exception is thrown
-	 * 
-	 * @return - CommandStatus - a CommandStatus indicating whether or not the move
-	 *         was successful
-	 * @throws IOException
+	 * See {@link org.eclipse.ice.commands.IFileHandler#move(String, String)}
 	 */
 	@Override
 	public CommandStatus move(final String source, final String destination) {
@@ -100,12 +95,7 @@ public abstract class FileHandler implements IFileHandler {
 	}
 
 	/**
-	 * This method is responsible for copying a file from a source to a destination
-	 * path. If the operation fails, an exception is thrown
-	 * 
-	 * @return - CommandStatus - a CommandStatus indicating whether or not the copy
-	 *         was successful
-	 * @throws IOException
+	 * See {@link org.eclipse.ice.commands.IFileHandler#copy(String, String)}
 	 */
 	@Override
 	public CommandStatus copy(final String source, final String destination) {
@@ -156,31 +146,23 @@ public abstract class FileHandler implements IFileHandler {
 	protected abstract void configureCopyCommand(final String source, final String destination);
 
 	/**
-	 * This method is responsible for determining whether or not a file or directory
-	 * already exists for a given path.
-	 * 
-	 * @param - String - a string with the path for the method to check its
-	 *          existence
-	 * @return - boolean indicating whether or not the file exists (returns true) or
-	 *         does not exist (returns false)
-	 * @throws IOException
+	 * See {@link org.eclipse.ice.commands.IFileHandler#exists(String)}
 	 */
 	@Override
 	public abstract boolean exists(final String file) throws IOException;
 
 	/**
-	 * This method checks the existence of the source and destination files. If the
-	 * destination doesn't exist, it tries to make it. If the destination can't be
-	 * made, or the source doesn't exist, the method throws an exception.
-	 * 
-	 * @param source
-	 * @param destination
-	 * @return
-	 * @throws IOException
+	 * See {@link org.eclipse.ice.commands.IFileHandler#checkExistence(String, String)}
 	 */
 	@Override
 	public abstract void checkExistence(final String source, final String destination) throws IOException;
 
+	/**
+	 * See {@link org.eclipse.ice.commands.IFileHandler#getFileBrowser()}
+	 */
+	@Override
+	public abstract FileBrowser getFileBrowser();
+	
 	/**
 	 * This function gets and returns the private member variable command of type
 	 * Command

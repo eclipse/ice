@@ -339,4 +339,13 @@ public class RemoteFileHandler extends FileHandler {
 		this.permissions = Integer.parseInt(permissions, 8);
 	}
 
+	/**
+	 * See {@link org.eclipse.ice.commands.IFileHandler#getFileBrowser()}
+	 */
+	@Override
+	public FileBrowser getFileBrowser() {
+		RemoteFileBrowser browser = new RemoteFileBrowser(connection.get());
+		return browser;
+	}
+
 }

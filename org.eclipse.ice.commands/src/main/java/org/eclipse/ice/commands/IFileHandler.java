@@ -66,4 +66,11 @@ public interface IFileHandler {
 	 */
 	public abstract void checkExistence(final String source, final String destination) throws IOException;
 
+	/**
+	 * Method that returns a FileBrowser instance
+	 * 
+	 * @return
+	 */
+	public abstract FileBrowser getFileBrowser();
+
 }
