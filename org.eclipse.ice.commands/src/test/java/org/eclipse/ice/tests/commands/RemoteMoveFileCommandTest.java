@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
+import org.eclipse.ice.commands.HandleType;
 import org.eclipse.ice.commands.RemoteMoveFileCommand;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -59,7 +60,9 @@ public class RemoteMoveFileCommandTest {
 	public static void setUpBeforeClass() throws Exception {
 		// Set up the connection using the code already established in
 		// RemoteFileHandlerTest
+	
 		RemoteFileHandlerTest.setUpBeforeClass();
+		
 	}
 
 	/**
@@ -88,7 +91,7 @@ public class RemoteMoveFileCommandTest {
 		RemoteMoveFileCommand command = new RemoteMoveFileCommand();
 		// These functions are nominally handled by the FileHandler. But, when testing
 		// this class alone, we need to set them individually
-		command.setMoveType(3);
+		command.setMoveType(HandleType.remoteRemote);
 		command.setConnection(handlerTest.getConnection());
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();
@@ -125,7 +128,7 @@ public class RemoteMoveFileCommandTest {
 		RemoteMoveFileCommand command = new RemoteMoveFileCommand();
 		// These functions are nominally handled by the FileHandler. But, when testing
 		// this class alone, we need to set them individually
-		command.setMoveType(2);
+		command.setMoveType(HandleType.remoteLocal);
 		command.setConnection(handlerTest.getConnection());
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();
@@ -162,7 +165,7 @@ public class RemoteMoveFileCommandTest {
 		RemoteMoveFileCommand command = new RemoteMoveFileCommand();
 		// These functions are nominally handled by the FileHandler. But, when testing
 		// this class alone, we need to set them individually
-		command.setMoveType(1);
+		command.setMoveType(HandleType.localRemote);
 		command.setConnection(handlerTest.getConnection());
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();

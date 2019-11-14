@@ -71,7 +71,7 @@ public class RemoteFileHandlerTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
-
+	
 		ConnectionConfiguration config = makeConnectionConfiguration();
 
 		fileTransferConn = manager.openConnection(config);

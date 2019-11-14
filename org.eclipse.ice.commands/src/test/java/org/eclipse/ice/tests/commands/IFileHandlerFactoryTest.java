@@ -22,7 +22,9 @@ import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
+import org.eclipse.ice.commands.FileHandler;
 import org.eclipse.ice.commands.FileHandlerFactory;
+import org.eclipse.ice.commands.HandleType;
 import org.eclipse.ice.commands.IFileHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -294,6 +296,35 @@ public class IFileHandlerFactoryTest {
 
 	}
 
+	/**
+	 * Test method for setting the type of file handle type for remote 
+	 * file handlers
+	 * @throws Exception
+	 */
+	@Test
+	public void testSetHandleType() throws Exception {
+		
+		fileCreator.createLocalSource();
+		fileCreator.createRemoteDestination();
+		
+		theSource = fileCreator.getSource();
+		theDestination = fileCreator.getDestination();
+		String separator = FileSystems.getDefault().getSeparator();
+		String filename = theSource.substring(theSource.lastIndexOf(separator));
+		
+		FileHandler handler = factory.getFileHandler(fileCreator.getConnection().getConfiguration());
+	
+		handler.setHandleType(HandleType.localRemote);
+		CommandStatus status = handler.copy(theSource, theDestination);
+		
+		assert(status == CommandStatus.SUCCESS);
+		
+		assert ( handler.exists(theDestination + filename));
+	
+		fileCreator.deleteLocalSource();
+		fileCreator.deleteRemoteDestination();
+	}
+	
 	/**
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.FileHandlerFactory#getFileHandler()} and

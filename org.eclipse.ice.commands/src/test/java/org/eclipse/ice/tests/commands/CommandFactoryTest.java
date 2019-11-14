@@ -32,6 +32,7 @@ import org.eclipse.ice.commands.LocalFileHandler;
 import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -68,11 +69,7 @@ public class CommandFactoryTest {
 	 */
 	ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
 
-	/**
-	 * A connection manager to manage the dummy connections for testing
-	 */
-	ConnectionManager manager = new ConnectionManager();
-
+	
 	/**
 	 * Default constructor
 	 */
@@ -90,6 +87,14 @@ public class CommandFactoryTest {
 		manager.removeAllConnections();
 	}
 
+	/**
+	 * Set no strict host key checking just for tests
+	 * @throws Exception
+	 */
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+	}
+	
 	/**
 	 * Run after the tests have finished processing. This function just removes the
 	 * dummy text files that are created with log/error information from running
@@ -196,8 +201,7 @@ public class CommandFactoryTest {
 		// assert that it was successful
 		assert (status == CommandStatus.SUCCESS);
 
-		// Delete the connections
-		manager.removeAllConnections();
+
 
 	}
 
@@ -440,8 +444,6 @@ public class CommandFactoryTest {
 		// assert that it was successful
 		assert (status == CommandStatus.SUCCESS);
 
-		// Delete the connections
-		manager.removeAllConnections();
 		System.out.println("Finished remote functional command");
 
 	}

@@ -40,13 +40,6 @@ import com.jcraft.jsch.JSchException;
 public class ConnectionManagerTest {
 
 	/**
-	 * A boolean indicating whether or not the prompt should require the user to
-	 * input the password or just read from a dummy text file. Default to false to
-	 * use the dummy ssh connection
-	 */
-	static boolean require_password = false;
-
-	/**
 	 * A dummy connection to perform a few tests with
 	 */
 	static Connection connect = null;
@@ -83,9 +76,9 @@ public class ConnectionManagerTest {
 		String credFile = "/tmp/ice-remote-creds.txt";
 		if (System.getProperty("os.name").toLowerCase().contains("win"))
 			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
-		
+
 		auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
-		
+
 		// Set it
 		configuration.setAuthorization(auth);
 		configuration.setName(connectionName);
@@ -108,8 +101,9 @@ public class ConnectionManagerTest {
 		// Assert that there are no more connections in the list
 		assert (manager.getConnectionList().size() == 0);
 
+		// Make sure the known hosts are reset to the default directory
+		ConnectionManagerFactory.getConnectionManager().setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
 	}
-
 
 	/**
 	 * Test method for
@@ -167,6 +161,8 @@ public class ConnectionManagerTest {
 	 */
 	@Test
 	public void testMultipleConnections() {
+		ConnectionManagerFactory.getConnectionManager()
+				.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
 
 		// Read in a dummy configuration file that contains credentials
 		File file = null;
@@ -252,10 +248,32 @@ public class ConnectionManagerTest {
 	@Test
 	public void testValidConnection() {
 		System.out.println("Testing valid connection");
+		ConnectionManagerFactory.getConnectionManager()
+				.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
+
 		testOpenConnection();
 
 		testGetConnection();
 
 		testCloseConnection();
 	}
+
+	/**
+	 * This tests failure if the known host does not exist in the known_hosts ssh
+	 * file
+	 * @throws JSchException 
+	 */
+	@Test(expected = JSchException.class)
+	public void testNoKnownHost() throws JSchException {
+		// Set the known hosts to something random, where we know the ssh fingerprint
+		// doesn't exist
+		System.out.println("Testing no known host");
+		ConnectionManagerFactory.getConnectionManager().setKnownHosts("/tmp/knownhosts");
+		// Try to open a connection
+		// Should throw a JSchException since the host fingerprint won't match
+		connect = ConnectionManagerFactory.getConnectionManager().openConnection(configuration);
+	
+
+	}
+
 }

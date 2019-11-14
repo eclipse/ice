@@ -35,7 +35,7 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	 * An int which determines what kind of file handle type it is, e.g.
 	 * local->remote, remote->local, or remote->remote
 	 */
-	private int copyType;
+	private HandleType copyType;
 
 	/**
 	 * See {@link org.eclipse.ice.commands.RemoteFileHandler#setPermissions(String)}
@@ -108,7 +108,7 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	 * 
 	 * @param type
 	 */
-	public void setCopyType(int copyType) {
+	public void setCopyType(HandleType copyType) {
 		this.copyType = copyType;
 	}
 

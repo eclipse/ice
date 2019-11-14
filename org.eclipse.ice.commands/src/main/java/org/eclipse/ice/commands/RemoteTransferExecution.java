@@ -53,16 +53,16 @@ public class RemoteTransferExecution {
 	}
 
 	protected CommandStatus executeTransfer(Connection connection, String source, String destination, int permissions,
-			int transferType) {
+			HandleType transferType) {
 		ChannelSftp channel = null;
 		try {
 			channel = connection.getSftpChannel();
 			// Determine how to proceed given what kind of copy it is
-			if (transferType == 1) { // If move type is local -> remote, use put
+			if (transferType == HandleType.localRemote) { // If move type is local -> remote, use put
 				channel.put(source, destination);
-			} else if (transferType == 2) { // if move type is remote -> local, use get
+			} else if (transferType == HandleType.remoteLocal) { // if move type is remote -> local, use get
 				channel.get(source, destination);
-			} else if (transferType == 3) { // if move type is remote -> remote, call function
+			} else if (transferType == HandleType.remoteRemote) { // if move type is remote -> remote, call function
 				transferRemoteToRemote(connection, source, destination);
 			} else {
 				logger.info("Unknown handle type...");
