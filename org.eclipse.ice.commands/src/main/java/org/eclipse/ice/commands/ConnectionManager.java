@@ -58,6 +58,9 @@ public class ConnectionManager {
 	 * Default Constructor
 	 */
 	public ConnectionManager() {
+		// If the OS is windows, then change the known hosts to be windows style
+		if(System.getProperty("os.name").toLowerCase().contains("win"))
+			knownHosts = System.getProperty("user.home") + "\\.ssh\\known_hosts";
 	}
 
 	/**
