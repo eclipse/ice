@@ -69,7 +69,6 @@ public class CommandFactoryTest {
 	 */
 	ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
 
-	
 	/**
 	 * Default constructor
 	 */
@@ -89,12 +88,13 @@ public class CommandFactoryTest {
 
 	/**
 	 * Set no strict host key checking just for tests
+	 * 
 	 * @throws Exception
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
-	
+
 	/**
 	 * Run after the tests have finished processing. This function just removes the
 	 * dummy text files that are created with log/error information from running
@@ -200,8 +200,6 @@ public class CommandFactoryTest {
 
 		// assert that it was successful
 		assert (status == CommandStatus.SUCCESS);
-
-
 
 	}
 

@@ -12,6 +12,7 @@
 
 package org.eclipse.ice.tests.commands;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -74,27 +75,6 @@ public class RemoteFileBrowserTest {
 	}
 
 	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	/**
 	 * Function to execute the remote file browsing and remote directory browsing
 	 * test. We call one main function so that a file structure can be created at
 	 * the beginning of the test, accessed by both "subtests", and then deleted at
@@ -108,7 +88,6 @@ public class RemoteFileBrowserTest {
 		// using the already developed functions, since we need multiple files and
 		// directories
 		String topDirectory = "/tmp/fileBrowsingDir/";
-
 		// put this in a try and finally so that the remote file structure
 		// always gets deleted. Otherwise the next test run might fail when it
 		// tries to build the remote file structure and see that it already

@@ -60,9 +60,9 @@ public class RemoteMoveFileCommandTest {
 	public static void setUpBeforeClass() throws Exception {
 		// Set up the connection using the code already established in
 		// RemoteFileHandlerTest
-	
+
 		RemoteFileHandlerTest.setUpBeforeClass();
-		
+
 	}
 
 	/**

@@ -117,21 +117,19 @@ public class LocalFileBrowser extends SimpleFileVisitor<Path> implements FileBro
 	 * browsing capabilities of LocalFileHandler. It returns a LocalFileWalker so
 	 * that the files or directories could be obtained
 	 * 
-	 * @return
 	 */
 	private void walkTree(String topDirectory) {
 
 		// Make a path variable of the topDirectory
 		Path topPath = Paths.get(topDirectory);
-		// Make a dummy path that just gets the return top directory from
-		// Files.walkFileTree
-		Path path = null;
 
 		// Make a local file walker instance, which contains the logic of what to do
 		// with the results from Files.walkFileTree
 
 		try {
-			path = Files.walkFileTree(topPath, this);
+			// Make a dummy path that just gets the return top directory from
+			// Files.walkFileTree
+			Path path = Files.walkFileTree(topPath, this);
 		} catch (IOException e) {
 			logger.error("Unable to walk file tree at path " + topPath.toString(), e);
 		}

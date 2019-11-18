@@ -118,7 +118,6 @@ public class LocalCommand extends Command {
 			// Now check again to see if the job succeeded
 			if (!checkStatus(status))
 				return CommandStatus.FAILED;
-
 		}
 
 		// Close up the output streams

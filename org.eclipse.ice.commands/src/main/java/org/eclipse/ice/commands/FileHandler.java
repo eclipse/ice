@@ -64,7 +64,6 @@ public abstract class FileHandler implements IFileHandler {
 	 */
 	protected HandleType HANDLE_TYPE = null;
 
-	
 	/**
 	 * Default constructor
 	 */
@@ -160,7 +159,8 @@ public abstract class FileHandler implements IFileHandler {
 	public abstract boolean exists(final String file) throws IOException;
 
 	/**
-	 * See {@link org.eclipse.ice.commands.IFileHandler#checkExistence(String, String)}
+	 * See
+	 * {@link org.eclipse.ice.commands.IFileHandler#checkExistence(String, String)}
 	 */
 	@Override
 	public abstract void checkExistence(final String source, final String destination) throws IOException;
@@ -170,7 +170,7 @@ public abstract class FileHandler implements IFileHandler {
 	 */
 	@Override
 	public abstract FileBrowser getFileBrowser();
-	
+
 	/**
 	 * This function gets and returns the private member variable command of type
 	 * Command
@@ -244,14 +244,15 @@ public abstract class FileHandler implements IFileHandler {
 	}
 
 	/**
-	 * A setter to set the type of file handle this is. See 
+	 * A setter to set the type of file handle this is. See
 	 * {@link org.eclipse.ice.commands.RemoteFileHandler#HANDLE_TYPE}
+	 * 
 	 * @param HANDLE_TYPE
 	 */
 	public void setHandleType(HandleType HANDLE_TYPE) {
 		this.HANDLE_TYPE = HANDLE_TYPE;
 	}
-	
+
 	/**
 	 * Get the connection for this file handler
 	 * 

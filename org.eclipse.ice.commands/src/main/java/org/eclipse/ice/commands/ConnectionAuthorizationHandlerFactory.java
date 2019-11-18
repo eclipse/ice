@@ -82,8 +82,7 @@ public class ConnectionAuthorizationHandlerFactory {
 		}
 
 		// Have a separate set for a text file authorization since it needs to take the
-		// path as
-		// a constructor argument
+		// path as a constructor argument
 		// TODO - think about if there is a better way to do this - don't want to have
 		// to add an additional if statement for each non-default constructor
 		if (type.equals("text"))

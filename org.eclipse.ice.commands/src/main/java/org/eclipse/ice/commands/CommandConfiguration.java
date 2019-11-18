@@ -18,6 +18,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.file.FileSystems;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -558,8 +559,7 @@ public class CommandConfiguration {
 	 */
 	public void setWorkingDirectory(String workingDirectory) {
 		// Check to see if the directory ends with a separator
-		// TODO - test with windows
-		String separator = "/";
+		String separator = FileSystems.getDefault().getSeparator();
 		if (getOS().toLowerCase().contains("win"))
 			separator = "\\";
 		if (!workingDirectory.endsWith(separator))

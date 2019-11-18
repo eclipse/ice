@@ -114,11 +114,12 @@ public class TxtFileConnectionAuthorizationHandler extends ConnectionAuthorizati
 	/**
 	 * Setter for
 	 * {@link org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler#path}
-	 * 
+	 * Also then sets the username and hostname to that defined by the new path
 	 * @param
 	 */
 	public void setPath(String path) {
 		this.path = path;
+		setUsernameHostname();
 	}
 
 }

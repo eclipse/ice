@@ -44,22 +44,23 @@ public class ConnectionManager {
 	private final Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
 
 	/**
-	 * A boolean that the user can set to disable ssh StrictHostKeyChecking.
-	 * Set to true by default since this is the most secure way.
+	 * A boolean that the user can set to disable ssh StrictHostKeyChecking. Set to
+	 * true by default since this is the most secure way.
 	 */
 	private boolean requireStrictHostKeyChecking = true;
-	
+
 	/**
-	 * String containing the path to the known hosts directory. Can be set to 
+	 * String containing the path to the known hosts directory. Can be set to
 	 * something else if the user has a different default known_host
 	 */
 	private String knownHosts = System.getProperty("user.home") + "/.ssh/known_hosts";
+
 	/**
 	 * Default Constructor
 	 */
 	public ConnectionManager() {
 		// If the OS is windows, then change the known hosts to be windows style
-		if(System.getProperty("os.name").toLowerCase().contains("win"))
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
 			knownHosts = System.getProperty("user.home") + "\\.ssh\\known_hosts";
 	}
 
@@ -78,7 +79,7 @@ public class ConnectionManager {
 
 		// Create the shell
 		JSch jsch = new JSch();
-		
+
 		jsch.setKnownHosts(knownHosts);
 		newConnection.setJShellSession(jsch);
 
@@ -125,20 +126,20 @@ public class ConnectionManager {
 				}
 			}
 
-			
-			
 			// Set the authentication requirements
 			newConnection.getSession().setConfig("PreferredAuthentications", "publickey,password");
 
 			// If the user wants to disable StrictHostKeyChecking, add it to the
 			// session configuration
-			if(!requireStrictHostKeyChecking)
+			if (!requireStrictHostKeyChecking)
 				newConnection.getSession().setConfig("StrictHostKeyChecking", "no");
-			
+
 			// Connect the session
 			try {
 				newConnection.getSession().connect();
 			} catch (JSchException e) {
+				// Add something here that if this is a first time connect, and thus
+				// the fingerprint doesn't exist, to try to manually override?
 				logger.error("Couldn't connect to session with given username and/or password. Exiting.", e);
 				throw new JSchException();
 			}
@@ -310,18 +311,21 @@ public class ConnectionManager {
 	public HashMap<String, Connection> getConnectionList() {
 		return connectionList;
 	}
-	
+
 	/**
-	 * Setter for whether or not connections should be open with the requirement
-	 * of StrictHostKeyChecking
+	 * Setter for whether or not connections should be open with the requirement of
+	 * StrictHostKeyChecking
+	 * 
 	 * @param requireStrictHostKeyChecking
 	 */
 	public void setRequireStrictHostKeyChecking(boolean requireStrictHostKeyChecking) {
 		this.requireStrictHostKeyChecking = requireStrictHostKeyChecking;
 	}
-	
+
 	/**
-	 * Setter for known host directory path {@link org.eclipse.ice.commands.ConnectionManager#knownHosts}
+	 * Setter for known host directory path
+	 * {@link org.eclipse.ice.commands.ConnectionManager#knownHosts}
+	 * 
 	 * @param knownHosts
 	 */
 	public void setKnownHosts(String knownHosts) {
