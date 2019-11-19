@@ -48,7 +48,9 @@ public class ConnectionAuthorizationHandlerFactory {
 		// A text file containing all credentials. Authorization will automatically grab
 		// credentials
 		handlerList.put("text", new TxtFileConnectionAuthorizationHandler());
-
+		// Use a path to a key pair that was already generated to establish the
+		// connection
+		handlerList.put("keypath", new KeyPathConnectionAuthorizationHandler());
 	}
 
 	/**
@@ -81,13 +83,14 @@ public class ConnectionAuthorizationHandlerFactory {
 			}
 		}
 
-		// Have a separate set for a text file authorization since it needs to take the
-		// path as
-		// a constructor argument
+		// Have a separate set for a text file (or key path) authorization since it
+		// needs to take the path as a constructor argument
 		// TODO - think about if there is a better way to do this - don't want to have
 		// to add an additional if statement for each non-default constructor
 		if (type.equals("text"))
 			auth = new TxtFileConnectionAuthorizationHandler(path);
+		if (type.equals("keypath"))
+			auth = new KeyPathConnectionAuthorizationHandler(path);
 
 		if (auth == null)
 			logger.error("Unknown authorization type! Will return null.");

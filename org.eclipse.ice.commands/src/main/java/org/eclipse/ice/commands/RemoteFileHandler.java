@@ -12,9 +12,6 @@
 package org.eclipse.ice.commands;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.ArrayList;
-
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
@@ -59,8 +56,6 @@ public class RemoteFileHandler extends FileHandler {
 		// Get the connection manager and open the connection in constructor so that it
 		// is only performed once, thus the connection isn't constantly re-requiring
 		// password authentication
-		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
-
 		// First check if there is already an existing connection open with these
 		// details
 		if (manager.getConnection(config.getName()) == null) {

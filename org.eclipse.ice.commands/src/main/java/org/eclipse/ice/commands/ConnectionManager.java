@@ -23,8 +23,8 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 
 /**
- * This factory class manages remote connections, and as such interfaces with
- * all classes that are associated with remote connections.
+ * This class manages remote connections, and as such interfaces with all
+ * classes that are associated with remote connections.
  * 
  * @author Joe Osborn
  *
@@ -44,22 +44,23 @@ public class ConnectionManager {
 	private final Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
 
 	/**
-	 * A boolean that the user can set to disable ssh StrictHostKeyChecking.
-	 * Set to true by default since this is the most secure way.
+	 * A boolean that the user can set to disable ssh StrictHostKeyChecking. Set to
+	 * true by default since this is the most secure way.
 	 */
 	private boolean requireStrictHostKeyChecking = true;
-	
+
 	/**
-	 * String containing the path to the known hosts directory. Can be set to 
+	 * String containing the path to the known hosts directory. Can be set to
 	 * something else if the user has a different default known_host
 	 */
 	private String knownHosts = System.getProperty("user.home") + "/.ssh/known_hosts";
+
 	/**
 	 * Default Constructor
 	 */
 	public ConnectionManager() {
 		// If the OS is windows, then change the known hosts to be windows style
-		if(System.getProperty("os.name").toLowerCase().contains("win"))
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
 			knownHosts = System.getProperty("user.home") + "\\.ssh\\known_hosts";
 	}
 
@@ -78,7 +79,7 @@ public class ConnectionManager {
 
 		// Create the shell
 		JSch jsch = new JSch();
-		
+
 		jsch.setKnownHosts(knownHosts);
 		newConnection.setJShellSession(jsch);
 
@@ -114,27 +115,25 @@ public class ConnectionManager {
 			// host keys that were grabbed from known_hosts and check what
 			// type the user-given hostname needs
 			HostKeyRepository hkr = jsch.getHostKeyRepository();
-
+			String type = null;
 			for (HostKey hk : hkr.getHostKey()) {
 				// If this hostkey contains the hostname that was supplied by
 				// the user
 				if (hk.getHost().contains(hostname)) {
-					String type = hk.getType();
+					type = hk.getType();
 					// Set the session configuration key type to that hosts type
 					newConnection.getSession().setConfig("server_host_key", type);
 				}
 			}
 
-			
-			
 			// Set the authentication requirements
 			newConnection.getSession().setConfig("PreferredAuthentications", "publickey,password");
 
 			// If the user wants to disable StrictHostKeyChecking, add it to the
 			// session configuration
-			if(!requireStrictHostKeyChecking)
+			if (!requireStrictHostKeyChecking)
 				newConnection.getSession().setConfig("StrictHostKeyChecking", "no");
-			
+
 			// Connect the session
 			try {
 				newConnection.getSession().connect();
@@ -155,6 +154,90 @@ public class ConnectionManager {
 		// If the connectionConfiguration was not properly specified, or an error
 		// occurred, return null
 		return null;
+	}
+
+	/**
+	 * This function opens a new connection given a
+	 * KeyPathConnectionAuthorizationHandler and a password. The connection to be
+	 * opened should be that by a particular key that has already been established
+	 * and created. The KeyPathConnectionAuthorizationHandler should have already
+	 * had the keyPath, username, and hostname set before passing to this function
+	 * 
+	 * @param auth
+	 * @param name
+	 * @return
+	 */
+	public Connection openConnection(KeyPathConnectionAuthorizationHandler auth, String name)
+			throws JSchException {
+		// Make a new ConnectionConfiguration
+		ConnectionConfiguration configuration = new ConnectionConfiguration();
+		configuration.setName(name);
+		// Give it to the connection configuration
+		configuration.setAuthorization(auth);
+
+		// Get the information from the authorization handler
+		String username = auth.getUsername();
+		String hostname = auth.getHostname();
+		String keyPath = auth.getKeyPath();
+
+		// Now make a new connection
+		Connection newConnection = new Connection(configuration);
+
+		// Create a new JSch session
+		JSch jsch = new JSch();
+
+		// Add the key information to JSch
+		jsch.addIdentity(keyPath);
+		jsch.setKnownHosts(knownHosts);
+		// Set it
+		newConnection.setJShellSession(jsch);
+
+		logger.info("Trying to open a new KeyPath session");
+
+		// Try to open the new session with the given username and hostname
+		try {
+			// Set the session to a newly obtained session
+			newConnection.setSession(newConnection.getJShellSession().getSession(username, hostname));
+		} catch (JSchException e) {
+			logger.error("Couldn't open session with given username and hostname. Exiting", e);
+			throw new JSchException();
+		}
+
+		// If the user wants to disable StrictHostKeyChecking, add it to the
+		// session configuration
+		if (!requireStrictHostKeyChecking)
+			newConnection.getSession().setConfig("StrictHostKeyChecking", "no");
+
+		// JSch default requests ssh-rsa host checking, but some keys
+		// request ecdsa-sha2-nistp256. So loop through the available
+		// host keys that were grabbed from known_hosts and check what
+		// type the user-given hostname needs
+		HostKeyRepository hkr = jsch.getHostKeyRepository();
+
+		for (HostKey hk : hkr.getHostKey()) {
+			// If this hostkey contains the hostname that was supplied by
+			// the user
+			if (hk.getHost().contains(hostname)) {
+				String type = hk.getType();
+				// Set the session configuration key type to that hosts type
+				newConnection.getSession().setConfig("server_host_key", type);
+			}
+		}
+
+		// Connect the session
+		try {
+			newConnection.getSession().connect();
+		} catch (JSchException e) {
+			logger.error("Couldn't connect to session with given username and private key. Exiting.", e);
+			throw new JSchException();
+		}
+
+		// Add the connection to the list since it was successfully created
+		connectionList.put(newConnection.getConfiguration().getName(), newConnection);
+
+		logger.info("Connection at " + username + "@" + hostname + " established successfully");
+
+		return newConnection;
 	}
 
 	/**
@@ -250,6 +333,17 @@ public class ConnectionManager {
 	}
 
 	/**
+	 * This function allows adding a user defined connection to the connection
+	 * manager rather than opening a default connection through the function
+	 * {@link ConnectionManager#openConnection(ConnectionConfiguration)}.
+	 * 
+	 * @param connection
+	 */
+	public void addConnection(Connection connection) {
+		connectionList.put(connection.getConfiguration().getName(), connection);
+	}
+
+	/**
 	 * This function lists all the connections (and their statuses, i.e. if open or
 	 * not) to the logger, if so desired. Useful for checking the connections and
 	 * their statuses.
@@ -310,18 +404,21 @@ public class ConnectionManager {
 	public HashMap<String, Connection> getConnectionList() {
 		return connectionList;
 	}
-	
+
 	/**
-	 * Setter for whether or not connections should be open with the requirement
-	 * of StrictHostKeyChecking
+	 * Setter for whether or not connections should be open with the requirement of
+	 * StrictHostKeyChecking
+	 * 
 	 * @param requireStrictHostKeyChecking
 	 */
 	public void setRequireStrictHostKeyChecking(boolean requireStrictHostKeyChecking) {
 		this.requireStrictHostKeyChecking = requireStrictHostKeyChecking;
 	}
-	
+
 	/**
-	 * Setter for known host directory path {@link org.eclipse.ice.commands.ConnectionManager#knownHosts}
+	 * Setter for known host directory path
+	 * {@link org.eclipse.ice.commands.ConnectionManager#knownHosts}
+	 * 
 	 * @param knownHosts
 	 */
 	public void setKnownHosts(String knownHosts) {
