@@ -136,7 +136,8 @@ public class ConnectionManagerTest {
 		// Set the authorization information that is needed
 		auth.setHostname("osbornjd-ice-host.ornl.gov");
 		auth.setUsername("dummy");
-		auth.setOption("dummyhostkey");
+		String keyPath = System.getProperty("user.home") + "/.ssh/dummyhostkey";
+		auth.setOption(keyPath);
 		keyConfiguration.setAuthorization(auth);
 		// Open the connection
 		manager.openConnection(keyConfiguration);

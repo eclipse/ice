@@ -170,6 +170,8 @@ public class ConnectionManager {
 
 			// Erase contents of pwd and fill with null
 			Arrays.fill(pwd, Character.MIN_VALUE);
+			auth.setPassword(null);
+			
 			// Set the authentication requirements
 			connection.getSession().setConfig("PreferredAuthentications", "publickey,password");
 		} else {

@@ -206,15 +206,9 @@ public class RemoteCommand extends Command {
 		// Disconnect the channel and return success
 		connection.get().getExecChannel().disconnect();
 		connection.get().getSftpChannel().disconnect();
-		// Set the channel to null. This is important for running several jobs over one
-		// session, since the channel has been changed to an exec channel and the next
-		// job needs it as an sftp channel for file transfer. So let the next job take
-		// care of the channel delegation.
-		connection.get().setExecChannel(null);
 
 		// Don't disconnect the session in the event that a user wants to run multiple
-		// jobs over the same session. Let session management be handled by the job
-		// running and the connection manager
+		// jobs over the same session. Let session management be handled by the connection manager
 
 		/**
 		 * Note that output doesn't have to explicitly be logged - JSch takes care of
