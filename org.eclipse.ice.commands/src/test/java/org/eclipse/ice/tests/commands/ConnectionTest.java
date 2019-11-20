@@ -31,7 +31,7 @@ public class ConnectionTest {
 		Connection connection = new Connection();
 
 		// Check that the default connection leaves the configuration empty
-		assert (connection.getConfiguration().getName().equals(""));
+		assert (connection.getConfiguration() == null);
 
 		assert (connection.getSession() == null);
 	}

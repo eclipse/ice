@@ -34,7 +34,7 @@ public class Connection {
 	 * An AtomicReference to the ConnectionConfiguration from which connection
 	 * information can be gathered
 	 */
-	private AtomicReference<ConnectionConfiguration> configuration;
+	private AtomicReference<ConnectionConfiguration> configuration = new AtomicReference<ConnectionConfiguration>(null);;
 
 	/**
 	 * The secure channel provided by com.jcraft.jsch
@@ -70,7 +70,6 @@ public class Connection {
 	 * Default constructor
 	 */
 	public Connection() {
-		configuration = new AtomicReference<ConnectionConfiguration>(new ConnectionConfiguration());
 	}
 
 	/**
@@ -92,6 +91,9 @@ public class Connection {
 		return configuration.get();
 	}
 
+	public void setConfiguration(ConnectionConfiguration configuration) {
+		this.configuration.set(configuration);
+	}
 	/**
 	 * Set the JShell session {@link org.eclipse.ice.commands.Connection#jShell}
 	 * 

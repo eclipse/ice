@@ -75,6 +75,31 @@ public class RemoteFileBrowserTest {
 	}
 
 	/**
+<<<<<<< HEAD
+	 * @throws java.lang.Exception
+	 */
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		ConnectionManagerFactory.getConnectionManager().removeAllConnections();
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+	}
+
+	/**
+=======
+>>>>>>> 354a0ec8cad995c7e88a1f5ace79c97b811f1381
 	 * Function to execute the remote file browsing and remote directory browsing
 	 * test. We call one main function so that a file structure can be created at
 	 * the beginning of the test, accessed by both "subtests", and then deleted at

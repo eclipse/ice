@@ -24,7 +24,7 @@ package org.eclipse.ice.commands;
  */
 public class ConnectionManagerFactory {
 
-	static ConnectionManager manager = new ConnectionManager();
+	static private ConnectionManager manager = new ConnectionManager();
 
 	/**
 	 * Default constructor

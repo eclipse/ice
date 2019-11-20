@@ -23,8 +23,8 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 
 /**
- * This factory class manages remote connections, and as such interfaces with
- * all classes that are associated with remote connections.
+ * This class manages remote connections, and as such interfaces with all
+ * classes that are associated with remote connections.
  * 
  * @author Joe Osborn
  *
@@ -73,7 +73,6 @@ public class ConnectionManager {
 	 * @return Connection - returns connection if successful, null otherwise
 	 */
 	public Connection openConnection(ConnectionConfiguration config) throws JSchException {
-
 		// The new connection to be opened
 		Connection newConnection = new Connection(config);
 
@@ -88,11 +87,6 @@ public class ConnectionManager {
 		// Get the information necessary to open the connection
 		if (newConnection.getConfiguration() != null) {
 			ConnectionAuthorizationHandler auth = newConnection.getConfiguration().getAuthorization();
-
-			// Get the password first. If authorization is a text file, then
-			// username and hostname will be set. Otherwise user must set them
-			char[] pwd = auth.getPassword();
-
 			String username = auth.getUsername();
 			String hostname = auth.getHostname();
 
@@ -104,30 +98,24 @@ public class ConnectionManager {
 				throw new JSchException();
 			}
 
-			// Pass it to the session
-			newConnection.getSession().setPassword(String.valueOf(pwd));
-
-			// Erase contents of pwd and fill with null
-			Arrays.fill(pwd, Character.MIN_VALUE);
+			// Authorize the JSch session with a ConnectionAuthorizationHandler
+			authorizeSession(newConnection);
 
 			// JSch default requests ssh-rsa host checking, but some keys
 			// request ecdsa-sha2-nistp256. So loop through the available
 			// host keys that were grabbed from known_hosts and check what
 			// type the user-given hostname needs
 			HostKeyRepository hkr = jsch.getHostKeyRepository();
-
+			String type = null;
 			for (HostKey hk : hkr.getHostKey()) {
 				// If this hostkey contains the hostname that was supplied by
 				// the user
 				if (hk.getHost().contains(hostname)) {
-					String type = hk.getType();
+					type = hk.getType();
 					// Set the session configuration key type to that hosts type
 					newConnection.getSession().setConfig("server_host_key", type);
 				}
 			}
-
-			// Set the authentication requirements
-			newConnection.getSession().setConfig("PreferredAuthentications", "publickey,password");
 
 			// If the user wants to disable StrictHostKeyChecking, add it to the
 			// session configuration
@@ -138,9 +126,8 @@ public class ConnectionManager {
 			try {
 				newConnection.getSession().connect();
 			} catch (JSchException e) {
-				// Add something here that if this is a first time connect, and thus
-				// the fingerprint doesn't exist, to try to manually override?
-				logger.error("Couldn't connect to session with given username and/or password. Exiting.", e);
+				logger.error("Couldn't connect to session with given username and/or password/key. Exiting.", e);
+
 				throw new JSchException();
 			}
 
@@ -156,6 +143,44 @@ public class ConnectionManager {
 		// If the connectionConfiguration was not properly specified, or an error
 		// occurred, return null
 		return null;
+	}
+
+	/**
+	 * This function deals with the new connection authentication. It takes a
+	 * connection that is being opened, and decides what kind of authentication to
+	 * provide JSch depending on whether or not a password exists in the
+	 * ConnectionAuthorizationHandler.
+	 * 
+	 * @param connection
+	 * @throws JSchException
+	 */
+	private void authorizeSession(Connection connection) throws JSchException {
+		// Get the authorization information
+		ConnectionAuthorizationHandler auth = connection.getConfiguration().getAuthorization();
+
+		// If a password was set, then try to authenticate with the password
+		if (auth.getPassword() != null) {
+			logger.info("Trying to authenticate with a password");
+			// Get the password first. If authorization is a text file, then
+			// username and hostname will be set. Otherwise user must set them
+			char[] pwd = auth.getPassword();
+
+			// Pass it to the session
+			connection.getSession().setPassword(String.valueOf(pwd));
+
+			// Erase contents of pwd and fill with null
+			Arrays.fill(pwd, Character.MIN_VALUE);
+			auth.setPassword(null);
+			
+			// Set the authentication requirements
+			connection.getSession().setConfig("PreferredAuthentications", "publickey,password");
+		} else {
+			logger.info("Trying to authenticate with a key");
+			// Otherwise try a key authentication
+			String keyPath = ((KeyPathConnectionAuthorizationHandler) auth).getKeyPath();
+			connection.getJShellSession().addIdentity(keyPath);
+		}
+		return;
 	}
 
 	/**
@@ -248,6 +273,17 @@ public class ConnectionManager {
 			connection.getSession().disconnect();
 		}
 
+	}
+
+	/**
+	 * This function allows adding a user defined connection to the connection
+	 * manager rather than opening a default connection through the function
+	 * {@link ConnectionManager#openConnection(ConnectionConfiguration)}.
+	 * 
+	 * @param connection
+	 */
+	public void addConnection(Connection connection) {
+		connectionList.put(connection.getConfiguration().getName(), connection);
 	}
 
 	/**
