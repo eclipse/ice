@@ -85,11 +85,12 @@ public class CommandConfigurationTest {
 	}
 
 	/**
-	 * This function tests a command where one wants to add input file(s) and argument(s)
+	 * This function tests a command where one wants to add input file(s) and
+	 * argument(s)
 	 */
 	@Test
 	public void testArgumentAndInputFileConfiguration() {
-		
+
 		CommandConfiguration configuration = new CommandConfiguration();
 		configuration.setCommandId(5);
 		configuration.setInterpreter("python");
@@ -99,12 +100,12 @@ public class CommandConfigurationTest {
 		configuration.setAppendInput(true);
 		configuration.addArgument("some_arg");
 		configuration.addArgument("some_other_arg");
-		
+
 		String executable = configuration.getExecutableName();
-	
-		assert(executable.equals("python random_python_script.py some_arg some_other_arg someInputFile.txt"));
+
+		assert (executable.equals("python random_python_script.py some_arg some_other_arg someInputFile.txt"));
 	}
-	
+
 	/**
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#getExecutableName()} and

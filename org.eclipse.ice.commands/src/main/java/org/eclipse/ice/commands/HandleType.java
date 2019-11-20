@@ -14,11 +14,12 @@
 package org.eclipse.ice.commands;
 
 /**
- * An enum to determine what kind of move this is
- * localRemote - local source, remote destination
+ * An enum to determine what kind of move this is 
+ * localRemote - local source, remote destination 
  * remoteLocal - remote source, local destination
  * remoteRemote - remote source, remote destination
- * @author 4jo
+ * 
+ * @author Joe Osborn
  *
  */
 

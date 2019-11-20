@@ -143,7 +143,10 @@ public class ConnectionManagerTest {
 	
 		// assert that it was properly opened
 		assert(manager.isConnectionOpen("keypath"));
-		
+
+		ConnectionManagerFactory.getConnectionManager()
+				.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
+
 	}
 
 	
@@ -288,7 +291,8 @@ public class ConnectionManagerTest {
 	/**
 	 * This tests failure if the known host does not exist in the known_hosts ssh
 	 * file
-	 * @throws JSchException 
+	 * 
+	 * @throws JSchException
 	 */
 	@Test(expected = JSchException.class)
 	public void testNoKnownHost() throws JSchException {
@@ -299,7 +303,6 @@ public class ConnectionManagerTest {
 		// Try to open a connection
 		// Should throw a JSchException since the host fingerprint won't match
 		connect = ConnectionManagerFactory.getConnectionManager().openConnection(configuration);
-	
 
 	}
 

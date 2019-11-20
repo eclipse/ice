@@ -87,7 +87,7 @@ public class ConnectionAuthorizationHandlerFactory {
 				auth.setOption(option);
 			}
 		}
-	
+
 		if (auth == null)
 			logger.error("Unknown authorization type! Will return null.");
 

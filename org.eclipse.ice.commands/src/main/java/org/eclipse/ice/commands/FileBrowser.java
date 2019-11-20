@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This interface sets the structure for the FileWalker subclasses, which
+ * This interface sets the structure for the FileBrowser subclasses, which
  * contain the logic to browse file and directory tree structures on local and
  * remote systems.
  * 

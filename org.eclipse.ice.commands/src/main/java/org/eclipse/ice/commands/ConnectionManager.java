@@ -127,6 +127,7 @@ public class ConnectionManager {
 				newConnection.getSession().connect();
 			} catch (JSchException e) {
 				logger.error("Couldn't connect to session with given username and/or password/key. Exiting.", e);
+
 				throw new JSchException();
 			}
 

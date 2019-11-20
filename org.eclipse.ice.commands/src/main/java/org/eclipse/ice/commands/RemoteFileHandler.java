@@ -305,8 +305,6 @@ public class RemoteFileHandler extends FileHandler {
 
 	}
 
-
-
 	/**
 	 * A setter for the value of the permission to change a particular file once
 	 * transferred. See also
