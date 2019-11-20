@@ -16,12 +16,15 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import org.eclipse.ice.commands.BasicConnectionAuthorizationHandler;
 import org.eclipse.ice.commands.Connection;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
+import org.eclipse.ice.commands.KeyPathConnectionAuthorizationHandler;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -55,11 +58,6 @@ public class ConnectionManagerTest {
 	static ConnectionConfiguration configuration = new ConnectionConfiguration();
 
 	/**
-	 * A connection manager to deal with the dummy test connections
-	 */
-	ConnectionManager manager = new ConnectionManager();
-
-	/**
 	 * This function makes a test connection with which to play with
 	 * 
 	 * @throws java.lang.Exception
@@ -86,6 +84,22 @@ public class ConnectionManagerTest {
 	}
 
 	/**
+	 * Clear out the connections formed after each test so that each test starts fresh
+	 * with a clean slated connection manager
+	 * @throws Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+		// Clear out the connection manager so we start fresh with each test
+		ConnectionManagerFactory.getConnectionManager().removeAllConnections();
+		// Reset the known hosts directory, for after the test with the 
+		// expected JSch exception due to nonexistent known_hosts
+		ConnectionManagerFactory.getConnectionManager()
+		.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
+
+		
+	}
+	/**
 	 * This function deletes all of the connections in the connection manager once
 	 * the tests have run and completed.
 	 * 
@@ -94,7 +108,6 @@ public class ConnectionManagerTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
-
 		// Test removing all connections from the list in ConnectionManager
 		manager.removeAllConnections();
 
@@ -102,15 +115,47 @@ public class ConnectionManagerTest {
 		assert (manager.getConnectionList().size() == 0);
 
 		// Make sure the known hosts are reset to the default directory
+		manager.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
+	
+	}
+	
+	
+	/**
+	 * This function tests opening a connection with an already generated key path
+	 * @throws JSchException 
+	 */
+	@Test
+	public void testOpenConnectionKeyPath() throws JSchException {
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		System.out.println("Testing keypath open connection");
+		
+		// Make a connection configuration for using a key path
+		ConnectionConfiguration keyConfiguration = new ConnectionConfiguration();
+		keyConfiguration.setName("keypath");
+		KeyPathConnectionAuthorizationHandler auth = new KeyPathConnectionAuthorizationHandler();
+		// Set the authorization information that is needed
+		auth.setHostname("osbornjd-ice-host.ornl.gov");
+		auth.setUsername("dummy");
+		auth.setOption("dummyhostkey");
+		keyConfiguration.setAuthorization(auth);
+		// Open the connection
+		manager.openConnection(keyConfiguration);
+	
+		// assert that it was properly opened
+		assert(manager.isConnectionOpen("keypath"));
+
 		ConnectionManagerFactory.getConnectionManager()
 				.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
+
 	}
 
+	
 	/**
 	 * Test method for
-	 * {@link org.eclipse.ice.commands.ConnectionManager#OpenConnection(String)}
+	 * {@link org.eclipse.ice.commands.ConnectionManager#OpenConnection(ConnectionConfiguration)}
 	 */
 	public void testOpenConnection() {
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 		// Set the name of the configuration, in case it was overwritten by other test
 		configuration.setName(connectionName);
 		// Try to open a connection
@@ -130,6 +175,7 @@ public class ConnectionManagerTest {
 	 * {@link org.eclipse.ice.commands.ConnectionManager#GetConnection(String)}
 	 */
 	public void testGetConnection() {
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 		Connection testConnection = null;
 		testConnection = manager.getConnection(connectionName);
 		assert (testConnection != null);
@@ -144,6 +190,7 @@ public class ConnectionManagerTest {
 	 * {@link org.eclipse.ice.commands.ConnectionManager#CloseConnection(String)}
 	 */
 	public void testCloseConnection() {
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 		// disconnect the session
 		manager.closeConnection(connectionName);
 
@@ -162,30 +209,13 @@ public class ConnectionManagerTest {
 	 */
 	@Test
 	public void testMultipleConnections() {
-		ConnectionManagerFactory.getConnectionManager()
-				.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
 
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+	
 		// Read in a dummy configuration file that contains credentials
-		File file = null;
 		String credFile = "/tmp/ice-remote-creds.txt";
 		if (System.getProperty("os.name").toLowerCase().contains("win"))
 			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
-
-		file = new File(credFile);
-		Scanner scanner = null;
-		try {
-			scanner = new Scanner(file);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-
-		// Scan line by line
-		scanner.useDelimiter("\n");
-
-		// Get the credentials for the dummy remote account
-		String username = scanner.next();
-		String password = scanner.next();
-		String hostname = scanner.next();
 
 		// Set the credentials since they were deleted after closing the previous
 		// connection
@@ -220,6 +250,7 @@ public class ConnectionManagerTest {
 
 		// Expect only two connections since one of the connections is not good (i.e.
 		// conn3 has a bad password, therefore it isn't added to the list)
+		
 		assert (connections.size() == 2);
 
 		// List all available connections to the console screen
@@ -249,9 +280,7 @@ public class ConnectionManagerTest {
 	@Test
 	public void testValidConnection() {
 		System.out.println("Testing valid connection");
-		ConnectionManagerFactory.getConnectionManager()
-				.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
-
+		
 		testOpenConnection();
 
 		testGetConnection();
@@ -269,7 +298,7 @@ public class ConnectionManagerTest {
 	public void testNoKnownHost() throws JSchException {
 		// Set the known hosts to something random, where we know the ssh fingerprint
 		// doesn't exist
-		System.out.println("Testing no known host");
+		System.out.println("Testing with no known host file, exception expected");
 		ConnectionManagerFactory.getConnectionManager().setKnownHosts("/tmp/knownhosts");
 		// Try to open a connection
 		// Should throw a JSchException since the host fingerprint won't match
@@ -277,4 +306,7 @@ public class ConnectionManagerTest {
 
 	}
 
+
+	
+	
 }

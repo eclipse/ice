@@ -64,6 +64,16 @@ public abstract class FileHandler implements IFileHandler {
 	 */
 	protected HandleType HANDLE_TYPE = null;
 
+
+	/**
+	 * Have a connection manager for commands that defaults to the static object from
+	 * the factory method. Users can override this if they want to through a specific
+	 * constructor which sets the manager.
+	 */
+	protected ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+	
+	
+
 	/**
 	 * Default constructor
 	 */

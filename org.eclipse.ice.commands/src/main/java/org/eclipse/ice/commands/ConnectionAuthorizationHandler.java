@@ -43,6 +43,20 @@ public abstract class ConnectionAuthorizationHandler {
 	String hostname = null;
 
 	/**
+	 * A char array which can hold a password should the user desire. It is not 
+	 * recommended to use this since this stores the password in memory for some
+	 * time. Rather, it is recommended to use either the 
+	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#getPassword()}
+	 * function, which retrieves the password from the user in some way, or use
+	 * the private key functionality for establishing a connection as in 
+	 * {@link org.eclipse.ice.commands.ConnectionManagerTest#testOpenConnectionKeyPath}.
+	 * Note that in all implementations of getPassword, the password is not actually
+	 * stored in this char[] and is rather obtained where it is needed to establish
+	 * a connection and then immediately destroyed. 
+	 */
+	char[] password = null;
+	
+	/**
 	 * This function gets a password for the command authentication. The password is
 	 * returned in a char array since Strings are immutable, so it is generally ill
 	 * advised to store passwords in strings.
@@ -51,6 +65,17 @@ public abstract class ConnectionAuthorizationHandler {
 	 */
 	protected abstract char[] getPassword();
 
+	/**
+	 * This function is intended to be a "jack of all trades" function where an option
+	 * can be passed that may be specific to a particular subclass. For example, for
+	 * text file authorization, a path to the text file can be passed as specified
+	 * by the subclass. The purpose of this function is for ease of setting things
+	 * in the factory method.
+	 * 
+	 * @param option
+	 */
+	public abstract void setOption(String option);
+	
 	/**
 	 * Getter for authorization hostname
 	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#hostname}
@@ -91,4 +116,23 @@ public abstract class ConnectionAuthorizationHandler {
 		this.username = username;
 	}
 
+	/**
+	 * Setter for {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#password}
+	 * Please see the associated comment to this member variable before using this function.
+	 * It is highly recommended that after a connection is established, this function is 
+	 * called again to remove the password information from memory. For example:
+	 * ```java
+	 * ConnectionAuthorizationHandler handler = new BasicConnectionAuthorizationHandler();
+	 * handler.setPassword("password".toCharArray());
+	 * // Now establish some connection with the ConnectionManager
+	 * (insert code to establish connection)
+	 * // Now erase the password from memory
+	 * handler.setPassword("".toCharArray());
+	 * ```
+	 * @param password
+	 */
+	public void setPassword(char[] password) {
+		this.password = password;
+	}
+	
 }
