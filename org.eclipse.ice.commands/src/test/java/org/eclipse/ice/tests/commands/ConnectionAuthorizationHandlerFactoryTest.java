@@ -101,7 +101,7 @@ public class ConnectionAuthorizationHandlerFactoryTest {
 	@Test
 	public void testKeyPathAuthorization() throws JSchException {
 		// Filepath to the dummy host key
-		String keyPath = "~/.ssh/dummyhostkey";
+		String keyPath = System.getProperty("user.home") + "/.ssh/dummyhostkey";
 		// Create a connection authorization handler for a keypath
 		ConnectionAuthorizationHandler auth = factory.getConnectionAuthorizationHandler("keypath", keyPath);
 		auth.setHostname("osbornjd-ice-host.ornl.gov");
