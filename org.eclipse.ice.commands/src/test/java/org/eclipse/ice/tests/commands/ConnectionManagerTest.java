@@ -23,6 +23,7 @@ import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.KeyPathConnectionAuthorizationHandler;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -56,11 +57,6 @@ public class ConnectionManagerTest {
 	static ConnectionConfiguration configuration = new ConnectionConfiguration();
 
 	/**
-	 * A connection manager to deal with the dummy test connections
-	 */
-	ConnectionManager manager = new ConnectionManager();
-
-	/**
 	 * This function makes a test connection with which to play with
 	 * 
 	 * @throws java.lang.Exception
@@ -87,6 +83,17 @@ public class ConnectionManagerTest {
 	}
 
 	/**
+	 * Clear out the connections formed after each test so that each test starts fresh
+	 * with a clean slated connection manager
+	 * @throws Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+		// Clear out the connection manager so we start fresh with each test
+		ConnectionManagerFactory.getConnectionManager().removeAllConnections();
+		
+	}
+	/**
 	 * This function deletes all of the connections in the connection manager once
 	 * the tests have run and completed.
 	 * 
@@ -95,7 +102,6 @@ public class ConnectionManagerTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
-
 		// Test removing all connections from the list in ConnectionManager
 		manager.removeAllConnections();
 
@@ -103,14 +109,37 @@ public class ConnectionManagerTest {
 		assert (manager.getConnectionList().size() == 0);
 
 		// Make sure the known hosts are reset to the default directory
-		ConnectionManagerFactory.getConnectionManager().setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
+		manager.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
 	}
-
+	
+	
+	/**
+	 * This function tests opening a connection with an already generated key path
+	 * @throws JSchException 
+	 */
+	@Test
+	public void testOpenConnectionKeyPath() throws JSchException {
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		System.out.println("Testing keypath open connection");
+		ConnectionConfiguration keyConfiguration = new ConnectionConfiguration();
+		keyConfiguration.setName("keypath");
+		KeyPathConnectionAuthorizationHandler auth = new KeyPathConnectionAuthorizationHandler();
+		auth.setHostname("osbornjd-ice-host.ornl.gov");
+		auth.setUsername("dummy");
+		auth.setKeyPath("/home/4jo/.ssh/dummyhostkey");
+		keyConfiguration.setAuthorization(auth);
+		manager.openConnection(keyConfiguration);
+	
+		assert(manager.isConnectionOpen("keypath"));
+		
+	}
+	
 	/**
 	 * Test method for
-	 * {@link org.eclipse.ice.commands.ConnectionManager#OpenConnection(String)}
+	 * {@link org.eclipse.ice.commands.ConnectionManager#OpenConnection(ConnectionConfiguration)}
 	 */
 	public void testOpenConnection() {
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 		// Set the name of the configuration, in case it was overwritten by other test
 		configuration.setName(connectionName);
 		// Try to open a connection
@@ -130,6 +159,7 @@ public class ConnectionManagerTest {
 	 * {@link org.eclipse.ice.commands.ConnectionManager#GetConnection(String)}
 	 */
 	public void testGetConnection() {
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 		Connection testConnection = null;
 		testConnection = manager.getConnection(connectionName);
 		assert (testConnection != null);
@@ -144,6 +174,7 @@ public class ConnectionManagerTest {
 	 * {@link org.eclipse.ice.commands.ConnectionManager#CloseConnection(String)}
 	 */
 	public void testCloseConnection() {
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 		// disconnect the session
 		manager.closeConnection(connectionName);
 
@@ -160,11 +191,13 @@ public class ConnectionManagerTest {
 	/**
 	 * This tests the functionality of having multiple connections open at once
 	 */
-	//@Test
+	@Test
 	public void testMultipleConnections() {
 		ConnectionManagerFactory.getConnectionManager()
 				.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
 
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+	
 		// Read in a dummy configuration file that contains credentials
 		File file = null;
 		String credFile = "/tmp/ice-remote-creds.txt";
@@ -246,7 +279,7 @@ public class ConnectionManagerTest {
 	 * opened in the first place. This is to test a valid opening and closing of a
 	 * real connection, in the case where no exceptions are to be thrown.
 	 */
-	//@Test
+	@Test
 	public void testValidConnection() {
 		System.out.println("Testing valid connection");
 		ConnectionManagerFactory.getConnectionManager()
@@ -264,11 +297,11 @@ public class ConnectionManagerTest {
 	 * file
 	 * @throws JSchException 
 	 */
-	//@Test(expected = JSchException.class)
+	@Test(expected = JSchException.class)
 	public void testNoKnownHost() throws JSchException {
 		// Set the known hosts to something random, where we know the ssh fingerprint
 		// doesn't exist
-		System.out.println("Testing no known host");
+		System.out.println("Testing with no known host file, exception expected");
 		ConnectionManagerFactory.getConnectionManager().setKnownHosts("/tmp/knownhosts");
 		// Try to open a connection
 		// Should throw a JSchException since the host fingerprint won't match
@@ -277,23 +310,7 @@ public class ConnectionManagerTest {
 
 	}
 
-	/**
-	 * This function tests opening a connection with an already generated key path
-	 * @throws JSchException 
-	 */
-	@Test
-	public void testOpenConnectionKeyPath() throws JSchException {
-		System.out.println("Testing keypath open connection");
-		KeyPathConnectionAuthorizationHandler auth = new KeyPathConnectionAuthorizationHandler();
-		auth.setHostname("hname");
-		auth.setUsername("uname");
-		auth.setKeyPath("/some/key");
-		
-		ConnectionManagerFactory.getConnectionManager().openConnection(auth, "test");
-		
-		assert(ConnectionManagerFactory.getConnectionManager().isConnectionOpen("test"));
-		
-	}
+
 	
 	
 }

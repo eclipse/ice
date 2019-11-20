@@ -73,7 +73,6 @@ public class ConnectionManager {
 	 * @return Connection - returns connection if successful, null otherwise
 	 */
 	public Connection openConnection(ConnectionConfiguration config) throws JSchException {
-
 		// The new connection to be opened
 		Connection newConnection = new Connection(config);
 
@@ -88,11 +87,6 @@ public class ConnectionManager {
 		// Get the information necessary to open the connection
 		if (newConnection.getConfiguration() != null) {
 			ConnectionAuthorizationHandler auth = newConnection.getConfiguration().getAuthorization();
-
-			// Get the password first. If authorization is a text file, then
-			// username and hostname will be set. Otherwise user must set them
-			char[] pwd = auth.getPassword();
-
 			String username = auth.getUsername();
 			String hostname = auth.getHostname();
 
@@ -104,11 +98,8 @@ public class ConnectionManager {
 				throw new JSchException();
 			}
 
-			// Pass it to the session
-			newConnection.getSession().setPassword(String.valueOf(pwd));
-
-			// Erase contents of pwd and fill with null
-			Arrays.fill(pwd, Character.MIN_VALUE);
+			// Authorize the JSch session with a ConnectionAuthorizationHandler
+			authorizeSession(newConnection);
 
 			// JSch default requests ssh-rsa host checking, but some keys
 			// request ecdsa-sha2-nistp256. So loop through the available
@@ -126,9 +117,6 @@ public class ConnectionManager {
 				}
 			}
 
-			// Set the authentication requirements
-			newConnection.getSession().setConfig("PreferredAuthentications", "publickey,password");
-
 			// If the user wants to disable StrictHostKeyChecking, add it to the
 			// session configuration
 			if (!requireStrictHostKeyChecking)
@@ -138,7 +126,7 @@ public class ConnectionManager {
 			try {
 				newConnection.getSession().connect();
 			} catch (JSchException e) {
-				logger.error("Couldn't connect to session with given username and/or password. Exiting.", e);
+				logger.error("Couldn't connect to session with given username and/or password/key. Exiting.", e);
 				throw new JSchException();
 			}
 
@@ -157,87 +145,39 @@ public class ConnectionManager {
 	}
 
 	/**
-	 * This function opens a new connection given a
-	 * KeyPathConnectionAuthorizationHandler and a password. The connection to be
-	 * opened should be that by a particular key that has already been established
-	 * and created. The KeyPathConnectionAuthorizationHandler should have already
-	 * had the keyPath, username, and hostname set before passing to this function
+	 * This function deals with the new connection authentication. It takes a
+	 * connection that is being opened, and decides what kind of authentication to
+	 * provide JSch depending on whether or not a password exists in the
+	 * ConnectionAuthorizationHandler.
 	 * 
-	 * @param auth
-	 * @param name
-	 * @return
+	 * @param connection
+	 * @throws JSchException
 	 */
-	public Connection openConnection(KeyPathConnectionAuthorizationHandler auth, String name)
-			throws JSchException {
-		// Make a new ConnectionConfiguration
-		ConnectionConfiguration configuration = new ConnectionConfiguration();
-		configuration.setName(name);
-		// Give it to the connection configuration
-		configuration.setAuthorization(auth);
+	private void authorizeSession(Connection connection) throws JSchException {
+		// Get the authorization information
+		ConnectionAuthorizationHandler auth = connection.getConfiguration().getAuthorization();
 
-		// Get the information from the authorization handler
-		String username = auth.getUsername();
-		String hostname = auth.getHostname();
-		String keyPath = auth.getKeyPath();
+		// If a password was set, then try to authenticate with the password
+		if (auth.getPassword() != null) {
+			logger.info("Trying to authenticate with a password");
+			// Get the password first. If authorization is a text file, then
+			// username and hostname will be set. Otherwise user must set them
+			char[] pwd = auth.getPassword();
 
-		// Now make a new connection
-		Connection newConnection = new Connection(configuration);
+			// Pass it to the session
+			connection.getSession().setPassword(String.valueOf(pwd));
 
-		// Create a new JSch session
-		JSch jsch = new JSch();
-
-		// Add the key information to JSch
-		jsch.addIdentity(keyPath);
-		jsch.setKnownHosts(knownHosts);
-		// Set it
-		newConnection.setJShellSession(jsch);
-
-		logger.info("Trying to open a new KeyPath session");
-
-		// Try to open the new session with the given username and hostname
-		try {
-			// Set the session to a newly obtained session
-			newConnection.setSession(newConnection.getJShellSession().getSession(username, hostname));
-		} catch (JSchException e) {
-			logger.error("Couldn't open session with given username and hostname. Exiting", e);
-			throw new JSchException();
+			// Erase contents of pwd and fill with null
+			Arrays.fill(pwd, Character.MIN_VALUE);
+			// Set the authentication requirements
+			connection.getSession().setConfig("PreferredAuthentications", "publickey,password");
+		} else {
+			logger.info("Trying to authenticate with a key");
+			// Otherwise try a key authentication
+			String keyPath = ((KeyPathConnectionAuthorizationHandler) auth).getKeyPath();
+			connection.getJShellSession().addIdentity(keyPath);
 		}
-
-		// If the user wants to disable StrictHostKeyChecking, add it to the
-		// session configuration
-		if (!requireStrictHostKeyChecking)
-			newConnection.getSession().setConfig("StrictHostKeyChecking", "no");
-
-		// JSch default requests ssh-rsa host checking, but some keys
-		// request ecdsa-sha2-nistp256. So loop through the available
-		// host keys that were grabbed from known_hosts and check what
-		// type the user-given hostname needs
-		HostKeyRepository hkr = jsch.getHostKeyRepository();
-
-		for (HostKey hk : hkr.getHostKey()) {
-			// If this hostkey contains the hostname that was supplied by
-			// the user
-			if (hk.getHost().contains(hostname)) {
-				String type = hk.getType();
-				// Set the session configuration key type to that hosts type
-				newConnection.getSession().setConfig("server_host_key", type);
-			}
-		}
-
-		// Connect the session
-		try {
-			newConnection.getSession().connect();
-		} catch (JSchException e) {
-			logger.error("Couldn't connect to session with given username and private key. Exiting.", e);
-			throw new JSchException();
-		}
-
-		// Add the connection to the list since it was successfully created
-		connectionList.put(newConnection.getConfiguration().getName(), newConnection);
-
-		logger.info("Connection at " + username + "@" + hostname + " established successfully");
-
-		return newConnection;
+		return;
 	}
 
 	/**
