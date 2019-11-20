@@ -207,8 +207,6 @@ public class RemoteFileHandlerTest {
 		String dest = theDestination + "/newDirectory/newFilename.txt";
 		status = handler.move(src, dest);
 
-		deleteRemoteSource();
-
 	}
 
 	/**
