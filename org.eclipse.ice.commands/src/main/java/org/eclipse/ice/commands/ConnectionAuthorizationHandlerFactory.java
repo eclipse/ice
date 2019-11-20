@@ -51,6 +51,9 @@ public class ConnectionAuthorizationHandlerFactory {
 		// Use a path to a key pair that was already generated to establish the
 		// connection
 		handlerList.put("keypath", new KeyPathConnectionAuthorizationHandler());
+		// Use a basic authorization by just explicitly setting the username,
+		// hostname, and password
+		handlerList.put("basic", new BasicConnectionAuthorizationHandler());
 	}
 
 	/**
@@ -72,7 +75,7 @@ public class ConnectionAuthorizationHandlerFactory {
 	 * @param type - type of authorization handler desired
 	 * @return - authorization handler
 	 */
-	public ConnectionAuthorizationHandler getConnectionAuthorizationHandler(String type, String path) {
+	public ConnectionAuthorizationHandler getConnectionAuthorizationHandler(String type, String option) {
 		ConnectionAuthorizationHandler auth = null;
 
 		// Iterate over the default authorization types
@@ -80,18 +83,11 @@ public class ConnectionAuthorizationHandlerFactory {
 			// Check if the type matches, and set the auth variable
 			if (type.equals(entry.getKey())) {
 				auth = entry.getValue();
+				// Set the option for the authorization, if necessary
+				auth.setOption(option);
 			}
 		}
-
-		// Have a separate set for a text file (or key path) authorization since it
-		// needs to take the path as a constructor argument
-		// TODO - think about if there is a better way to do this - don't want to have
-		// to add an additional if statement for each non-default constructor
-		if (type.equals("text"))
-			auth = new TxtFileConnectionAuthorizationHandler(path);
-		if (type.equals("keypath"))
-			auth = new KeyPathConnectionAuthorizationHandler(path);
-
+	
 		if (auth == null)
 			logger.error("Unknown authorization type! Will return null.");
 

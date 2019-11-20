@@ -66,4 +66,13 @@ public class ConsoleConnectionAuthorizationHandler extends ConnectionAuthorizati
 		return password.toCharArray();
 	}
 
+	/**
+	 * No options required for console authorization
+	 * See {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#setOption(String)}
+	 */
+	@Override
+	public void setOption(String option) {
+		return;
+	}
+
 }

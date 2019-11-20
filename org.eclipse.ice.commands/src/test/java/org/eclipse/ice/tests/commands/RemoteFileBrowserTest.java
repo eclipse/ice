@@ -78,6 +78,7 @@ public class RemoteFileBrowserTest {
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
+		ConnectionManagerFactory.getConnectionManager().removeAllConnections();
 	}
 
 	/**

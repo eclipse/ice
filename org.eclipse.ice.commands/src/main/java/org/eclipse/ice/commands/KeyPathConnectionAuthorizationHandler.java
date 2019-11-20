@@ -38,8 +38,9 @@ public class KeyPathConnectionAuthorizationHandler extends ConnectionAuthorizati
 	 * 
 	 * @param keyPath
 	 */
-	public void setKeyPath(String keyPath) {
-		this.keyPath = keyPath;
+	@Override
+	public void setOption(String option) {
+		this.keyPath = option;
 	}
 
 	/**
