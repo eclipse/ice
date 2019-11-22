@@ -179,7 +179,7 @@ public abstract class FileHandler implements IFileHandler {
 	 * See {@link org.eclipse.ice.commands.IFileHandler#getFileBrowser()}
 	 */
 	@Override
-	public abstract FileBrowser getFileBrowser();
+	public abstract FileBrowser getFileBrowser(final String topDirectory);
 
 	/**
 	 * This function gets and returns the private member variable command of type

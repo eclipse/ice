@@ -75,7 +75,6 @@ public class RemoteFileBrowserTest {
 	}
 
 	/**
-<<<<<<< HEAD
 	 * @throws java.lang.Exception
 	 */
 	@AfterClass
@@ -84,22 +83,6 @@ public class RemoteFileBrowserTest {
 	}
 
 	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	/**
-=======
->>>>>>> 354a0ec8cad995c7e88a1f5ace79c97b811f1381
 	 * Function to execute the remote file browsing and remote directory browsing
 	 * test. We call one main function so that a file structure can be created at
 	 * the beginning of the test, accessed by both "subtests", and then deleted at
@@ -137,11 +120,11 @@ public class RemoteFileBrowserTest {
 	public void testRemoteFileBrowsing(String topDirectory) throws IOException, SftpException {
 
 		RemoteFileHandler handler = new RemoteFileHandler();
-		RemoteFileBrowser browser = new RemoteFileBrowser(fileTransferConn);
+		RemoteFileBrowser browser = new RemoteFileBrowser(fileTransferConn, topDirectory);
 
 		handler.setConnectionConfiguration(fileTransferConn.getConfiguration());
 
-		ArrayList<String> files = browser.listFiles(topDirectory);
+		ArrayList<String> files = browser.getFileList();
 
 		// files should only be 4 entries since there are only 4 files in the tree
 		// structure we created
@@ -171,9 +154,9 @@ public class RemoteFileBrowserTest {
 
 		RemoteFileHandler handler = new RemoteFileHandler();
 		handler.setConnectionConfiguration(fileTransferConn.getConfiguration());
-		RemoteFileBrowser browser = new RemoteFileBrowser(fileTransferConn);
+		RemoteFileBrowser browser = new RemoteFileBrowser(fileTransferConn, topDirectory);
 
-		ArrayList<String> files = browser.listDirectories(topDirectory);
+		ArrayList<String> files = browser.getDirectoryList();
 
 		// directories should only be 3 entries since there are only 3 directories in
 		// the tree structure we created
