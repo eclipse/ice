@@ -327,8 +327,8 @@ public class RemoteFileHandler extends FileHandler {
 	 * See {@link org.eclipse.ice.commands.IFileHandler#getFileBrowser()}
 	 */
 	@Override
-	public FileBrowser getFileBrowser() {
-		RemoteFileBrowser browser = new RemoteFileBrowser(connection.get());
+	public FileBrowser getFileBrowser(final String topDirectory) {
+		RemoteFileBrowser browser = new RemoteFileBrowser(connection.get(), topDirectory);
 		return browser;
 	}
 

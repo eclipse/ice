@@ -36,8 +36,20 @@ public class LocalFileBrowser extends SimpleFileVisitor<Path> implements FileBro
 		fileList.clear();
 		directoryList.clear();
 	}
+	
+	/**
+	 * Default constructor with a given path to fill the ArrayLists
+	 */
+	public LocalFileBrowser(final String topDirectory) {
+		// Make sure we are starting with a fresh file/directory list
+		fileList.clear();
+		directoryList.clear();
+		// Execute the file walking logic, which fills the arrays
+		walkTree(topDirectory);
+		
+	}
 
-	// Add the file path tp fileList
+	// Add the file path to fileList
 	@Override
 	public FileVisitResult visitFile(Path file, BasicFileAttributes attr) {
 		// Add the file, depending on it's attribute
@@ -87,38 +99,12 @@ public class LocalFileBrowser extends SimpleFileVisitor<Path> implements FileBro
 	}
 
 	/**
-	 * See {@link org.eclipse.ice.commands.IFileHandler#listFiles(String)}
-	 */
-	@Override
-	public ArrayList<String> listFiles(String topDirectory) {
-		logger.info("Searching " + topDirectory);
-		// Execute the file walking logic
-		walkTree(topDirectory);
-
-		// Return the resulting file list hash map
-		return getFileList();
-	}
-
-	/**
-	 * See {@link org.eclipse.ice.commands.IFileHandler#listDirectories(String)}
-	 */
-	@Override
-	public ArrayList<String> listDirectories(String topDirectory) {
-		logger.info("Searching " + topDirectory);
-		// Executes the file walking logic
-		walkTree(topDirectory);
-
-		// Return the resulting directory array list
-		return getDirectoryList();
-	}
-
-	/**
 	 * This function performs the action of walking the file tree for the file
 	 * browsing capabilities of LocalFileHandler. It returns a LocalFileWalker so
 	 * that the files or directories could be obtained
 	 * 
 	 */
-	private void walkTree(String topDirectory) {
+	private void walkTree(final String topDirectory) {
 
 		// Make a path variable of the topDirectory
 		Path topPath = Paths.get(topDirectory);

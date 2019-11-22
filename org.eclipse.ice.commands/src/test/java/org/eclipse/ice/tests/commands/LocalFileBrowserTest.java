@@ -38,34 +38,6 @@ import org.junit.Test;
 public class LocalFileBrowserTest {
 
 	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	/**
 	 * Function to execute the local file browsing and local directory browsing
 	 * test. We call one main function so that a file structur can be created at the
 	 * beginning, accessed by both "subtests", and then deleted at the end.
@@ -91,10 +63,11 @@ public class LocalFileBrowserTest {
 	 * @throws IOException
 	 */
 	public void testLocalFileBrowsing(Path topPath) throws IOException {
-		LocalFileBrowser browser = new LocalFileBrowser();
+		LocalFileBrowser browser = new LocalFileBrowser(topPath.toString());
+		// Get a file handler for existence checks
 		LocalFileHandler handler = new LocalFileHandler();
 
-		ArrayList<String> files = browser.listFiles(topPath.toString());
+		ArrayList<String> files = browser.getFileList();
 
 		// four files were created
 		assert (files.size() == 4);
@@ -118,9 +91,9 @@ public class LocalFileBrowserTest {
 	 */
 	public void testLocalDirectoryBrowsing(Path topPath) throws IOException {
 		LocalFileHandler handler = new LocalFileHandler();
-		LocalFileBrowser browser = new LocalFileBrowser();
+		LocalFileBrowser browser = new LocalFileBrowser(topPath.toString());
 
-		ArrayList<String> files = browser.listDirectories(topPath.toString());
+		ArrayList<String> files = browser.getDirectoryList();
 		for (int i = 0; i < files.size(); i++) {
 			System.out.println(files.get(i));
 		}
