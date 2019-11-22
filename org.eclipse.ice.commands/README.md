@@ -42,6 +42,23 @@ Note that this is also a way through which ssh validation can be performed in th
 
 Windows users need to put their ssh credentials into the file located at `C:\Users\Adminstrator\ice-remote-creds.txt` in order for the tests to properly function.
 
+#### KeyGen Tests and Connections
+
+Connections may be established via a public/private key pair that is generated between the local and remote host. The JSch API only works with RSA keys, so you should be sure to generate a key similarly to the following snip of shell code:
+
+```bash
+$ ssh-keygen -t rsa -m PEM
+$ ssh-copy-id -i ~/.ssh/keyname.pub username@hostname
+```
+
+For the keygen connection tests to pass, you should also create a key to a remote host that the tests expect to find. This can be done with any arbitrary remote server that you have credential access to; however, the key must be named dummyhostkey and must exist in your home `.ssh` directory. In other words, the key must be here:
+
+```
+~/.ssh/dummyhostkey
+```
+
+
+
 
 ## Commands API
 ### General Use
