@@ -206,6 +206,9 @@ public class RemoteFileHandlerTest {
 		// local destination directory exists
 		String dest = theDestination + "/newDirectory/newFilename.txt";
 		status = handler.move(src, dest);
+		
+		deleteRemoteSource();
+		deleteRemoteDestination();
 
 	}
 
