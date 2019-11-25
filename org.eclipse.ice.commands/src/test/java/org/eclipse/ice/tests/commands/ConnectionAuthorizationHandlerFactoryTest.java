@@ -11,19 +11,17 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import static org.junit.Assert.*;
-
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.Scanner;
 
 import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.jcraft.jsch.JSchException;
@@ -75,9 +73,22 @@ public class ConnectionAuthorizationHandlerFactoryTest {
 		// Get a text file authorization handler
 		ConnectionAuthorizationHandler text = factory.getConnectionAuthorizationHandler("text", credFile);
 
-		// Assert that the hostname and username are the dummy test host
-		assert (text.getHostname().equals("osbornjd-ice-host.ornl.gov"));
-		assert (text.getUsername().equals("dummy"));
+		// Assert that the hostname and username are whatever was put in
+		File file = new File(credFile);
+		Scanner scanner = null;
+		try {
+			scanner = new Scanner(file);
+		} catch (FileNotFoundException e){
+			e.printStackTrace();
+		}
+		String username = scanner.next();
+		char[] pwd = scanner.next().toCharArray();
+		// delete the password since we don't need it here
+		Arrays.fill(pwd, Character.MIN_VALUE);
+		String hostname = scanner.next();
+		
+		assert(text.getUsername().equals(username));
+		assert(text.getHostname().equals(hostname));
 
 		// Create a connection configuration to actually try and open the connection
 		ConnectionConfiguration config = new ConnectionConfiguration();
