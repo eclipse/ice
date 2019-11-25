@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -50,6 +51,13 @@ public class ConnectionManager {
 	private boolean requireStrictHostKeyChecking = true;
 
 	/**
+	 * This is a list of authorization types for JSch to allow authentication via.
+	 * The default types added automatically are ssh-rsa and ecdsa-sha2-nistp256. 
+	 * Clients can add additional types should they need to.
+	 */
+	private ArrayList<String> authTypes = new ArrayList<String>();
+	
+	/**
 	 * String containing the path to the known hosts directory. Can be set to
 	 * something else if the user has a different default known_host
 	 */
@@ -62,6 +70,10 @@ public class ConnectionManager {
 		// If the OS is windows, then change the known hosts to be windows style
 		if (System.getProperty("os.name").toLowerCase().contains("win"))
 			knownHosts = System.getProperty("user.home") + "\\.ssh\\known_hosts";
+		
+		// Add the default authorization types
+		authTypes.add("ssh-rsa");
+		authTypes.add("ecdsa-sha2-nistp256");
 	}
 
 	/**
@@ -102,14 +114,9 @@ public class ConnectionManager {
 			authorizeSession(newConnection);
 
 			// JSch default requests ssh-rsa host checking, but some keys
-			// request ecdsa-sha2-nistp256. So loop through the available
-			// host keys that were grabbed from known_hosts and add all 
-			// available ssh key check types to those that JSch can authenticate
-			HostKeyRepository hkr = jsch.getHostKeyRepository();
-			String type = null;
-			for (HostKey hk : hkr.getHostKey()) {
-				type = hk.getType();
-				// Set the session configuration key type to that hosts type
+			// request other types. Loop through the available authorization types
+			// and add them to the session.
+			for(String type : authTypes) {
 				newConnection.getSession().setConfig("server_host_key", type);
 			}
 
@@ -364,4 +371,12 @@ public class ConnectionManager {
 		this.knownHosts = knownHosts;
 	}
 
+	/**
+	 * This function allows clients to add an authorization type for which JSch can
+	 * authorize with. ssh-rsa and ecdsa-sha2-nistp256 are added by default.
+	 * @param type
+	 */
+	public void addAuthorizationType(String type) {
+		authTypes.add(type);
+	}
 }
