@@ -103,18 +103,14 @@ public class ConnectionManager {
 
 			// JSch default requests ssh-rsa host checking, but some keys
 			// request ecdsa-sha2-nistp256. So loop through the available
-			// host keys that were grabbed from known_hosts and check what
-			// type the user-given hostname needs
+			// host keys that were grabbed from known_hosts and add all 
+			// available ssh key check types to those that JSch can authenticate
 			HostKeyRepository hkr = jsch.getHostKeyRepository();
 			String type = null;
 			for (HostKey hk : hkr.getHostKey()) {
-				// If this hostkey contains the hostname that was supplied by
-				// the user
-				if (hk.getHost().contains(hostname)) {
-					type = hk.getType();
-					// Set the session configuration key type to that hosts type
-					newConnection.getSession().setConfig("server_host_key", type);
-				}
+				type = hk.getType();
+				// Set the session configuration key type to that hosts type
+				newConnection.getSession().setConfig("server_host_key", type);
 			}
 
 			// If the user wants to disable StrictHostKeyChecking, add it to the
