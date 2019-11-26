@@ -31,7 +31,10 @@ username
 password
 hostname
 ```
-The automated tests will then grab the necessary credentials from this file to run the tests. Any valid ssh connection will work. If you still find that the tests fail, ensure that the ssh connection you are using has been logged into before from your host computer such that there is a key fingerprint associated to that host in your `~/.ssh/known_hosts` file. The Commands package (at the moment) requires that this key exists in order for authentication to proceed. Alternatively, you can set `StrictHostKeyChecking` to no, which is not advised as it is inherently unsecure. To do this for the static `ConnectionManager`, just write:
+
+Windows users need to put their ssh credentials into the file located at `C:\Users\Adminstrator\ice-remote-creds.txt` in order for the tests to properly function.
+
+The automated tests will then grab the necessary credentials from this file to run the tests. Any valid ssh connection will work. If you still find that the tests fail, ensure that the ssh connection you are using has been logged into before from your host computer such that there is a key fingerprint associated to that host in your `~/.ssh/known_hosts` file. The Commands package requires that this key exists in order for authentication to proceed, no matter what form of authentication you use. Alternatively, you can set `StrictHostKeyChecking` to false in the `ConnectionManager`, which is not advised as it is inherently unsecure. To do this for the static `ConnectionManager`, just write:
 
 ```java
 ConnectionManagerFactory.getConnectionManager().setRequireStrictHostKeyChecking(false);
@@ -40,11 +43,10 @@ ConnectionManagerFactory.getConnectionManager().setRequireStrictHostKeyChecking(
 
 Note that this is also a way through which ssh validation can be performed in the package for running actual remote commands/file transfers.
 
-Windows users need to put their ssh credentials into the file located at `C:\Users\Adminstrator\ice-remote-creds.txt` in order for the tests to properly function.
 
 #### KeyGen Tests and Connections
 
-Connections may be established via a public/private key pair that is generated between the local and remote host. The JSch API only works with RSA keys, so you should be sure to generate a key similarly to the following snip of shell code:
+Connections may be established via a public/private key pair that is generated between the local and remote host. The JSch API only works with RSA keys - Commands can also function with ECDSA, but it is advised to use RSA. You should be sure to generate a key similarly to the following snip of shell code:
 
 ```bash
 $ ssh-keygen -t rsa -m PEM
@@ -61,8 +63,8 @@ For the keygen connection tests to pass, you should also create a key to a remot
 
 
 ## Commands API
-### General Use
-The Commands API works best when the user of the API writes a script containing their job logic, and then hands this to Commands to run. The script can be in a number of languages (e.g. bash, python, etc.), depending on what kind of interpreter you like. A basic example of a CommandConfiguration is shown below, for example with a python script:
+### General Commands Use
+The Commands API works best when the user of the API writes a script containing their job logic, and then hands this script to Commands to run. The script can be in a number of languages (e.g. bash, python, etc.), depending on what kind of interpreter you like. A basic example of a CommandConfiguration is shown below, for example with a python script:
 
 ```java
 CommandConfiguration configuration = new CommandConfiguration; 
@@ -112,8 +114,8 @@ If the `FileBrowser` is called on `topDirectory`, an array of strings with all o
 ```java
 ConnectionConfiguration someConfig = new ConnectionConfiguration();
 FileHandler handler = fileHandlerFactory.getFileHandler(someConfig);
-FileBrowser browser = handler.getFileBrowser();
-ArrayList directories<String> = browser.listDirectories("/path/to/top/directory/");
+FileBrowser browser = handler.getFileBrowser("/path/to/top/directory");
+ArrayList directories<String> = browser.listDirectories();
 
 ```
 In the case of our example with `topDirectory`, the list `directories` would contain the full paths to `subDir1` and `subDir2`.
@@ -134,7 +136,7 @@ Locally, move and copy act as their names suggest. When transferring a file remo
 ```java
 handler.setHandleType(HandleType.REMOTELOCAL);
 ```
-`HandleType` is an enum which can be set.
+`HandleType` is an enum which can be set, with three options (`REMOTELOCAL`, `LOCALREMOTE`, or `REMOTEREMOTE`).
 
 
 The transferring has four steps:
@@ -146,3 +148,14 @@ The transferring has four steps:
 
 Similarly to Commands, any return status that is not `CommandStatus.SUCCESS` is considered a failure and indicates that the transfer was not successful.
 
+
+### Connection Manager
+
+All remote connections are managed by the `ConnectionManager` class. A static `ConnectionManager` can be obtained from the `ConnectionManagerFactory`, such that only one `ConnectionManager` exists and thus takes care of all connections that are opened. The user of Commands is responsible for explicitly calling the `ConnectionManager` to end a session via:
+
+```java
+ConnectionManagerFactory.getConnectionManager().closeConnection("someName");
+```
+This functionality allows multiple commands to be run over a single connection without having to re-establish or re-check the connection credentials several times.
+
+For `Commands` and `FileHandler`, the classes will check if a given connection with the passed `ConnectionConfiguration` and associated name already exist. If the connection exists, the command/transfer will be run with that connection; otherwise, a new connection with the relevant information will be established.
