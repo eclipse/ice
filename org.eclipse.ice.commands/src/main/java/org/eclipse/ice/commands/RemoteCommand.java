@@ -227,6 +227,10 @@ public class RemoteCommand extends Command {
 		// to try and finish up
 
 		while (exitValue != 0) {
+			// First make sure the job hasn't been canceled
+			if(status == CommandStatus.CANCELED)
+				return CommandStatus.CANCELED;
+			
 			try {
 				// Give it a second to finish up
 				Thread.currentThread().sleep(1000);
