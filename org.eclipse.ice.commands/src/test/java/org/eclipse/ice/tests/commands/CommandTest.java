@@ -138,7 +138,7 @@ public class CommandTest {
 		connectConfig.deleteWorkingDirectory(true);
 
 		// Make the command and execute it
-		Command remoteCommand = new RemoteCommand(commandConfig, connectConfig, null);
+		Command remoteCommand = new RemoteCommand(commandConfig, connectConfig);
 		CommandStatus status = remoteCommand.execute();
 
 		// Assert that it finished correctly
@@ -262,7 +262,7 @@ public class CommandTest {
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
 
 		// Make the command and execute it
-		Command remoteCommand = new RemoteCommand(commandConfig, connectConfig, null);
+		Command remoteCommand = new RemoteCommand(commandConfig, connectConfig);
 		CommandStatus status = remoteCommand.execute();
 
 		// Assert that it finished correctly
@@ -276,7 +276,7 @@ public class CommandTest {
 		commandConfig.setOutFileName("someRemoteOutFile2.txt");
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory2/");
 
-		remoteCommand = new RemoteCommand(commandConfig, connectConfig, null);
+		remoteCommand = new RemoteCommand(commandConfig, connectConfig);
 		status = remoteCommand.execute();
 
 		// Assert successful completion
@@ -330,7 +330,7 @@ public class CommandTest {
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
 
 		// Make the command and execute it
-		Command remoteCommand = new RemoteCommand(commandConfig, connectConfig, null);
+		Command remoteCommand = new RemoteCommand(commandConfig, connectConfig);
 		CommandStatus status = remoteCommand.execute();
 
 		// Assert that it finished correctly

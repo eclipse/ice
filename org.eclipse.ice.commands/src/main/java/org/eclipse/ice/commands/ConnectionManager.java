@@ -205,6 +205,7 @@ public class ConnectionManager {
 			throw new JSchException();
 		}
 
+		// Authorize the session with the password
 		authorizeSession(forwardConnection);
 
 		forwardConnection.getSession().setHostKeyAlias(hostname);
@@ -214,9 +215,11 @@ public class ConnectionManager {
 		for (String type : authTypes) {
 			forwardConnection.getSession().setConfig("server_host_key", type);
 		}
+		// No to host key checking if requested
 		if (!requireStrictHostKeyChecking)
 			forwardConnection.getSession().setConfig("StrictHostKeyChecking", "no");
 
+		// Connect the session
 		try {
 			forwardConnection.getSession().connect();
 		} catch (JSchException e) {

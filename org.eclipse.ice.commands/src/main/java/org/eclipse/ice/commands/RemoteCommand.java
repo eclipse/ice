@@ -1,5 +1,4 @@
-/**
- * /*******************************************************************************
+/*******************************************************************************
  * Copyright (c) 2019- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -42,14 +41,6 @@ public class RemoteCommand extends Command {
 	private AtomicReference<Connection> connection = new AtomicReference<Connection>(new Connection());
 
 	/**
-	 * An additional connection that is used for multi-hop connections, where a user
-	 * connects to an intermediary machine (with connection, above) and then uses
-	 * that machine to connect to a second machine. TODO - Implement multi-hop
-	 * connections with secondConnection
-	 */
-	private AtomicReference<Connection> secondConnection = new AtomicReference<Connection>(new Connection());
-
-	/**
 	 * A file output stream for error messages to be remotely logged to
 	 */
 	private FileOutputStream stdErrStream = null;
@@ -78,12 +69,10 @@ public class RemoteCommand extends Command {
 	 *          additional connection, if the command is meant to multi-hop where
 	 *          one remote host is used to execute a job on another remote host
 	 */
-	public RemoteCommand(CommandConfiguration commandConfig, ConnectionConfiguration connectConfig,
-			ConnectionConfiguration extraConnection) {
+	public RemoteCommand(CommandConfiguration commandConfig, ConnectionConfiguration connectConfig) {
 		// Set the command and connection configurations
 		this.commandConfig = commandConfig;
 		this.connectionConfig = connectConfig;
-		this.secondConnection.get().setConfiguration(extraConnection);
 		openAndSetConnection();
 
 		status = CommandStatus.PROCESSING;
@@ -112,17 +101,6 @@ public class RemoteCommand extends Command {
 			// Set the commandConfig hostname to that of the connectionConfig - only used
 			// for output logging info
 			commandConfig.setHostname(connectionConfig.getAuthorization().getHostname());
-
-			// If there is an extra connection so that we are multi-hopping, then open it
-			// too
-			// TODO - the multi-hop API isn't implemented yet - need to work on it
-			ConnectionConfiguration secondConfig = secondConnection.get().getConfiguration();
-			if (secondConfig != null) {
-				secondConnection.set(manager.openConnection(secondConfig));
-				// Set the commandConfig hostname to be the extra connection, since this is
-				// really where the job will run
-				commandConfig.setHostname(secondConnection.get().getConfiguration().getAuthorization().getHostname());
-			}
 		} catch (JSchException e) {
 			// If the connection(s) can't be opened, we can't be expected to execute a job
 			// remotely!

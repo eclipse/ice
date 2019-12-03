@@ -156,9 +156,8 @@ public class CommandFactoryTest {
 	 * out for now since multi-hop command source code is not implemented and can be
 	 * for future development.
 	 */
-	// @Test
+	@Test
 	public void testMultiHopRemoteCommand() {
-		fail("src not implemented");
 		System.out.println("\n\n\nTesting a multi-hop remote command");
 		// Set the CommandConfiguration class
 		CommandConfiguration commandConfig = setupDefaultCommandConfig();
@@ -170,7 +169,7 @@ public class CommandFactoryTest {
 		commandConfig.setOutFileName("hopRemoteOutFile.txt");
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
 		// Just put in a dummy directory for now
-		commandConfig.setWorkingDirectory("/home/user/somedirectory");
+		commandConfig.setWorkingDirectory("/home/4jo/remoteCommandDirectory");
 
 		// Set the connection configuration to a dummy remote connection
 		// This is the connection where the job will be executed
@@ -178,26 +177,29 @@ public class CommandFactoryTest {
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				"/tmp/ice-remote-creds.txt");
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("keypath",
+				"~/.ssh/denisovankey");
+		auth.setHostname("denisovan");
+		auth.setUsername("4jo");
 		// Set it
-		connectionConfig.setAuthorization(auth);
+		ConnectionConfiguration firstConn = new ConnectionConfiguration();
+		firstConn.setAuthorization(auth);
+		firstConn.setName("hopConnection");
+		firstConn.deleteWorkingDirectory(false);
 
-		// Note the password can be input at the console by not setting the
-		// the password explicitly in the connection configuration
-		connectionConfig.setName("executeConnection");
-		connectionConfig.deleteWorkingDirectory(true);
-
-		ConnectionConfiguration intermConnection = new ConnectionConfiguration();
-		// TODO - this will have to be changed to some other remote connection
-		intermConnection.setAuthorization(auth);
-		intermConnection.setName("intermediateConnection");
-		intermConnection.deleteWorkingDirectory(false);
+		ConnectionAuthorizationHandler intermauth = authFactory.getConnectionAuthorizationHandler("keypath",
+			"~/.ssh/dummykey");
+		intermauth.setHostname("osbornjd-ice-host.ornl.gov");
+		intermauth.setUsername("dummy");
+		ConnectionConfiguration secondConn = new ConnectionConfiguration();
+		secondConn.setAuthorization(intermauth);
+		secondConn.setName("executeConnection");
+		secondConn.deleteWorkingDirectory(false);
 
 		// Get the command
 		Command remoteCommand = null;
 		try {
-			remoteCommand = factory.getCommand(commandConfig, intermConnection, connectionConfig);
+			remoteCommand = factory.getCommand(commandConfig, firstConn, secondConn);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -215,7 +217,7 @@ public class CommandFactoryTest {
 	 * command prompt This shows that the API can be used to execute basic command
 	 * line prompts.
 	 */
-	@Test
+	//@Test
 	public void testBoringCommandLocally() {
 		System.out.println("Test boring command locally");
 		// Make the command configuration
@@ -262,7 +264,7 @@ public class CommandFactoryTest {
 	 * command prompt This shows that the API can be used to execute basic command
 	 * line prompts.
 	 */
-	@Test
+	//@Test
 	public void testBoringCommandRemotely() {
 		System.out.println("Test remotely ls");
 		// Setup the command configuration
@@ -294,7 +296,7 @@ public class CommandFactoryTest {
 	 * This function tests with real files to test an actual job processing. The job
 	 * executes a script with some hello world commands in it.
 	 */
-	@Test
+	//@Test
 	public void testFunctionalLocalCommand() {
 		System.out.println("Test functional local command");
 		// Set some things specific to the local command
@@ -339,7 +341,7 @@ public class CommandFactoryTest {
 	 * in quotes due to the return of a bad CommandStatus rather than e.g. a true
 	 * java Exception.
 	 */
-	@Test
+	//@Test
 	public void testNonFunctionalLocalCommand() {
 
 		System.out.println("\nTesting some commands where not enough command information was provided.");
@@ -375,7 +377,7 @@ public class CommandFactoryTest {
 	 * intended to test some of the exception catching, thus it is expected to
 	 * "fail."
 	 */
-	@Test
+	//@Test
 	public void testIncorrectWorkingDirectory() {
 		/**
 		 * Run another non functional command, with a non existing working directory
@@ -416,7 +418,7 @@ public class CommandFactoryTest {
 	 * This function tests a functional remote command with the full command factory
 	 * implementation
 	 */
-	@Test
+	//@Test
 	public void testFunctionalRemoteCommand() {
 
 		System.out.println("\n\n\nTesting a functional remote command");
@@ -456,7 +458,7 @@ public class CommandFactoryTest {
 	/**
 	 * This tests a command which requires multiple input files to run remotely
 	 */
-	@Test
+	//@Test
 	public void testMultipleInputFilesRemotely() {
 		System.out.println("Test multiple input files remotely");
 		// Set the CommandConfiguration class
@@ -493,7 +495,7 @@ public class CommandFactoryTest {
 	/**
 	 * This tests a command which requires multiple input files to run locally
 	 */
-	@Test
+	//@Test
 	public void testMultipleInputFilesLocally() {
 		System.out.println("test multiple input files locally");
 		// Set some things specific to the local command
@@ -537,7 +539,7 @@ public class CommandFactoryTest {
 	 * This function tests the processing of a hello world python script, rather
 	 * than a bash script
 	 */
-	@Test
+	//@Test
 	public void testPythonScript() {
 
 		System.out.println("Testing python script");
@@ -581,7 +583,7 @@ public class CommandFactoryTest {
 	 * This function tests the execution of a command where the executable lives on
 	 * the remote host and the input files live on the local host
 	 */
-	@Test
+	//@Test
 	public void testRemoteExecutableLocalInputFiles() {
 		System.out.println("Testing command where files live on different hosts.");
 		
