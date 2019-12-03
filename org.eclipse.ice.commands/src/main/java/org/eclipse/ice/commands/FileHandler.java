@@ -55,7 +55,7 @@ public abstract class FileHandler implements IFileHandler {
 	protected CommandStatus transferStatus;
 
 	/**
-	 * An enun to determine what the actual handle type is to set for the command.
+	 * An enum to determine what the actual handle type is to set for the command.
 	 * Default to null so that the RemoteFileHandler tries to determine it on its
 	 * own - however, user can set this explicitly.
 	 */

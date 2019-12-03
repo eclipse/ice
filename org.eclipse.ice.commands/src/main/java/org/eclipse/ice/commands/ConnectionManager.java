@@ -22,6 +22,7 @@ import com.jcraft.jsch.HostKey;
 import com.jcraft.jsch.HostKeyRepository;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
 
 /**
  * This class manages remote connections, and as such interfaces with all
@@ -52,11 +53,11 @@ public class ConnectionManager {
 
 	/**
 	 * This is a list of authorization types for JSch to allow authentication via.
-	 * The default types added automatically are ssh-rsa and ecdsa-sha2-nistp256. 
+	 * The default types added automatically are ssh-rsa and ecdsa-sha2-nistp256.
 	 * Clients can add additional types should they need to.
 	 */
 	private ArrayList<String> authTypes = new ArrayList<String>();
-	
+
 	/**
 	 * String containing the path to the known hosts directory. Can be set to
 	 * something else if the user has a different default known_host
@@ -70,7 +71,7 @@ public class ConnectionManager {
 		// If the OS is windows, then change the known hosts to be windows style
 		if (System.getProperty("os.name").toLowerCase().contains("win"))
 			knownHosts = System.getProperty("user.home") + "\\.ssh\\known_hosts";
-		
+
 		// Add the default authorization types
 		authTypes.add("ssh-rsa");
 		authTypes.add("ecdsa-sha2-nistp256");
@@ -116,7 +117,7 @@ public class ConnectionManager {
 			// JSch default requests ssh-rsa host checking, but some keys
 			// request other types. Loop through the available authorization types
 			// and add them to the session.
-			for(String type : authTypes) {
+			for (String type : authTypes) {
 				newConnection.getSession().setConfig("server_host_key", type);
 			}
 
@@ -130,7 +131,6 @@ public class ConnectionManager {
 				newConnection.getSession().connect();
 			} catch (JSchException e) {
 				logger.error("Couldn't connect to session with given username and/or password/key. Exiting.", e);
-
 				throw new JSchException();
 			}
 
@@ -146,6 +146,91 @@ public class ConnectionManager {
 		// If the connectionConfiguration was not properly specified, or an error
 		// occurred, return null
 		return null;
+	}
+
+	/**
+	 * This function opens a forwarding connection between one already established
+	 * connection to a remote system and an additional remote system specified by
+	 * the ConnectionConfiguration. This allows ports to be opened up across
+	 * multiple machines, as in: System A --> System B (intermediateConn) --> System
+	 * C (config). So the connection that is returned from this function connects
+	 * System A to System C.
+	 * 
+	 * @param intermediateConn
+	 * @param config
+	 * @return
+	 * @throws JSchException
+	 */
+	public Connection openForwardingConnection(Connection intermediateConn, ConnectionConfiguration config)
+			throws JSchException {
+
+		// First check that the first connection actually is established
+		if (!isConnectionOpen(intermediateConn.getConfiguration().getName())) {
+			logger.error("Can't forward a connection with an unopened intermediate connection! Returning null.");
+			return null;
+		}
+		// Make the forwarded connection
+		Connection forwardConnection = new Connection(config);
+
+		// Get the already established jsch session 
+		JSch jsch = intermediateConn.getJShellSession();
+		Session intermSesh = intermediateConn.getSession();
+		
+		// Check that the session is connected
+		if (!intermSesh.isConnected()) {
+			logger.error("Can't forward a connection with an unopened intermediate session! Returning null.");
+			return null;
+		}
+		
+		// Set the new connection to have the same JSch
+		forwardConnection.setJShellSession(jsch);
+
+		/**
+		 * To make this work, we will set up a port forwarding from the local host to
+		 * the ssh port of the final destination host through the originally opened session.
+		 * Thus, the connection should go from the local host, to the (below) assignedPort,
+		 * and then to port 22 on the final destination host.
+		 */
+		// Set the port to forward from 0 to 22 through the given hostname
+		int assignedPort = intermSesh.setPortForwardingL(0, config.getAuthorization().getHostname(), 22);
+		String username = config.getAuthorization().getUsername();
+		String hostname = config.getAuthorization().getHostname();
+		try {
+			// Try opening the session through the localhost and the assigned port to the username of
+			// the destination host
+			forwardConnection
+					.setSession(forwardConnection.getJShellSession().getSession(username, "127.0.0.1", assignedPort));
+		} catch (JSchException e) {
+			logger.error("Couldn't authenticate forwarded session with given username/hostname. Exiting.", e);
+			throw new JSchException();
+		}
+
+		authorizeSession(forwardConnection);
+
+		forwardConnection.getSession().setHostKeyAlias(hostname);
+		// JSch default requests ssh-rsa host checking, but some keys
+		// request other types. Loop through the available authorization types
+		// and add them to the session.
+		for (String type : authTypes) {
+			forwardConnection.getSession().setConfig("server_host_key", type);
+		}
+		if (!requireStrictHostKeyChecking)
+			forwardConnection.getSession().setConfig("StrictHostKeyChecking", "no");
+
+		try {
+			forwardConnection.getSession().connect();
+		} catch (JSchException e) {
+			logger.error("Couldn't connect to session with given username and/or password/key. Exiting.", e);
+			throw new JSchException();
+		}
+
+		// Add the connection to the list since it was successfully created
+		connectionList.put(forwardConnection.getConfiguration().getName(), forwardConnection);
+
+		logger.info("Connection at " + username + "@" + hostname + " established successfully through "
+				+ intermediateConn.getConfiguration().getName());
+
+		return forwardConnection;
 	}
 
 	/**
@@ -174,7 +259,7 @@ public class ConnectionManager {
 			// Erase contents of pwd and fill with null
 			Arrays.fill(pwd, Character.MIN_VALUE);
 			auth.setPassword(null);
-			
+
 			// Set the authentication requirements
 			connection.getSession().setConfig("PreferredAuthentications", "publickey,password");
 		} else {
@@ -374,6 +459,7 @@ public class ConnectionManager {
 	/**
 	 * This function allows clients to add an authorization type for which JSch can
 	 * authorize with. ssh-rsa and ecdsa-sha2-nistp256 are added by default.
+	 * 
 	 * @param type
 	 */
 	public void addAuthorizationType(String type) {
