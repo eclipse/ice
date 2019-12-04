@@ -560,8 +560,6 @@ public class CommandConfiguration {
 	public void setWorkingDirectory(String workingDirectory) {
 		// Check to see if the directory ends with a separator
 		String separator = FileSystems.getDefault().getSeparator();
-		if (getOS().toLowerCase().contains("win"))
-			separator = "\\";
 		if (!workingDirectory.endsWith(separator))
 			workingDirectory += separator;
 		this.workingDirectory = workingDirectory;
