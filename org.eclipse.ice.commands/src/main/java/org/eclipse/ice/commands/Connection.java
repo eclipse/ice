@@ -76,28 +76,34 @@ public class Connection {
 	 * Constructor which actually sets the connection configuration to a passed
 	 * argument
 	 * 
-	 * @param config
+	 * @param config - the configuration to set the connection information
 	 */
 	public Connection(ConnectionConfiguration config) {
 		configuration = new AtomicReference<ConnectionConfiguration>(config);
 	}
 
 	/**
-	 * Get and return the connection configuration
+	 * Get and return the connection configuration,
+	 * see {@link org.eclipse.ice.commands.Connection#configuration}
 	 * 
-	 * @return
+	 * @return - the Connection's ConnectionConfiguration
 	 */
 	public ConnectionConfiguration getConfiguration() {
 		return configuration.get();
 	}
 
+	/**
+	 * Set the configuration, see {@link org.eclipse.ice.commands.Connection#configuration}
+	 * 
+	 * @param configuration - ConnectionConfiguration to set for this connection
+	 */
 	public void setConfiguration(ConnectionConfiguration configuration) {
 		this.configuration.set(configuration);
 	}
 	/**
 	 * Set the JShell session {@link org.eclipse.ice.commands.Connection#jShell}
 	 * 
-	 * @param jsch
+	 * @param jsch - JSch session to be set for this Connection
 	 */
 	public void setJShellSession(JSch jShell) {
 		this.jShell = new AtomicReference<JSch>(jShell);
@@ -106,7 +112,7 @@ public class Connection {
 	/**
 	 * Get the JShellSession {@link org.eclipse.ice.commands.Connection#jShell}
 	 * 
-	 * @return
+	 * @return - this Connection's JSch session
 	 */
 	public JSch getJShellSession() {
 		return jShell.get();
@@ -116,7 +122,7 @@ public class Connection {
 	 * Set the execution channel
 	 * {@link org.eclipse.ice.commands.Connection#execChannel}
 	 * 
-	 * @param execChannel
+	 * @param execChannel - execution channel to be set for this Connection
 	 */
 	public void setExecChannel(Channel execChannel) {
 		this.execChannel = new AtomicReference<ChannelExec>((ChannelExec) execChannel);
@@ -125,7 +131,7 @@ public class Connection {
 	/**
 	 * Get the sftp channel {@link org.eclipse.ice.commands.Connection#sftpChannel}
 	 * 
-	 * @return
+	 * @return - this Connection's sftp channel
 	 */
 	public ChannelSftp getSftpChannel() {
 		return sftpChannel.get();
@@ -134,7 +140,7 @@ public class Connection {
 	/**
 	 * Set the sftp channel {@link org.eclipse.ice.commands.Connection#sftpChannel}
 	 * 
-	 * @param sftpChannel
+	 * @param sftpChannel - sftp channel to be set for this Connection
 	 */
 	public void setSftpChannel(Channel sftpChannel) {
 		this.sftpChannel = new AtomicReference<ChannelSftp>((ChannelSftp) sftpChannel);
@@ -144,7 +150,7 @@ public class Connection {
 	 * Get the execution channel
 	 * {@link org.eclipse.ice.commands.Connection#execChannel}
 	 * 
-	 * @return
+	 * @return - this Connection's execution channel
 	 */
 	public ChannelExec getExecChannel() {
 		return execChannel.get();
@@ -162,7 +168,7 @@ public class Connection {
 	/**
 	 * Set the session {@link org.eclipse.ice.commands.Connection#session}
 	 * 
-	 * @param _session
+	 * @param session - this Connection's session
 	 */
 	public void setSession(Session session) {
 		this.session = new AtomicReference<Session>(session);
@@ -171,7 +177,7 @@ public class Connection {
 	/**
 	 * Set the input stream {@link org.eclipse.ice.commands.Connection#inputStream}
 	 * 
-	 * @param _stream
+	 * @param inputStream - this Connection's input stream for logging
 	 */
 	public void setInputStream(InputStream inputStream) {
 		this.inputStream = inputStream;
@@ -180,7 +186,7 @@ public class Connection {
 	/**
 	 * Get the input stream {@link org.eclipse.ice.commands.Connection#inputStream}
 	 * 
-	 * @return
+	 * @return - this Connection's input stream for logging
 	 */
 	public InputStream getInputStream() {
 		return inputStream;
@@ -190,7 +196,7 @@ public class Connection {
 	 * Set the output stream
 	 * {@link org.eclipse.ice.commands.Connection#outputStream}
 	 * 
-	 * @param _stream
+	 * @param outputStream - this Connection's output stream for logging
 	 */
 	public void setOutputStream(OutputStream outputStream) {
 		this.outputStream = outputStream;
@@ -200,7 +206,7 @@ public class Connection {
 	 * Get the output stream
 	 * {@link org.eclipse.ice.commands.Connection#outputStream}
 	 * 
-	 * @return
+	 * @return - this Connection's output stream for logging
 	 */
 	public OutputStream getOutputStream() {
 		return outputStream;

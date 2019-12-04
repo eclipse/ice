@@ -75,7 +75,7 @@ public abstract class ConnectionAuthorizationHandler {
 	 * by the subclass. The purpose of this function is for ease of setting things
 	 * in the factory method.
 	 * 
-	 * @param option
+	 * @param option - a multi-purpose option which depends on the subclass' implementation
 	 */
 	public abstract void setOption(String option);
 	
@@ -83,7 +83,7 @@ public abstract class ConnectionAuthorizationHandler {
 	 * Getter for authorization hostname
 	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#hostname}
 	 * 
-	 * @return
+	 * @return - hostname for this authorization
 	 */
 	public String getHostname() {
 		return hostname;
@@ -93,7 +93,7 @@ public abstract class ConnectionAuthorizationHandler {
 	 * Getter for authorization hostname
 	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#username}
 	 * 
-	 * @return
+	 * @return - username for this authorization
 	 */
 	public String getUsername() {
 		return username;
@@ -103,7 +103,7 @@ public abstract class ConnectionAuthorizationHandler {
 	 * Setter for authorization hostname
 	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#hostname}
 	 * 
-	 * @param
+	 * @param - hostname for this authorization
 	 */
 	public void setHostname(String hostname) {
 		this.hostname = hostname;
@@ -113,7 +113,7 @@ public abstract class ConnectionAuthorizationHandler {
 	 * Setter for authorization hostname
 	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#username}
 	 * 
-	 * @param
+	 * @param - username for this authorization
 	 */
 	public void setUsername(String username) {
 		this.username = username;
@@ -132,7 +132,7 @@ public abstract class ConnectionAuthorizationHandler {
 	 * // Now erase the password from memory
 	 * handler.setPassword("".toCharArray());
 	 * ```
-	 * @param password
+	 * @param password - password to set
 	 */
 	public void setPassword(char[] password) {
 		this.password = password;

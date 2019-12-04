@@ -351,6 +351,9 @@ public class ConnectionManagerTest {
 		// Try to open it
 		Connection forwardConnection = manager.openForwardingConnection(firstConnection, secondConn);
 		
+		// Erase the password contents from memory
+		intermauth.setPassword("".toCharArray());
+		
 		// Assert that it is open
 		assert(manager.isConnectionOpen(secondConn.getName()));
 		

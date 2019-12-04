@@ -50,7 +50,7 @@ public class RemoteFileHandler extends FileHandler {
 	 * checks if the connection is already open, and if it is not it calls the
 	 * connection manager to open the connection
 	 * 
-	 * @param config
+	 * @param config - ConnectionConfiguration for file transferring
 	 */
 	public void setConnectionConfiguration(ConnectionConfiguration config) {
 		// Get the connection manager and open the connection in constructor so that it
@@ -119,7 +119,7 @@ public class RemoteFileHandler extends FileHandler {
 	 * 
 	 * @param file - file path to try and make
 	 * @return - boolean indicating whether or not directory was successfully
-	 *         created (true) or false if otherwise
+	 *           created (true) or false if otherwise
 	 */
 	private boolean makeRemoteDirectory(String file) {
 		logger.warn("Path doesn't exist on the remote host, trying to make it.");
@@ -163,6 +163,8 @@ public class RemoteFileHandler extends FileHandler {
 	 * determines what kind of remote move it is, i.e. which direction the move is
 	 * going (local --> remote, remote --> local, remote --> remote, etc.)
 	 * 
+	 * Alternatively, the move can be set by the client using 
+	 * {@link org.eclipse.ice.commands.RemoteFileHandler#setHandleType(HandleType)}
 	 * @throws JSchException
 	 */
 	@Override
@@ -316,7 +318,8 @@ public class RemoteFileHandler extends FileHandler {
 	 * normal chmod, and changes it to decimal.
 	 * 
 	 * 
-	 * @param permissions
+	 * @param permissions - String of the permissions to set. Taken as a string
+	 * so that it can be converted to decimal from octal
 	 */
 	public void setPermissions(String permissions) {
 		this.permissions = Integer.parseInt(permissions, 8);

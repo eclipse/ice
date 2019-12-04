@@ -104,7 +104,7 @@ public class TxtFileConnectionAuthorizationHandler extends ConnectionAuthorizati
 	 * Getter for
 	 * {@link org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler#path}
 	 * 
-	 * @return
+	 * @return path - string of path to text file
 	 */
 	public String getPath() {
 		return path;
@@ -114,7 +114,8 @@ public class TxtFileConnectionAuthorizationHandler extends ConnectionAuthorizati
 	 * Setter for
 	 * {@link org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler#path}
 	 * Also then sets the username and hostname to that defined by the new path
-	 * @param
+	 * 
+	 * @param path - string of path to set
 	 */
 	public void setPath(String path) {
 		this.path = path;

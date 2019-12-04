@@ -189,8 +189,9 @@ public abstract class FileHandler implements IFileHandler {
 	 * Function to determine whether or not a given string is located on the local
 	 * machine
 	 * 
-	 * @param file
-	 * @return
+	 * @param file - path of file to check
+	 * @return - boolean indicating whether or not the file exists locally (true) 
+	 *           or not (false)
 	 */
 	protected boolean isLocal(String file) {
 		// Get the path
@@ -204,8 +205,8 @@ public abstract class FileHandler implements IFileHandler {
 	 * This operation creates all the directories that are parents of the
 	 * destination.
 	 * 
-	 * @param dest the destination for which parent directories should be created
-	 * @return true if the directories were created
+	 * @param dest - the destination for which parent directories should be created
+	 * @return true if the directories were created, false otherwise
 	 * @throws IOException thrown if the dest cannot be created
 	 */
 	protected boolean createDirectories(String dest) throws IOException {
@@ -231,7 +232,7 @@ public abstract class FileHandler implements IFileHandler {
 	 * 
 	 * @param destination - destination for the file to go to
 	 * @return - CommandStatus indicating whether or not the transfer completed
-	 *         successfully
+	 *           successfully
 	 * @throws IOException
 	 */
 	protected CommandStatus executeTransfer(final String destination) throws IOException {
@@ -251,7 +252,7 @@ public abstract class FileHandler implements IFileHandler {
 	 * A setter to set the type of file handle this is. See
 	 * {@link org.eclipse.ice.commands.RemoteFileHandler#HANDLE_TYPE}
 	 * 
-	 * @param HANDLE_TYPE
+	 * @param HANDLE_TYPE - HandleType for a given file transfer
 	 */
 	public void setHandleType(HandleType HANDLE_TYPE) {
 		this.HANDLE_TYPE = HANDLE_TYPE;
@@ -260,7 +261,7 @@ public abstract class FileHandler implements IFileHandler {
 	/**
 	 * Get the connection for this file handler
 	 * 
-	 * @return
+	 * @return - Connection corresonding to this sfile handler
 	 */
 	public Connection getConnection() {
 		return connection.get();

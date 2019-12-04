@@ -205,7 +205,8 @@ public class CommandFactoryTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		// Erase password contents from memory now that session has been established
+		intermauth.setPassword("".toCharArray());
 		// Run it
 		CommandStatus status = remoteCommand.execute();
 

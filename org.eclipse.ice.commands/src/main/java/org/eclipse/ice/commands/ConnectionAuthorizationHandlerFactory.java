@@ -33,6 +33,11 @@ public class ConnectionAuthorizationHandlerFactory {
 	 */
 	public final Logger logger = LoggerFactory.getLogger(ConnectionAuthorizationHandlerFactory.class);
 
+	/**
+	 * A hashmap which contains the entire list of possible authorization handlers. All
+	 * child classes of ConnectionAuthorizationHandler are included. Instances of each
+	 * class can be obtained by requesting the particular name key from the hash map.
+	 */
 	private HashMap<String, ConnectionAuthorizationHandler> handlerList = new HashMap<String, ConnectionAuthorizationHandler>();
 
 	/**
@@ -61,8 +66,8 @@ public class ConnectionAuthorizationHandlerFactory {
 	 * and thus can be left as null. Useful when a console or local connection
 	 * authorization handler is desired
 	 * 
-	 * @param type
-	 * @return
+	 * @param type - String corresponding to which handlerList type to get
+	 * @return - The ConnectionAuthorizationHandler requested
 	 */
 	public ConnectionAuthorizationHandler getConnectionAuthorizationHandler(String type) {
 		return getConnectionAuthorizationHandler(type, "");
@@ -72,8 +77,8 @@ public class ConnectionAuthorizationHandlerFactory {
 	 * Factory method to get a particular connection authorization handler. Returns
 	 * a handler to authorize remote connections.
 	 * 
-	 * @param type - type of authorization handler desired
-	 * @return - authorization handler
+	 * @param type - String corresponding to which handlerList type to get
+	 * @return - The ConnectionAuthorizationHandler requested
 	 */
 	public ConnectionAuthorizationHandler getConnectionAuthorizationHandler(String type, String option) {
 		ConnectionAuthorizationHandler auth = null;
@@ -100,8 +105,8 @@ public class ConnectionAuthorizationHandlerFactory {
 	 * the list and then check for it when determining what type of
 	 * ConnectionAuthorizationHandler to return.
 	 * 
-	 * @param type
-	 * @param auth
+	 * @param type - the name for the type of authorization handler
+	 * @param auth - the instance of a new authorization handler to be added to the hashmap
 	 */
 	public void addConnectionAuthorizationHandlerType(String type, ConnectionAuthorizationHandler auth) {
 		handlerList.put(type, auth);

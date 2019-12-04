@@ -52,6 +52,18 @@ public class RemoteTransferExecution {
 	public RemoteTransferExecution() {
 	}
 
+	/**
+	 * This function actually performs the logic to transfer a file over an sftp
+	 * channel to or from a remote host, given a particular handle type.
+	 * 
+	 * @param connection   - Connection over which to transfer files
+	 * @param source       - source path
+	 * @param destination  - destination path
+	 * @param permissions  - permissions for the remote file (if the file
+	 *                     destination is remote)
+	 * @param transferType - the HandleType indicating what kind of transfer it is
+	 * @return - CommandStatus indicating whether or not the transfer was successful
+	 */
 	protected CommandStatus executeTransfer(Connection connection, String source, String destination, int permissions,
 			HandleType transferType) {
 		ChannelSftp channel = null;
@@ -74,7 +86,7 @@ public class RemoteTransferExecution {
 			// a chmod
 			if (permissions != -999 && transferType != HandleType.remoteLocal)
 				channel.chmod(permissions, destination);
-	
+
 		} catch (JSchException | SftpException e) {
 			logger.error("Failed to connect or obtain file to/from remote host. Returning failed.", e);
 			status = CommandStatus.FAILED;
@@ -91,6 +103,9 @@ public class RemoteTransferExecution {
 	 * copy a file from one location on the remote host to another location on the
 	 * remote host.
 	 * 
+	 * @param connection  - Connection with which to transfer
+	 * @param source      - source path
+	 * @param destination - destination path
 	 * @throws JSchException
 	 */
 	private void transferRemoteToRemote(Connection connection, String source, String destination) throws JSchException {
@@ -122,7 +137,7 @@ public class RemoteTransferExecution {
 	 * Setter function to tell the class whether or not the transfer is a move or a
 	 * copy
 	 * 
-	 * @param isMove
+	 * @param isMove - true if it is a move, false if it is a copy
 	 */
 	protected void isMove(boolean isMove) {
 		this.isMove = isMove;

@@ -48,8 +48,9 @@ public class LocalCopyFileCommand extends LocalCommand {
 	 * This function actually executes the copy file command. It checks that the
 	 * copy was completed successfully. It returns a CommandStatus indicating
 	 * whether or not the move was successful.
+	 * See also {@link org.eclipse.ice.commands.Command#execute()}
 	 * 
-	 * @return CommandStatus
+	 * @return CommandStatus - indicating status of job
 	 */
 	@Override
 	public CommandStatus execute() {
@@ -64,8 +65,9 @@ public class LocalCopyFileCommand extends LocalCommand {
 	 * This function contains the command to actually copy the file. Returns a
 	 * CommandStatus indicating that the command is currently running and needs to
 	 * be checked that it completed correctly.
+	 * See also {@link org.eclipse.ice.commands.Command#run}
 	 * 
-	 * @return CommandStatus
+	 * @return CommandStatus - indicate status of job
 	 */
 	@Override
 	protected CommandStatus run() {
@@ -98,7 +100,7 @@ public class LocalCopyFileCommand extends LocalCommand {
 	/**
 	 * A function that returns the source path in string form
 	 * 
-	 * @return - String
+	 * @return - String of the source path
 	 */
 	public String getSource() {
 		return source.toString();
@@ -107,7 +109,7 @@ public class LocalCopyFileCommand extends LocalCommand {
 	/**
 	 * A function that returns the destination path in string form
 	 * 
-	 * @return - String
+	 * @return - String of the destination path
 	 */
 	public String getDestination() {
 		return destination.toString();

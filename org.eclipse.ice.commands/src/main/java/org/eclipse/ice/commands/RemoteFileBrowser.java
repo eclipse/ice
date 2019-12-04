@@ -32,9 +32,10 @@ public class RemoteFileBrowser implements FileBrowser {
 	private Connection connection;
 
 	/**
-	 * Default  constructor
+	 * Default constructor
 	 */
 	public RemoteFileBrowser() {
+		// Clear the arrays to start fresh
 		fileList.clear();
 		directoryList.clear();
 		this.connection = null;
@@ -42,6 +43,9 @@ public class RemoteFileBrowser implements FileBrowser {
 	
 	/**
 	 * Default constructor with connection and top directory name
+	 * 
+	 * @param connection - Connection over which to file browse
+	 * @param topDirectory - top most directory to recursively walk through
 	 */
 	public RemoteFileBrowser(Connection connection, final String topDirectory) {
 		// Make sure we start with a fresh list every time the browser is called
@@ -58,8 +62,8 @@ public class RemoteFileBrowser implements FileBrowser {
 	 * remote host and fill the member variable arrays with the files and
 	 * directories
 	 * 
-	 * @param channel
-	 * @param topDirectory
+	 * @param channel - sftp channel to walk the file tree with
+	 * @param topDirectory - top most directory under which to browse
 	 */
 	protected void fillArrays(String topDirectory, ChannelSftp channel) {
 
@@ -99,8 +103,6 @@ public class RemoteFileBrowser implements FileBrowser {
 
 	/**
 	 * See {@link org.eclipse.ice.commands.FileBrowser#getDirectoryList()}
-	 * 
-	 * @return
 	 */
 	@Override
 	public ArrayList<String> getDirectoryList() {
@@ -109,8 +111,6 @@ public class RemoteFileBrowser implements FileBrowser {
 
 	/**
 	 * See {@link org.eclipse.ice.commands.FileBrowser#getFileList()}
-	 * 
-	 * @return
 	 */
 	@Override
 	public ArrayList<String> getFileList() {

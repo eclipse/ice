@@ -51,14 +51,15 @@ public class LocalCommand extends Command {
 	 * {@link org.eclipse.ice.commands.LocalCommand#setConfiguration(CommandConfiguration)}
 	 * for details about what details are required.
 	 * 
-	 * @param _configuration
+	 * @param _connection - ConnectionConfiguration corresponding to a local connection
+	 * @param _configuration - CommandConfiguration for this particular command
 	 */
-	public LocalCommand(ConnectionConfiguration _connection, CommandConfiguration _configuration) {
+	public LocalCommand(ConnectionConfiguration connectionConfig, CommandConfiguration commandConfig) {
 
 		status = CommandStatus.PROCESSING;
 
 		// Set the configuration for the command
-		commandConfig = _configuration;
+		this.commandConfig = commandConfig;
 
 		// If commandConfig wasn't set properly, the job can't run
 		if (commandConfig == null)
@@ -66,12 +67,12 @@ public class LocalCommand extends Command {
 
 		// Set the connection for the local command, which is only relevant for
 		// accessing the hostname of the local computer
-		connectionConfig = _connection;
+		this.connectionConfig = connectionConfig;
 
 		// Make sure both commandConfig and connectionConfig have the same
 		// hostname, since commandConfig needs the hostname for several output
 		// files (e.g. for debugging purposes).
-		commandConfig.setHostname(connectionConfig.getAuthorization().getHostname());
+		this.commandConfig.setHostname(connectionConfig.getAuthorization().getHostname());
 
 	}
 
@@ -230,9 +231,6 @@ public class LocalCommand extends Command {
 	 * finished successfully according to the ProcessBuilder.
 	 * 
 	 * See also {@link org.eclipse.ice.commands.Command#finishJob()}
-	 * 
-	 * @return - CommandStatus indicating whether or not the function processed
-	 *         correctly
 	 */
 	@Override
 	protected CommandStatus finishJob() {

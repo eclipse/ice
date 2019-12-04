@@ -156,9 +156,9 @@ public class ConnectionManager {
 	 * C (config). So the connection that is returned from this function connects
 	 * System A to System C.
 	 * 
-	 * @param intermediateConn
-	 * @param config
-	 * @return
+	 * @param intermediateConn - intermediate jump host
+	 * @param config - ConnectionConfiguration for final host destination
+	 * @return - Connection if succesfully established, null otherwise
 	 * @throws JSchException
 	 */
 	public Connection openForwardingConnection(Connection intermediateConn, ConnectionConfiguration config)
@@ -242,7 +242,7 @@ public class ConnectionManager {
 	 * provide JSch depending on whether or not a password exists in the
 	 * ConnectionAuthorizationHandler.
 	 * 
-	 * @param connection
+	 * @param connection - Connection for which to authorize
 	 * @throws JSchException
 	 */
 	private void authorizeSession(Connection connection) throws JSchException {
@@ -371,7 +371,7 @@ public class ConnectionManager {
 	 * manager rather than opening a default connection through the function
 	 * {@link ConnectionManager#openConnection(ConnectionConfiguration)}.
 	 * 
-	 * @param connection
+	 * @param connection - Connection to add to the list in ConnectionManager
 	 */
 	public void addConnection(Connection connection) {
 		connectionList.put(connection.getConfiguration().getName(), connection);
@@ -412,7 +412,7 @@ public class ConnectionManager {
 	 * 
 	 * @param connectionName - name of connection to check
 	 * @return - boolean indicating whether or not it is connected (true) or not
-	 *         (false)
+	 *           (false)
 	 */
 	public boolean isConnectionOpen(String connectionName) {
 		Connection connection = getConnection(connectionName);
@@ -423,7 +423,7 @@ public class ConnectionManager {
 	 * Setter function for
 	 * {@link org.eclipse.ice.commands.ConnectionManager#connectionList}
 	 * 
-	 * @param connections
+	 * @param connections - hashmap of connection list to set
 	 */
 	public void setConnectionList(HashMap<String, Connection> connectionList) {
 		this.connectionList = connectionList;
@@ -433,7 +433,7 @@ public class ConnectionManager {
 	 * Getter function for
 	 * {@link org.eclipse.ice.commands.ConnectionManager#connectionList}
 	 * 
-	 * @return
+	 * @return - connectionList containing the hash map of connections
 	 */
 	public HashMap<String, Connection> getConnectionList() {
 		return connectionList;
@@ -443,7 +443,7 @@ public class ConnectionManager {
 	 * Setter for whether or not connections should be open with the requirement of
 	 * StrictHostKeyChecking
 	 * 
-	 * @param requireStrictHostKeyChecking
+	 * @param requireStrictHostKeyChecking - boolean indicating if it should be required
 	 */
 	public void setRequireStrictHostKeyChecking(boolean requireStrictHostKeyChecking) {
 		this.requireStrictHostKeyChecking = requireStrictHostKeyChecking;
@@ -453,7 +453,7 @@ public class ConnectionManager {
 	 * Setter for known host directory path
 	 * {@link org.eclipse.ice.commands.ConnectionManager#knownHosts}
 	 * 
-	 * @param knownHosts
+	 * @param knownHosts - string to known host path
 	 */
 	public void setKnownHosts(String knownHosts) {
 		this.knownHosts = knownHosts;
@@ -463,7 +463,7 @@ public class ConnectionManager {
 	 * This function allows clients to add an authorization type for which JSch can
 	 * authorize with. ssh-rsa and ecdsa-sha2-nistp256 are added by default.
 	 * 
-	 * @param type
+	 * @param type - type of authorization to add to allowed JSch authorizations
 	 */
 	public void addAuthorizationType(String type) {
 		authTypes.add(type);

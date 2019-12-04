@@ -48,16 +48,19 @@ public class CommandFactory {
 	 * another host to execute a command. See also
 	 * {@link org.eclipse.ice.commands.CommandFactory#getCommand(CommandConfiguration, ConnectionConfiguration, ConnectionConfiguration)
 	 * 
-	 * @param commandConfig
-	 * @param connectConfig
-	 * @return
+	 * @param commandConfig           - the CommandConfiguration which holds the
+	 *                                  particular details of a given command.
+	 * @param connectionConfig        - the ConnectionConfiguration which holds the
+	 *                                  details on the connection (i.e. local vs.
+	 *                                  remote)
+	 * @return                        - The command to be processed
 	 * @throws IOException
 	 */
-	public Command getCommand(final CommandConfiguration commandConfig, final ConnectionConfiguration connectConfig)
+	public Command getCommand(final CommandConfiguration commandConfig, final ConnectionConfiguration connectionConfig)
 			throws IOException {
 		// pass null since the connection configuration connects us from the local host
 		// to the remote host, and we don't have an intermediary host
-		return getCommand(commandConfig, connectConfig, null);
+		return getCommand(commandConfig, connectionConfig, null);
 	}
 
 	/**
@@ -65,15 +68,15 @@ public class CommandFactory {
 	 * Command class {@link org.eclipse.ice.commands.Command}.
 	 * 
 	 * @param commandConfig           - the CommandConfiguration which holds the
-	 *                                particular details of a given command.
-	 * @param ConnectionConfiguration - the ConnectionConfiguration which holds the
-	 *                                details on the connection (i.e. local vs.
-	 *                                remote)
+	 *                                  particular details of a given command.
+	 * @param connectionConfig        - the ConnectionConfiguration which holds the
+	 *                                  details on the connection (i.e. local vs.
+	 *                                  remote)
 	 * @param extraConnection         - An additional connection configuration if
-	 *                                the user wants to "hop" connections, i.e. log
-	 *                                into one host and then send a job from that
-	 *                                host to an additional remote host
-	 * @return
+	 *                                  the user wants to "hop" connections, i.e. log
+	 *                                  into one host and then send a job from that
+	 *                                  host to an additional remote host
+	 * @return                        - the command to be processed
 	 * @throws IOException
 	 */
 	public Command getCommand(final CommandConfiguration commandConfig, final ConnectionConfiguration connectionConfig,
@@ -111,7 +114,7 @@ public class CommandFactory {
 	 * 
 	 * @param host - String of the hostname to be checked
 	 * @return boolean - returns true if the hostname matches that of the local
-	 *         hostname, false otherwise.
+	 *                   hostname, false otherwise.
 	 */
 	private boolean isLocal(String host) {
 

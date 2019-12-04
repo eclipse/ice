@@ -88,7 +88,7 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	/**
 	 * Get the source file string
 	 * 
-	 * @return
+	 * @return - string of the source path
 	 */
 	public String getSource() {
 		return source;
@@ -97,7 +97,7 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	/**
 	 * Get the destination file string
 	 * 
-	 * @return
+	 * @return - string of the destination path
 	 */
 	public String getDestination() {
 		return destination;
@@ -106,7 +106,7 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	/**
 	 * Set the copy type variable
 	 * 
-	 * @param type
+	 * @param type - HandleType for this file transfer
 	 */
 	public void setCopyType(HandleType copyType) {
 		this.copyType = copyType;
@@ -115,7 +115,8 @@ public class RemoteCopyFileCommand extends RemoteCommand {
 	/**
 	 * Set the permissions for a chmod during file transfer
 	 * 
-	 * @param permissions
+	 * @param permissions - file permissions to be set upon file 
+	 * 						transfer
 	 */
 	protected void setPermissions(int permissions) {
 		this.permissions = permissions;
