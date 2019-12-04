@@ -124,7 +124,7 @@ public class CommandFactoryTest {
 		rm += " someLsOutFile.txt someLsErrFile.txt someMultRemoteOutFile.txt someMultRemoteErrFile.txt";
 		rm += " somePythOutFile.txt somePythErrFile.txt someLsRemoteErrFile.txt someLsRemoteOutFile.txt";
 		rm += " src/test/java/org/eclipse/ice/tests/someInputFile.txt src/test/java/org/eclipse/ice/tests/someOtherInputFile.txt";
-		rm += " pythOutFile.txt pythErrFile.txt";
+		rm += " pythOutFile.txt pythErrFile.txt hopRemoteOutFile.txt hopRemoteErrFile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
 		if (System.getProperty("os.name").toLowerCase().contains("win")) {
@@ -152,9 +152,7 @@ public class CommandFactoryTest {
 
 	/**
 	 * This function tests a multi-hop remote command, where the command logs into a
-	 * remote host and then executes on a different remote host. TODO - Commented
-	 * out for now since multi-hop command source code is not implemented and can be
-	 * for future development.
+	 * remote host and then executes on a different remote host. 
 	 */
 	@Test
 	public void testMultiHopRemoteCommand() {
@@ -163,12 +161,16 @@ public class CommandFactoryTest {
 		CommandConfiguration commandConfig = setupDefaultCommandConfig();
 		commandConfig.setExecutable("./test_code_execution.sh");
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
+		commandConfig.addInputFile("someOtherFile", "someOtherInputFile.txt");
 		commandConfig.setAppendInput(true);
 		commandConfig.setCommandId(99);
 		commandConfig.setErrFileName("hopRemoteErrFile.txt");
 		commandConfig.setOutFileName("hopRemoteOutFile.txt");
-		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
-		// Just put in a dummy directory for now
+		// This is the directory to run the job on the destination system, i.e. 
+		// system C
+		commandConfig.setRemoteWorkingDirectory("/tmp/remoteJumpCommandTestDirectory");
+		// This is the directory on the jump host which contains the job information
+		// and files, e.g. the script, input files, etc.
 		commandConfig.setWorkingDirectory("/home/4jo/remoteCommandDirectory");
 
 		// Set the connection configuration to a dummy remote connection
@@ -187,14 +189,14 @@ public class CommandFactoryTest {
 		firstConn.setName("hopConnection");
 		firstConn.deleteWorkingDirectory(false);
 
-		ConnectionAuthorizationHandler intermauth = authFactory.getConnectionAuthorizationHandler("keypath",
-			"~/.ssh/dummykey");
+		ConnectionAuthorizationHandler intermauth = authFactory.getConnectionAuthorizationHandler("basic");
 		intermauth.setHostname("osbornjd-ice-host.ornl.gov");
 		intermauth.setUsername("dummy");
+		intermauth.setPassword("password".toCharArray());
 		ConnectionConfiguration secondConn = new ConnectionConfiguration();
 		secondConn.setAuthorization(intermauth);
 		secondConn.setName("executeConnection");
-		secondConn.deleteWorkingDirectory(false);
+		secondConn.deleteWorkingDirectory(true);
 
 		// Get the command
 		Command remoteCommand = null;
@@ -217,7 +219,7 @@ public class CommandFactoryTest {
 	 * command prompt This shows that the API can be used to execute basic command
 	 * line prompts.
 	 */
-	//@Test
+	@Test
 	public void testBoringCommandLocally() {
 		System.out.println("Test boring command locally");
 		// Make the command configuration
@@ -264,7 +266,7 @@ public class CommandFactoryTest {
 	 * command prompt This shows that the API can be used to execute basic command
 	 * line prompts.
 	 */
-	//@Test
+	@Test
 	public void testBoringCommandRemotely() {
 		System.out.println("Test remotely ls");
 		// Setup the command configuration
@@ -296,7 +298,7 @@ public class CommandFactoryTest {
 	 * This function tests with real files to test an actual job processing. The job
 	 * executes a script with some hello world commands in it.
 	 */
-	//@Test
+	@Test
 	public void testFunctionalLocalCommand() {
 		System.out.println("Test functional local command");
 		// Set some things specific to the local command
@@ -341,7 +343,7 @@ public class CommandFactoryTest {
 	 * in quotes due to the return of a bad CommandStatus rather than e.g. a true
 	 * java Exception.
 	 */
-	//@Test
+	@Test
 	public void testNonFunctionalLocalCommand() {
 
 		System.out.println("\nTesting some commands where not enough command information was provided.");
@@ -377,7 +379,7 @@ public class CommandFactoryTest {
 	 * intended to test some of the exception catching, thus it is expected to
 	 * "fail."
 	 */
-	//@Test
+	@Test
 	public void testIncorrectWorkingDirectory() {
 		/**
 		 * Run another non functional command, with a non existing working directory
@@ -418,7 +420,7 @@ public class CommandFactoryTest {
 	 * This function tests a functional remote command with the full command factory
 	 * implementation
 	 */
-	//@Test
+	@Test
 	public void testFunctionalRemoteCommand() {
 
 		System.out.println("\n\n\nTesting a functional remote command");
@@ -458,7 +460,7 @@ public class CommandFactoryTest {
 	/**
 	 * This tests a command which requires multiple input files to run remotely
 	 */
-	//@Test
+	@Test
 	public void testMultipleInputFilesRemotely() {
 		System.out.println("Test multiple input files remotely");
 		// Set the CommandConfiguration class
@@ -495,7 +497,7 @@ public class CommandFactoryTest {
 	/**
 	 * This tests a command which requires multiple input files to run locally
 	 */
-	//@Test
+	@Test
 	public void testMultipleInputFilesLocally() {
 		System.out.println("test multiple input files locally");
 		// Set some things specific to the local command
@@ -539,7 +541,7 @@ public class CommandFactoryTest {
 	 * This function tests the processing of a hello world python script, rather
 	 * than a bash script
 	 */
-	//@Test
+	@Test
 	public void testPythonScript() {
 
 		System.out.println("Testing python script");
@@ -583,7 +585,7 @@ public class CommandFactoryTest {
 	 * This function tests the execution of a command where the executable lives on
 	 * the remote host and the input files live on the local host
 	 */
-	//@Test
+	@Test
 	public void testRemoteExecutableLocalInputFiles() {
 		System.out.println("Testing command where files live on different hosts.");
 		

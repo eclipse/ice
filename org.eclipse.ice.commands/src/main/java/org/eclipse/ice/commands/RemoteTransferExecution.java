@@ -69,12 +69,12 @@ public class RemoteTransferExecution {
 				status = CommandStatus.FAILED;
 				return status;
 			}
-
+			logger.info("DESTINATION IS " + destination);
 			// If permissions was actually instantiated and isn't the default, then perform
 			// a chmod
-			if (permissions != -999)
+			if (permissions != -999 && transferType != HandleType.remoteLocal)
 				channel.chmod(permissions, destination);
-
+	
 		} catch (JSchException | SftpException e) {
 			logger.error("Failed to connect or obtain file to/from remote host. Returning failed.", e);
 			status = CommandStatus.FAILED;

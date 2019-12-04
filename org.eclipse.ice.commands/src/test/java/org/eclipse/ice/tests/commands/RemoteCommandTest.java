@@ -161,7 +161,7 @@ public class RemoteCommandTest {
 		System.out.println("Testing remote command configuration");
 
 		// Get a command which just sets everything up
-		RemoteCommand command = new RemoteCommand(commandConfig, connectConfig);
+		RemoteCommand command = new RemoteCommand(commandConfig, connectConfig, null);
 
 		// Get the status
 		CommandStatus status = command.getStatus();
@@ -193,7 +193,7 @@ public class RemoteCommandTest {
 		// Set it
 		cfg.setAuthorization(auth);
 		// Make a command with a bad connection
-		RemoteCommand command = new RemoteCommand(commandConfig, cfg);
+		RemoteCommand command = new RemoteCommand(commandConfig, cfg, null);
 
 		// Check that the command gives an error in its status due to poor connection
 		assert (command.getStatus() == CommandStatus.INFOERROR);
@@ -236,7 +236,7 @@ public class RemoteCommandTest {
 		// dummy host piling up with random directories
 		cfg.deleteWorkingDirectory(true);
 
-		RemoteCommand testCommand = new RemoteCommand(badConfig, cfg);
+		RemoteCommand testCommand = new RemoteCommand(badConfig, cfg, null);
 
 		CommandStatus testStatus = testCommand.execute();
 
@@ -251,7 +251,7 @@ public class RemoteCommandTest {
 		System.out.println("\n\n\nTest remote command execute");
 
 		// Make a command and execute the command
-		RemoteCommand command = new RemoteCommand(commandConfig, connectConfig);
+		RemoteCommand command = new RemoteCommand(commandConfig, connectConfig, null);
 		CommandStatus status = command.execute();
 
 		// Check that the command was successfully completed
@@ -282,7 +282,7 @@ public class RemoteCommandTest {
 		longConfig.setNumProcs("1");
 		longConfig.setOS(System.getProperty("os.name"));
 
-		RemoteCommand testCommand = new RemoteCommand(longConfig, connectConfig);
+		RemoteCommand testCommand = new RemoteCommand(longConfig, connectConfig, null);
 
 		CommandStatus testStatus = testCommand.execute();
 

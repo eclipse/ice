@@ -100,8 +100,7 @@ public class RemoteFileHandler extends FileHandler {
 			if (isLocal(file)) {
 				// If the file can be found locally, return true since we found it.
 				// Up to checkExistence to determine what kind of move this is (e.g.
-				// local->remote
-				// or vice versa)
+				// local->remote or vice versa) or it is up to the user to set it
 				return true;
 			} else {
 				return false;

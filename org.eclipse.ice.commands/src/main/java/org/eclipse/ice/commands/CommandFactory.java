@@ -94,11 +94,11 @@ public class CommandFactory {
 		} else if (extraConnection == null) {
 			// If there was only one connection, then it is a remote command from
 			// the local machine to another host machine
-			command = new RemoteCommand(commandConfig, connectionConfig);
+			command = new RemoteCommand(commandConfig, connectionConfig, null);
 		} else {
 			// Otherwise if there were two connections provided, the intermediate connection
 			// is used as the "host" and the final connection is used as the "destination"
-			command = new RemoteJumpHostCommand(commandConfig, connectionConfig, extraConnection);
+			command = new RemoteCommand(commandConfig, connectionConfig, extraConnection);
 		}
 
 		return command;
