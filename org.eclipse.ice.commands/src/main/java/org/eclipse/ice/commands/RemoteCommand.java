@@ -94,8 +94,10 @@ public class RemoteCommand extends Command {
 	 * function first checks if a connection with the same name is already available
 	 * in the connection manager, and if so, grabs it. Otherwise, it opens a new 
 	 * connection with the provided information.
+	 * Function is public so that if a user wants to reset the connection for a 
+	 * particular command, they have the option to.
 	 */
-	private void openAndSetConnection() {
+	public void openAndSetConnection() {
 		// Open and set the connection(s)
 		try {
 			if (manager.getConnection(connectionConfig.getName()) == null) {

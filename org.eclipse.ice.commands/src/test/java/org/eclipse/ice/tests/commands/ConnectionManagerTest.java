@@ -134,8 +134,10 @@ public class ConnectionManagerTest {
 		keyConfiguration.setName("keypath");
 		KeyPathConnectionAuthorizationHandler auth = new KeyPathConnectionAuthorizationHandler();
 		// Set the authorization information that is needed
-		auth.setHostname("osbornjd-ice-host.ornl.gov");
-		auth.setUsername("dummy");
+		// Use the same hostname/username information from the text file, in the event
+		// that the dummy host is not being used
+		auth.setHostname(configuration.getAuthorization().getHostname());
+		auth.setUsername(configuration.getAuthorization().getUsername());
 		String keyPath = System.getProperty("user.home") + "/.ssh/dummyhostkey";
 		auth.setOption(keyPath);
 		keyConfiguration.setAuthorization(auth);

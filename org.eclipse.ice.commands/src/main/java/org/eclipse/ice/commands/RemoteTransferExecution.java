@@ -96,7 +96,6 @@ public class RemoteTransferExecution {
 	private void transferRemoteToRemote(Connection connection, String source, String destination) throws JSchException {
 		// Open an execution channel
 		ChannelExec execChannel = (ChannelExec) connection.getSession().openChannel("exec");
-		// TODO - test with windows, cp probably won't work
 		// Make a transfer command to execute
 		// First check if it is a move or copy
 		String moveType = "cp ";
