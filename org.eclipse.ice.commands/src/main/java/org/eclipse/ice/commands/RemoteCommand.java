@@ -428,12 +428,20 @@ public class RemoteCommand extends Command {
 	 */
 	protected CommandStatus transferFiles(ConnectionConfiguration config, String sourceDir, String destDir)
 			throws SftpException, JSchException, IOException {
-
+		String sourceSep = "/";
+		String destSep = "/";
+		
+		// Figure out what the separators are
+		if(sourceDir.contains("\\"))
+			sourceSep = "\\";
+		if(destDir.contains("\\"))
+			destSep = "\\";
+		
 		// Set up a remote file handler to transfer the files
 		RemoteFileHandler handler = new RemoteFileHandler();
 		// Give the handler the same connection as this command
 		handler.setConnectionConfiguration(config);
-
+		
 		// Get the executable to concatenate
 		String shortExecName = commandConfig.getExecutable();
 		// Get the executable filename only by removing the all the junk in front of it
@@ -443,9 +451,13 @@ public class RemoteCommand extends Command {
 		else if (shortExecName.contains("\\"))
 			shortExecName = shortExecName.substring(shortExecName.lastIndexOf("\\") + 1);
 
+		// Check that the source directory ends with the right separator
+		if(!sourceDir.endsWith(sourceSep))
+			sourceDir += sourceSep;
+		
 		// Do the same for the destination
-		if (!destDir.endsWith("/"))
-			destDir += "/";
+		if (!destDir.endsWith(destSep))
+			destDir += destSep;
 
 		// Build the source and destination paths
 		String source = sourceDir + shortExecName;
