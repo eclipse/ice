@@ -113,10 +113,21 @@ public class ConnectionAuthorizationHandlerFactoryTest {
 	public void testKeyPathAuthorization() throws JSchException {
 		// Filepath to the dummy host key
 		String keyPath = System.getProperty("user.home") + "/.ssh/dummyhostkey";
+		
+		// Create a text file credential path to get the same username/hostname
+		// as the key, in the event someone is using a host that is not the dummy
+		// server
+		String credFile = "/tmp/ice-remote-creds.txt";
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
+			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+
+		// Get a text file authorization handler
+		ConnectionAuthorizationHandler text = factory.getConnectionAuthorizationHandler("text", credFile);
+		
 		// Create a connection authorization handler for a keypath
 		ConnectionAuthorizationHandler auth = factory.getConnectionAuthorizationHandler("keypath", keyPath);
-		auth.setHostname("osbornjd-ice-host.ornl.gov");
-		auth.setUsername("dummy");
+		auth.setHostname(text.getHostname());
+		auth.setUsername(text.getUsername());
 		// Make a connection configuration with the key information
 		ConnectionConfiguration config = new ConnectionConfiguration();
 		config.setName("keyPath");
