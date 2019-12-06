@@ -188,11 +188,14 @@ public class CommandFactoryTest {
 		firstConn.setAuthorization(auth);
 		firstConn.setName("hopConnection");
 		firstConn.deleteWorkingDirectory(false);
+		// Read in a dummy configuration file that contains credentials
+		String credFile = "/tmp/ice-remote-creds.txt";
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
+			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
 
-		ConnectionAuthorizationHandler intermauth = authFactory.getConnectionAuthorizationHandler("basic");
-		intermauth.setHostname("osbornjd-ice-host.ornl.gov");
-		intermauth.setUsername("dummy");
-		intermauth.setPassword("password".toCharArray());
+		ConnectionAuthorizationHandler intermauth = authFactory.getConnectionAuthorizationHandler("text",
+				credFile);
+
 		ConnectionConfiguration secondConn = new ConnectionConfiguration();
 		secondConn.setAuthorization(intermauth);
 		secondConn.setName("executeConnection");
@@ -205,8 +208,7 @@ public class CommandFactoryTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// Erase password contents from memory now that session has been established
-		intermauth.setPassword("".toCharArray());
+
 		// Run it
 		CommandStatus status = remoteCommand.execute();
 

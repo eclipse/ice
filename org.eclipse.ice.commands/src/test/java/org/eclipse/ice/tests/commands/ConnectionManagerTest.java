@@ -324,6 +324,11 @@ public class ConnectionManagerTest {
 	public void testForwardConnection() throws JSchException, SftpException {
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 
+		// Read in a dummy configuration file that contains credentials
+		String credFile = "/tmp/ice-remote-creds.txt";
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
+			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
@@ -340,10 +345,9 @@ public class ConnectionManagerTest {
 		assert (manager.isConnectionOpen(firstConnection.getConfiguration().getName()));
 
 		// Now get the final host authorization
-		ConnectionAuthorizationHandler intermauth = authFactory.getConnectionAuthorizationHandler("basic");
-		intermauth.setHostname("osbornjd-ice-host.ornl.gov");
-		intermauth.setUsername("dummy");
-		intermauth.setPassword("password".toCharArray());
+		ConnectionAuthorizationHandler intermauth = authFactory.getConnectionAuthorizationHandler("text",
+				credFile);
+
 		// Setup the configuration
 		ConnectionConfiguration secondConn = new ConnectionConfiguration();
 		secondConn.setAuthorization(intermauth);
@@ -352,9 +356,6 @@ public class ConnectionManagerTest {
 		System.out.println("Opening forwarding connection");
 		// Try to open it
 		Connection forwardConnection = manager.openForwardingConnection(firstConnection, secondConn);
-		
-		// Erase the password contents from memory
-		intermauth.setPassword("".toCharArray());
 		
 		// Assert that it is open
 		assert(manager.isConnectionOpen(secondConn.getName()));
