@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
  * @author Joe Osborn
  *
  */
+
 public class ConnectionAuthorizationHandlerFactory {
 
 	/**
