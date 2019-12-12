@@ -558,11 +558,12 @@ public class CommandConfiguration {
 	 */
 	public void setWorkingDirectory(String workingDirectory) {
 		// Check to see if the directory ends with a separator
+
 		String separator = "/";
 		// If the string has windows separator, then change the separator
 		if (workingDirectory.contains("\\"))
 			separator = "\\";
-		
+
 		if (!workingDirectory.endsWith(separator))
 			workingDirectory += separator;
 		this.workingDirectory = workingDirectory;
