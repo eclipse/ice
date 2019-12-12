@@ -334,8 +334,8 @@ public class ConnectionManagerTest {
 		// credentials
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("keypath",
 				"~/.ssh/denisovankey");
-		auth.setHostname("denisovan");
-		auth.setUsername("4jo");
+		auth.setHostname("hostname");
+		auth.setUsername("username");
 		ConnectionConfiguration config = new ConnectionConfiguration();
 		config.setAuthorization(auth);
 		config.setName("forwardConnection");

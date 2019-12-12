@@ -181,8 +181,8 @@ public class CommandFactoryTest {
 		// credentials
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("keypath",
 				"~/.ssh/denisovankey");
-		auth.setHostname("denisovan");
-		auth.setUsername("4jo");
+		auth.setHostname("hostname");
+		auth.setUsername("username");
 		// Set it
 		ConnectionConfiguration firstConn = new ConnectionConfiguration();
 		firstConn.setAuthorization(auth);
