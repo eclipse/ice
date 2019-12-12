@@ -562,7 +562,7 @@ public class CommandConfiguration {
 		// If the string has windows separator, then change the separator
 		if (workingDirectory.contains("\\"))
 			separator = "\\";
-		
+
 		if (!workingDirectory.endsWith(separator))
 			workingDirectory += separator;
 		this.workingDirectory = workingDirectory;
