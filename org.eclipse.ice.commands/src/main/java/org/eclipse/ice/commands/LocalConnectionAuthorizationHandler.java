@@ -30,6 +30,7 @@ public class LocalConnectionAuthorizationHandler extends ConnectionAuthorization
 	public LocalConnectionAuthorizationHandler() {
 		// By default local authorization has local host as the hostname, so set it
 		hostname = getLocalHostname();
+		username = System.getProperty("user.name");
 	}
 
 	/**
@@ -61,4 +62,12 @@ public class LocalConnectionAuthorizationHandler extends ConnectionAuthorization
 		return hostname;
 	}
 
+	/**
+	 * No options required for console authorization See
+	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#setOption(String)}
+	 */
+	@Override
+	public void setOption(String option) {
+		return;
+	}
 }

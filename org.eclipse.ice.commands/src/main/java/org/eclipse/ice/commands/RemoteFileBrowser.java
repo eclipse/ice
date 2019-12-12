@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -31,13 +32,25 @@ public class RemoteFileBrowser implements FileBrowser {
 	private Connection connection;
 
 	/**
-	 * Default constructor
+	 * Default  constructor
 	 */
-	public RemoteFileBrowser(Connection connection) {
-		// Make sure we start with a fresh list everytime the walker is called
+	public RemoteFileBrowser() {
+		fileList.clear();
+		directoryList.clear();
+		this.connection = null;
+	}
+	
+	/**
+	 * Default constructor with connection and top directory name
+	 */
+	public RemoteFileBrowser(Connection connection, final String topDirectory) {
+		// Make sure we start with a fresh list every time the browser is called
 		fileList.clear();
 		directoryList.clear();
 		this.connection = connection;
+		
+		// Fill the arrays with the relevant file information
+		fillArrays(topDirectory, connection.getSftpChannel());
 	}
 
 	/**
@@ -49,16 +62,19 @@ public class RemoteFileBrowser implements FileBrowser {
 	 * @param topDirectory
 	 */
 	protected void fillArrays(String topDirectory, ChannelSftp channel) {
-		// Make sure the top directory ends with the appropriate separator
-		// TODO - figure out how to get a separator from a remote system rather
-		// than the system the job is launching from with e.g.
-		// FileSystems.getDefault().getSeparator();
-		String separator = "/";
-		// Now check the path name
-		if (!topDirectory.endsWith(separator))
-			topDirectory += separator;
 
 		try {
+			// Make sure the top directory ends with the appropriate separator
+			String separator = "/";
+			// If the remote file system returns a home directory with \, then it
+			// must be windows
+			if (channel.getHome().contains("\\"))
+				separator = "\\";
+
+			// Now check the path name
+			if (!topDirectory.endsWith(separator))
+				topDirectory += separator;
+
 			// Get the path's directory structure
 			Collection<ChannelSftp.LsEntry> directoryStructure = channel.ls(topDirectory);
 			// Iterate through the structure
@@ -99,26 +115,6 @@ public class RemoteFileBrowser implements FileBrowser {
 	@Override
 	public ArrayList<String> getFileList() {
 		return fileList;
-	}
-
-	/**
-	 * See {@link org.eclipse.ice.commands.FileBrowser#listFiles(String)}
-	 */
-	@Override
-	public ArrayList<String> listFiles(final String topDirectory) {
-		fillArrays(topDirectory, connection.getSftpChannel());
-
-		return getFileList();
-	}
-
-	/**
-	 * See {@link org.eclipse.ice.commands.FileBrowser#listDirectories(String)}
-	 */
-	@Override
-	public ArrayList<String> listDirectories(final String topDirectory) {
-		fillArrays(topDirectory, connection.getSftpChannel());
-
-		return getDirectoryList();
 	}
 
 }

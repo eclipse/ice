@@ -71,7 +71,7 @@ public class RemoteFileHandlerTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
-	
+
 		ConnectionConfiguration config = makeConnectionConfiguration();
 
 		fileTransferConn = manager.openConnection(config);
@@ -196,19 +196,8 @@ public class RemoteFileHandlerTest {
 		assert (status == CommandStatus.SUCCESS);
 
 		deleteLocalDestination();
-
-		// Keep the same source, but add a new subdirectory and file name for the
-		// destination.
-		// This test checks if an error is thrown for a nonexistent local directory
-		// The API can't just make the local directory if it isn't found, because
-		// otherwise there is no way to differentiate between a remote --> local and
-		// remote --> remote move. Thus, it is up to the user to ensure that their
-		// local destination directory exists
-		String dest = theDestination + "/newDirectory/newFilename.txt";
-		status = handler.move(src, dest);
-
 		deleteRemoteSource();
-
+	
 	}
 
 	/**
@@ -296,7 +285,6 @@ public class RemoteFileHandlerTest {
 		deleteRemoteSource();
 
 	}
-
 
 	/**
 	 * Dummy function which makes the connection configuration for the dummy remote

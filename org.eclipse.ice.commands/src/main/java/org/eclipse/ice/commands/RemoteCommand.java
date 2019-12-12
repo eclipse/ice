@@ -47,7 +47,7 @@ public class RemoteCommand extends Command {
 	 * that machine to connect to a second machine. TODO - Implement multi-hop
 	 * connections with secondConnection
 	 */
-	private Connection secondConnection = new Connection();
+	private AtomicReference<Connection> secondConnection = new AtomicReference<Connection>(new Connection());
 
 	/**
 	 * A file output stream for error messages to be remotely logged to
@@ -78,21 +78,30 @@ public class RemoteCommand extends Command {
 	 *          additional connection, if the command is meant to multi-hop where
 	 *          one remote host is used to execute a job on another remote host
 	 */
-	public RemoteCommand(CommandConfiguration _commandConfig, ConnectionConfiguration connectConfig,
+	public RemoteCommand(CommandConfiguration commandConfig, ConnectionConfiguration connectConfig,
 			ConnectionConfiguration extraConnection) {
 		// Set the command and connection configurations
-		commandConfig = _commandConfig;
-		connectionConfig = connectConfig;
+		this.commandConfig = commandConfig;
+		this.connectionConfig = connectConfig;
+		this.secondConnection.get().setConfiguration(extraConnection);
+		openAndSetConnection();
 
-		// Get the connection manager to open a new connection
-		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+		status = CommandStatus.PROCESSING;
+	}
 
+	/**
+	 * Opens and sets a connection based on what was passed in the constructor. This
+	 * function first checks if a connection with the same name is already available
+	 * in the connection manager, and if so, grabs it. Otherwise, it opens a new 
+	 * connection with the provided information.
+	 */
+	private void openAndSetConnection() {
 		// Open and set the connection(s)
 		try {
-			if (manager.getConnection(connectConfig.getName()) == null) {
-				connection.set(manager.openConnection(connectConfig));
+			if (manager.getConnection(connectionConfig.getName()) == null) {
+				connection.set(manager.openConnection(connectionConfig));
 			} else {
-				connection.set(manager.getConnection(connectConfig.getName()));
+				connection.set(manager.getConnection(connectionConfig.getName()));
 				// Make sure the connections are starting fresh from scratch
 				if (connection.get().getExecChannel() != null)
 					connection.get().getExecChannel().disconnect();
@@ -102,16 +111,17 @@ public class RemoteCommand extends Command {
 
 			// Set the commandConfig hostname to that of the connectionConfig - only used
 			// for output logging info
-			commandConfig.setHostname(connectConfig.getAuthorization().getHostname());
+			commandConfig.setHostname(connectionConfig.getAuthorization().getHostname());
 
 			// If there is an extra connection so that we are multi-hopping, then open it
 			// too
 			// TODO - the multi-hop API isn't implemented yet - need to work on it
-			if (extraConnection != null) {
-				secondConnection = manager.openConnection(extraConnection);
+			ConnectionConfiguration secondConfig = secondConnection.get().getConfiguration();
+			if (secondConfig != null) {
+				secondConnection.set(manager.openConnection(secondConfig));
 				// Set the commandConfig hostname to be the extra connection, since this is
 				// really where the job will run
-				commandConfig.setHostname(extraConnection.getAuthorization().getHostname());
+				commandConfig.setHostname(secondConnection.get().getConfiguration().getAuthorization().getHostname());
 			}
 		} catch (JSchException e) {
 			// If the connection(s) can't be opened, we can't be expected to execute a job
@@ -122,7 +132,6 @@ public class RemoteCommand extends Command {
 			return;
 		}
 
-		status = CommandStatus.PROCESSING;
 	}
 
 	/**
@@ -197,15 +206,9 @@ public class RemoteCommand extends Command {
 		// Disconnect the channel and return success
 		connection.get().getExecChannel().disconnect();
 		connection.get().getSftpChannel().disconnect();
-		// Set the channel to null. This is important for running several jobs over one
-		// session, since the channel has been changed to an exec channel and the next
-		// job needs it as an sftp channel for file transfer. So let the next job take
-		// care of the channel delegation.
-		connection.get().setExecChannel(null);
 
 		// Don't disconnect the session in the event that a user wants to run multiple
-		// jobs over the same session. Let session management be handled by the job
-		// running and the connection manager
+		// jobs over the same session. Let session management be handled by the connection manager
 
 		/**
 		 * Note that output doesn't have to explicitly be logged - JSch takes care of
@@ -224,6 +227,10 @@ public class RemoteCommand extends Command {
 		// to try and finish up
 
 		while (exitValue != 0) {
+			// First make sure the job hasn't been canceled
+			if(status == CommandStatus.CANCELED)
+				return CommandStatus.CANCELED;
+			
 			try {
 				// Give it a second to finish up
 				Thread.currentThread().sleep(1000);

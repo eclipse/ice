@@ -23,17 +23,24 @@ import org.eclipse.ice.commands.Command;
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandFactory;
 import org.eclipse.ice.commands.CommandStatus;
+import org.eclipse.ice.commands.Connection;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.LocalFileHandler;
+import org.eclipse.ice.commands.RemoteCommand;
+import org.eclipse.ice.commands.RemoteFileHandler;
 import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
 
 /**
  * This class tests {@link org.eclipse.ice.commands.CommandFactory}.
@@ -69,7 +76,6 @@ public class CommandFactoryTest {
 	 */
 	ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
 
-	
 	/**
 	 * Default constructor
 	 */
@@ -89,12 +95,13 @@ public class CommandFactoryTest {
 
 	/**
 	 * Set no strict host key checking just for tests
+	 * 
 	 * @throws Exception
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
-	
+
 	/**
 	 * Run after the tests have finished processing. This function just removes the
 	 * dummy text files that are created with log/error information from running
@@ -200,8 +207,6 @@ public class CommandFactoryTest {
 
 		// assert that it was successful
 		assert (status == CommandStatus.SUCCESS);
-
-
 
 	}
 
@@ -579,6 +584,11 @@ public class CommandFactoryTest {
 	@Test
 	public void testRemoteExecutableLocalInputFiles() {
 		System.out.println("Testing command where files live on different hosts.");
+		
+		// Get the dummy connection configuration
+		ConnectionConfiguration connectionConfig = setupDummyConnectionConfiguration();
+
+		
 		// Get the present working directory
 		String pwd = System.getProperty("user.dir");
 
@@ -593,11 +603,15 @@ public class CommandFactoryTest {
 		handler.copy(inputFileDir + "commands/someInputFile.txt", inputFileDir);
 		handler.copy(inputFileDir + "commands/someOtherInputFile.txt", inputFileDir);
 
+		RemoteFileHandler remoteHandler = new RemoteFileHandler();
+		remoteHandler.setConnectionConfiguration(connectionConfig);
+		remoteHandler.copy(inputFileDir + "commands/test_python_script.py", "/tmp/test_python_script.py");
+		
 		// Create a command configuration corresponding to a python script
 		CommandConfiguration configuration = setupDefaultCommandConfig();
 		// This path exists on the dummy host server
 		configuration.setExecutable(
-				"/opt/ice/org.eclipse.ice.commands/src/test/java/org/eclipse/ice/tests/commands/test_python_script.py");
+				"/tmp/test_python_script.py");
 		configuration.setInterpreter("python");
 		configuration.setCommandId(9);
 		configuration.setErrFileName("pythErrFile.txt");
@@ -608,9 +622,7 @@ public class CommandFactoryTest {
 		configuration.addInputFile("inputfile2", "someOtherInputFile.txt");
 		configuration.setRemoteWorkingDirectory("/tmp/pythonTest");
 
-		// Get the dummy connection configuration
-		ConnectionConfiguration connectionConfig = setupDummyConnectionConfiguration();
-
+	
 		// Get the command and run it
 		Command command = null;
 		try {
@@ -622,6 +634,23 @@ public class CommandFactoryTest {
 		CommandStatus status = command.execute();
 
 		assert (status == CommandStatus.SUCCESS);
+		
+		// Delete the moved python script on the remote server once finished
+		// Get the connection and channel to delete
+		Connection connection = ((RemoteCommand)command).getConnection();
+		// Delete the script
+		try {
+			// open the channel
+			connection.setSftpChannel(connection.getSession().openChannel("sftp"));
+			ChannelSftp channel = connection.getSftpChannel();
+			// connect and delete the script
+			channel.connect();
+			channel.rm("/tmp/test_python_script.py");
+			channel.disconnect();
+		} catch (JSchException | SftpException e1) {
+			e1.printStackTrace();
+		}
+		
 		System.out.println("finished python script test");
 
 	}

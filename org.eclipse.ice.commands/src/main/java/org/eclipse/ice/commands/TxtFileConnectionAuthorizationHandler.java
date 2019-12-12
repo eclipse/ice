@@ -42,15 +42,14 @@ public class TxtFileConnectionAuthorizationHandler extends ConnectionAuthorizati
 	}
 
 	/**
-	 * Constructor where a particular pathname to the text file is given
-	 * 
-	 * @param path
+	 * No options required for console authorization
+	 * See {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#setOption(String)}
 	 */
-	public TxtFileConnectionAuthorizationHandler(String path) {
-		this.path = path;
+	@Override
+	public void setOption(String option) {
+		this.path = option;
 		setUsernameHostname();
 	}
-
 	/**
 	 * See
 	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#getPassword()}
@@ -114,11 +113,12 @@ public class TxtFileConnectionAuthorizationHandler extends ConnectionAuthorizati
 	/**
 	 * Setter for
 	 * {@link org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler#path}
-	 * 
+	 * Also then sets the username and hostname to that defined by the new path
 	 * @param
 	 */
 	public void setPath(String path) {
 		this.path = path;
+		setUsernameHostname();
 	}
 
 }

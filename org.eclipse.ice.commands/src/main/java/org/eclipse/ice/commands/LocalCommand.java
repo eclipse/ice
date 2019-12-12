@@ -118,7 +118,6 @@ public class LocalCommand extends Command {
 			// Now check again to see if the job succeeded
 			if (!checkStatus(status))
 				return CommandStatus.FAILED;
-
 		}
 
 		// Close up the output streams
@@ -310,6 +309,10 @@ public class LocalCommand extends Command {
 		// zero means that the job has succeeded. Watch it until it
 		// finishes.
 		while (exitValue != 0) {
+			// First make sure the job hasn't been canceled
+			if(status == CommandStatus.CANCELED)
+				return CommandStatus.CANCELED;
+			
 			// Try to get the exit value of the job
 			// If the job completed successfully this will be 0
 			try {

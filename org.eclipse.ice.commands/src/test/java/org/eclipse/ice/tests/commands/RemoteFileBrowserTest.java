@@ -12,6 +12,7 @@
 
 package org.eclipse.ice.tests.commands;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -78,20 +79,7 @@ public class RemoteFileBrowserTest {
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
+		ConnectionManagerFactory.getConnectionManager().removeAllConnections();
 	}
 
 	/**
@@ -108,7 +96,6 @@ public class RemoteFileBrowserTest {
 		// using the already developed functions, since we need multiple files and
 		// directories
 		String topDirectory = "/tmp/fileBrowsingDir/";
-
 		// put this in a try and finally so that the remote file structure
 		// always gets deleted. Otherwise the next test run might fail when it
 		// tries to build the remote file structure and see that it already
@@ -133,11 +120,11 @@ public class RemoteFileBrowserTest {
 	public void testRemoteFileBrowsing(String topDirectory) throws IOException, SftpException {
 
 		RemoteFileHandler handler = new RemoteFileHandler();
-		RemoteFileBrowser browser = new RemoteFileBrowser(fileTransferConn);
+		RemoteFileBrowser browser = new RemoteFileBrowser(fileTransferConn, topDirectory);
 
 		handler.setConnectionConfiguration(fileTransferConn.getConfiguration());
 
-		ArrayList<String> files = browser.listFiles(topDirectory);
+		ArrayList<String> files = browser.getFileList();
 
 		// files should only be 4 entries since there are only 4 files in the tree
 		// structure we created
@@ -167,9 +154,9 @@ public class RemoteFileBrowserTest {
 
 		RemoteFileHandler handler = new RemoteFileHandler();
 		handler.setConnectionConfiguration(fileTransferConn.getConfiguration());
-		RemoteFileBrowser browser = new RemoteFileBrowser(fileTransferConn);
+		RemoteFileBrowser browser = new RemoteFileBrowser(fileTransferConn, topDirectory);
 
-		ArrayList<String> files = browser.listDirectories(topDirectory);
+		ArrayList<String> files = browser.getDirectoryList();
 
 		// directories should only be 3 entries since there are only 3 directories in
 		// the tree structure we created

@@ -95,8 +95,8 @@ public class CommandTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-}
-	
+	}
+
 	/**
 	 * Test method for {@link org.eclipse.ice.commands.Command#Command()} with a
 	 * particular instance of a RemoteCommand

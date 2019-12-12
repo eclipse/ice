@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This interface sets the structure for the FileWalker subclasses, which
+ * This interface sets the structure for the FileBrowser subclasses, which
  * contain the logic to browse file and directory tree structures on local and
  * remote systems.
  * 
@@ -54,25 +54,5 @@ public interface FileBrowser {
 	 * @return
 	 */
 	public ArrayList<String> getFileList();
-
-	/**
-	 * This method returns the list of files and their relative paths to the passed
-	 * argument topDirectory. The argument should be the top-most directory that one
-	 * wants to search through.
-	 * 
-	 * @param topDirectory
-	 * @return
-	 */
-	public abstract ArrayList<String> listFiles(final String topDirectory);
-
-	/**
-	 * This method returns the list of directories and their relative paths to the
-	 * passed argument topDirectory. The argument should be the top-most directory
-	 * that one wants to search through.
-	 * 
-	 * @param topDirectory
-	 * @return
-	 */
-	public abstract ArrayList<String> listDirectories(final String topDirectory);
 
 }

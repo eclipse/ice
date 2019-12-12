@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -23,8 +24,8 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 
 /**
- * This factory class manages remote connections, and as such interfaces with
- * all classes that are associated with remote connections.
+ * This class manages remote connections, and as such interfaces with all
+ * classes that are associated with remote connections.
  * 
  * @author Joe Osborn
  *
@@ -44,20 +45,35 @@ public class ConnectionManager {
 	private final Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
 
 	/**
-	 * A boolean that the user can set to disable ssh StrictHostKeyChecking.
-	 * Set to true by default since this is the most secure way.
+	 * A boolean that the user can set to disable ssh StrictHostKeyChecking. Set to
+	 * true by default since this is the most secure way.
 	 */
 	private boolean requireStrictHostKeyChecking = true;
+
+	/**
+	 * This is a list of authorization types for JSch to allow authentication via.
+	 * The default types added automatically are ssh-rsa and ecdsa-sha2-nistp256. 
+	 * Clients can add additional types should they need to.
+	 */
+	private ArrayList<String> authTypes = new ArrayList<String>();
 	
 	/**
-	 * String containing the path to the known hosts directory. Can be set to 
+	 * String containing the path to the known hosts directory. Can be set to
 	 * something else if the user has a different default known_host
 	 */
 	private String knownHosts = System.getProperty("user.home") + "/.ssh/known_hosts";
+
 	/**
 	 * Default Constructor
 	 */
 	public ConnectionManager() {
+		// If the OS is windows, then change the known hosts to be windows style
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
+			knownHosts = System.getProperty("user.home") + "\\.ssh\\known_hosts";
+		
+		// Add the default authorization types
+		authTypes.add("ssh-rsa");
+		authTypes.add("ecdsa-sha2-nistp256");
 	}
 
 	/**
@@ -69,13 +85,12 @@ public class ConnectionManager {
 	 * @return Connection - returns connection if successful, null otherwise
 	 */
 	public Connection openConnection(ConnectionConfiguration config) throws JSchException {
-
 		// The new connection to be opened
 		Connection newConnection = new Connection(config);
 
 		// Create the shell
 		JSch jsch = new JSch();
-		
+
 		jsch.setKnownHosts(knownHosts);
 		newConnection.setJShellSession(jsch);
 
@@ -84,11 +99,6 @@ public class ConnectionManager {
 		// Get the information necessary to open the connection
 		if (newConnection.getConfiguration() != null) {
 			ConnectionAuthorizationHandler auth = newConnection.getConfiguration().getAuthorization();
-
-			// Get the password first. If authorization is a text file, then
-			// username and hostname will be set. Otherwise user must set them
-			char[] pwd = auth.getPassword();
-
 			String username = auth.getUsername();
 			String hostname = auth.getHostname();
 
@@ -100,43 +110,27 @@ public class ConnectionManager {
 				throw new JSchException();
 			}
 
-			// Pass it to the session
-			newConnection.getSession().setPassword(String.valueOf(pwd));
-
-			// Erase contents of pwd and fill with null
-			Arrays.fill(pwd, Character.MIN_VALUE);
+			// Authorize the JSch session with a ConnectionAuthorizationHandler
+			authorizeSession(newConnection);
 
 			// JSch default requests ssh-rsa host checking, but some keys
-			// request ecdsa-sha2-nistp256. So loop through the available
-			// host keys that were grabbed from known_hosts and check what
-			// type the user-given hostname needs
-			HostKeyRepository hkr = jsch.getHostKeyRepository();
-
-			for (HostKey hk : hkr.getHostKey()) {
-				// If this hostkey contains the hostname that was supplied by
-				// the user
-				if (hk.getHost().contains(hostname)) {
-					String type = hk.getType();
-					// Set the session configuration key type to that hosts type
-					newConnection.getSession().setConfig("server_host_key", type);
-				}
+			// request other types. Loop through the available authorization types
+			// and add them to the session.
+			for(String type : authTypes) {
+				newConnection.getSession().setConfig("server_host_key", type);
 			}
-
-			
-			
-			// Set the authentication requirements
-			newConnection.getSession().setConfig("PreferredAuthentications", "publickey,password");
 
 			// If the user wants to disable StrictHostKeyChecking, add it to the
 			// session configuration
-			if(!requireStrictHostKeyChecking)
+			if (!requireStrictHostKeyChecking)
 				newConnection.getSession().setConfig("StrictHostKeyChecking", "no");
-			
+
 			// Connect the session
 			try {
 				newConnection.getSession().connect();
 			} catch (JSchException e) {
-				logger.error("Couldn't connect to session with given username and/or password. Exiting.", e);
+				logger.error("Couldn't connect to session with given username and/or password/key. Exiting.", e);
+
 				throw new JSchException();
 			}
 
@@ -152,6 +146,44 @@ public class ConnectionManager {
 		// If the connectionConfiguration was not properly specified, or an error
 		// occurred, return null
 		return null;
+	}
+
+	/**
+	 * This function deals with the new connection authentication. It takes a
+	 * connection that is being opened, and decides what kind of authentication to
+	 * provide JSch depending on whether or not a password exists in the
+	 * ConnectionAuthorizationHandler.
+	 * 
+	 * @param connection
+	 * @throws JSchException
+	 */
+	private void authorizeSession(Connection connection) throws JSchException {
+		// Get the authorization information
+		ConnectionAuthorizationHandler auth = connection.getConfiguration().getAuthorization();
+
+		// If a password was set, then try to authenticate with the password
+		if (auth.getPassword() != null) {
+			logger.info("Trying to authenticate with a password");
+			// Get the password first. If authorization is a text file, then
+			// username and hostname will be set. Otherwise user must set them
+			char[] pwd = auth.getPassword();
+
+			// Pass it to the session
+			connection.getSession().setPassword(String.valueOf(pwd));
+
+			// Erase contents of pwd and fill with null
+			Arrays.fill(pwd, Character.MIN_VALUE);
+			auth.setPassword(null);
+			
+			// Set the authentication requirements
+			connection.getSession().setConfig("PreferredAuthentications", "publickey,password");
+		} else {
+			logger.info("Trying to authenticate with a key");
+			// Otherwise try a key authentication
+			String keyPath = ((KeyPathConnectionAuthorizationHandler) auth).getKeyPath();
+			connection.getJShellSession().addIdentity(keyPath);
+		}
+		return;
 	}
 
 	/**
@@ -247,6 +279,17 @@ public class ConnectionManager {
 	}
 
 	/**
+	 * This function allows adding a user defined connection to the connection
+	 * manager rather than opening a default connection through the function
+	 * {@link ConnectionManager#openConnection(ConnectionConfiguration)}.
+	 * 
+	 * @param connection
+	 */
+	public void addConnection(Connection connection) {
+		connectionList.put(connection.getConfiguration().getName(), connection);
+	}
+
+	/**
 	 * This function lists all the connections (and their statuses, i.e. if open or
 	 * not) to the logger, if so desired. Useful for checking the connections and
 	 * their statuses.
@@ -307,22 +350,33 @@ public class ConnectionManager {
 	public HashMap<String, Connection> getConnectionList() {
 		return connectionList;
 	}
-	
+
 	/**
-	 * Setter for whether or not connections should be open with the requirement
-	 * of StrictHostKeyChecking
+	 * Setter for whether or not connections should be open with the requirement of
+	 * StrictHostKeyChecking
+	 * 
 	 * @param requireStrictHostKeyChecking
 	 */
 	public void setRequireStrictHostKeyChecking(boolean requireStrictHostKeyChecking) {
 		this.requireStrictHostKeyChecking = requireStrictHostKeyChecking;
 	}
-	
+
 	/**
-	 * Setter for known host directory path {@link org.eclipse.ice.commands.ConnectionManager#knownHosts}
+	 * Setter for known host directory path
+	 * {@link org.eclipse.ice.commands.ConnectionManager#knownHosts}
+	 * 
 	 * @param knownHosts
 	 */
 	public void setKnownHosts(String knownHosts) {
 		this.knownHosts = knownHosts;
 	}
 
+	/**
+	 * This function allows clients to add an authorization type for which JSch can
+	 * authorize with. ssh-rsa and ecdsa-sha2-nistp256 are added by default.
+	 * @param type
+	 */
+	public void addAuthorizationType(String type) {
+		authTypes.add(type);
+	}
 }

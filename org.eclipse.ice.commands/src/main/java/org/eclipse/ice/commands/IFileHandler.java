@@ -12,7 +12,7 @@
 package org.eclipse.ice.commands;
 
 import java.io.IOException;
-
+import org.eclipse.ice.commands.FileBrowser;
 /**
  * This interface defines and lays out the design for the FileHandler structures
  * responsible for moving and/or copying files to and from destinations.
@@ -61,7 +61,6 @@ public interface IFileHandler {
 	 * 
 	 * @param source
 	 * @param destination
-	 * @return
 	 * @throws IOException
 	 */
 	public abstract void checkExistence(final String source, final String destination) throws IOException;
@@ -69,8 +68,9 @@ public interface IFileHandler {
 	/**
 	 * Method that returns a FileBrowser instance
 	 * 
-	 * @return
+	 * @return - FileBrowser
+	 * @param  - Directory to browse
 	 */
-	public abstract FileBrowser getFileBrowser();
+	public abstract FileBrowser getFileBrowser(final String topDirectory);
 
 }

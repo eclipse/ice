@@ -27,9 +27,6 @@ import org.slf4j.LoggerFactory;
  * should be handled, and it can handle both local and remote files as sources
  * and destinations. Files can be moved, copied or checked for existence.
  * 
- * TODO - this class is not thread safe at the moment. This needs to be updated
- * with either Atomic or synchronized thread safety.
- * 
  * @author Jay Jay Billings, Joe Osborn
  *
  */
@@ -64,7 +61,13 @@ public abstract class FileHandler implements IFileHandler {
 	 */
 	protected HandleType HANDLE_TYPE = null;
 
-	
+	/**
+	 * Have a connection manager for commands that defaults to the static object
+	 * from the factory method. Users can override this if they want to through a
+	 * specific constructor which sets the manager.
+	 */
+	protected ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+
 	/**
 	 * Default constructor
 	 */
@@ -160,7 +163,8 @@ public abstract class FileHandler implements IFileHandler {
 	public abstract boolean exists(final String file) throws IOException;
 
 	/**
-	 * See {@link org.eclipse.ice.commands.IFileHandler#checkExistence(String, String)}
+	 * See
+	 * {@link org.eclipse.ice.commands.IFileHandler#checkExistence(String, String)}
 	 */
 	@Override
 	public abstract void checkExistence(final String source, final String destination) throws IOException;
@@ -169,8 +173,8 @@ public abstract class FileHandler implements IFileHandler {
 	 * See {@link org.eclipse.ice.commands.IFileHandler#getFileBrowser()}
 	 */
 	@Override
-	public abstract FileBrowser getFileBrowser();
-	
+	public abstract FileBrowser getFileBrowser(final String topDirectory);
+
 	/**
 	 * This function gets and returns the private member variable command of type
 	 * Command
@@ -244,14 +248,15 @@ public abstract class FileHandler implements IFileHandler {
 	}
 
 	/**
-	 * A setter to set the type of file handle this is. See 
+	 * A setter to set the type of file handle this is. See
 	 * {@link org.eclipse.ice.commands.RemoteFileHandler#HANDLE_TYPE}
+	 * 
 	 * @param HANDLE_TYPE
 	 */
 	public void setHandleType(HandleType HANDLE_TYPE) {
 		this.HANDLE_TYPE = HANDLE_TYPE;
 	}
-	
+
 	/**
 	 * Get the connection for this file handler
 	 * 
