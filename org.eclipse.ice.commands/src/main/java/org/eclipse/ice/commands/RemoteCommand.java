@@ -103,12 +103,17 @@ public class RemoteCommand extends Command {
 			if (manager.getConnection(connectionConfig.getName()) == null) {
 				connection.set(manager.openConnection(connectionConfig));
 			} else {
-				connection.set(manager.getConnection(connectionConfig.getName()));
-				// Make sure the connections are starting fresh from scratch
-				if (connection.get().getExecChannel() != null)
-					connection.get().getExecChannel().disconnect();
-				if (connection.get().getSftpChannel() != null)
-					connection.get().getSftpChannel().disconnect();
+				if(connection.get().getSession() != null &&
+						connection.get().getSession().isConnected()) {
+					connection.set(manager.getConnection(connectionConfig.getName()));
+					// Make sure the connections are starting fresh from scratch
+					if (connection.get().getExecChannel() != null)
+						connection.get().getExecChannel().disconnect();
+					if (connection.get().getSftpChannel() != null)
+						connection.get().getSftpChannel().disconnect();
+				} else {
+					connection.set(manager.openConnection(connectionConfig));
+				}
 			}
 
 			// Set the commandConfig hostname to that of the connectionConfig - only used
@@ -205,7 +210,7 @@ public class RemoteCommand extends Command {
 			}
 		}
 
-		// Disconnect the channel and return success
+		// Disconnect the channels and return success
 		connection.get().getExecChannel().disconnect();
 		connection.get().getSftpChannel().disconnect();
 
@@ -332,8 +337,12 @@ public class RemoteCommand extends Command {
 
 			// Make sure the channel is connected
 			try {
+				logger.info("Session is connected: " + connection.get().getSession().isConnected());
+				logger.info("Channel is connected: " + connection.get().getExecChannel().isConnected());
+				logger.info("Channel is closed: " + connection.get().getExecChannel().isClosed());
+
 				// Connect and run the executable
-				connection.get().getExecChannel().connect();
+				connection.get().getExecChannel().connect(60000);
 
 				// Log the output and error streams
 				logOutput(connection.get().getExecChannel().getInputStream(),
