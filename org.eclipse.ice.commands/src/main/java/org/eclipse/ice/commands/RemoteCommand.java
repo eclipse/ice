@@ -337,12 +337,12 @@ public class RemoteCommand extends Command {
 
 			// Make sure the channel is connected
 			try {
-				logger.info("Session is connected: " + connection.get().getSession().isConnected());
-				logger.info("Channel is connected: " + connection.get().getExecChannel().isConnected());
-				logger.info("Channel is closed: " + connection.get().getExecChannel().isClosed());
+				//logger.info("Session is connected: " + connection.get().getSession().isConnected());
+				//logger.info("Channel is connected: " + connection.get().getExecChannel().isConnected());
+				//logger.info("Channel is closed: " + connection.get().getExecChannel().isClosed());
 
 				// Connect and run the executable
-				connection.get().getExecChannel().connect(60000);
+				connection.get().getExecChannel().connect();
 
 				// Log the output and error streams
 				logOutput(connection.get().getExecChannel().getInputStream(),
