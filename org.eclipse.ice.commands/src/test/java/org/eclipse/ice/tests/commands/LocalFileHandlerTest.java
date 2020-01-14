@@ -11,6 +11,10 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -104,12 +108,12 @@ public class LocalFileHandlerTest {
 		FileHandler handler = null;
 		handler = new LocalFileHandler();
 		CommandStatus status = handler.copy(localSource, localDestination);
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 		// Check that it exists
 		try {
 			boolean exist = handler.exists(localDestination + filename);
-			assert (exist == true);
+			assertTrue(exist);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -132,14 +136,9 @@ public class LocalFileHandlerTest {
 
 		// Try to make a local temp file to play with
 		createLocalTempFile();
-		// Get the filename for testing exists later
-		String separator = FileSystems.getDefault().getSeparator();
-		String filename = localSource.substring(localSource.lastIndexOf(separator));
-		FileHandler handler = null;
-		handler = new LocalFileHandler();
-
+		FileHandler handler = new LocalFileHandler();
 		CommandStatus status = handler.move(localSource, localDestination);
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 		// Delete the local dummy file
 		deleteLocalTempFile();
@@ -165,10 +164,10 @@ public class LocalFileHandlerTest {
 		localSource = fileCreator.getSource();
 
 		FileHandler handler = new LocalFileHandler();
-		assert (handler.exists(localSource));
+		assertTrue(handler.exists(localSource));
 
 		System.out.println("Testing testExists() with a non existing file");
-		assert (!handler.exists("/usr/file_that_definitely_doesnot_exist.txt"));
+		assertFalse(handler.exists("/usr/file_that_definitely_doesnot_exist.txt"));
 
 		// delete the dummy file
 		fileCreator.deleteLocalSource();
@@ -184,6 +183,7 @@ public class LocalFileHandlerTest {
 	 *                  underneath
 	 * @return - boolean - true if everything deleted, false if not
 	 */
+	@SuppressWarnings("unused")
 	private boolean deleteLocalDirectory(File directory) {
 		File[] contents = directory.listFiles();
 		if (contents != null) {

@@ -59,20 +59,16 @@ public class TxtFileConnectionAuthorizationHandler extends ConnectionAuthorizati
 
 		File credFile = new File(path);
 
-		Scanner scanner = null;
-		try {
-			scanner = new Scanner(credFile);
+		try (Scanner scanner = new Scanner(credFile)) {
+			// Skip the username since it has already been set
+			username = scanner.next();
+			// Get the password
+			char[] pwd = scanner.next().toCharArray();
+			return pwd;
 		} catch (FileNotFoundException e) {
 			logger.error("A path was given where the ssh credentials live, but that path doesn't exist!", e);
-			return null;
 		}
-		// Skip the username since it has already been set
-		username = scanner.next();
-		// Get the password
-		char[] pwd = scanner.next().toCharArray();
-
-		return pwd;
-
+		return null;
 	}
 
 	/**
@@ -86,17 +82,18 @@ public class TxtFileConnectionAuthorizationHandler extends ConnectionAuthorizati
 		Scanner scanner = null;
 		try {
 			scanner = new Scanner(credFile);
+			
+			username = scanner.next();
+			// Get the next line, and then set it to null so that it is picked up by the
+			// garbage collector and erased
+			char[] password = scanner.next().toCharArray();
+			// Erase contents of pwd and fill with null
+			Arrays.fill(password, Character.MIN_VALUE);
+	
+			hostname = scanner.next();
 		} catch (FileNotFoundException e) {
 			logger.error("A path was given where the ssh credentials live, but that path doesn't exist!", e);
 		}
-		username = scanner.next();
-		// Get the next line, and then set it to null so that it is picked up by the
-		// garbage collector and erased
-		char[] password = scanner.next().toCharArray();
-		// Erase contents of pwd and fill with null
-		Arrays.fill(password, Character.MIN_VALUE);
-
-		hostname = scanner.next();
 
 	}
 

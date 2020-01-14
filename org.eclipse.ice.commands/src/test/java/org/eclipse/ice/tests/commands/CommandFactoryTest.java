@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -19,6 +20,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
+import org.apache.sshd.client.subsystem.sftp.SftpClient;
+import org.apache.sshd.client.subsystem.sftp.SftpClientFactory;
 import org.eclipse.ice.commands.Command;
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandFactory;
@@ -37,10 +40,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.SftpException;
 
 /**
  * This class tests {@link org.eclipse.ice.commands.CommandFactory}.
@@ -206,7 +205,7 @@ public class CommandFactoryTest {
 		CommandStatus status = remoteCommand.execute();
 
 		// assert that it was successful
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 	}
 
@@ -253,7 +252,7 @@ public class CommandFactoryTest {
 		CommandStatus status = cmd.execute();
 
 		// Check that it properly finished
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 		System.out.println("Finished boring command locally");
 	}
 
@@ -287,7 +286,7 @@ public class CommandFactoryTest {
 		CommandStatus status = cmd.execute();
 
 		// Assert that it finished correctly
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 	}
 
 	/**
@@ -327,7 +326,7 @@ public class CommandFactoryTest {
 		// Run it
 		CommandStatus status = localCommand.execute();
 
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 		System.out.println("Finished functional local command");
 	}
 
@@ -364,7 +363,7 @@ public class CommandFactoryTest {
 		// Run it and expect that it fails
 		CommandStatus status = localCommand.execute();
 
-		assert (status == CommandStatus.INFOERROR);
+		assertEquals(CommandStatus.INFOERROR, status);
 
 	}
 
@@ -409,7 +408,7 @@ public class CommandFactoryTest {
 		// Run it and expect that it fails
 		CommandStatus status2 = localCommand2.execute();
 
-		assert (status2 == CommandStatus.FAILED);
+		assertEquals(CommandStatus.FAILED, status2);
 	}
 
 	/**
@@ -447,7 +446,7 @@ public class CommandFactoryTest {
 		CommandStatus status = remoteCommand.execute();
 
 		// assert that it was successful
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 		System.out.println("Finished remote functional command");
 
@@ -486,7 +485,7 @@ public class CommandFactoryTest {
 		CommandStatus status = remoteCommand.execute();
 
 		// assert that it was successful
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 		System.out.println("Finished multiple input files remotely");
 	}
 
@@ -529,7 +528,7 @@ public class CommandFactoryTest {
 		// Run it
 		CommandStatus status = localCommand.execute();
 
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 		System.out.println("Finished testing multiple input files locally");
 	}
 
@@ -573,7 +572,7 @@ public class CommandFactoryTest {
 
 		CommandStatus status = command.execute();
 
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 		System.out.println("finished python script test");
 	}
 
@@ -633,21 +632,21 @@ public class CommandFactoryTest {
 
 		CommandStatus status = command.execute();
 
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 		
 		// Delete the moved python script on the remote server once finished
 		// Get the connection and channel to delete
 		Connection connection = ((RemoteCommand)command).getConnection();
 		// Delete the script
 		try {
+			SftpClient client = SftpClientFactory.instance().createSftpClient(connection.getSession());
 			// open the channel
-			connection.setSftpChannel(connection.getSession().openChannel("sftp"));
-			ChannelSftp channel = connection.getSftpChannel();
+			connection.setSftpChannel(client);
+			SftpClient channel = connection.getSftpChannel();
 			// connect and delete the script
-			channel.connect();
-			channel.rm("/tmp/test_python_script.py");
-			channel.disconnect();
-		} catch (JSchException | SftpException e1) {
+			channel.remove("/tmp/test_python_script.py");
+			channel.close();
+		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 		

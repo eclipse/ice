@@ -11,12 +11,15 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Scanner;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.commands.BasicConnectionAuthorizationHandler;
+import java.io.IOException;
+import java.util.HashMap;
+
 import org.eclipse.ice.commands.Connection;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
@@ -28,8 +31,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.jcraft.jsch.JSchException;
 
 /**
  * Test for class {@link org.eclipse.ice.commands.ConnectionManager}. Note that
@@ -112,7 +113,7 @@ public class ConnectionManagerTest {
 		manager.removeAllConnections();
 
 		// Assert that there are no more connections in the list
-		assert (manager.getConnectionList().size() == 0);
+		assertEquals(0, manager.getConnectionList().size());
 
 		// Make sure the known hosts are reset to the default directory
 		manager.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
@@ -125,7 +126,7 @@ public class ConnectionManagerTest {
 	 * @throws JSchException 
 	 */
 	@Test
-	public void testOpenConnectionKeyPath() throws JSchException {
+	public void testOpenConnectionKeyPath() throws IOException {
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 		System.out.println("Testing keypath open connection");
 		
@@ -164,12 +165,12 @@ public class ConnectionManagerTest {
 		// Try to open a connection
 		try {
 			connect = manager.openConnection(configuration);
-		} catch (JSchException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		// If connect is not null and there was no error thrown, it was established
 		// correctly
-		assert (connect != null);
+		assertNotNull(connect);
 
 	}
 
@@ -181,11 +182,11 @@ public class ConnectionManagerTest {
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 		Connection testConnection = null;
 		testConnection = manager.getConnection(connectionName);
-		assert (testConnection != null);
+		assertNotNull(testConnection);
 
 		// test a bad connection that doesn't exist in the connection list
 		Connection badConnection = manager.getConnection("nonexistent_connection");
-		assert (badConnection == null);
+		assertNull(badConnection);
 	}
 
 	/**
@@ -197,14 +198,14 @@ public class ConnectionManagerTest {
 		// disconnect the session
 		manager.closeConnection(connectionName);
 
-		assert (!manager.getConnection(connectionName).getSession().isConnected());
+		assertFalse(manager.getConnection(connectionName).getSession().isOpen());
 
 		// Remove the connection from the connection manager
 		manager.removeConnection(connectionName);
 
 		// Assert that this connection no longer exists, so when you try to get it it is
 		// null
-		assert (manager.getConnection(connectionName) == null);
+		assertNull(manager.getConnection(connectionName));
 	}
 
 	/**
@@ -237,13 +238,12 @@ public class ConnectionManagerTest {
 		conf2.setAuthorization(auth2);
 		conf2.setName("someOtherConnection");
 
-		Connection conn1 = null, conn2 = null;
 		// Open some configurations
 		try {
-			conn1 = manager.openConnection(configuration);
-			conn2 = manager.openConnection(conf2);
+			manager.openConnection(configuration);
+			manager.openConnection(conf2);
 
-		} catch (JSchException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
@@ -254,23 +254,23 @@ public class ConnectionManagerTest {
 		// Expect only two connections since one of the connections is not good (i.e.
 		// conn3 has a bad password, therefore it isn't added to the list)
 		
-		assert (connections.size() == 2);
+		assertEquals(2, connections.size());
 
 		// List all available connections to the console screen
 		manager.listAllConnections();
 
 		// Check that the name returns the appropriate connection from ConnectionManager
-		assert (manager.getConnection("FirstConnection").getConfiguration().getName().equals("FirstConnection"));
+		assertEquals("FirstConnection", manager.getConnection("FirstConnection").getConfiguration().getName());
 
 		// Check that the connection is actually open, since FirstConnection is a good
 		// connection
-		assert (manager.isConnectionOpen("FirstConnection"));
+		assertTrue(manager.isConnectionOpen("FirstConnection"));
 
 		// Test closing all of the connections
 		manager.closeAllConnections();
 
 		// Check that the connection is closed
-		assert (!manager.isConnectionOpen("FirstConnection"));
+		assertFalse(manager.isConnectionOpen("FirstConnection"));
 
 	}
 
@@ -297,14 +297,14 @@ public class ConnectionManagerTest {
 	 * 
 	 * @throws JSchException
 	 */
-	@Test(expected = JSchException.class)
-	public void testNoKnownHost() throws JSchException {
+	@Test(expected = IOException.class)
+	public void testNoKnownHost() throws IOException {
 		// Set the known hosts to something random, where we know the ssh fingerprint
 		// doesn't exist
 		System.out.println("Testing with no known host file, exception expected");
 		ConnectionManagerFactory.getConnectionManager().setKnownHosts("/tmp/knownhosts");
 		// Try to open a connection
-		// Should throw a JSchException since the host fingerprint won't match
+		// Should throw a IOException since the host fingerprint won't match
 		connect = ConnectionManagerFactory.getConnectionManager().openConnection(configuration);
 
 	}

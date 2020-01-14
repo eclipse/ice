@@ -13,18 +13,20 @@
 package org.eclipse.ice.commands;
 
 import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.SftpException;
+import org.apache.sshd.client.channel.ClientChannelEvent;
+import org.apache.sshd.client.subsystem.sftp.SftpClient;
+import org.apache.sshd.client.subsystem.sftp.SftpClient.DirEntry;
+import org.apache.sshd.client.subsystem.sftp.SftpClientFactory;
+import org.apache.sshd.common.subsystem.sftp.SftpException;
 
 /**
  * This class inherits from Command and gives available functionality for remote
@@ -104,13 +106,13 @@ public class RemoteCommand extends Command {
 				connection.set(manager.openConnection(connectionConfig));
 			} else {
 				if(connection.get().getSession() != null &&
-						connection.get().getSession().isConnected()) {
+						connection.get().getSession().isOpen()) {
 					connection.set(manager.getConnection(connectionConfig.getName()));
 					// Make sure the connections are starting fresh from scratch
 					if (connection.get().getExecChannel() != null)
-						connection.get().getExecChannel().disconnect();
+						connection.get().getExecChannel().close();
 					if (connection.get().getSftpChannel() != null)
-						connection.get().getSftpChannel().disconnect();
+						connection.get().getSftpChannel().close();
 				} else {
 					connection.set(manager.openConnection(connectionConfig));
 				}
@@ -130,7 +132,7 @@ public class RemoteCommand extends Command {
 				// really where the job will run
 				commandConfig.setHostname(secondConnection.get().getConfiguration().getAuthorization().getHostname());
 			}
-		} catch (JSchException e) {
+		} catch (IOException e) {
 			// If the connection(s) can't be opened, we can't be expected to execute a job
 			// remotely!
 			status = CommandStatus.INFOERROR;
@@ -152,7 +154,7 @@ public class RemoteCommand extends Command {
 		// error
 		try {
 			status = transferFiles();
-		} catch (SftpException | JSchException | IOException e) {
+		} catch (IOException e) {
 			logger.error("File transfer error, could not complete file transfers to remote host. Exiting.");
 			logger.error("Returning info error", e);
 			return CommandStatus.INFOERROR;
@@ -198,12 +200,11 @@ public class RemoteCommand extends Command {
 			try {
 				// Open an sftp channel so that we can ls the contents of the path
 
-				ChannelSftp channel = (ChannelSftp) connection.get().getSession().openChannel("sftp");
-				channel.connect();
+				SftpClient client = SftpClientFactory.instance().createSftpClient(connection.get().getSession());
 				// Delete the directory and all of the contents
-				deleteRemoteDirectory(channel, commandConfig.getRemoteWorkingDirectory());
-				channel.disconnect();
-			} catch (JSchException | SftpException e) {
+				deleteRemoteDirectory(client, commandConfig.getRemoteWorkingDirectory());
+				client.close();
+			} catch (IOException e) {
 				// This exception just needs to be logged, since it is not harmful to
 				// the job processing in any way
 				logger.warn("Unable to delete remote directory tree.");
@@ -211,8 +212,16 @@ public class RemoteCommand extends Command {
 		}
 
 		// Disconnect the channels and return success
-		connection.get().getExecChannel().disconnect();
-		connection.get().getSftpChannel().disconnect();
+		try {
+			connection.get().getExecChannel().close();
+		} catch (IOException e) {
+			logger.error(e.getLocalizedMessage());
+		}
+		try {
+			connection.get().getSftpChannel().close();
+		} catch (IOException e) {
+			logger.error(e.getLocalizedMessage());
+		}
 
 		// Don't disconnect the session in the event that a user wants to run multiple
 		// jobs over the same session. Let session management be handled by the connection manager
@@ -238,13 +247,12 @@ public class RemoteCommand extends Command {
 			if(status == CommandStatus.CANCELED)
 				return CommandStatus.CANCELED;
 			
-			try {
-				// Give it a second to finish up
-				Thread.currentThread().sleep(1000);
-			} catch (InterruptedException e) {
+			Collection<ClientChannelEvent> waitMask = connection.get().getExecChannel().waitFor(EnumSet.of(ClientChannelEvent.CLOSED), 1000L);
+            if (waitMask.contains(ClientChannelEvent.TIMEOUT)) {
 				// Just log this exception, see if thread can wait next iteration
-				logger.error("Thread couldn't wait for another second while monitoring job...", e);
-			}
+				logger.error("Thread couldn't wait for another second while monitoring job...");
+            }
+            
 			// Query the exit status. 0 is normal completion, everything else is abnormal
 			exitValue = connection.get().getExecChannel().getExitStatus();
 
@@ -290,69 +298,48 @@ public class RemoteCommand extends Command {
 			completeCommand += i;
 			completeCommands.add(completeCommand);
 		}
+		
 
 		// Now loop over all commands and run them via JSch
 		for (int i = 0; i < completeCommands.size(); i++) {
-			// Open the channel for the executable to be run on
+			// Give the command to the channel connection
+			String thisCommand = completeCommands.get(i);
+
 			try {
-				connection.get().setExecChannel(connection.get().getSession().openChannel("exec"));
-			} catch (JSchException e) {
-				logger.error("Execution channel could not be opened over JSch... Returning failed.", e);
+				connection.get().setExecChannel(connection.get().getSession().createExecChannel(thisCommand));
+			} catch (IOException e) {
+				logger.error("Execution channel could not be opened... Returning failed.", e);
 				// If it can't be opened, fail
 				return CommandStatus.FAILED;
 			}
 
-			// Give the command to the channel connection
-			String thisCommand = completeCommands.get(i);
-			connection.get().getExecChannel().setCommand(thisCommand);
-
 			logger.info("Executing command: " + thisCommand + " remotely in the working directory "
 					+ commandConfig.getRemoteWorkingDirectory());
 
-			// Set up the input stream
-			connection.get().getExecChannel().setInputStream(null);
-			try {
-				// Set the input stream for the connection object
-				connection.get().setInputStream(connection.get().getExecChannel().getInputStream());
-			} catch (IOException e) {
-				logger.error("Input stream could not be set in JSch... Returning failed.", e);
-				// If we can't set the input stream, fail
-				return CommandStatus.FAILED;
-			}
-
+			connection.get().getExecChannel().setIn(null);
+			connection.get().setInputStream(connection.get().getExecChannel().getIn());
+			
 			// Setup the output streams and pass them to the connection channel
 			try {
 				stdErrStream = new FileOutputStream(commandConfig.getErrFileName(), true);
 				stdOutStream = new FileOutputStream(commandConfig.getOutFileName(), true);
 				BufferedOutputStream stdOutBufferedStream = new BufferedOutputStream(stdOutStream);
 				// Give the streams to the channel now that their names are appropriately set
-				connection.get().getExecChannel().setOutputStream(stdOutBufferedStream);
-				connection.get().getExecChannel().setErrStream(stdErrStream);
-			} catch (FileNotFoundException e) {
-				logger.error("Logging streams could not be set in JSch... Returning failed.", e);
-				// If logging streams can't be set, return failed since we won't be
-				// able to see if job was successful or not
+				connection.get().getExecChannel().setOut(stdOutBufferedStream);
+				connection.get().getExecChannel().setErr(stdErrStream);
+			} catch (IOException e) {
+				logger.error(e.getLocalizedMessage());
 				return CommandStatus.FAILED;
 			}
-
-			// Make sure the channel is connected
+			
 			try {
-				//logger.info("Session is connected: " + connection.get().getSession().isConnected());
-				//logger.info("Channel is connected: " + connection.get().getExecChannel().isConnected());
-				//logger.info("Channel is closed: " + connection.get().getExecChannel().isClosed());
-
-				// Connect and run the executable
-				connection.get().getExecChannel().connect();
-
+				connection.get().getExecChannel().open().verify();
 				// Log the output and error streams
-				logOutput(connection.get().getExecChannel().getInputStream(),
-						connection.get().getExecChannel().getErrStream());
-			} catch (JSchException e) {
-				logger.error("Couldn't connect the channel to run the executable! Returning failed.", e);
-				return CommandStatus.FAILED;
+//				logOutput(connection.get().getExecChannel().getInvertedOut(),
+//						connection.get().getExecChannel().getInvertedErr());
 			} catch (IOException e) {
-				logger.error("Couldn't log the output! Returning failed.", e);
-				return CommandStatus.FAILED;
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 
@@ -368,7 +355,7 @@ public class RemoteCommand extends Command {
 	 * @throws JSchException
 	 * @throws IOException
 	 */
-	protected CommandStatus transferFiles() throws SftpException, JSchException, IOException {
+	protected CommandStatus transferFiles() throws IOException {
 
 		// Set up a remote file handler to transfer the files
 		RemoteFileHandler handler = new RemoteFileHandler();
@@ -456,16 +443,13 @@ public class RemoteCommand extends Command {
 	 * @param path        - top directory to delete
 	 * @throws SftpException
 	 */
-	private void deleteRemoteDirectory(ChannelSftp sftpChannel, String path) throws SftpException {
-
-		// Get the path's directory structure
-		Collection<ChannelSftp.LsEntry> fileList = sftpChannel.ls(path);
+	private void deleteRemoteDirectory(SftpClient sftpChannel, String path) throws IOException {
 
 		// Iterate through the list to get the file/directory names
-		for (ChannelSftp.LsEntry file : fileList) {
+		for (DirEntry file : sftpChannel.readDir(path)) {
 			// If it isn't a directory delete it
-			if (!file.getAttrs().isDir()) {
-				sftpChannel.rm(path + "/" + file.getFilename());
+			if (!file.getAttributes().isDirectory()) {
+				sftpChannel.remove(path + "/" + file.getFilename());
 			} else if (!(".".equals(file.getFilename()) || "..".equals(file.getFilename()))) { // If it is a subdir.
 				// Otherwise its a subdirectory, so try deleting it
 				try {

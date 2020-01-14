@@ -115,7 +115,7 @@ public class LocalFileBrowser extends SimpleFileVisitor<Path> implements FileBro
 		try {
 			// Make a dummy path that just gets the return top directory from
 			// Files.walkFileTree
-			Path path = Files.walkFileTree(topPath, this);
+			Files.walkFileTree(topPath, this);
 		} catch (IOException e) {
 			logger.error("Unable to walk file tree at path " + topPath.toString(), e);
 		}

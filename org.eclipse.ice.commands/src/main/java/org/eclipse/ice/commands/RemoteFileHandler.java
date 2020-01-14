@@ -13,10 +13,8 @@ package org.eclipse.ice.commands;
 
 import java.io.IOException;
 
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.SftpATTRS;
-import com.jcraft.jsch.SftpException;
+import org.apache.sshd.client.subsystem.sftp.SftpClient;
+import org.apache.sshd.client.subsystem.sftp.SftpClientFactory;
 
 /**
  * This class inherits from FileHandler and handles the processing of remote
@@ -63,7 +61,7 @@ public class RemoteFileHandler extends FileHandler {
 			try {
 				logger.info("Manager is opening a connection");
 				connection.set(manager.openConnection(config));
-			} catch (JSchException e) {
+			} catch (IOException e) {
 				logger.error("Connection could not be established. Transfer will fail.", e);
 			}
 		} else {
@@ -73,10 +71,9 @@ public class RemoteFileHandler extends FileHandler {
 		// Open an sftp channel for this remote file handler to use
 		try {
 			// Set it for the connection
-			connection.get().setSftpChannel(connection.get().getSession().openChannel("sftp"));
-			connection.get().getSftpChannel().connect();
-
-		} catch (JSchException e) {
+			SftpClientFactory factory = SftpClientFactory.instance();
+			connection.get().setSftpChannel(factory.createSftpClient(connection.get().getSession()));
+		} catch (IOException e) {
 			logger.error(
 					"Connection seems to have an unopened channel, but there was a failure when trying to open the channel.",
 					e);
@@ -89,14 +86,12 @@ public class RemoteFileHandler extends FileHandler {
 	@Override
 	public boolean exists(String file) throws IOException {
 
-		ChannelSftp sftpChannel = null;
 		try {
 			// Get the sftp channel to check existence
-			sftpChannel = connection.get().getSftpChannel();
-
+			SftpClient sftpChannel = connection.get().getSftpChannel();
 			// Try to lstat the path. If an exception is thrown, it means it does not exist
-			SftpATTRS attrs = sftpChannel.lstat(file);
-		} catch (SftpException e) {
+			sftpChannel.lstat(file);
+		} catch (IOException e) {
 			if (isLocal(file)) {
 				// If the file can be found locally, return true since we found it.
 				// Up to checkExistence to determine what kind of move this is (e.g.
@@ -124,11 +119,10 @@ public class RemoteFileHandler extends FileHandler {
 	 */
 	private boolean makeRemoteDirectory(String file) {
 		logger.warn("Path doesn't exist on the remote host, trying to make it.");
-		ChannelSftp sftpChannel = null;
 		try {
 
 			// Get the sftp channel to check existence
-			sftpChannel = connection.get().getSftpChannel();
+			SftpClient sftpChannel = connection.get().getSftpChannel();
 
 			// Try to make the directory on the remote host
 			// Could be many directories, so we need to iterate over each piece
@@ -138,17 +132,15 @@ public class RemoteFileHandler extends FileHandler {
 			for (int i = 0; i < directories.length; i++) {
 				// Add the next directory to the full path name
 				directory += "/" + directories[i];
-				// Try to ls the directory. If it throws an exception, then
-				// it doesn't exist, so we should make it
 				try {
-					SftpATTRS attrs = sftpChannel.lstat(directory);
-				} catch (SftpException e) {
+					sftpChannel.lstat(directory);
+				} catch (IOException e) {
 					sftpChannel.mkdir(directory);
 				}
 			}
 
 			logger.info("Made new remote directory");
-		} catch (SftpException e) {
+		} catch (IOException e) {
 			logger.error("Couldn't make nonexistent remote directory, exiting.", e);
 			return false;
 		}
