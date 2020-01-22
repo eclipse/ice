@@ -406,4 +406,25 @@ public abstract class Command {
 		this.connectionConfig = connectionConfig;
 	}
 
+	/**
+	 * Setter function for manager, in the event that a custom manager is desired rather
+	 * than the factory class manager. 
+	 * See {@link org.eclipse.ice.commands.Command#manager}
+	 * 
+	 * @param manager - the ConnectionManager to be set 
+	 */
+	public void setConnectionManager(ConnectionManager manager) {
+		this.manager = manager;
+	}
+	
+	/**
+	 * Getter function for manager, in the event that a custom manager is desired
+	 * rather than the factory class manager.
+	 * See {@link org.eclipse.ice.commands.Command#manager}
+	 * 
+	 * @return - the Command's ConnectionManager
+	 */
+	public ConnectionManager getConnectionManager() {
+		return manager;
+	}
 }
