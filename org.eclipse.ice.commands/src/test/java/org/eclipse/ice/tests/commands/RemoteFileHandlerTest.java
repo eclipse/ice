@@ -445,6 +445,8 @@ public class RemoteFileHandlerTest {
 
 		// Get the filename by splitting the path by "/"
 		String separator = FileSystems.getDefault().getSeparator();
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
+			separator += "\\";
 		String[] tokens = theSource.split(separator);
 
 		// Get the last index of tokens, which will be the filename
@@ -472,6 +474,8 @@ public class RemoteFileHandlerTest {
 	private void putFile(SftpClient client, String src, String dest) throws IOException {
 		if (dest.endsWith("/")) {
 			String separator = FileSystems.getDefault().getSeparator();
+			if (System.getProperty("os.name").toLowerCase().contains("win"))
+				separator += "\\";
 			String[] tokens = src.split(separator);
 			dest += tokens[tokens.length - 1];
 		}
