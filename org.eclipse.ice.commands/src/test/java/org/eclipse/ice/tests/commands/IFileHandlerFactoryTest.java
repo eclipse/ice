@@ -284,12 +284,10 @@ public class IFileHandlerFactoryTest {
 		IFileHandler handler = factory.getFileHandler(fileCreator.getConnection().getConfiguration());
 		String separator = FileSystems.getDefault().getSeparator();
 		String filename = theSource.substring(theSource.lastIndexOf(separator)+1);
-		System.out.println("\n\n\n\n\n " + separator + "   " + filename +  "    "  + theSource);
 		// Now try to copy the file
 
 		CommandStatus status = handler.copy(theSource, theDestination);
 		assertEquals(CommandStatus.SUCCESS, status);
-		System.out.println("\n\n\n\n\n\n\n\n Checking " + theDestination + filename);
 		// Check that the file exists now
 		boolean exist = handler.exists(theDestination + filename);
 		assertTrue(exist);
@@ -314,7 +312,7 @@ public class IFileHandlerFactoryTest {
 		theSource = fileCreator.getSource();
 		theDestination = fileCreator.getDestination();
 		String separator = FileSystems.getDefault().getSeparator();
-		String filename = theSource.substring(theSource.lastIndexOf(separator));
+		String filename = theSource.substring(theSource.lastIndexOf(separator)+1);
 
 		FileHandler handler = factory.getFileHandler(fileCreator.getConnection().getConfiguration());
 
@@ -345,7 +343,7 @@ public class IFileHandlerFactoryTest {
 		// Get the file transfer handler
 		IFileHandler handler = factory.getFileHandler(fileCreator.getConnection().getConfiguration());
 		String separator = FileSystems.getDefault().getSeparator();
-		String filename = theSource.substring(theSource.lastIndexOf(separator));
+		String filename = theSource.substring(theSource.lastIndexOf(separator)+1);
 		// Now try to move the file
 		CommandStatus status = handler.move(theSource, theDestination);
 		assertEquals(CommandStatus.SUCCESS, status);
