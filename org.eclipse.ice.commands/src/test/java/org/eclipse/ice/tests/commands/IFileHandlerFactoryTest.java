@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -113,11 +116,11 @@ public class IFileHandlerFactoryTest {
 
 		// Now try to copy the file
 		CommandStatus status = handler.copy(theSource, theDestination);
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 		// Check that the file exists now
 		boolean exist = handler.exists(theDestination);
-		assert (exist == true);
+		assertTrue(exist);
 
 		// Delete the test file/directory now that the test is finished
 		fileCreator.deleteLocalSource();
@@ -156,11 +159,11 @@ public class IFileHandlerFactoryTest {
 
 		// Now try to move the file
 		CommandStatus status = handler.move(theSource, theDestination);
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 		// Check that the file exists now
 		boolean exist = handler.exists(theDestination);
-		assert (exist == true);
+		assertTrue(exist);
 
 		// Delete the test file/directory now that the test is finished
 		fileCreator.deleteLocalSource();
@@ -200,11 +203,11 @@ public class IFileHandlerFactoryTest {
 
 		// Now try to move the file
 		CommandStatus status = handler.move(theSource, theDestination + newDirectory);
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 		// Check that the file exists now
 		boolean exist = handler.exists(theDestination + newDirectory);
-		assert (exist == true);
+		assertTrue(exist);
 
 		// Delete the test file/directory now that the test is finished
 		fileCreator.deleteLocalSource();
@@ -247,11 +250,11 @@ public class IFileHandlerFactoryTest {
 		handler = factory.getFileHandler(config);
 
 		CommandStatus status = handler.move(theSource, localNewName);
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 		// Check that the file exists now
 		boolean exist = handler.exists(localNewName);
-		assert (exist == true);
+		assertTrue(exist);
 
 		// If the file was successfully created, delete it here
 		// Needs a special delete since the filename was created in this function
@@ -280,15 +283,14 @@ public class IFileHandlerFactoryTest {
 		// Get the file transfer handler
 		IFileHandler handler = factory.getFileHandler(fileCreator.getConnection().getConfiguration());
 		String separator = FileSystems.getDefault().getSeparator();
-		String filename = theSource.substring(theSource.lastIndexOf(separator));
+		String filename = theSource.substring(theSource.lastIndexOf(separator)+1);
 		// Now try to copy the file
 
 		CommandStatus status = handler.copy(theSource, theDestination);
-		assert (status == CommandStatus.SUCCESS);
-
+		assertEquals(CommandStatus.SUCCESS, status);
 		// Check that the file exists now
 		boolean exist = handler.exists(theDestination + filename);
-		assert (exist == true);
+		assertTrue(exist);
 
 		// Delete the test file/directory now that the test is finished
 		fileCreator.deleteLocalSource();
@@ -310,16 +312,16 @@ public class IFileHandlerFactoryTest {
 		theSource = fileCreator.getSource();
 		theDestination = fileCreator.getDestination();
 		String separator = FileSystems.getDefault().getSeparator();
-		String filename = theSource.substring(theSource.lastIndexOf(separator));
+		String filename = theSource.substring(theSource.lastIndexOf(separator)+1);
 
 		FileHandler handler = factory.getFileHandler(fileCreator.getConnection().getConfiguration());
 
 		handler.setHandleType(HandleType.localRemote);
 		CommandStatus status = handler.copy(theSource, theDestination);
 
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
-		assert (handler.exists(theDestination + filename));
+		assertTrue(handler.exists(theDestination + filename));
 
 		fileCreator.deleteLocalSource();
 		fileCreator.deleteRemoteDestination();
@@ -341,14 +343,14 @@ public class IFileHandlerFactoryTest {
 		// Get the file transfer handler
 		IFileHandler handler = factory.getFileHandler(fileCreator.getConnection().getConfiguration());
 		String separator = FileSystems.getDefault().getSeparator();
-		String filename = theSource.substring(theSource.lastIndexOf(separator));
+		String filename = theSource.substring(theSource.lastIndexOf(separator)+1);
 		// Now try to move the file
 		CommandStatus status = handler.move(theSource, theDestination);
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 		// Check that the file exists now
 		boolean exist = handler.exists(theDestination + filename);
-		assert (exist == true);
+		assertTrue(exist);
 
 		// Delete the test file/directory now that the test is finished
 		fileCreator.deleteLocalSource();
@@ -375,11 +377,11 @@ public class IFileHandlerFactoryTest {
 		String newDirectory = "some/other/dir/";
 		// theDestination = theDestination + newDirectory;
 		CommandStatus status = handler.move(theSource, theDestination + newDirectory);
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 		// Check that the file exists now
 		boolean exist = handler.exists(theDestination + newDirectory);
-		assert (exist == true);
+		assertTrue(exist);
 
 		// Delete the test file/directory now that the test is finished
 		fileCreator.deleteLocalSource();

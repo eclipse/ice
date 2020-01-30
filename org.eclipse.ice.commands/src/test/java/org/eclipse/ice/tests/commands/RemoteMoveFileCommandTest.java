@@ -11,10 +11,15 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.apache.sshd.client.subsystem.sftp.SftpClient;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
@@ -23,9 +28,6 @@ import org.eclipse.ice.commands.RemoteMoveFileCommand;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.SftpException;
 
 /**
  * Test for class {@link org.eclipse.ice.commands.RemoteMoveFileCommand}.
@@ -97,11 +99,11 @@ public class RemoteMoveFileCommandTest {
 		CommandStatus status = command.execute();
 
 		// Assert that the command status was properly configured
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 		// Assert that the command was actually successful and that command status
 		// wasn't inadvertently set to successful
-		assert (remotePathExists());
+		assertTrue(remotePathExists());
 
 		// Delete the temporary files that were created to test
 		// Don't need to delete the source since it was moved
@@ -138,7 +140,7 @@ public class RemoteMoveFileCommandTest {
 
 		// Assert that the command was actually successful and that command status
 		// wasn't inadvertently set to successful
-		assert (localPathExists());
+		assertTrue(localPathExists());
 
 		// Delete the temporary files that were created to test
 		handlerTest.deleteRemoteSource();
@@ -171,15 +173,11 @@ public class RemoteMoveFileCommandTest {
 		CommandStatus status = command.execute();
 
 		// Assert that the command status was properly configured
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
-		try {
-			// Assert that the command was actually successful and that command status
-			// wasn't inadvertently set to successful
-			assert (remotePathExists());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		// Assert that the command was actually successful and that command status
+		// wasn't inadvertently set to successful
+		assertTrue(remotePathExists());
 
 		// Delete the temporary files that were created to test
 		handlerTest.deleteLocalSource();
@@ -196,11 +194,11 @@ public class RemoteMoveFileCommandTest {
 	public boolean remotePathExists() throws Exception {
 
 		// Connect the channel from the connection
-		ChannelSftp sftpChannel = handlerTest.getConnection().getSftpChannel();
+		SftpClient sftpChannel = handlerTest.getConnection().getSftpChannel();
 
 		try {
 			sftpChannel.lstat(dest);
-		} catch (SftpException e) {
+		} catch (IOException e) {
 			// If an exception is caught, this means the file was not there.
 			return false;
 		}

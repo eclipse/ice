@@ -11,12 +11,11 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.SftpException;
+import org.apache.sshd.client.subsystem.sftp.SftpClient;
+import org.apache.sshd.client.subsystem.sftp.SftpClient.DirEntry;
 
 /**
  * This class allows for remote file and directory browsing on a remote host
@@ -25,19 +24,12 @@ import com.jcraft.jsch.SftpException;
  *
  */
 public class RemoteFileBrowser implements FileBrowser {
-
-	/**
-	 * A connection with which to browse files
-	 */
-	private Connection connection;
-
 	/**
 	 * Default  constructor
 	 */
 	public RemoteFileBrowser() {
 		fileList.clear();
 		directoryList.clear();
-		this.connection = null;
 	}
 	
 	/**
@@ -47,7 +39,6 @@ public class RemoteFileBrowser implements FileBrowser {
 		// Make sure we start with a fresh list every time the browser is called
 		fileList.clear();
 		directoryList.clear();
-		this.connection = connection;
 		
 		// Fill the arrays with the relevant file information
 		fillArrays(topDirectory, connection.getSftpChannel());
@@ -61,25 +52,23 @@ public class RemoteFileBrowser implements FileBrowser {
 	 * @param channel
 	 * @param topDirectory
 	 */
-	protected void fillArrays(String topDirectory, ChannelSftp channel) {
-
+	protected void fillArrays(String topDirectory, SftpClient channel) {
 		try {
 			// Make sure the top directory ends with the appropriate separator
 			String separator = "/";
 			// If the remote file system returns a home directory with \, then it
 			// must be windows
-			if (channel.getHome().contains("\\"))
-				separator = "\\";
+			// TODO: I don't know how to do this using Mina. Is it really needed anyway?
+//			if (channel.getHome().contains("\\"))
+//				separator = "\\";
 
 			// Now check the path name
 			if (!topDirectory.endsWith(separator))
 				topDirectory += separator;
 
-			// Get the path's directory structure
-			Collection<ChannelSftp.LsEntry> directoryStructure = channel.ls(topDirectory);
 			// Iterate through the structure
-			for (ChannelSftp.LsEntry file : directoryStructure) {
-				if (!file.getAttrs().isDir()) {
+			for (DirEntry file : channel.readDir(topDirectory)) {
+				if (!file.getAttributes().isDirectory()) {
 					fileList.add(topDirectory + file.getFilename());
 					// Else if it is a subdirectory and not '.' or '..'
 				} else if (!(".".equals(file.getFilename()) || "..".equals(file.getFilename()))) {
@@ -91,7 +80,7 @@ public class RemoteFileBrowser implements FileBrowser {
 
 			}
 
-		} catch (SftpException e) {
+		} catch (IOException e) {
 			logger.error("Could not use channel to connect to browse directories!", e);
 		}
 
