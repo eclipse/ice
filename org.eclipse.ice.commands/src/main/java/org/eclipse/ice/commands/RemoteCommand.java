@@ -13,7 +13,10 @@
 package org.eclipse.ice.commands;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +24,6 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.sshd.client.channel.ClientChannelEvent;
 import org.apache.sshd.client.subsystem.sftp.SftpClient;
 import org.apache.sshd.client.subsystem.sftp.SftpClient.DirEntry;
@@ -94,10 +96,10 @@ public class RemoteCommand extends Command {
 	/**
 	 * Opens and sets a connection based on what was passed in the constructor. This
 	 * function first checks if a connection with the same name is already available
-	 * in the connection manager, and if so, grabs it. Otherwise, it opens a new 
-	 * connection with the provided information.
-	 * Function is public so that if a user wants to reset the connection for a 
-	 * particular command, they have the option to.
+	 * in the connection manager, and if so, grabs it. Otherwise, it opens a new
+	 * connection with the provided information. Function is public so that if a
+	 * user wants to reset the connection for a particular command, they have the
+	 * option to.
 	 */
 	public void openAndSetConnection() {
 		// Open and set the connection(s)
@@ -105,8 +107,7 @@ public class RemoteCommand extends Command {
 			if (manager.getConnection(connectionConfig.getName()) == null) {
 				connection.set(manager.openConnection(connectionConfig));
 			} else {
-				if(connection.get().getSession() != null &&
-						connection.get().getSession().isOpen()) {
+				if (connection.get().getSession() != null && connection.get().getSession().isOpen()) {
 					connection.set(manager.getConnection(connectionConfig.getName()));
 					// Make sure the connections are starting fresh from scratch
 					if (connection.get().getExecChannel() != null)
@@ -224,12 +225,46 @@ public class RemoteCommand extends Command {
 		}
 
 		// Don't disconnect the session in the event that a user wants to run multiple
-		// jobs over the same session. Let session management be handled by the connection manager
+		// jobs over the same session. Let session management be handled by the
+		// connection manager
 
 		/**
-		 * Note that output doesn't have to explicitly be logged - JSch takes care of
+		 * Note that output doesn't have to explicitly be logged - Mina takes care of
 		 * this for you in {@link org.eclipse.ice.commands.RemoteCommand#loopCommands}
+		 * However we set the strings in CommandConfiguration here since Mina only logs
+		 * the output to the files
 		 */
+		String stdOutFileName = commandConfig.getOutFileName();
+		String stdErrFileName = commandConfig.getErrFileName();
+
+		File outfile = new File(stdOutFileName);
+		File errfile = new File(stdErrFileName);
+		try {
+			FileReader outreader = new FileReader(outfile);
+			BufferedReader outbr = new BufferedReader(outreader);
+			String line;
+			// Read in each line
+			while ((line = outbr.readLine()) != null) {
+				// Commented lines by definition begin with #, so skip these
+				if (!line.startsWith("#"))
+					commandConfig.addToStdOutputString(line);
+			}
+			// Close the reader
+			outbr.close();
+
+			// Repeat the same process for the error file
+			FileReader errreader = new FileReader(errfile);
+			BufferedReader errbr = new BufferedReader(errreader);
+			line = null;
+			while ((line = errbr.readLine()) != null) {
+				if (!line.startsWith("#"))
+					commandConfig.addToStdOutputString(line);
+			}
+			errbr.close();
+
+		} catch (IOException e) {
+			logger.error(e.getLocalizedMessage());
+		}
 
 		return CommandStatus.SUCCESS;
 	}
@@ -244,15 +279,16 @@ public class RemoteCommand extends Command {
 
 		while (exitValue != 0) {
 			// First make sure the job hasn't been canceled
-			if(status == CommandStatus.CANCELED)
+			if (status == CommandStatus.CANCELED)
 				return CommandStatus.CANCELED;
-			
-			Collection<ClientChannelEvent> waitMask = connection.get().getExecChannel().waitFor(EnumSet.of(ClientChannelEvent.CLOSED), 1000L);
-            if (waitMask.contains(ClientChannelEvent.TIMEOUT)) {
+
+			Collection<ClientChannelEvent> waitMask = connection.get().getExecChannel()
+					.waitFor(EnumSet.of(ClientChannelEvent.CLOSED), 1000L);
+			if (waitMask.contains(ClientChannelEvent.TIMEOUT)) {
 				// Just log this exception, see if thread can wait next iteration
 				logger.error("Thread couldn't wait for another second while monitoring job...");
-            }
-            
+			}
+
 			// Query the exit status. 0 is normal completion, everything else is abnormal
 			exitValue = connection.get().getExecChannel().getExitStatus();
 
@@ -298,7 +334,6 @@ public class RemoteCommand extends Command {
 			completeCommand += i;
 			completeCommands.add(completeCommand);
 		}
-		
 
 		// Now loop over all commands and run them via JSch
 		for (int i = 0; i < completeCommands.size(); i++) {
@@ -318,7 +353,7 @@ public class RemoteCommand extends Command {
 
 			connection.get().getExecChannel().setIn(null);
 			connection.get().setInputStream(connection.get().getExecChannel().getIn());
-			
+
 			// Setup the output streams and pass them to the connection channel
 			try {
 				stdErrStream = new FileOutputStream(commandConfig.getErrFileName(), true);
@@ -331,14 +366,10 @@ public class RemoteCommand extends Command {
 				logger.error(e.getLocalizedMessage());
 				return CommandStatus.FAILED;
 			}
-			
+
 			try {
 				connection.get().getExecChannel().open().verify();
-				// Log the output and error streams
-//				logOutput(connection.get().getExecChannel().getInvertedOut(),
-//						connection.get().getExecChannel().getInvertedErr());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
