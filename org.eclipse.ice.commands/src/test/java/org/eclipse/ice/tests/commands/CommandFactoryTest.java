@@ -573,7 +573,6 @@ public class CommandFactoryTest {
 		CommandStatus status = command.execute();
 
 		assertEquals(CommandStatus.SUCCESS, status);
-		System.out.println("finished python script test");
 	}
 
 	/**
@@ -583,11 +582,10 @@ public class CommandFactoryTest {
 	@Test
 	public void testRemoteExecutableLocalInputFiles() {
 		System.out.println("Testing command where files live on different hosts.");
-		
+
 		// Get the dummy connection configuration
 		ConnectionConfiguration connectionConfig = setupDummyConnectionConfiguration();
 
-		
 		// Get the present working directory
 		String pwd = System.getProperty("user.dir");
 
@@ -605,12 +603,11 @@ public class CommandFactoryTest {
 		RemoteFileHandler remoteHandler = new RemoteFileHandler();
 		remoteHandler.setConnectionConfiguration(connectionConfig);
 		remoteHandler.copy(inputFileDir + "commands/test_python_script.py", "/tmp/test_python_script.py");
-		
+
 		// Create a command configuration corresponding to a python script
 		CommandConfiguration configuration = setupDefaultCommandConfig();
 		// This path exists on the dummy host server
-		configuration.setExecutable(
-				"/tmp/test_python_script.py");
+		configuration.setExecutable("/tmp/test_python_script.py");
 		configuration.setInterpreter("python");
 		configuration.setCommandId(9);
 		configuration.setErrFileName("pythErrFile.txt");
@@ -621,7 +618,6 @@ public class CommandFactoryTest {
 		configuration.addInputFile("inputfile2", "someOtherInputFile.txt");
 		configuration.setRemoteWorkingDirectory("/tmp/pythonTest");
 
-	
 		// Get the command and run it
 		Command command = null;
 		try {
@@ -633,10 +629,10 @@ public class CommandFactoryTest {
 		CommandStatus status = command.execute();
 
 		assertEquals(CommandStatus.SUCCESS, status);
-		
+
 		// Delete the moved python script on the remote server once finished
 		// Get the connection and channel to delete
-		Connection connection = ((RemoteCommand)command).getConnection();
+		Connection connection = ((RemoteCommand) command).getConnection();
 		// Delete the script
 		try {
 			SftpClient client = SftpClientFactory.instance().createSftpClient(connection.getSession());
@@ -649,7 +645,7 @@ public class CommandFactoryTest {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		System.out.println("finished python script test");
 
 	}
