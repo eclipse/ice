@@ -34,7 +34,9 @@ hostname
 
 Windows users need to put their ssh credentials into the file located at `C:\Users\Adminstrator\ice-remote-creds.txt` in order for the tests to properly function.
 
-The automated tests will then grab the necessary credentials from this file to run the tests. Any valid ssh connection will work. If you still find that the tests fail, ensure that the ssh connection you are using has been logged into before from your host computer such that there is a key fingerprint associated to that host in your `~/.ssh/known_hosts` file. The Commands package requires that this key exists in order for authentication to proceed, no matter what form of authentication you use. Alternatively, you can set `StrictHostKeyChecking` to false in the `ConnectionManager`, which is not advised as it is inherently unsecure. To do this for the static `ConnectionManager`, just write:
+The automated tests will then grab the necessary credentials from this file to run the tests. Any valid ssh connection will work. If you still find that the tests fail, ensure that the ssh connection you are using has been logged into before from your host computer such that there is a key fingerprint associated to that host in your `~/.ssh/known_hosts` file. The Commands package requires that this key exists in order for authentication to proceed, no matter what form of authentication you use. In the event that tests fail on a host that already exists in `known_hosts` (e.g. with the error message `server key did not validate`, try deleting your `known_hosts` file (or the entries in your `known_hosts` that correspond to the host you are trying to run the tests on), logging in again to re-establish a fingerprint, and running the tests again. 
+
+Alternatively, you can set `StrictHostKeyChecking` to false in the `ConnectionManager`, which is not advised as it is inherently unsecure. To do this for the static `ConnectionManager`, just write:
 
 ```java
 ConnectionManagerFactory.getConnectionManager().setRequireStrictHostKeyChecking(false);
