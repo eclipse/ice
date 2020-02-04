@@ -73,10 +73,10 @@ public class CommandConfiguration {
 	private HashMap<String, String> inputFiles = new HashMap<String, String>();
 
 	/**
-	 * This is a list of arguments that the user might want to append to the executable
-	 * name that are _not_ input files. These will not be explicitly checked by the 
-	 * file handler for whether or not they exist, as they are presumed to be 
-	 * flags/arguments for the job to run.
+	 * This is a list of arguments that the user might want to append to the
+	 * executable name that are _not_ input files. These will not be explicitly
+	 * checked by the file handler for whether or not they exist, as they are
+	 * presumed to be flags/arguments for the job to run.
 	 */
 	private ArrayList<String> argumentList = new ArrayList<String>();
 	/**
@@ -308,16 +308,16 @@ public class CommandConfiguration {
 		String separator = "/";
 
 		// Add the arguments to the executable name
-		for(String arg : argumentList) {
+		for (String arg : argumentList) {
 			fixedExecutableName += " " + arg;
 		}
-		
+
 		// If the input files should be appended, append it
 		if (appendInput)
 			fixedExecutableName += " " + getInputFiles();
 
 		fullCommand = fixedExecutableName;
-		
+
 		// Determine the proper separator
 		if (installDirectory != null && installDirectory.contains(":\\"))
 			separator = "\\";
@@ -326,8 +326,6 @@ public class CommandConfiguration {
 		if (installDirectory != null && !installDirectory.endsWith(separator))
 			installDirectory = installDirectory + separator;
 
-
-		
 		// Search for and replace the ${inputFile} to properly configure the input file
 		for (Map.Entry<String, String> entry : inputFiles.entrySet()) {
 			if (fixedExecutableName.contains("${" + entry.getKey() + "}") && !appendInput)
@@ -374,7 +372,7 @@ public class CommandConfiguration {
 	 * Setter for CommandId, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#commandId}
 	 * 
-	 * @param _commandId
+	 * @param commandId - integer of command ID to be run
 	 */
 	public void setCommandId(int commandId) {
 		this.commandId = commandId;
@@ -385,7 +383,7 @@ public class CommandConfiguration {
 	 * Getter for CommandId, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#commandId}
 	 * 
-	 * @return commandId
+	 * @return commandId - CommandConfiguration ID
 	 */
 	public int getCommandId() {
 		return commandId;
@@ -395,7 +393,7 @@ public class CommandConfiguration {
 	 * Setter for executable, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#executable}
 	 * 
-	 * @param exec
+	 * @param executable - executable to be run
 	 */
 	public void setExecutable(String executable) {
 		this.executable = executable;
@@ -406,17 +404,18 @@ public class CommandConfiguration {
 	 * Getter for executable, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#executable}
 	 * 
-	 * @return executable
+	 * @return executable - executable to be run
 	 */
 	public String getExecutable() {
 		return executable;
 	}
 
 	/**
-	 * Setter for inputFile, see
+	 * Adder for inputFile, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#inputFile}
 	 * 
-	 * @param input
+	 * @param name - name of inputFile to add
+	 * @param path - path to inputFile relative to workingDirectory
 	 */
 	public void addInputFile(String name, String path) {
 		inputFiles.put(name, path);
@@ -427,7 +426,7 @@ public class CommandConfiguration {
 	 * Getter for a concatenated string of inputFiles, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#inputFiles}
 	 * 
-	 * @return inputFile
+	 * @return String - a string of all the inputFiles concatenated
 	 */
 	public String getInputFiles() {
 		String files = "";
@@ -441,7 +440,7 @@ public class CommandConfiguration {
 	 * Getter for the inputFile hashmap itself, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#inputFiles}
 	 * 
-	 * @return inputFile
+	 * @return inputFile - Hashmap with input file list
 	 */
 	public HashMap<String, String> getInputFileList() {
 		return inputFiles;
@@ -451,7 +450,7 @@ public class CommandConfiguration {
 	 * Setter for stdErrFileName, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdErrFileName}
 	 * 
-	 * @param errFile
+	 * @param stdErrFileName - name for StdErr file
 	 */
 	public void setErrFileName(String stdErrFileName) {
 		this.stdErrFileName = stdErrFileName;
@@ -462,7 +461,7 @@ public class CommandConfiguration {
 	 * Getter for stdErrFileName, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdErrFileName}
 	 * 
-	 * @return stdErrFileName
+	 * @return stdErrFileName - name of StdErr file
 	 */
 	public String getErrFileName() {
 		return stdErrFileName;
@@ -472,7 +471,7 @@ public class CommandConfiguration {
 	 * Setter for stdOutFileName, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOutFileName}
 	 * 
-	 * @param outFile
+	 * @param outFile - name of StdOut file
 	 */
 	public void setOutFileName(String stdOutFileName) {
 		this.stdOutFileName = stdOutFileName;
@@ -483,7 +482,7 @@ public class CommandConfiguration {
 	 * Getter for stdOutFileName, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOutFileName}
 	 * 
-	 * @return stdOutFileName
+	 * @return stdOutFileName - name of StdOut file
 	 */
 	public String getOutFileName() {
 		return stdOutFileName;
@@ -493,7 +492,7 @@ public class CommandConfiguration {
 	 * Setter for numProcs, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#numProcs}
 	 * 
-	 * @param procs
+	 * @param numProcs - number of processes
 	 */
 	public void setNumProcs(String numProcs) {
 		this.numProcs = numProcs;
@@ -504,7 +503,7 @@ public class CommandConfiguration {
 	 * Getter for numProcs, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#numProcs}
 	 * 
-	 * @return numProcs
+	 * @return numProcs - number of processes
 	 */
 	public String getNumProcs() {
 		return numProcs;
@@ -514,7 +513,7 @@ public class CommandConfiguration {
 	 * Setter for installDirectory, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#installDirectory}
 	 * 
-	 * @param installDir
+	 * @param installDir - String corresponding to path of install directory
 	 */
 	public void setInstallDirectory(String installDirectory) {
 		this.installDirectory = installDirectory;
@@ -525,7 +524,7 @@ public class CommandConfiguration {
 	 * Getter for installDirectory, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#installDirectory}
 	 * 
-	 * @return installDirectory
+	 * @return installDirectory - path of install directory
 	 */
 	public String getInstallDirectory() {
 		return installDirectory;
@@ -535,7 +534,7 @@ public class CommandConfiguration {
 	 * Getter for os, see {@link org.eclipse.ice.commands.CommandConfiguration#os}
 	 * Note that this is set to the default of the local OS
 	 * 
-	 * @return os
+	 * @return os - operating system that Command is running on
 	 */
 	public String getOS() {
 		return os;
@@ -545,7 +544,7 @@ public class CommandConfiguration {
 	 * Setter for operating system, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#os}
 	 * 
-	 * @param OS
+	 * @param os - operating system that Command is running on
 	 */
 	public void setOS(String os) {
 		this.os = os;
@@ -555,11 +554,15 @@ public class CommandConfiguration {
 	 * Setter for workingDirectory, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#workingDirectory}
 	 * 
-	 * @param workingDir
+	 * @param workingDir - working directory containing input files/scripts
 	 */
 	public void setWorkingDirectory(String workingDirectory) {
 		// Check to see if the directory ends with a separator
 		String separator = FileSystems.getDefault().getSeparator();
+		// Make a special case for windows
+		if (workingDirectory.contains("\\"))
+			separator = "\\";
+
 		if (!workingDirectory.endsWith(separator))
 			workingDirectory += separator;
 		this.workingDirectory = workingDirectory;
@@ -570,7 +573,7 @@ public class CommandConfiguration {
 	 * Getter for workingDirectory, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#workingDirectory}
 	 * 
-	 * @return workingDirectory
+	 * @return workingDirectory - working directory containing files/scripts
 	 */
 	public String getWorkingDirectory() {
 		return workingDirectory;
@@ -580,7 +583,8 @@ public class CommandConfiguration {
 	 * Setter for appendInput, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#appendInput}
 	 * 
-	 * @param _appendInput
+	 * @param appendInput - boolean of whether or not to append input file names to
+	 *                    executable
 	 */
 	public void setAppendInput(boolean appendInput) {
 		this.appendInput = appendInput;
@@ -591,7 +595,8 @@ public class CommandConfiguration {
 	 * Getter for appendInput, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#appendInput}
 	 * 
-	 * @return appendInput
+	 * @return appendInput - boolean of whether or not to append input file names to
+	 *         executable
 	 */
 	public boolean getAppendInput() {
 		return appendInput;
@@ -603,7 +608,7 @@ public class CommandConfiguration {
 	 * setter protected with the intent that only ConnectionConfiguration can modify
 	 * this member variable.
 	 * 
-	 * @param host
+	 * @param hostname - hostname for command to run on
 	 */
 	protected void setHostname(String hostname) {
 		this.hostname = hostname;
@@ -614,7 +619,7 @@ public class CommandConfiguration {
 	 * Getter for hostname, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#hostname}.
 	 * 
-	 * @return
+	 * @return hostname - hostname for command to run on
 	 */
 	public String getHostname() {
 		return hostname;
@@ -624,7 +629,7 @@ public class CommandConfiguration {
 	 * Setter for stdErr, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdErr}
 	 * 
-	 * @param writer
+	 * @param stdErr - BufferedWriter to write error output
 	 */
 	public void setStdErr(BufferedWriter stdErr) {
 		this.stdErr = stdErr;
@@ -635,7 +640,7 @@ public class CommandConfiguration {
 	 * Getter for stdErr, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdErr}
 	 * 
-	 * @return stdErr
+	 * @return stdErr - Buffered writer to write error output
 	 */
 	public BufferedWriter getStdErr() {
 		return stdErr;
@@ -645,7 +650,7 @@ public class CommandConfiguration {
 	 * Setter for stdOut, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOut}
 	 * 
-	 * @param writer
+	 * @param stdOut - BufferedWriter to write log output
 	 */
 	public void setStdOut(BufferedWriter stdOut) {
 		this.stdOut = stdOut;
@@ -656,7 +661,7 @@ public class CommandConfiguration {
 	 * Getter for stdOut, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOut}
 	 * 
-	 * @return stdOut
+	 * @return stdOut - BufferedWriter to write log output
 	 */
 	public BufferedWriter getStdOut() {
 		return stdOut;
@@ -666,7 +671,7 @@ public class CommandConfiguration {
 	 * Setter for stdOutput, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOutput}
 	 * 
-	 * @return stdOutput
+	 * @return stdOutput - String for StdOutput name
 	 */
 	public void setStdOutputString(String stdOutput) {
 		this.stdOutput = stdOutput;
@@ -676,7 +681,7 @@ public class CommandConfiguration {
 	 * This function adds the String string to the String
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOutput}
 	 * 
-	 * @param string
+	 * @param string - String to concatenate to the stdOutput string
 	 */
 	public void addToStdOutputString(String string) {
 		stdOutput += "\n" + string;
@@ -686,7 +691,7 @@ public class CommandConfiguration {
 	 * Getter for stdOutput, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#stdOutput}
 	 * 
-	 * @return stdOutput
+	 * @return stdOutput - String of all stdOutput, separated by '\n'
 	 */
 	public String getStdOutputString() {
 		return stdOutput;
@@ -694,9 +699,11 @@ public class CommandConfiguration {
 
 	/**
 	 * Getter for splitCommand, see
-	 * {@link org.eclipse.ice.commands.CommandConfiguration#splitCommand} No setter
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#splitCommand}. No setter
 	 * since splitCommand is determined by
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#getExecutableName()}
+	 * 
+	 * @return splitCommand - ArrayList<String> of split commands
 	 */
 	public ArrayList<String> getSplitCommand() {
 		return splitCommand;
@@ -708,9 +715,8 @@ public class CommandConfiguration {
 	 * the setter for full command protected so that it can only be accessed within
 	 * the package and not by (e.g.) the user
 	 * 
-	 * @param command
+	 * @param fullComand - String of the full command to be executed
 	 *
-	 * 
 	 */
 	protected void setFullCommand(String fullCommand) {
 		this.fullCommand = fullCommand;
@@ -721,7 +727,7 @@ public class CommandConfiguration {
 	 * Getter for fullCommand, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#fullCommand}
 	 * 
-	 * @return fullCommand
+	 * @return fullCommand - String of the full command to be executed
 	 */
 	public String getFullCommand() {
 		return fullCommand;
@@ -731,7 +737,7 @@ public class CommandConfiguration {
 	 * Add to error message string, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#errMsg}
 	 * 
-	 * @param
+	 * @param errMsg - String to add to the error message string
 	 */
 	public void addToErrString(String errMsg) {
 		this.errMsg += errMsg;
@@ -741,7 +747,7 @@ public class CommandConfiguration {
 	 * Setter for error message string, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#errMsg}
 	 * 
-	 * @param
+	 * @param errMsg - String to add to the error message string
 	 */
 	public void setErrString(String errMsg) {
 		this.errMsg = errMsg;
@@ -751,7 +757,7 @@ public class CommandConfiguration {
 	 * Getter for error message string, see
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#errMsg}
 	 * 
-	 * @return
+	 * @return - String of error message
 	 */
 	public String getErrString() {
 		return errMsg;
@@ -761,7 +767,7 @@ public class CommandConfiguration {
 	 * Setter for the remote working directory
 	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#workingDirectory}
 	 * 
-	 * @param dir
+	 * @param remoteWorkingDirectory - path for remote working directory
 	 */
 	public void setRemoteWorkingDirectory(String remoteWorkingDirectory) {
 		this.remoteWorkingDirectory = remoteWorkingDirectory;
@@ -771,7 +777,7 @@ public class CommandConfiguration {
 	 * Getter for the remote working directory
 	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#workingDirectory}
 	 * 
-	 * @return
+	 * @return remoteWorkingDirectory - path for remote working directory
 	 */
 	public String getRemoteWorkingDirectory() {
 		return remoteWorkingDirectory;
@@ -781,7 +787,7 @@ public class CommandConfiguration {
 	 * Setter for interpreter
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#interpreter}
 	 * 
-	 * @param interpreter
+	 * @param interpreter - string of the interpreter to be used for this command
 	 */
 	public void setInterpreter(String interpreter) {
 		this.interpreter = interpreter;
@@ -791,26 +797,29 @@ public class CommandConfiguration {
 	 * Getter for interpreter
 	 * {@link org.eclipse.ice.commands.CommandConfiguration#interpreter}
 	 * 
-	 * @return
+	 * @return - interpreter to be used for this command
 	 */
 	public String getInterpreter() {
 		return interpreter;
 	}
-	
+
 	/**
-	 * Getter for argument list {@link org.eclipse.ice.commands.CommandConfiguration#argumentList}
-	 * @return
+	 * Getter for argument list
+	 * {@link org.eclipse.ice.commands.CommandConfiguration#argumentList}
+	 * 
+	 * @return - ArrayList<String> of the argument list
 	 */
-	public ArrayList<String> getArgumentList(){
+	public ArrayList<String> getArgumentList() {
 		return argumentList;
 	}
 
 	/**
 	 * Function that adds an argument to the argument list
-	 * @param argument
+	 * 
+	 * @param argument - argument to be added
 	 */
 	public void addArgument(String argument) {
 		argumentList.add(argument);
 	}
-	
+
 }
