@@ -26,6 +26,7 @@ import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.common.FactoryManager;
 import org.apache.sshd.common.SshConstants;
 import org.apache.sshd.common.keyprovider.FileKeyPairProvider;
+import org.apache.sshd.common.util.net.SshdSocketAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,11 +60,11 @@ public class ConnectionManager {
 
 	/**
 	 * This is a list of authorization types for JSch to allow authentication via.
-	 * The default types added automatically are ssh-rsa and ecdsa-sha2-nistp256. 
+	 * The default types added automatically are ssh-rsa and ecdsa-sha2-nistp256.
 	 * Clients can add additional types should they need to.
 	 */
 	private ArrayList<String> authTypes = new ArrayList<String>();
-	
+
 	/**
 	 * String containing the path to the known hosts directory. Can be set to
 	 * something else if the user has a different default known_host
@@ -78,7 +79,7 @@ public class ConnectionManager {
 		if (System.getProperty("os.name").toLowerCase().contains("win")) {
 			knownHosts = System.getProperty("user.home") + "\\.ssh\\known_hosts";
 		}
-		
+
 		// Add the default authorization types
 		authTypes.add("ssh-rsa");
 		authTypes.add("ecdsa-sha2-nistp256");
@@ -111,28 +112,24 @@ public class ConnectionManager {
 
 			// Try go get and open the new session
 			try {
-				ClientSession session = client.connect(username, hostname, SshConstants.DEFAULT_PORT).verify(DEFAULT_TIMEOUT).getSession();
+				ClientSession session = client.connect(username, hostname, SshConstants.DEFAULT_PORT)
+						.verify(DEFAULT_TIMEOUT).getSession();
 				newConnection.setSession(session);
 			} catch (IOException e) {
 				logger.error("Couldn't open session with given username and hostname. Exiting.", e);
 				throw e;
 			}
 
-			// I don't believe this is required for Mina-ssh
-			//
-			// JSch default requests ssh-rsa host checking, but some keys
-			// request other types. Loop through the available authorization types
-			// and add them to the session.
-//			for(String type : authTypes) {
-//				newConnection.getSession().setConfig("server_host_key", type);
-//			}
-
-			// Set the delegate to reject all, then set the key verifier to check the strict option
+			// Set the delegate to reject all, then set the key verifier to check the strict
+			// option
 			ServerKeyVerifier delegate = RejectAllServerKeyVerifier.INSTANCE;
 			if (knownHosts != null) {
-				newConnection.getSession().setServerKeyVerifier(new DefaultKnownHostsServerKeyVerifier(delegate, requireStrictHostKeyChecking, Paths.get(knownHosts)));
+				newConnection.getSession().setServerKeyVerifier(new DefaultKnownHostsServerKeyVerifier(delegate,
+						requireStrictHostKeyChecking, Paths.get(knownHosts)));
+				System.out.println("\n\n\n\n\n\nKNOWN HOSTS IS : " + knownHosts);
 			} else {
-				newConnection.getSession().setServerKeyVerifier(new DefaultKnownHostsServerKeyVerifier(delegate, requireStrictHostKeyChecking));
+				newConnection.getSession().setServerKeyVerifier(
+						new DefaultKnownHostsServerKeyVerifier(delegate, requireStrictHostKeyChecking));
 			}
 
 			// Connect the session
@@ -184,7 +181,7 @@ public class ConnectionManager {
 			// Erase contents of pwd and fill with null
 			Arrays.fill(pwd, Character.MIN_VALUE);
 			auth.setPassword(null);
-			
+
 			// Set the authentication requirements
 			connection.getSession().setUserAuthFactoriesNames("publickey", "password");
 		} else {
@@ -192,19 +189,92 @@ public class ConnectionManager {
 			// Otherwise try a key authentication
 			String keyPath = ((KeyPathConnectionAuthorizationHandler) auth).getKeyPath();
 			if (keyPath != null) {
-		        FileKeyPairProvider provider = new FileKeyPairProvider() {
-		            @Override
-		            public String toString() {
-		                return FileKeyPairProvider.class.getSimpleName() + "[clientIdentitiesProvider]";
-		            }
-		        };
-		        provider.setPaths(Collections.singleton(Paths.get(keyPath)));
-		        connection.getClient().setKeyIdentityProvider(provider);
+				FileKeyPairProvider provider = new FileKeyPairProvider() {
+					@Override
+					public String toString() {
+						return FileKeyPairProvider.class.getSimpleName() + "[clientIdentitiesProvider]";
+					}
+				};
+				provider.setPaths(Collections.singleton(Paths.get(keyPath)));
+				connection.getClient().setKeyIdentityProvider(provider);
 			}
 		}
-		
+
 		connection.getSession().auth().verify(FactoryManager.DEFAULT_AUTH_TIMEOUT);
 		return;
+	}
+
+	/**
+	 * This function opens a forwarding connection between one already established
+	 * connection to a remote system and an additional remote system specified by
+	 * the ConnectionConfiguration. This allows ports to be opened up across
+	 * multiple machines, as in: System A --> System B (intermediateConn) --> System
+	 * C (config). So the connection that is returned from this function connects
+	 * System A to System C.
+	 * 
+	 * @param intermediateConn - intermediate jump host
+	 * @param config           - ConnectionConfiguration for final host destination
+	 * @return - Connection if successfully established, null otherwise
+	 * @throws IOException
+	 */
+	public Connection openForwardingConnection(Connection intermediateConn, ConnectionConfiguration config)
+			throws IOException {
+
+		// First check that the first connection actually is established
+		if (!isConnectionOpen(intermediateConn.getConfiguration().getName())) {
+			logger.error("Can't forward a connection with an unopened intermediate connection! Returning null.");
+			return null;
+		}
+
+		// Make the forwarded connection
+		Connection forwardConnection = new Connection(config);
+
+		// Get the intermediate client and session
+		SshClient intermClient = intermediateConn.getClient();
+		ClientSession intermSesh = intermediateConn.getSession();
+
+		// Check that the intermediate session is actually connected and open
+		if (!intermSesh.isOpen()) {
+			logger.error("Can't forward a connecion with an unopened intermediate session! Returning null.");
+			return null;
+		}
+
+		// Set the new connection to have the same ssh client
+		forwardConnection.setClient(intermClient);
+		
+		/**
+		 * To make this work, we will set up a port forwarding from the local host to
+		 * the ssh port of the final destination host through the originally opened
+		 * session. Thus, the connection should go from the local host, to the (below)
+		 * assignedPort, and then to port 22 on the final destination host.
+		 */
+		
+		SshdSocketAddress forwardAdd = new SshdSocketAddress(config.getAuthorization().getHostname(), 22);
+		SshdSocketAddress localAdd = new SshdSocketAddress("localhost",0);
+		SshdSocketAddress address = intermSesh.startLocalPortForwarding(localAdd,forwardAdd);
+		
+		String username = config.getAuthorization().getUsername();
+		String hostname = config.getAuthorization().getHostname();
+		
+		// Connect the session to access 127.0.0.1:address.getPort(), which is where the startLocalPortForwarding
+		// is now matching the remote servers
+		ClientSession forwardSession = forwardConnection.getClient().connect(username, "127.0.0.1", address.getPort()).verify(DEFAULT_TIMEOUT)
+				.getSession();
+
+		forwardConnection.setSession(forwardSession);
+
+		// Authorize the session with password/key/etc.
+		authorizeSession(forwardConnection);
+
+		// Add the connection to the list since it was successfully created
+		connectionList.put(forwardConnection.getConfiguration().getName(), forwardConnection);
+
+		logger.info("Connection at " + username + "@" + hostname + " established successfully through "
+				+ intermediateConn.getConfiguration().getAuthorization().getUsername() + "@" +
+				  intermediateConn.getConfiguration().getAuthorization().getHostname());
+
+		
+		return forwardConnection;
 	}
 
 	/**
@@ -419,6 +489,7 @@ public class ConnectionManager {
 	/**
 	 * This function allows clients to add an authorization type for which JSch can
 	 * authorize with. ssh-rsa and ecdsa-sha2-nistp256 are added by default.
+	 * 
 	 * @param type
 	 */
 	public void addAuthorizationType(String type) {
