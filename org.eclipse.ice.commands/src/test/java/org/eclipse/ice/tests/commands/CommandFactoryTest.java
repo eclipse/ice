@@ -123,7 +123,7 @@ public class CommandFactoryTest {
 		rm += " someLsOutFile.txt someLsErrFile.txt someMultRemoteOutFile.txt someMultRemoteErrFile.txt";
 		rm += " somePythOutFile.txt somePythErrFile.txt someLsRemoteErrFile.txt someLsRemoteOutFile.txt";
 		rm += " src/test/java/org/eclipse/ice/tests/someInputFile.txt src/test/java/org/eclipse/ice/tests/someOtherInputFile.txt";
-		rm += " pythOutFile.txt pythErrFile.txt hopRemoteOutFile.txt hopeRemoteErrFile.txt";
+		rm += " pythOutFile.txt pythErrFile.txt hopRemoteOutFile.txt hopRemoteErrFile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
 		if (System.getProperty("os.name").toLowerCase().contains("win")) {
