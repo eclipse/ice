@@ -178,8 +178,9 @@ public class CommandFactoryTest {
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
+		String keyPath = System.getProperty("user.home") + "/.ssh/denisovankey";
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("keypath",
-				"/home/4jo/.ssh/denisovankey");
+				keyPath);
 		auth.setHostname("denisovan");
 		auth.setUsername("4jo");
 		// Set it
