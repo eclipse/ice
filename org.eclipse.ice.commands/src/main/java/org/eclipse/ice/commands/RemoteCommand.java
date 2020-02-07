@@ -416,7 +416,7 @@ public class RemoteCommand extends Command {
 			// was created, so that the rest of the command operates as normal
 			// from a local host to a remote host with this new temporary directory
 			status = transferFiles(secondConnection.get().getConfiguration(),
-					tempLocalDir.toString() + FileSystems.getDefault().getSeparator(),
+					tempLocalDir.toString(),
 					commandConfig.getRemoteWorkingDirectory());
 
 			// Delete the local temp file once finished moving to the destination host
@@ -469,10 +469,6 @@ public class RemoteCommand extends Command {
 		RemoteFileHandler handler = new RemoteFileHandler();
 		// Give the handler the same connection as this command
 		handler.setConnectionConfiguration(config);
-
-		// Get the directories where files live/should go
-		String remoteWorkingDirectory = commandConfig.getRemoteWorkingDirectory();
-		String workingDirectory = commandConfig.getWorkingDirectory();
 
 		// Get the executable to concatenate
 		String shortExecName = commandConfig.getExecutable();

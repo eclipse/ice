@@ -126,7 +126,6 @@ public class ConnectionManager {
 			if (knownHosts != null) {
 				newConnection.getSession().setServerKeyVerifier(new DefaultKnownHostsServerKeyVerifier(delegate,
 						requireStrictHostKeyChecking, Paths.get(knownHosts)));
-				System.out.println("\n\n\n\n\n\nKNOWN HOSTS IS : " + knownHosts);
 			} else {
 				newConnection.getSession().setServerKeyVerifier(
 						new DefaultKnownHostsServerKeyVerifier(delegate, requireStrictHostKeyChecking));

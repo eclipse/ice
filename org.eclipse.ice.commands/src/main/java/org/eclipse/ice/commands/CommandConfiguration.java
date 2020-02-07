@@ -558,7 +558,10 @@ public class CommandConfiguration {
 	 */
 	public void setWorkingDirectory(String workingDirectory) {
 		// Check to see if the directory ends with a separator
-		String separator = FileSystems.getDefault().getSeparator();
+		// Just get the one that corresponds to the string. In the case of
+		// commands which are running on *nix but starting on windows,
+		// or vice versa, this can get things mixed up
+		String separator = "/";
 		// Make a special case for windows
 		if (workingDirectory.contains("\\"))
 			separator = "\\";
