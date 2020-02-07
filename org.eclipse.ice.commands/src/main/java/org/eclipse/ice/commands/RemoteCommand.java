@@ -1,5 +1,4 @@
-/**
- * /*******************************************************************************
+/*******************************************************************************
  * Copyright (c) 2019- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +17,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -125,10 +127,9 @@ public class RemoteCommand extends Command {
 
 			// If there is an extra connection so that we are multi-hopping, then open it
 			// too
-			// TODO - the multi-hop API isn't implemented yet - need to work on it
 			ConnectionConfiguration secondConfig = secondConnection.get().getConfiguration();
 			if (secondConfig != null) {
-				secondConnection.set(manager.openConnection(secondConfig));
+				secondConnection.set(manager.openForwardingConnection(connection.get(),secondConfig));
 				// Set the commandConfig hostname to be the extra connection, since this is
 				// really where the job will run
 				commandConfig.setHostname(secondConnection.get().getConfiguration().getAuthorization().getHostname());
@@ -141,7 +142,8 @@ public class RemoteCommand extends Command {
 			logger.error("Returning info error", e);
 			return;
 		}
-
+		
+		return;
 	}
 
 	/**
@@ -190,8 +192,6 @@ public class RemoteCommand extends Command {
 	 * then disconnects the remote channel to finish up the job processing.
 	 * 
 	 * See also {@link org.eclipse.ice.commands.Command#finishJob()}
-	 * 
-	 * @return CommandStatus
 	 */
 	@Override
 	protected CommandStatus finishJob() {
@@ -378,6 +378,74 @@ public class RemoteCommand extends Command {
 	}
 
 	/**
+	 * This function is responsible for setting up the file transfer logic,
+	 * depending on whether or not this is a regular remote command or a jump host
+	 * command. It is called from run and executes the logic in
+	 * {@link org.eclipse.ice.commands.RemoteCommand#transferFiles(ConnectionConfiguration, String, String)}
+	 * 
+	 * @return - CommandStatus indicating whether or not the transfer(s) were
+	 *         successful
+	 * @throws IOException
+	 * @throws SftpException
+	 * @throws JSchException
+	 */
+	protected CommandStatus transferFiles() throws IOException {
+		/**
+		 * If we have a jump host connection then we need to transfer the files from the
+		 * intermediary host to the local host first, and then transfer them from the
+		 * local host through the forwarded connection. In other words, the file
+		 * transferring goes from (in the case of System A --> System B --> System C
+		 * where B is the jump host and C is the destination host):
+		 * 
+		 * System B --> System A - transfer the files to a local temp directory, System A
+		 * --> System C - transfer the files from the local temp directory through the
+		 * forwarded connection
+		 */
+		// So first we will transfer from the jump host
+		if (secondConnection.get().getConfiguration() != null) {
+			// Create a temporary local directory to move files from the jump host to
+			// the local host
+			Path tempLocalDir = Files.createTempDirectory("tempJumpDir");
+
+			status = transferFiles(connectionConfig, commandConfig.getWorkingDirectory(), tempLocalDir.toString());
+			// Check that this transfer completed successfully before moving to
+			// transfer from A --> C
+			if (!checkStatus(status))
+				return CommandStatus.FAILED;
+			// Set the working directory to be the temporary local directory that
+			// was created, so that the rest of the command operates as normal
+			// from a local host to a remote host with this new temporary directory
+			status = transferFiles(secondConnection.get().getConfiguration(),
+					tempLocalDir.toString(),
+					commandConfig.getRemoteWorkingDirectory());
+
+			// Delete the local temp file once finished moving to the destination host
+			File localTempFile = new File(tempLocalDir.toString());
+			boolean delete = deleteLocalDirectory(localTempFile);
+			if (!delete) {
+				logger.warn("Temporary directory at " + tempLocalDir.toString() + " couldn't be completely deleted.");
+			}
+			/**
+			 * In order for the rest of the code base to use the forwarded connection as the
+			 * job processing connection, we need to set the main connection of the class,
+			 * i.e. {@link org.eclipse.ice.commands.Command#connection} as the forwarded
+			 * connection
+			 */
+			connection = secondConnection;
+
+		} else {
+			// If this is not a jump host case, then just move the files from the local
+			// working directory to the remote host like normal
+			status = transferFiles(connectionConfig, commandConfig.getWorkingDirectory(),
+					commandConfig.getRemoteWorkingDirectory());
+		}
+
+		return status;
+	}
+
+
+	
+	/**
 	 * This function is responsible for transferring the files to the remote host.
 	 * It utilizes the file handling API in this package
 	 * 
@@ -386,16 +454,21 @@ public class RemoteCommand extends Command {
 	 * @throws JSchException
 	 * @throws IOException
 	 */
-	protected CommandStatus transferFiles() throws IOException {
+	protected CommandStatus transferFiles(ConnectionConfiguration config, String sourceDir, String destDir) throws IOException {
 
+		String sourceSep = "/";
+		String destSep = "/";
+
+		// Figure out what the separators are, depending on windows/*nix
+		if(sourceDir.contains("\\"))
+			sourceSep = "\\";
+		if(destDir.contains("\\"))
+			destSep = "\\";
+		
 		// Set up a remote file handler to transfer the files
 		RemoteFileHandler handler = new RemoteFileHandler();
 		// Give the handler the same connection as this command
-		handler.setConnectionConfiguration(connectionConfig);
-
-		// Get the directories where files live/should go
-		String remoteWorkingDirectory = commandConfig.getRemoteWorkingDirectory();
-		String workingDirectory = commandConfig.getWorkingDirectory();
+		handler.setConnectionConfiguration(config);
 
 		// Get the executable to concatenate
 		String shortExecName = commandConfig.getExecutable();
@@ -406,14 +479,21 @@ public class RemoteCommand extends Command {
 		else if (shortExecName.contains("\\"))
 			shortExecName = shortExecName.substring(shortExecName.lastIndexOf("\\") + 1);
 
+		// Check that the source directory ends with the right separator
+		if(!sourceDir.endsWith(sourceSep))
+			sourceDir += sourceSep;
+		
 		// Do the same for the destination
-		if (!remoteWorkingDirectory.endsWith("/"))
-			remoteWorkingDirectory += "/";
+		if (!destDir.endsWith(destSep))
+			destDir += destSep;
 
 		// Build the source and destination paths
-		String source = workingDirectory + shortExecName;
-		String destination = remoteWorkingDirectory + shortExecName;
+		String source = sourceDir + shortExecName;
+		String destination = destDir + shortExecName;
 
+		logger.info("Trying to transfer " + source + " to " + destination +
+				" over connection " + config.getName());
+		
 		CommandStatus fileTransfer = null;
 		// Check if the source file exists. If the executable is a script, then it will
 		// transfer it to the host. If it is just a command (e.g. ls) then it will skip
@@ -449,11 +529,10 @@ public class RemoteCommand extends Command {
 
 			// Now have the full paths, so transfer the files per the logger messages
 			// Put the inputfile to the remote directory. Use a null object for receiving
-			// notifications about
-			// the progress of the transfer and use 0 to overwrite the files if they exist
-			// there already
-			source = workingDirectory + shortInputName;
-			destination = remoteWorkingDirectory + shortInputName;
+			// notifications about the progress of the transfer and use 0 to overwrite 
+			// the files if they exist there already
+			source = sourceDir + shortInputName;
+			destination = destDir + shortInputName;
 			fileTransfer = handler.copy(source, destination);
 			if (fileTransfer != CommandStatus.SUCCESS) {
 				logger.error("Couldn't transfer " + source + " to remote host!");
@@ -496,6 +575,27 @@ public class RemoteCommand extends Command {
 		sftpChannel.rmdir(path); // delete the parent directory after empty
 	}
 
+	/**
+	 * Recursive function that deletes a local directory and its contents
+	 * 
+	 * @param directory - directory to be deleted
+	 * @return boolean - true if directory was deleted, false otherwise
+	 */
+	private boolean deleteLocalDirectory(File directory) {
+		// Get the file list of the directory
+		File[] contents = directory.listFiles();
+		// If there are files/subdirectories in the directory, recursively iterate over
+		// them to
+		// delete them so that the directory can be deleted
+		if (contents != null) {
+			for (File file : contents) {
+				deleteLocalDirectory(file);
+			}
+		}
+		// Return whether or not the directory was deleted
+		return directory.delete();
+	}
+	
 	/**
 	 * Set a particular connection for a particular RemoteCommand
 	 * 

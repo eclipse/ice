@@ -69,7 +69,7 @@ public class FileHandlerFactory {
 	 * 
 	 * @param host - String of the hostname to be checked
 	 * @return boolean - returns true if the hostname matches that of the local
-	 *         hostname, false otherwise.
+	 *                   hostname, false otherwise.
 	 */
 	private boolean isLocal(String host) {
 

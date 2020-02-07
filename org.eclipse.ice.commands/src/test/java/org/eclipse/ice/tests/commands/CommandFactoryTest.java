@@ -123,7 +123,7 @@ public class CommandFactoryTest {
 		rm += " someLsOutFile.txt someLsErrFile.txt someMultRemoteOutFile.txt someMultRemoteErrFile.txt";
 		rm += " somePythOutFile.txt somePythErrFile.txt someLsRemoteErrFile.txt someLsRemoteOutFile.txt";
 		rm += " src/test/java/org/eclipse/ice/tests/someInputFile.txt src/test/java/org/eclipse/ice/tests/someOtherInputFile.txt";
-		rm += " pythOutFile.txt pythErrFile.txt";
+		rm += " pythOutFile.txt pythErrFile.txt hopRemoteOutFile.txt hopRemoteErrFile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
 		if (System.getProperty("os.name").toLowerCase().contains("win")) {
@@ -151,25 +151,26 @@ public class CommandFactoryTest {
 
 	/**
 	 * This function tests a multi-hop remote command, where the command logs into a
-	 * remote host and then executes on a different remote host. TODO - Commented
-	 * out for now since multi-hop command source code is not implemented and can be
-	 * for future development.
+	 * remote host and then executes on a different remote host. 
 	 */
-	// @Test
+	@Test
 	public void testMultiHopRemoteCommand() {
-		fail("src not implemented");
 		System.out.println("\n\n\nTesting a multi-hop remote command");
 		// Set the CommandConfiguration class
 		CommandConfiguration commandConfig = setupDefaultCommandConfig();
 		commandConfig.setExecutable("./test_code_execution.sh");
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
+		commandConfig.addInputFile("someOtherFile", "someOtherInputFile.txt");
 		commandConfig.setAppendInput(true);
 		commandConfig.setCommandId(99);
 		commandConfig.setErrFileName("hopRemoteErrFile.txt");
 		commandConfig.setOutFileName("hopRemoteOutFile.txt");
+		// This is the directory to run the job on the destination system, i.e.
+		// system C
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
-		// Just put in a dummy directory for now
-		commandConfig.setWorkingDirectory("/home/user/somedirectory");
+		// This is the directory on the jump host which contains the job information
+				// and files, e.g. the script, input files, etc.
+		commandConfig.setWorkingDirectory("/home/4jo/remoteCommandDirectory");
 
 		// Set the connection configuration to a dummy remote connection
 		// This is the connection where the job will be executed
@@ -177,26 +178,34 @@ public class CommandFactoryTest {
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				"/tmp/ice-remote-creds.txt");
+		String keyPath = System.getProperty("user.home") + "/.ssh/somekey";
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("keypath",
+				keyPath);
+		auth.setHostname("hostname");
+		auth.setUsername("password");
 		// Set it
-		connectionConfig.setAuthorization(auth);
+		ConnectionConfiguration firstConn = new ConnectionConfiguration();
+		firstConn.setAuthorization(auth);
 
 		// Note the password can be input at the console by not setting the
 		// the password explicitly in the connection configuration
-		connectionConfig.setName("executeConnection");
-		connectionConfig.deleteWorkingDirectory(true);
+		firstConn.setName("hopConnection");
+		firstConn.deleteWorkingDirectory(false);
 
-		ConnectionConfiguration intermConnection = new ConnectionConfiguration();
-		// TODO - this will have to be changed to some other remote connection
-		intermConnection.setAuthorization(auth);
-		intermConnection.setName("intermediateConnection");
-		intermConnection.deleteWorkingDirectory(false);
+		ConnectionConfiguration secondConn = new ConnectionConfiguration();
+		String credFile = "/tmp/ice-remote-creds.txt";
+		if(System.getProperty("os.name").toLowerCase().contains("win"))
+			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		
+		ConnectionAuthorizationHandler intermAuth = authFactory.getConnectionAuthorizationHandler("text",credFile);
+		secondConn.setAuthorization(intermAuth);
+		secondConn.setName("executeConnection");
+		secondConn.deleteWorkingDirectory(false);
 
 		// Get the command
 		Command remoteCommand = null;
 		try {
-			remoteCommand = factory.getCommand(commandConfig, intermConnection, connectionConfig);
+			remoteCommand = factory.getCommand(commandConfig, firstConn, secondConn);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

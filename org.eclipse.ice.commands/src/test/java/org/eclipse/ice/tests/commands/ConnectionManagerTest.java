@@ -85,21 +85,22 @@ public class ConnectionManagerTest {
 	}
 
 	/**
-	 * Clear out the connections formed after each test so that each test starts fresh
-	 * with a clean slated connection manager
+	 * Clear out the connections formed after each test so that each test starts
+	 * fresh with a clean slated connection manager
+	 * 
 	 * @throws Exception
 	 */
 	@After
 	public void tearDown() throws Exception {
 		// Clear out the connection manager so we start fresh with each test
 		ConnectionManagerFactory.getConnectionManager().removeAllConnections();
-		// Reset the known hosts directory, for after the test with the 
+		// Reset the known hosts directory, for after the test with the
 		// expected JSch exception due to nonexistent known_hosts
 		ConnectionManagerFactory.getConnectionManager()
-		.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
+				.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
 
-		
 	}
+
 	/**
 	 * This function deletes all of the connections in the connection manager once
 	 * the tests have run and completed.
@@ -117,19 +118,19 @@ public class ConnectionManagerTest {
 
 		// Make sure the known hosts are reset to the default directory
 		manager.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
-	
+
 	}
-	
-	
+
 	/**
 	 * This function tests opening a connection with an already generated key path
-	 * @throws JSchException 
+	 * 
+	 * @throws JSchException
 	 */
 	@Test
 	public void testOpenConnectionKeyPath() throws IOException {
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 		System.out.println("Testing keypath open connection");
-		
+
 		// Make a connection configuration for using a key path
 		ConnectionConfiguration keyConfiguration = new ConnectionConfiguration();
 		keyConfiguration.setName("keypath");
@@ -144,16 +145,15 @@ public class ConnectionManagerTest {
 		keyConfiguration.setAuthorization(auth);
 		// Open the connection
 		manager.openConnection(keyConfiguration);
-	
+
 		// assert that it was properly opened
-		assert(manager.isConnectionOpen("keypath"));
+		assert (manager.isConnectionOpen("keypath"));
 
 		ConnectionManagerFactory.getConnectionManager()
-				.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
+		.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
 
 	}
 
-	
 	/**
 	 * Test method for
 	 * {@link org.eclipse.ice.commands.ConnectionManager#OpenConnection(ConnectionConfiguration)}
@@ -215,7 +215,7 @@ public class ConnectionManagerTest {
 	public void testMultipleConnections() {
 
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
-	
+
 		// Read in a dummy configuration file that contains credentials
 		String credFile = "/tmp/ice-remote-creds.txt";
 		if (System.getProperty("os.name").toLowerCase().contains("win"))
@@ -253,7 +253,7 @@ public class ConnectionManagerTest {
 
 		// Expect only two connections since one of the connections is not good (i.e.
 		// conn3 has a bad password, therefore it isn't added to the list)
-		
+
 		assertEquals(2, connections.size());
 
 		// List all available connections to the console screen
@@ -283,7 +283,7 @@ public class ConnectionManagerTest {
 	@Test
 	public void testValidConnection() {
 		System.out.println("Testing valid connection");
-		
+
 		testOpenConnection();
 
 		testGetConnection();
@@ -309,7 +309,51 @@ public class ConnectionManagerTest {
 
 	}
 
+	/**
+	 * This tests the method openForwardingConnection, which creates a connection
+	 * between three systems by porting the connection through an intermediary host
+	 * @throws IOException 
+	 */
+	@Test
+	public void testForwardConnection() throws IOException {
+		
+		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 
-	
-	
+		// Read in a dummy configuration file that contains credentials
+		String credFile = "/tmp/ice-remote-creds.txt";
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
+			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+
+		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		// Request a ConnectionAuthorization of type text file which contains the
+		// credentials
+		String keyPath = System.getProperty("user.home") + "/.ssh/somekey";
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("keypath",
+				keyPath);
+		auth.setHostname("hostname");
+		auth.setUsername("password");
+		ConnectionConfiguration config = new ConnectionConfiguration();
+		config.setAuthorization(auth);
+		config.setName("forwardConnection");
+		Connection firstConnection = manager.openConnection(config);
+		
+		// Make sure the connection was opened properly
+		assert (manager.isConnectionOpen(firstConnection.getConfiguration().getName()));
+		
+		// Now get the final host authorization
+		ConnectionAuthorizationHandler intermauth = authFactory.getConnectionAuthorizationHandler("text",
+				credFile);
+
+		// Setup the configuration
+		ConnectionConfiguration secondConn = new ConnectionConfiguration();
+		secondConn.setAuthorization(intermauth);
+		secondConn.setName("executeConnection");
+		secondConn.deleteWorkingDirectory(false);
+		System.out.println("\n\n\n\nOpening forwarding connection");
+		// Try to open it
+		Connection forwardConnection = manager.openForwardingConnection(firstConnection, secondConn);
+
+		// Assert that it is open
+		assert(manager.isConnectionOpen(forwardConnection.getConfiguration().getName()));
+	}
 }

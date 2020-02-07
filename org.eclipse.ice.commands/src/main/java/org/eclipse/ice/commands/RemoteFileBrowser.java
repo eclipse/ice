@@ -25,21 +25,25 @@ import org.apache.sshd.client.subsystem.sftp.SftpClient.DirEntry;
  */
 public class RemoteFileBrowser implements FileBrowser {
 	/**
-	 * Default  constructor
+	 * Default constructor
 	 */
 	public RemoteFileBrowser() {
+		// Clear the arrays to start fresh for every browser
 		fileList.clear();
 		directoryList.clear();
 	}
-	
+
 	/**
 	 * Default constructor with connection and top directory name
+	 * 
+	 * @param connection   - Connection over which to file browse
+	 * @param topDirectory - top most directory to recursively walk through
 	 */
 	public RemoteFileBrowser(Connection connection, final String topDirectory) {
 		// Make sure we start with a fresh list every time the browser is called
 		fileList.clear();
 		directoryList.clear();
-		
+
 		// Fill the arrays with the relevant file information
 		fillArrays(topDirectory, connection.getSftpChannel());
 	}
@@ -49,18 +53,17 @@ public class RemoteFileBrowser implements FileBrowser {
 	 * remote host and fill the member variable arrays with the files and
 	 * directories
 	 * 
-	 * @param channel
-	 * @param topDirectory
+	 * @param channel      - sftp channel to walk the file tree with
+	 * @param topDirectory - top most directory under which to browse
 	 */
 	protected void fillArrays(String topDirectory, SftpClient channel) {
 		try {
 			// Make sure the top directory ends with the appropriate separator
 			String separator = "/";
-			// If the remote file system returns a home directory with \, then it
-			// must be windows
-			// TODO: I don't know how to do this using Mina. Is it really needed anyway?
-//			if (channel.getHome().contains("\\"))
-//				separator = "\\";
+			// If the remote directory to search contains a \\, then it must be windows
+			// and thus we should set the separator as such
+			if (topDirectory.contains("\\"))
+				separator = "\\";
 
 			// Now check the path name
 			if (!topDirectory.endsWith(separator))
@@ -88,8 +91,6 @@ public class RemoteFileBrowser implements FileBrowser {
 
 	/**
 	 * See {@link org.eclipse.ice.commands.FileBrowser#getDirectoryList()}
-	 * 
-	 * @return
 	 */
 	@Override
 	public ArrayList<String> getDirectoryList() {
@@ -98,8 +99,6 @@ public class RemoteFileBrowser implements FileBrowser {
 
 	/**
 	 * See {@link org.eclipse.ice.commands.FileBrowser#getFileList()}
-	 * 
-	 * @return
 	 */
 	@Override
 	public ArrayList<String> getFileList() {

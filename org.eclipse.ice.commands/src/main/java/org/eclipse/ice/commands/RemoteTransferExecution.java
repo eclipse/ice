@@ -60,6 +60,18 @@ public class RemoteTransferExecution {
 	public RemoteTransferExecution() {
 	}
 
+	/**
+	 * This function actually performs the logic to transfer a file over an sftp
+	 * channel to or from a remote host, given a particular handle type.
+	 * 
+	 * @param connection   - Connection over which to transfer files
+	 * @param source       - source path
+	 * @param destination  - destination path
+	 * @param permissions  - permissions for the remote file (if the file
+	 *                     destination is remote)
+	 * @param transferType - the HandleType indicating what kind of transfer it is
+	 * @return - CommandStatus indicating whether or not the transfer was successful
+	 */
 	protected CommandStatus executeTransfer(Connection connection, String source, String destination, int permissions,
 			HandleType transferType) {
 		try {
@@ -78,7 +90,7 @@ public class RemoteTransferExecution {
 
 			// If permissions was actually instantiated and isn't the default, then perform
 			// a chmod
-			if (permissions != -999) {
+			if (permissions != -999 && transferType != HandleType.remoteLocal) {
 				SftpClient channel = connection.getSftpChannel();
 				Attributes attrs = channel.stat(destination);
 				attrs.setPermissions(permissions);
@@ -100,7 +112,10 @@ public class RemoteTransferExecution {
 	 * copy a file from one location on the remote host to another location on the
 	 * remote host.
 	 * 
-	 * @throws JSchException
+	 * @param connection  - Connection with which to transfer
+	 * @param source      - source path
+	 * @param destination - destination path
+	 * @throws IOException
 	 */
 	private void transferRemoteToRemote(Connection connection, String source, String destination) throws IOException {
 		// Make a transfer command to execute
@@ -114,61 +129,62 @@ public class RemoteTransferExecution {
 		// Set the command for the JSch connection
 		connection.getSession().executeRemoteCommand(command);
 	}
-	
+
 	/**
-	 * Transfers a local file to the remote host. If the remote destination is a directory, a file with the
-	 * same name as the local file will be created in the directory.
+	 * Transfers a local file to the remote host. If the remote destination is a
+	 * directory, a file with the same name as the local file will be created in the
+	 * directory.
 	 * 
-	 * @param connection
-	 * @param src
-	 * @param dest
+	 * @param connection  - Connection with which to transfer
+	 * @param source      - source path
+	 * @param destination - destination path
 	 * @throws IOException
 	 */
-	private void transferLocalToRemote(Connection connection, String src, String dest) throws IOException {
+	private void transferLocalToRemote(Connection connection, String source, String destination) throws IOException {
 		SftpClient client = connection.getSftpChannel();
 		try {
-			if (client.stat(dest).isDirectory()) {
-				Path path = FileSystems.getDefault().getPath(src);
+			if (client.stat(destination).isDirectory()) {
+				Path path = FileSystems.getDefault().getPath(source);
 				String sep = "";
-				if (!dest.endsWith("/")) {
+				if (!destination.endsWith("/")) {
 					sep = "/";
 				}
-				dest += sep + path.getFileName();
-			}	
+				destination += sep + path.getFileName();
+			}
 		} catch (SftpException e) {
-            if (!(e.getStatus() == SftpConstants.SSH_FX_NO_SUCH_FILE)) {
-                throw e;
-            }
-        }
-		try (OutputStream dstStream = client.write(dest, OpenMode.Create, OpenMode.Write, OpenMode.Truncate)) {
-			try (InputStream srcStream = new FileInputStream(src)) {
-				byte[] buf = new byte[32*1024];
+			if (!(e.getStatus() == SftpConstants.SSH_FX_NO_SUCH_FILE)) {
+				throw e;
+			}
+		}
+		try (OutputStream dstStream = client.write(destination, OpenMode.Create, OpenMode.Write, OpenMode.Truncate)) {
+			try (InputStream srcStream = new FileInputStream(source)) {
+				byte[] buf = new byte[32 * 1024];
 				while (srcStream.read(buf) > 0) {
 					dstStream.write(buf);
 				}
 			}
 		}
 	}
-	
-	
+
 	/**
-	 * Transfers a remote file to the local host. If the destination is a directory, a file with the
-	 * same name as the remote file will be created in the directory.
+	 * Transfers a remote file to the local host. If the destination is a directory,
+	 * a file with the same name as the remote file will be created in the
+	 * directory.
 	 * 
-	 * @param connection
-	 * @param src
-	 * @param dest
+	 * @param connection  - Connection with which to transfer
+	 * @param source      - source path
+	 * @param destination - destination path
 	 * @throws IOException
 	 */
-	private void transferRemoteToLocal(Connection connection, String src, String dest) throws IOException {
-		Path dstPath = FileSystems.getDefault().getPath(dest);
+	private void transferRemoteToLocal(Connection connection, String source, String destination) throws IOException {
+		Path dstPath = FileSystems.getDefault().getPath(destination);
 		if (dstPath.toFile().isDirectory()) {
-			String[] tokens = src.split("/");
+			String[] tokens = source.split("/");
 			dstPath = dstPath.resolve(tokens[tokens.length - 1]);
 		}
 		try (OutputStream dstStream = Files.newOutputStream(dstPath)) {
-			try (InputStream srcStream = connection.getSftpChannel().read(src, OpenMode.Read)) {
-				byte[] buf = new byte[32*1024];
+			try (InputStream srcStream = connection.getSftpChannel().read(source, OpenMode.Read)) {
+				byte[] buf = new byte[32 * 1024];
 				while (srcStream.read(buf) > 0) {
 					dstStream.write(buf);
 				}
@@ -180,7 +196,7 @@ public class RemoteTransferExecution {
 	 * Setter function to tell the class whether or not the transfer is a move or a
 	 * copy
 	 * 
-	 * @param isMove
+	 * @param isMove - true if it is a move, false if it is a copy
 	 */
 	protected void isMove(boolean isMove) {
 		this.isMove = isMove;

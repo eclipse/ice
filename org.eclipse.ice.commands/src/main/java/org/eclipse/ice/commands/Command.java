@@ -161,7 +161,7 @@ public abstract class Command {
 	 * This function is intended to clean up any (possible) remaining loose ends
 	 * after the job is finished processing.
 	 * 
-	 * @return
+	 * @return CommandStatus - indicating that the configuration completed clean up
 	 */
 	protected CommandStatus cleanUp() {
 
@@ -182,7 +182,7 @@ public abstract class Command {
 	 * log/error information.
 	 * 
 	 * @return - CommandStatus indicating that configuration completed and job can
-	 *         start running
+	 *           start running
 	 */
 	protected CommandStatus setConfiguration() {
 
@@ -330,7 +330,7 @@ public abstract class Command {
 	 * This function is a simple helper function to check and make sure that the
 	 * command status is not set to a flagged error, e.g. failed.
 	 * 
-	 * @param current_status
+	 * @param current_status to be checked
 	 * @return boolean indicating whether or not status is good to continue (true)
 	 *         or whether or not job has failed (returns false)
 	 */
@@ -371,7 +371,7 @@ public abstract class Command {
 	 * This function returns to the user the configuration that was used to create a
 	 * particular command.
 	 * 
-	 * @return - the particular configuration for this command
+	 * @return - the particular CommandConfiguration for this command
 	 */
 	public CommandConfiguration getCommandConfiguration() {
 		return commandConfig;
@@ -380,7 +380,7 @@ public abstract class Command {
 	/**
 	 * This function sets the command configuration for a particular command
 	 * 
-	 * @param config
+	 * @param commandConfig - CommandConfiguration to be set
 	 */
 	public void setCommandConfiguration(CommandConfiguration commandConfig) {
 		this.commandConfig = commandConfig;
@@ -400,7 +400,7 @@ public abstract class Command {
 	 * This function sets the configuration that is to be used to set up a
 	 * particular connection.
 	 * 
-	 * @param connect
+	 * @param connectionConfig - ConnectionConfiguration to be set
 	 */
 	public void setConnectionConfiguration(ConnectionConfiguration connectionConfig) {
 		this.connectionConfig = connectionConfig;

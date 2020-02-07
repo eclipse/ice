@@ -42,14 +42,15 @@ public class TxtFileConnectionAuthorizationHandler extends ConnectionAuthorizati
 	}
 
 	/**
-	 * No options required for console authorization
-	 * See {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#setOption(String)}
+	 * No options required for console authorization See
+	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#setOption(String)}
 	 */
 	@Override
 	public void setOption(String option) {
 		this.path = option;
 		setUsernameHostname();
 	}
+
 	/**
 	 * See
 	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#getPassword()}
@@ -82,14 +83,14 @@ public class TxtFileConnectionAuthorizationHandler extends ConnectionAuthorizati
 		Scanner scanner = null;
 		try {
 			scanner = new Scanner(credFile);
-			
+
 			username = scanner.next();
 			// Get the next line, and then set it to null so that it is picked up by the
 			// garbage collector and erased
 			char[] password = scanner.next().toCharArray();
 			// Erase contents of pwd and fill with null
 			Arrays.fill(password, Character.MIN_VALUE);
-	
+
 			hostname = scanner.next();
 		} catch (FileNotFoundException e) {
 			logger.error("A path was given where the ssh credentials live, but that path doesn't exist!", e);
@@ -101,7 +102,7 @@ public class TxtFileConnectionAuthorizationHandler extends ConnectionAuthorizati
 	 * Getter for
 	 * {@link org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler#path}
 	 * 
-	 * @return
+	 * @return path - string of path to text file
 	 */
 	public String getPath() {
 		return path;
@@ -111,7 +112,8 @@ public class TxtFileConnectionAuthorizationHandler extends ConnectionAuthorizati
 	 * Setter for
 	 * {@link org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler#path}
 	 * Also then sets the username and hostname to that defined by the new path
-	 * @param
+	 * 
+	 * @param path - string of path to set
 	 */
 	public void setPath(String path) {
 		this.path = path;

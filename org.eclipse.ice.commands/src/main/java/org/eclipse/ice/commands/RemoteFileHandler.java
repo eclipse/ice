@@ -25,8 +25,6 @@ import org.apache.sshd.client.subsystem.sftp.SftpClientFactory;
  *
  */
 
-
-
 public class RemoteFileHandler extends FileHandler {
 
 	/**
@@ -48,7 +46,7 @@ public class RemoteFileHandler extends FileHandler {
 	 * checks if the connection is already open, and if it is not it calls the
 	 * connection manager to open the connection
 	 * 
-	 * @param config
+	 * @param config - ConnectionConfiguration for file transferring
 	 */
 	public void setConnectionConfiguration(ConnectionConfiguration config) {
 		// Get the connection manager and open the connection in constructor so that it
@@ -95,8 +93,7 @@ public class RemoteFileHandler extends FileHandler {
 			if (isLocal(file)) {
 				// If the file can be found locally, return true since we found it.
 				// Up to checkExistence to determine what kind of move this is (e.g.
-				// local->remote
-				// or vice versa)
+				// local->remote or vice versa)
 				return true;
 			} else {
 				return false;
@@ -156,6 +153,9 @@ public class RemoteFileHandler extends FileHandler {
 	 * determines what kind of remote move it is, i.e. which direction the move is
 	 * going (local --> remote, remote --> local, remote --> remote, etc.)
 	 * 
+	 * Alternatively, the move can be set by the client using
+	 * {@link org.eclipse.ice.commands.RemoteFileHandler#setHandleType(HandleType)}
+	 * 
 	 * @throws JSchException
 	 */
 	@Override
@@ -178,19 +178,19 @@ public class RemoteFileHandler extends FileHandler {
 
 		// If the user set the handle type explicitly, check their existence
 		// and return if they are confirmed to exist
-		if(HANDLE_TYPE != null) {
-			if(HANDLE_TYPE == HandleType.localRemote) {
-				if(isLocal(source) && exists(destination))
+		if (HANDLE_TYPE != null) {
+			if (HANDLE_TYPE == HandleType.localRemote) {
+				if (isLocal(source) && exists(destination))
 					return;
 			} else if (HANDLE_TYPE == HandleType.remoteLocal) {
-				if(isLocal(destination) && exists(source))
+				if (isLocal(destination) && exists(source))
 					return;
 			} else {
-				if(exists(destination) && exists(source))
+				if (exists(destination) && exists(source))
 					return;
 			}
 		}
-		
+
 		// Otherwise try and figure out what kind of file transfer is
 		// If the source is local, then try a local --> remote handle
 		if (isLocal(source)) {
@@ -252,8 +252,8 @@ public class RemoteFileHandler extends FileHandler {
 		}
 
 		// Print out the determined handle type for informational purposes
-		logger.info(
-				"FileHandler is moving/copying " + source + " to " + destination + " with the handle type " + HANDLE_TYPE);
+		logger.info("FileHandler is moving/copying " + source + " to " + destination + " with the handle type "
+				+ HANDLE_TYPE);
 
 	}
 
@@ -309,7 +309,8 @@ public class RemoteFileHandler extends FileHandler {
 	 * normal chmod, and changes it to decimal.
 	 * 
 	 * 
-	 * @param permissions
+	 * @param permissions - String of the permissions to set. Taken as a string
+	 * so that it can be converted to decimal from octal
 	 */
 	public void setPermissions(String permissions) {
 		this.permissions = Integer.parseInt(permissions, 8);
