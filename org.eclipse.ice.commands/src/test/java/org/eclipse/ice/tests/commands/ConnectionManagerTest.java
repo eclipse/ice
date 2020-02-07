@@ -327,11 +327,11 @@ public class ConnectionManagerTest {
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		String keyPath = System.getProperty("user.home") + "/.ssh/denisovankey";
+		String keyPath = System.getProperty("user.home") + "/.ssh/somekey";
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("keypath",
 				keyPath);
-		auth.setHostname("denisovan");
-		auth.setUsername("4jo");
+		auth.setHostname("hostname");
+		auth.setUsername("password");
 		ConnectionConfiguration config = new ConnectionConfiguration();
 		config.setAuthorization(auth);
 		config.setName("forwardConnection");
