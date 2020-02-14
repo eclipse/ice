@@ -22,7 +22,7 @@ public class ReducerStub {
 		
 		// Send a response to the msgSrc based on processing 
 		
-		
 	}   // end ReducerStub.processMessage()
+
 
 }   // end class ReducerStub

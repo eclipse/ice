@@ -1,5 +1,10 @@
 package org.eclipse.ice.modeling.workflowEngine;
 
+/**
+ * The Procedure hold the set of steps that constitute the workflow.  
+ * My current thinking is that this class does not hold state, only Steps
+ * and Completion Criteria
+ */
 public class Procedure {
 
 	private Step[] steps;    // This should really be a List where steps can be added dynamically
@@ -44,7 +49,6 @@ public class Procedure {
 			return steps[curIndex];
 		}
 	}
-	
 
 	/**
 	 * 
