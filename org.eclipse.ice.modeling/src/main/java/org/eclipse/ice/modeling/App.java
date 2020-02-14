@@ -2,6 +2,8 @@ package org.eclipse.ice.modeling;
 
 /**
  * Hello world!
+ * 
+ * jxh added comment
  *
  */
 public class App 
