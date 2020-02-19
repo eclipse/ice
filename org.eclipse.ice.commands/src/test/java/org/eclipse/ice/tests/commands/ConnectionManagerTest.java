@@ -30,6 +30,7 @@ import org.eclipse.ice.commands.KeyPathConnectionAuthorizationHandler;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -315,6 +316,7 @@ public class ConnectionManagerTest {
 	 * @throws IOException 
 	 */
 	@Test
+	@Ignore // ignore until second dummy host is setup
 	public void testForwardConnection() throws IOException {
 		
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();

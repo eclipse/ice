@@ -39,6 +39,7 @@ import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -154,6 +155,7 @@ public class CommandFactoryTest {
 	 * remote host and then executes on a different remote host. 
 	 */
 	@Test
+	@Ignore // ignore until second host is setup
 	public void testMultiHopRemoteCommand() {
 		System.out.println("\n\n\nTesting a multi-hop remote command");
 		// Set the CommandConfiguration class
