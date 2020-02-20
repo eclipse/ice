@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.sshd.client.channel.ClientChannelEvent;
 import org.apache.sshd.client.subsystem.sftp.SftpClient;
 import org.apache.sshd.client.subsystem.sftp.SftpClient.DirEntry;
@@ -288,7 +288,11 @@ public class RemoteCommand extends Command {
 				// Just log this exception, see if thread can wait next iteration
 				logger.error("Thread couldn't wait for another second while monitoring job...");
 			}
-
+			
+			// If the exit status is null, wait for a minute to see if it can process
+			if(connection.get().getExecChannel().getExitStatus() == null) {
+				continue;
+			}
 			// Query the exit status. 0 is normal completion, everything else is abnormal
 			exitValue = connection.get().getExecChannel().getExitStatus();
 

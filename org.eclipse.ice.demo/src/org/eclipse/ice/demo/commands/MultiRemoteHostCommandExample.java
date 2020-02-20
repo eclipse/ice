@@ -13,14 +13,13 @@ package org.eclipse.ice.demo.commands;
 
 import java.io.IOException;
 
-import org.apache.sshd.client.subsystem.sftp.SftpClient;
+import org.eclipse.ice.commands.Command;
+import org.eclipse.ice.commands.CommandConfiguration;
+import org.eclipse.ice.commands.CommandFactory;
 import org.eclipse.ice.commands.CommandStatus;
-import org.eclipse.ice.commands.Connection;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
-import org.eclipse.ice.commands.ConnectionManager;
-import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.FileHandlerFactory;
 import org.eclipse.ice.commands.IFileHandler;
 
@@ -41,9 +40,10 @@ public class MultiRemoteHostCommandExample {
 
 	/**
 	 * @param args
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
+
 		/**
 		 * We will run this command from host A (your local computer) such that it
 		 * executes a Command on host B to be remotely executed on host C. In this case,
@@ -55,13 +55,10 @@ public class MultiRemoteHostCommandExample {
 		 * remote host assumption we put them there for you
 		 */
 
-		setupHostB();
-
 		// Now we will actually execute the remote command on remote host B, where in
 		// turn the script will execute a command on remote host C.
 		runRemoteCommand();
 
-		
 	}
 
 	/**
@@ -69,35 +66,65 @@ public class MultiRemoteHostCommandExample {
 	 * actually be in. Since this example assumes that you are using an arbitrary
 	 * remote host, the files to run this dummy job would not nominally be on that
 	 * remote host. So we move them there in this function.
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
 	 */
-	private static void setupHostB() throws IOException {
+	private static void runRemoteCommand() throws IOException {
 		// Setup the connection to the host
 		ConnectionConfiguration connectionConfig = createConnection();
 
 		// Setup some strings of files to move
 		String pwd = System.getProperty("user.dir");
 		String workingDir = pwd + "/src/org/eclipse/ice/demo/commands/";
-		String scriptName = "remoteCommand.sh";
+		// This is the script to be run on host B. Need to move it from host A to B
+		// so that the environment is set to run the script which will run scriptName
+		// through Commands
+		String scriptName = "test_code_execution.sh";
 		String inputFileName = "someInputFile.txt";
-		
-		// Get the file handler for moving
-		FileHandlerFactory factory = new FileHandlerFactory();
-		IFileHandler handler = factory.getFileHandler(connectionConfig);
-		
-		// handler will create a new remote directory if the destination
-		// directory doesn't already exist on the remote host B
-		String destination = "/tmp/MultiRemoteHostCommandExample/";
-		System.out.println("\n\n\n\n moving");
-		CommandStatus status = handler.move(workingDir+scriptName, destination);
-		
-		// Check that the file was successful 
-		assert(status == CommandStatus.SUCCESS);
-		System.out.println("\n\n\n\n\n\n\nMoving done with status " + status);
-		status = handler.move(workingDir+inputFileName, destination);
-		
-		assert(status == CommandStatus.SUCCESS);
-	
+		String remoteWorkingDir = "/tmp/remoteRemoteCommand/";
+
+		// We need to explicitly move the script and input file to host B since we don't
+		// want it appended as an argument to the script running on remote host B. The
+		// script remoteCommand.sh will take care of that
+		FileHandlerFactory FHFactory = new FileHandlerFactory();
+		IFileHandler handler = FHFactory.getFileHandler(connectionConfig);
+
+		CommandStatus fileStatus = handler.move(workingDir + inputFileName, remoteWorkingDir);
+
+		assert (fileStatus == CommandStatus.SUCCESS);
+
+		fileStatus = handler.move(workingDir + scriptName, remoteWorkingDir);
+
+		assert (fileStatus == CommandStatus.SUCCESS);
+
+		CommandConfiguration commandConfig = new CommandConfiguration();
+		commandConfig.setNumProcs("1");
+		commandConfig.setInstallDirectory("");
+		commandConfig.setWorkingDirectory(workingDir);
+		commandConfig.setOS(System.getProperty("os.name"));
+		commandConfig.setExecutable("./remoteCommand.sh");
+		commandConfig.setAppendInput(true);
+		commandConfig.setCommandId(1);
+		commandConfig.setErrFileName("RemoteRemoteErr.txt");
+		commandConfig.setOutFileName("RemoteRemoteOut.txt");
+		commandConfig.setRemoteWorkingDirectory(remoteWorkingDir);
+
+		// add arguments that remoteCommand.sh needs to run
+		commandConfig.addArgument("dummy@osbornjd-ice-host.ornl.gov /tmp/remoteDir ~/.ssh/dummykey");
+		CommandFactory factory = new CommandFactory();
+		Command remoteCommand = null;
+		System.out.println("Running remote command");
+		try {
+			remoteCommand = factory.getCommand(commandConfig, connectionConfig);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		CommandStatus status = remoteCommand.execute();
+
+		assert (status == CommandStatus.SUCCESS);
+
+		System.out.println("Finished command \n\n\n\n\n\n\n\n\n\n\n");
 	}
 
 	/**
@@ -111,29 +138,19 @@ public class MultiRemoteHostCommandExample {
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
 		// dummy remote host credentials
-		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				"/tmp/ice-remote-creds.txt");
-		/**
-		 * Alternatively, one can authorize with their password at the console line by
-		 * performing the following set of code
-		 * 
-		 * ConnectionAuthorizationHandler auth =
-		 * authFactory.getConnectionAuthorizationHandler("console");
-		 * auth.setHostname("hostname"); auth.setUsername("username");
-		 */
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("keypath",
+				"/path/to/key");
+		auth.setHostname("host");
+		auth.setUsername("user");
 		// Set it so that the connection can authorize itself
 		connectionConfig.setAuthorization(auth);
 		// Give the connection a name
-		connectionConfig.setName("dummyConnection");
+		connectionConfig.setName("denisovanConnection");
 
 		// Delete the remote working directory once we are finished running the job
 		connectionConfig.deleteWorkingDirectory(true);
 
 		return connectionConfig;
-	}
-
-	private static void runRemoteCommand() {
-
 	}
 
 }
