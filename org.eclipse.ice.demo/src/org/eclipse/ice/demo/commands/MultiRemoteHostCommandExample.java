@@ -39,6 +39,16 @@ import org.eclipse.ice.commands.IFileHandler;
 public class MultiRemoteHostCommandExample {
 
 	/**
+	 * Set these parameters to make the job run to hosts of your choosing
+	 */
+	static String hostB = "host";
+	static String userB = "user";
+	static String hostBKeyPath = "/some/path/to/key";
+	static String hostC = "dummy@osbornjd-ice-host.ornl.gov";
+	// This key exists on host B, connecting B to C
+	static String hostCKeyPath = "~/.ssh/dummyhostkey";
+	
+	/**
 	 * @param args
 	 * @throws IOException
 	 */
@@ -109,11 +119,10 @@ public class MultiRemoteHostCommandExample {
 		commandConfig.setOutFileName("RemoteRemoteOut.txt");
 		commandConfig.setRemoteWorkingDirectory(remoteWorkingDir);
 
-		// add arguments that remoteCommand.sh needs to run
-		commandConfig.addArgument("dummy@osbornjd-ice-host.ornl.gov /tmp/remoteDir ~/.ssh/dummykey");
+		// add arguments that remoteCommand.sh needs to run on host C
+		commandConfig.addArgument(hostC + " /tmp/remoteDir " + hostCKeyPath);
 		CommandFactory factory = new CommandFactory();
 		Command remoteCommand = null;
-		System.out.println("Running remote command");
 		try {
 			remoteCommand = factory.getCommand(commandConfig, connectionConfig);
 		} catch (IOException e) {
@@ -124,11 +133,11 @@ public class MultiRemoteHostCommandExample {
 
 		assert (status == CommandStatus.SUCCESS);
 
-		System.out.println("Finished command \n\n\n\n\n\n\n\n\n\n\n");
+		
 	}
 
 	/**
-	 * Create a connection to the host B, assumed to be osbornjd-ice-host.ornl.gov
+	 * Create a connection to the host B
 	 */
 	private static ConnectionConfiguration createConnection() {
 
@@ -139,13 +148,13 @@ public class MultiRemoteHostCommandExample {
 		// Request a ConnectionAuthorization of type text file which contains the
 		// dummy remote host credentials
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("keypath",
-				"/path/to/key");
-		auth.setHostname("host");
-		auth.setUsername("user");
+				hostBKeyPath);
+		auth.setHostname(hostB);
+		auth.setUsername(userB);
 		// Set it so that the connection can authorize itself
 		connectionConfig.setAuthorization(auth);
 		// Give the connection a name
-		connectionConfig.setName("denisovanConnection");
+		connectionConfig.setName("PCConnection");
 
 		// Delete the remote working directory once we are finished running the job
 		connectionConfig.deleteWorkingDirectory(true);

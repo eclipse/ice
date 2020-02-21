@@ -277,37 +277,39 @@ public class RemoteCommand extends Command {
 		// Poll until the command is complete. If it isn't finished, give it a second
 		// to try and finish up
 
-		while (exitValue != 0) {
+		Collection<ClientChannelEvent> waitMask = connection.get().getExecChannel()
+				.waitFor(EnumSet.of(ClientChannelEvent.CLOSED), 1000L);
+		
+		// Iterate over the channel being not closed. Only a enum of CLOSED
+		// indicates that the job is finished processing
+		while (!waitMask.contains(ClientChannelEvent.CLOSED)) {
 			// First make sure the job hasn't been canceled
 			if (status == CommandStatus.CANCELED)
 				return CommandStatus.CANCELED;
 
-			Collection<ClientChannelEvent> waitMask = connection.get().getExecChannel()
+			// Wait for a new set of return messages from Mina
+			waitMask = connection.get().getExecChannel()
 					.waitFor(EnumSet.of(ClientChannelEvent.CLOSED), 1000L);
+			
+			// If the set contains timeout, then wait another iteration. 
+			// Job is still trying to finish
 			if (waitMask.contains(ClientChannelEvent.TIMEOUT)) {
 				// Just log this exception, see if thread can wait next iteration
-				logger.error("Thread couldn't wait for another second while monitoring job...");
-			}
-			
-			// If the exit status is null, wait for a minute to see if it can process
-			if(connection.get().getExecChannel().getExitStatus() == null) {
+				logger.error("Thread timed out while monitoring job, waiting...");	
 				continue;
-			}
-			// Query the exit status. 0 is normal completion, everything else is abnormal
-			exitValue = connection.get().getExecChannel().getExitStatus();
-
-			// If the connection was closed and the job didn't finish, something bad
-			// happened...
-			if (connection.get().getExecChannel().isClosed() && exitValue != 0) {
-				logger.error("Connection is closed with exit value " + exitValue + ", failed ");
-				return CommandStatus.FAILED;
 			}
 		}
 
+		// Query the exit status. 0 is normal completion, everything else is abnormal
+		exitValue = connection.get().getExecChannel().getExitStatus();
+		
+		
 		// If the job returns anything other than 0, then the job failed. Otherwise
 		// success
-		if (exitValue != 0)
+		if (exitValue != 0) {
+			logger.error("Job finished with abnormal exit status of: " + exitValue);
 			return CommandStatus.FAILED;
+		}
 
 		return CommandStatus.SUCCESS;
 	}
