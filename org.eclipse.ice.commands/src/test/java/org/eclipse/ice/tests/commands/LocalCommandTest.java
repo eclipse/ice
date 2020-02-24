@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,11 +64,6 @@ public class LocalCommandTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-
-		// Use the function already defined in the command factory to get the
-		// local host name
-		CommandFactoryTest factory = new CommandFactoryTest();
-		String hostname = factory.getLocalHostname();
 
 		connection = new ConnectionConfiguration();
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
@@ -128,7 +125,7 @@ public class LocalCommandTest {
 		LocalCommand realCommand = new LocalCommand(connection, commandConfig);
 		CommandStatus testStatus = realCommand.getStatus();
 		System.out.println(testStatus);
-		assert (testStatus == CommandStatus.PROCESSING);
+		assertEquals(CommandStatus.PROCESSING, testStatus);
 		System.out.println("Finished testConfiguration\n");
 
 	}
@@ -167,7 +164,7 @@ public class LocalCommandTest {
 
 		// Check that it completed correctly
 		System.out.println("Command finished with: " + status);
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 	}
 

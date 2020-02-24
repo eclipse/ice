@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -137,7 +140,7 @@ public class LocalMoveFileCommandTest {
 		// Make the command
 		LocalMoveFileCommand command = new LocalMoveFileCommand();
 		command.setConfiguration(source, dest);
-		CommandStatus status = command.execute();
+		command.execute();
 		String filename = "";
 		if (System.getProperty("os.name").toLowerCase().contains("win")) {
 			filename = source.substring(source.lastIndexOf("\\"));
@@ -146,7 +149,7 @@ public class LocalMoveFileCommandTest {
 		}
 		// Check if the path exists now
 		Path path = Paths.get(dest + filename);
-		assert (Files.exists(path));
+		assertTrue(Files.exists(path));
 
 		deleteFiles();
 
@@ -177,11 +180,11 @@ public class LocalMoveFileCommandTest {
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();
 
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 		// Check that the file exists with the new name
 		Path path = Paths.get(dest);
-		assert (Files.exists(path));
+		assertTrue(Files.exists(path));
 
 		deleteFiles();
 	}
@@ -203,11 +206,11 @@ public class LocalMoveFileCommandTest {
 		command.setConfiguration(source, dest);
 		CommandStatus status = command.execute();
 
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 		// Check if the path exists now
 		Path path = Paths.get(dest);
-		assert (Files.exists(path));
+		assertTrue(Files.exists(path));
 
 		deleteFiles();
 		// Delete the extra directory

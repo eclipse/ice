@@ -111,7 +111,7 @@ public class CommandFactoryExample {
 		CommandStatus status = command.execute();
 
 		// Ensure it finished properly
-		assert (status == CommandStatus.SUCCESS);
+		assert (status.equals(CommandStatus.SUCCESS));
 
 		// Clear out the remaining connections to start fresh next example
 		ConnectionManagerFactory.getConnectionManager().removeAllConnections();
@@ -147,7 +147,7 @@ public class CommandFactoryExample {
 
 		CommandStatus status = command.execute();
 
-		assert (status == CommandStatus.SUCCESS);
+		assert (status.equals(CommandStatus.SUCCESS));
 
 		String output = config.getStdOutputString();
 
@@ -182,8 +182,12 @@ public class CommandFactoryExample {
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
 		// dummy remote host credentials
+		String credPath = "/tmp/ice-remote-creds.txt";
+		if(System.getProperty("os.name").toLowerCase().contains("win"))
+			credPath =  "C:\\Users\\Administrator\\ice-remote-creds.txt";
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				"/tmp/ice-remote-creds.txt");
+	           credPath);
+
 		/**
 		 * Alternatively, one can authorize with their password at the console line by
 		 * performing the following set of code
@@ -191,6 +195,9 @@ public class CommandFactoryExample {
 		 * ConnectionAuthorizationHandler auth =
 		 * authFactory.getConnectionAuthorizationHandler("console");
 		 * auth.setHostname("hostname"); auth.setUsername("username");
+		 * 
+		 * One can also use a keypath authorization, see ConnectionAuthorizationHandlerFactory
+		 * for more details
 		 */
 		// Set it so that the connection can authorize itself
 		connectionConfig.setAuthorization(auth);
@@ -246,6 +253,8 @@ public class CommandFactoryExample {
 		commandConfig.setWorkingDirectory(scriptDir);
 		commandConfig.setAppendInput(true);
 		commandConfig.setOS(System.getProperty("os.name"));
+		if(System.getProperty("os.name").toLowerCase().contains("win"))
+			commandConfig.setInterpreter("powershell.exe");
 
 		// Make a ConnectionConfiguration to indicate that we want to run locally
 		ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
@@ -269,7 +278,7 @@ public class CommandFactoryExample {
 		// Run it
 		CommandStatus status = localCommand.execute();
 
-		assert (status == CommandStatus.SUCCESS);
+		assert (status.equals(CommandStatus.SUCCESS));
 
 		// Get a string of the output that is produced from the job
 		String output = commandConfig.getStdOutputString();
@@ -317,8 +326,11 @@ public class CommandFactoryExample {
 		// Get the authorization type. In this case, local, which is basically
 		// equivalent to
 		// "no authorization"
+		String credPath = "/tmp/ice-remote-creds.txt";
+		if(System.getProperty("os.name").toLowerCase().contains("win"))
+			credPath = "C:\\Users\\Administrator\\ice-remote-creds.txt";
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				"/tmp/ice-remote-creds.txt");
+				credPath);
 		// Set the connectionConfig to have access to e.g. the hostname
 		connectionConfig.setAuthorization(auth);
 
@@ -335,7 +347,7 @@ public class CommandFactoryExample {
 
 		CommandStatus status = command.execute();
 
-		assert (status == CommandStatus.SUCCESS);
+		assert (status.equals(CommandStatus.SUCCESS));
 
 		// Clear out the remaining connections to start fresh next example
 		ConnectionManagerFactory.getConnectionManager().removeAllConnections();

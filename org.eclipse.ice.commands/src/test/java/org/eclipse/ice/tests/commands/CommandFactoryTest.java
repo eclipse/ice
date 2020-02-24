@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -19,6 +20,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
+import org.apache.sshd.client.subsystem.sftp.SftpClient;
+import org.apache.sshd.client.subsystem.sftp.SftpClientFactory;
 import org.eclipse.ice.commands.Command;
 import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandFactory;
@@ -36,11 +39,8 @@ import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
-
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.SftpException;
 
 /**
  * This class tests {@link org.eclipse.ice.commands.CommandFactory}.
@@ -124,7 +124,7 @@ public class CommandFactoryTest {
 		rm += " someLsOutFile.txt someLsErrFile.txt someMultRemoteOutFile.txt someMultRemoteErrFile.txt";
 		rm += " somePythOutFile.txt somePythErrFile.txt someLsRemoteErrFile.txt someLsRemoteOutFile.txt";
 		rm += " src/test/java/org/eclipse/ice/tests/someInputFile.txt src/test/java/org/eclipse/ice/tests/someOtherInputFile.txt";
-		rm += " pythOutFile.txt pythErrFile.txt";
+		rm += " pythOutFile.txt pythErrFile.txt hopRemoteOutFile.txt hopRemoteErrFile.txt";
 		ArrayList<String> command = new ArrayList<String>();
 		// Build a command
 		if (System.getProperty("os.name").toLowerCase().contains("win")) {
@@ -152,25 +152,27 @@ public class CommandFactoryTest {
 
 	/**
 	 * This function tests a multi-hop remote command, where the command logs into a
-	 * remote host and then executes on a different remote host. TODO - Commented
-	 * out for now since multi-hop command source code is not implemented and can be
-	 * for future development.
+	 * remote host and then executes on a different remote host. 
 	 */
-	// @Test
+	@Test
+	@Ignore // ignore until second host is setup
 	public void testMultiHopRemoteCommand() {
-		fail("src not implemented");
 		System.out.println("\n\n\nTesting a multi-hop remote command");
 		// Set the CommandConfiguration class
 		CommandConfiguration commandConfig = setupDefaultCommandConfig();
 		commandConfig.setExecutable("./test_code_execution.sh");
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
+		commandConfig.addInputFile("someOtherFile", "someOtherInputFile.txt");
 		commandConfig.setAppendInput(true);
 		commandConfig.setCommandId(99);
 		commandConfig.setErrFileName("hopRemoteErrFile.txt");
 		commandConfig.setOutFileName("hopRemoteOutFile.txt");
+		// This is the directory to run the job on the destination system, i.e.
+		// system C
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
-		// Just put in a dummy directory for now
-		commandConfig.setWorkingDirectory("/home/user/somedirectory");
+		// This is the directory on the jump host which contains the job information
+				// and files, e.g. the script, input files, etc.
+		commandConfig.setWorkingDirectory("/home/4jo/remoteCommandDirectory");
 
 		// Set the connection configuration to a dummy remote connection
 		// This is the connection where the job will be executed
@@ -178,26 +180,34 @@ public class CommandFactoryTest {
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				"/tmp/ice-remote-creds.txt");
+		String keyPath = System.getProperty("user.home") + "/.ssh/somekey";
+		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("keypath",
+				keyPath);
+		auth.setHostname("hostname");
+		auth.setUsername("password");
 		// Set it
-		connectionConfig.setAuthorization(auth);
+		ConnectionConfiguration firstConn = new ConnectionConfiguration();
+		firstConn.setAuthorization(auth);
 
 		// Note the password can be input at the console by not setting the
 		// the password explicitly in the connection configuration
-		connectionConfig.setName("executeConnection");
-		connectionConfig.deleteWorkingDirectory(true);
+		firstConn.setName("hopConnection");
+		firstConn.deleteWorkingDirectory(false);
 
-		ConnectionConfiguration intermConnection = new ConnectionConfiguration();
-		// TODO - this will have to be changed to some other remote connection
-		intermConnection.setAuthorization(auth);
-		intermConnection.setName("intermediateConnection");
-		intermConnection.deleteWorkingDirectory(false);
+		ConnectionConfiguration secondConn = new ConnectionConfiguration();
+		String credFile = "/tmp/ice-remote-creds.txt";
+		if(System.getProperty("os.name").toLowerCase().contains("win"))
+			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		
+		ConnectionAuthorizationHandler intermAuth = authFactory.getConnectionAuthorizationHandler("text",credFile);
+		secondConn.setAuthorization(intermAuth);
+		secondConn.setName("executeConnection");
+		secondConn.deleteWorkingDirectory(false);
 
 		// Get the command
 		Command remoteCommand = null;
 		try {
-			remoteCommand = factory.getCommand(commandConfig, intermConnection, connectionConfig);
+			remoteCommand = factory.getCommand(commandConfig, firstConn, secondConn);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -206,7 +216,7 @@ public class CommandFactoryTest {
 		CommandStatus status = remoteCommand.execute();
 
 		// assert that it was successful
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 	}
 
@@ -253,7 +263,7 @@ public class CommandFactoryTest {
 		CommandStatus status = cmd.execute();
 
 		// Check that it properly finished
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 		System.out.println("Finished boring command locally");
 	}
 
@@ -287,7 +297,7 @@ public class CommandFactoryTest {
 		CommandStatus status = cmd.execute();
 
 		// Assert that it finished correctly
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 	}
 
 	/**
@@ -327,7 +337,7 @@ public class CommandFactoryTest {
 		// Run it
 		CommandStatus status = localCommand.execute();
 
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 		System.out.println("Finished functional local command");
 	}
 
@@ -364,7 +374,7 @@ public class CommandFactoryTest {
 		// Run it and expect that it fails
 		CommandStatus status = localCommand.execute();
 
-		assert (status == CommandStatus.INFOERROR);
+		assertEquals(CommandStatus.INFOERROR, status);
 
 	}
 
@@ -409,7 +419,7 @@ public class CommandFactoryTest {
 		// Run it and expect that it fails
 		CommandStatus status2 = localCommand2.execute();
 
-		assert (status2 == CommandStatus.FAILED);
+		assertEquals(CommandStatus.FAILED, status2);
 	}
 
 	/**
@@ -447,7 +457,7 @@ public class CommandFactoryTest {
 		CommandStatus status = remoteCommand.execute();
 
 		// assert that it was successful
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 		System.out.println("Finished remote functional command");
 
@@ -486,7 +496,7 @@ public class CommandFactoryTest {
 		CommandStatus status = remoteCommand.execute();
 
 		// assert that it was successful
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 		System.out.println("Finished multiple input files remotely");
 	}
 
@@ -529,7 +539,7 @@ public class CommandFactoryTest {
 		// Run it
 		CommandStatus status = localCommand.execute();
 
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 		System.out.println("Finished testing multiple input files locally");
 	}
 
@@ -573,8 +583,7 @@ public class CommandFactoryTest {
 
 		CommandStatus status = command.execute();
 
-		assert (status == CommandStatus.SUCCESS);
-		System.out.println("finished python script test");
+		assertEquals(CommandStatus.SUCCESS, status);
 	}
 
 	/**
@@ -584,11 +593,10 @@ public class CommandFactoryTest {
 	@Test
 	public void testRemoteExecutableLocalInputFiles() {
 		System.out.println("Testing command where files live on different hosts.");
-		
+
 		// Get the dummy connection configuration
 		ConnectionConfiguration connectionConfig = setupDummyConnectionConfiguration();
 
-		
 		// Get the present working directory
 		String pwd = System.getProperty("user.dir");
 
@@ -606,12 +614,11 @@ public class CommandFactoryTest {
 		RemoteFileHandler remoteHandler = new RemoteFileHandler();
 		remoteHandler.setConnectionConfiguration(connectionConfig);
 		remoteHandler.copy(inputFileDir + "commands/test_python_script.py", "/tmp/test_python_script.py");
-		
+
 		// Create a command configuration corresponding to a python script
 		CommandConfiguration configuration = setupDefaultCommandConfig();
 		// This path exists on the dummy host server
-		configuration.setExecutable(
-				"/tmp/test_python_script.py");
+		configuration.setExecutable("/tmp/test_python_script.py");
 		configuration.setInterpreter("python");
 		configuration.setCommandId(9);
 		configuration.setErrFileName("pythErrFile.txt");
@@ -622,7 +629,6 @@ public class CommandFactoryTest {
 		configuration.addInputFile("inputfile2", "someOtherInputFile.txt");
 		configuration.setRemoteWorkingDirectory("/tmp/pythonTest");
 
-	
 		// Get the command and run it
 		Command command = null;
 		try {
@@ -633,24 +639,24 @@ public class CommandFactoryTest {
 
 		CommandStatus status = command.execute();
 
-		assert (status == CommandStatus.SUCCESS);
-		
+		assertEquals(CommandStatus.SUCCESS, status);
+
 		// Delete the moved python script on the remote server once finished
 		// Get the connection and channel to delete
-		Connection connection = ((RemoteCommand)command).getConnection();
+		Connection connection = ((RemoteCommand) command).getConnection();
 		// Delete the script
 		try {
+			SftpClient client = SftpClientFactory.instance().createSftpClient(connection.getSession());
 			// open the channel
-			connection.setSftpChannel(connection.getSession().openChannel("sftp"));
-			ChannelSftp channel = connection.getSftpChannel();
+			connection.setSftpChannel(client);
+			SftpClient channel = connection.getSftpChannel();
 			// connect and delete the script
-			channel.connect();
-			channel.rm("/tmp/test_python_script.py");
-			channel.disconnect();
-		} catch (JSchException | SftpException e1) {
+			channel.remove("/tmp/test_python_script.py");
+			channel.close();
+		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		System.out.println("finished python script test");
 
 	}

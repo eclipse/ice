@@ -40,7 +40,7 @@ public class ConsoleEraser extends Thread {
 
 			// Wait for the next character
 			try {
-				Thread.currentThread().sleep(1);
+				Thread.sleep(1);
 			} catch (InterruptedException e) {
 				break;
 			}

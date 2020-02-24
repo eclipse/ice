@@ -1,5 +1,4 @@
-/**
- * /*******************************************************************************
+/*******************************************************************************
  * Copyright (c) 2019- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,18 +12,25 @@
 package org.eclipse.ice.commands;
 
 import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.SftpException;
+import org.apache.sshd.client.channel.ClientChannelEvent;
+import org.apache.sshd.client.subsystem.sftp.SftpClient;
+import org.apache.sshd.client.subsystem.sftp.SftpClient.DirEntry;
+import org.apache.sshd.client.subsystem.sftp.SftpClientFactory;
+import org.apache.sshd.common.subsystem.sftp.SftpException;
 
 /**
  * This class inherits from Command and gives available functionality for remote
@@ -92,10 +98,10 @@ public class RemoteCommand extends Command {
 	/**
 	 * Opens and sets a connection based on what was passed in the constructor. This
 	 * function first checks if a connection with the same name is already available
-	 * in the connection manager, and if so, grabs it. Otherwise, it opens a new 
-	 * connection with the provided information.
-	 * Function is public so that if a user wants to reset the connection for a 
-	 * particular command, they have the option to.
+	 * in the connection manager, and if so, grabs it. Otherwise, it opens a new
+	 * connection with the provided information. Function is public so that if a
+	 * user wants to reset the connection for a particular command, they have the
+	 * option to.
 	 */
 	public void openAndSetConnection() {
 		// Open and set the connection(s)
@@ -103,14 +109,13 @@ public class RemoteCommand extends Command {
 			if (manager.getConnection(connectionConfig.getName()) == null) {
 				connection.set(manager.openConnection(connectionConfig));
 			} else {
-				if(connection.get().getSession() != null &&
-						connection.get().getSession().isConnected()) {
+				if (connection.get().getSession() != null && connection.get().getSession().isOpen()) {
 					connection.set(manager.getConnection(connectionConfig.getName()));
 					// Make sure the connections are starting fresh from scratch
 					if (connection.get().getExecChannel() != null)
-						connection.get().getExecChannel().disconnect();
+						connection.get().getExecChannel().close();
 					if (connection.get().getSftpChannel() != null)
-						connection.get().getSftpChannel().disconnect();
+						connection.get().getSftpChannel().close();
 				} else {
 					connection.set(manager.openConnection(connectionConfig));
 				}
@@ -122,15 +127,14 @@ public class RemoteCommand extends Command {
 
 			// If there is an extra connection so that we are multi-hopping, then open it
 			// too
-			// TODO - the multi-hop API isn't implemented yet - need to work on it
 			ConnectionConfiguration secondConfig = secondConnection.get().getConfiguration();
 			if (secondConfig != null) {
-				secondConnection.set(manager.openConnection(secondConfig));
+				secondConnection.set(manager.openForwardingConnection(connection.get(),secondConfig));
 				// Set the commandConfig hostname to be the extra connection, since this is
 				// really where the job will run
 				commandConfig.setHostname(secondConnection.get().getConfiguration().getAuthorization().getHostname());
 			}
-		} catch (JSchException e) {
+		} catch (IOException e) {
 			// If the connection(s) can't be opened, we can't be expected to execute a job
 			// remotely!
 			status = CommandStatus.INFOERROR;
@@ -138,7 +142,8 @@ public class RemoteCommand extends Command {
 			logger.error("Returning info error", e);
 			return;
 		}
-
+		
+		return;
 	}
 
 	/**
@@ -152,7 +157,7 @@ public class RemoteCommand extends Command {
 		// error
 		try {
 			status = transferFiles();
-		} catch (SftpException | JSchException | IOException e) {
+		} catch (IOException e) {
 			logger.error("File transfer error, could not complete file transfers to remote host. Exiting.");
 			logger.error("Returning info error", e);
 			return CommandStatus.INFOERROR;
@@ -187,8 +192,6 @@ public class RemoteCommand extends Command {
 	 * then disconnects the remote channel to finish up the job processing.
 	 * 
 	 * See also {@link org.eclipse.ice.commands.Command#finishJob()}
-	 * 
-	 * @return CommandStatus
 	 */
 	@Override
 	protected CommandStatus finishJob() {
@@ -198,12 +201,11 @@ public class RemoteCommand extends Command {
 			try {
 				// Open an sftp channel so that we can ls the contents of the path
 
-				ChannelSftp channel = (ChannelSftp) connection.get().getSession().openChannel("sftp");
-				channel.connect();
+				SftpClient client = SftpClientFactory.instance().createSftpClient(connection.get().getSession());
 				// Delete the directory and all of the contents
-				deleteRemoteDirectory(channel, commandConfig.getRemoteWorkingDirectory());
-				channel.disconnect();
-			} catch (JSchException | SftpException e) {
+				deleteRemoteDirectory(client, commandConfig.getRemoteWorkingDirectory());
+				client.close();
+			} catch (IOException e) {
 				// This exception just needs to be logged, since it is not harmful to
 				// the job processing in any way
 				logger.warn("Unable to delete remote directory tree.");
@@ -211,16 +213,58 @@ public class RemoteCommand extends Command {
 		}
 
 		// Disconnect the channels and return success
-		connection.get().getExecChannel().disconnect();
-		connection.get().getSftpChannel().disconnect();
+		try {
+			connection.get().getExecChannel().close();
+		} catch (IOException e) {
+			logger.error(e.getLocalizedMessage());
+		}
+		try {
+			connection.get().getSftpChannel().close();
+		} catch (IOException e) {
+			logger.error(e.getLocalizedMessage());
+		}
 
 		// Don't disconnect the session in the event that a user wants to run multiple
-		// jobs over the same session. Let session management be handled by the connection manager
+		// jobs over the same session. Let session management be handled by the
+		// connection manager
 
 		/**
-		 * Note that output doesn't have to explicitly be logged - JSch takes care of
+		 * Note that output doesn't have to explicitly be logged - Mina takes care of
 		 * this for you in {@link org.eclipse.ice.commands.RemoteCommand#loopCommands}
+		 * However we set the strings in CommandConfiguration here since Mina only logs
+		 * the output to the files
 		 */
+		String stdOutFileName = commandConfig.getOutFileName();
+		String stdErrFileName = commandConfig.getErrFileName();
+
+		File outfile = new File(stdOutFileName);
+		File errfile = new File(stdErrFileName);
+		try {
+			FileReader outreader = new FileReader(outfile);
+			BufferedReader outbr = new BufferedReader(outreader);
+			String line;
+			// Read in each line
+			while ((line = outbr.readLine()) != null) {
+				// Commented lines by definition begin with #, so skip these
+				if (!line.startsWith("#"))
+					commandConfig.addToStdOutputString(line);
+			}
+			// Close the reader
+			outbr.close();
+
+			// Repeat the same process for the error file
+			FileReader errreader = new FileReader(errfile);
+			BufferedReader errbr = new BufferedReader(errreader);
+			line = null;
+			while ((line = errbr.readLine()) != null) {
+				if (!line.startsWith("#"))
+					commandConfig.addToStdOutputString(line);
+			}
+			errbr.close();
+
+		} catch (IOException e) {
+			logger.error(e.getLocalizedMessage());
+		}
 
 		return CommandStatus.SUCCESS;
 	}
@@ -233,33 +277,39 @@ public class RemoteCommand extends Command {
 		// Poll until the command is complete. If it isn't finished, give it a second
 		// to try and finish up
 
-		while (exitValue != 0) {
+		Collection<ClientChannelEvent> waitMask = connection.get().getExecChannel()
+				.waitFor(EnumSet.of(ClientChannelEvent.CLOSED), 1000L);
+		
+		// Iterate over the channel being not closed. Only a enum of CLOSED
+		// indicates that the job is finished processing
+		while (!waitMask.contains(ClientChannelEvent.CLOSED)) {
 			// First make sure the job hasn't been canceled
-			if(status == CommandStatus.CANCELED)
+			if (status == CommandStatus.CANCELED)
 				return CommandStatus.CANCELED;
-			
-			try {
-				// Give it a second to finish up
-				Thread.currentThread().sleep(1000);
-			} catch (InterruptedException e) {
-				// Just log this exception, see if thread can wait next iteration
-				logger.error("Thread couldn't wait for another second while monitoring job...", e);
-			}
-			// Query the exit status. 0 is normal completion, everything else is abnormal
-			exitValue = connection.get().getExecChannel().getExitStatus();
 
-			// If the connection was closed and the job didn't finish, something bad
-			// happened...
-			if (connection.get().getExecChannel().isClosed() && exitValue != 0) {
-				logger.error("Connection is closed with exit value " + exitValue + ", failed ");
-				return CommandStatus.FAILED;
+			// Wait for a new set of return messages from Mina
+			waitMask = connection.get().getExecChannel()
+					.waitFor(EnumSet.of(ClientChannelEvent.CLOSED), 1000L);
+			
+			// If the set contains timeout, then wait another iteration. 
+			// Job is still trying to finish
+			if (waitMask.contains(ClientChannelEvent.TIMEOUT)) {
+				// Just log this exception, see if thread can wait next iteration
+				logger.error("Thread timed out while monitoring job, waiting...");	
+				continue;
 			}
 		}
 
+		// Query the exit status. 0 is normal completion, everything else is abnormal
+		exitValue = connection.get().getExecChannel().getExitStatus();
+		
+		
 		// If the job returns anything other than 0, then the job failed. Otherwise
 		// success
-		if (exitValue != 0)
+		if (exitValue != 0) {
+			logger.error("Job finished with abnormal exit status of: " + exitValue);
 			return CommandStatus.FAILED;
+		}
 
 		return CommandStatus.SUCCESS;
 	}
@@ -293,32 +343,22 @@ public class RemoteCommand extends Command {
 
 		// Now loop over all commands and run them via JSch
 		for (int i = 0; i < completeCommands.size(); i++) {
-			// Open the channel for the executable to be run on
+			// Give the command to the channel connection
+			String thisCommand = completeCommands.get(i);
+
 			try {
-				connection.get().setExecChannel(connection.get().getSession().openChannel("exec"));
-			} catch (JSchException e) {
-				logger.error("Execution channel could not be opened over JSch... Returning failed.", e);
+				connection.get().setExecChannel(connection.get().getSession().createExecChannel(thisCommand));
+			} catch (IOException e) {
+				logger.error("Execution channel could not be opened... Returning failed.", e);
 				// If it can't be opened, fail
 				return CommandStatus.FAILED;
 			}
 
-			// Give the command to the channel connection
-			String thisCommand = completeCommands.get(i);
-			connection.get().getExecChannel().setCommand(thisCommand);
-
 			logger.info("Executing command: " + thisCommand + " remotely in the working directory "
 					+ commandConfig.getRemoteWorkingDirectory());
 
-			// Set up the input stream
-			connection.get().getExecChannel().setInputStream(null);
-			try {
-				// Set the input stream for the connection object
-				connection.get().setInputStream(connection.get().getExecChannel().getInputStream());
-			} catch (IOException e) {
-				logger.error("Input stream could not be set in JSch... Returning failed.", e);
-				// If we can't set the input stream, fail
-				return CommandStatus.FAILED;
-			}
+			connection.get().getExecChannel().setIn(null);
+			connection.get().setInputStream(connection.get().getExecChannel().getIn());
 
 			// Setup the output streams and pass them to the connection channel
 			try {
@@ -326,39 +366,91 @@ public class RemoteCommand extends Command {
 				stdOutStream = new FileOutputStream(commandConfig.getOutFileName(), true);
 				BufferedOutputStream stdOutBufferedStream = new BufferedOutputStream(stdOutStream);
 				// Give the streams to the channel now that their names are appropriately set
-				connection.get().getExecChannel().setOutputStream(stdOutBufferedStream);
-				connection.get().getExecChannel().setErrStream(stdErrStream);
-			} catch (FileNotFoundException e) {
-				logger.error("Logging streams could not be set in JSch... Returning failed.", e);
-				// If logging streams can't be set, return failed since we won't be
-				// able to see if job was successful or not
+				connection.get().getExecChannel().setOut(stdOutBufferedStream);
+				connection.get().getExecChannel().setErr(stdErrStream);
+			} catch (IOException e) {
+				logger.error(e.getLocalizedMessage());
 				return CommandStatus.FAILED;
 			}
 
-			// Make sure the channel is connected
 			try {
-				//logger.info("Session is connected: " + connection.get().getSession().isConnected());
-				//logger.info("Channel is connected: " + connection.get().getExecChannel().isConnected());
-				//logger.info("Channel is closed: " + connection.get().getExecChannel().isClosed());
-
-				// Connect and run the executable
-				connection.get().getExecChannel().connect();
-
-				// Log the output and error streams
-				logOutput(connection.get().getExecChannel().getInputStream(),
-						connection.get().getExecChannel().getErrStream());
-			} catch (JSchException e) {
-				logger.error("Couldn't connect the channel to run the executable! Returning failed.", e);
-				return CommandStatus.FAILED;
+				connection.get().getExecChannel().open().verify();
 			} catch (IOException e) {
-				logger.error("Couldn't log the output! Returning failed.", e);
-				return CommandStatus.FAILED;
+				e.printStackTrace();
 			}
 		}
 
 		return CommandStatus.RUNNING;
 	}
 
+	/**
+	 * This function is responsible for setting up the file transfer logic,
+	 * depending on whether or not this is a regular remote command or a jump host
+	 * command. It is called from run and executes the logic in
+	 * {@link org.eclipse.ice.commands.RemoteCommand#transferFiles(ConnectionConfiguration, String, String)}
+	 * 
+	 * @return - CommandStatus indicating whether or not the transfer(s) were
+	 *         successful
+	 * @throws IOException
+	 * @throws SftpException
+	 * @throws JSchException
+	 */
+	protected CommandStatus transferFiles() throws IOException {
+		/**
+		 * If we have a jump host connection then we need to transfer the files from the
+		 * intermediary host to the local host first, and then transfer them from the
+		 * local host through the forwarded connection. In other words, the file
+		 * transferring goes from (in the case of System A --> System B --> System C
+		 * where B is the jump host and C is the destination host):
+		 * 
+		 * System B --> System A - transfer the files to a local temp directory, System A
+		 * --> System C - transfer the files from the local temp directory through the
+		 * forwarded connection
+		 */
+		// So first we will transfer from the jump host
+		if (secondConnection.get().getConfiguration() != null) {
+			// Create a temporary local directory to move files from the jump host to
+			// the local host
+			Path tempLocalDir = Files.createTempDirectory("tempJumpDir");
+
+			status = transferFiles(connectionConfig, commandConfig.getWorkingDirectory(), tempLocalDir.toString());
+			// Check that this transfer completed successfully before moving to
+			// transfer from A --> C
+			if (!checkStatus(status))
+				return CommandStatus.FAILED;
+			// Set the working directory to be the temporary local directory that
+			// was created, so that the rest of the command operates as normal
+			// from a local host to a remote host with this new temporary directory
+			status = transferFiles(secondConnection.get().getConfiguration(),
+					tempLocalDir.toString(),
+					commandConfig.getRemoteWorkingDirectory());
+
+			// Delete the local temp file once finished moving to the destination host
+			File localTempFile = new File(tempLocalDir.toString());
+			boolean delete = deleteLocalDirectory(localTempFile);
+			if (!delete) {
+				logger.warn("Temporary directory at " + tempLocalDir.toString() + " couldn't be completely deleted.");
+			}
+			/**
+			 * In order for the rest of the code base to use the forwarded connection as the
+			 * job processing connection, we need to set the main connection of the class,
+			 * i.e. {@link org.eclipse.ice.commands.Command#connection} as the forwarded
+			 * connection
+			 */
+			connection = secondConnection;
+
+		} else {
+			// If this is not a jump host case, then just move the files from the local
+			// working directory to the remote host like normal
+			status = transferFiles(connectionConfig, commandConfig.getWorkingDirectory(),
+					commandConfig.getRemoteWorkingDirectory());
+		}
+
+		return status;
+	}
+
+
+	
 	/**
 	 * This function is responsible for transferring the files to the remote host.
 	 * It utilizes the file handling API in this package
@@ -368,16 +460,21 @@ public class RemoteCommand extends Command {
 	 * @throws JSchException
 	 * @throws IOException
 	 */
-	protected CommandStatus transferFiles() throws SftpException, JSchException, IOException {
+	protected CommandStatus transferFiles(ConnectionConfiguration config, String sourceDir, String destDir) throws IOException {
 
+		String sourceSep = "/";
+		String destSep = "/";
+
+		// Figure out what the separators are, depending on windows/*nix
+		if(sourceDir.contains("\\"))
+			sourceSep = "\\";
+		if(destDir.contains("\\"))
+			destSep = "\\";
+		
 		// Set up a remote file handler to transfer the files
 		RemoteFileHandler handler = new RemoteFileHandler();
 		// Give the handler the same connection as this command
-		handler.setConnectionConfiguration(connectionConfig);
-
-		// Get the directories where files live/should go
-		String remoteWorkingDirectory = commandConfig.getRemoteWorkingDirectory();
-		String workingDirectory = commandConfig.getWorkingDirectory();
+		handler.setConnectionConfiguration(config);
 
 		// Get the executable to concatenate
 		String shortExecName = commandConfig.getExecutable();
@@ -388,14 +485,21 @@ public class RemoteCommand extends Command {
 		else if (shortExecName.contains("\\"))
 			shortExecName = shortExecName.substring(shortExecName.lastIndexOf("\\") + 1);
 
+		// Check that the source directory ends with the right separator
+		if(!sourceDir.endsWith(sourceSep))
+			sourceDir += sourceSep;
+		
 		// Do the same for the destination
-		if (!remoteWorkingDirectory.endsWith("/"))
-			remoteWorkingDirectory += "/";
+		if (!destDir.endsWith(destSep))
+			destDir += destSep;
 
 		// Build the source and destination paths
-		String source = workingDirectory + shortExecName;
-		String destination = remoteWorkingDirectory + shortExecName;
+		String source = sourceDir + shortExecName;
+		String destination = destDir + shortExecName;
 
+		logger.info("Trying to transfer " + source + " to " + destination +
+				" over connection " + config.getName());
+		
 		CommandStatus fileTransfer = null;
 		// Check if the source file exists. If the executable is a script, then it will
 		// transfer it to the host. If it is just a command (e.g. ls) then it will skip
@@ -431,11 +535,10 @@ public class RemoteCommand extends Command {
 
 			// Now have the full paths, so transfer the files per the logger messages
 			// Put the inputfile to the remote directory. Use a null object for receiving
-			// notifications about
-			// the progress of the transfer and use 0 to overwrite the files if they exist
-			// there already
-			source = workingDirectory + shortInputName;
-			destination = remoteWorkingDirectory + shortInputName;
+			// notifications about the progress of the transfer and use 0 to overwrite 
+			// the files if they exist there already
+			source = sourceDir + shortInputName;
+			destination = destDir + shortInputName;
 			fileTransfer = handler.copy(source, destination);
 			if (fileTransfer != CommandStatus.SUCCESS) {
 				logger.error("Couldn't transfer " + source + " to remote host!");
@@ -456,16 +559,13 @@ public class RemoteCommand extends Command {
 	 * @param path        - top directory to delete
 	 * @throws SftpException
 	 */
-	private void deleteRemoteDirectory(ChannelSftp sftpChannel, String path) throws SftpException {
-
-		// Get the path's directory structure
-		Collection<ChannelSftp.LsEntry> fileList = sftpChannel.ls(path);
+	private void deleteRemoteDirectory(SftpClient sftpChannel, String path) throws IOException {
 
 		// Iterate through the list to get the file/directory names
-		for (ChannelSftp.LsEntry file : fileList) {
+		for (DirEntry file : sftpChannel.readDir(path)) {
 			// If it isn't a directory delete it
-			if (!file.getAttrs().isDir()) {
-				sftpChannel.rm(path + "/" + file.getFilename());
+			if (!file.getAttributes().isDirectory()) {
+				sftpChannel.remove(path + "/" + file.getFilename());
 			} else if (!(".".equals(file.getFilename()) || "..".equals(file.getFilename()))) { // If it is a subdir.
 				// Otherwise its a subdirectory, so try deleting it
 				try {
@@ -481,6 +581,27 @@ public class RemoteCommand extends Command {
 		sftpChannel.rmdir(path); // delete the parent directory after empty
 	}
 
+	/**
+	 * Recursive function that deletes a local directory and its contents
+	 * 
+	 * @param directory - directory to be deleted
+	 * @return boolean - true if directory was deleted, false otherwise
+	 */
+	private boolean deleteLocalDirectory(File directory) {
+		// Get the file list of the directory
+		File[] contents = directory.listFiles();
+		// If there are files/subdirectories in the directory, recursively iterate over
+		// them to
+		// delete them so that the directory can be deleted
+		if (contents != null) {
+			for (File file : contents) {
+				deleteLocalDirectory(file);
+			}
+		}
+		// Return whether or not the directory was deleted
+		return directory.delete();
+	}
+	
 	/**
 	 * Set a particular connection for a particular RemoteCommand
 	 * 

@@ -15,11 +15,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.Session;
+import org.apache.sshd.client.SshClient;
+import org.apache.sshd.client.channel.ChannelExec;
+import org.apache.sshd.client.session.ClientSession;
+import org.apache.sshd.client.subsystem.sftp.SftpClient;
 
 /**
  * This class represents a connection to a remote system. This could be a system
@@ -29,32 +28,32 @@ import com.jcraft.jsch.Session;
  *
  */
 public class Connection {
-
 	/**
 	 * An AtomicReference to the ConnectionConfiguration from which connection
 	 * information can be gathered
 	 */
-	private AtomicReference<ConnectionConfiguration> configuration = new AtomicReference<ConnectionConfiguration>(null);;
+	private AtomicReference<ConnectionConfiguration> configuration = new AtomicReference<ConnectionConfiguration>(
+			null);;
 
 	/**
-	 * The secure channel provided by com.jcraft.jsch
+	 * The client entry point
 	 */
-	private AtomicReference<JSch> jShell = new AtomicReference<JSch>(null);
+	private AtomicReference<SshClient> client = new AtomicReference<>(null);
 
 	/**
-	 * The JShell session
+	 * The session for this connection
 	 */
-	private AtomicReference<Session> session = new AtomicReference<Session>(null);
+	private AtomicReference<ClientSession> clientSession = new AtomicReference<>(null);
 
 	/**
-	 * The ssh channel for the JSch ssh connection to execute over
+	 * The connection to execute over
 	 */
-	private AtomicReference<ChannelExec> execChannel = new AtomicReference<ChannelExec>(null);
+	private AtomicReference<ChannelExec> execChannel = new AtomicReference<>(null);
 
 	/**
-	 * The ssh channel for the JSch ssh connection to perform sftp transfers over
+	 * The sftp client
 	 */
-	private AtomicReference<ChannelSftp> sftpChannel = new AtomicReference<ChannelSftp>(null);
+	private AtomicReference<SftpClient> sftpClient = new AtomicReference<>(null);
 
 	/**
 	 * The input stream for the JSch ssh connection
@@ -76,7 +75,7 @@ public class Connection {
 	 * Constructor which actually sets the connection configuration to a passed
 	 * argument
 	 * 
-	 * @param config
+	 * @param config - the configuration to set the connection information
 	 */
 	public Connection(ConnectionConfiguration config) {
 		configuration = new AtomicReference<ConnectionConfiguration>(config);
@@ -85,69 +84,78 @@ public class Connection {
 	/**
 	 * Get and return the connection configuration
 	 * 
-	 * @return
+	 * @return - the Connection's ConnectionConfiguration
 	 */
 	public ConnectionConfiguration getConfiguration() {
 		return configuration.get();
 	}
 
+	/**
+	 * Set the configuration, see
+	 * {@link org.eclipse.ice.commands.Connection#configuration}
+	 * 
+	 * @param configuration - ConnectionConfiguration to set for this connection
+	 */
 	public void setConfiguration(ConnectionConfiguration configuration) {
 		this.configuration.set(configuration);
 	}
+
 	/**
-	 * Set the JShell session {@link org.eclipse.ice.commands.Connection#jShell}
+	 * Getter to return the SshClient entry point in Mina, see
+	 * {@link org.eclipse.ice.commands.Connection#client}
 	 * 
-	 * @param jsch
+	 * @return - The Connection's SshClient
 	 */
-	public void setJShellSession(JSch jShell) {
-		this.jShell = new AtomicReference<JSch>(jShell);
+	public SshClient getClient() {
+		return client.get();
 	}
 
 	/**
-	 * Get the JShellSession {@link org.eclipse.ice.commands.Connection#jShell}
+	 * Setter for the SshClient entry point in Mina, see
+	 * {@link org.eclipse.ice.commands.Connection#client}
 	 * 
-	 * @return
+	 * @param client - The Connection's SshClient
 	 */
-	public JSch getJShellSession() {
-		return jShell.get();
-	}
-
-	/**
-	 * Set the execution channel
-	 * {@link org.eclipse.ice.commands.Connection#execChannel}
-	 * 
-	 * @param execChannel
-	 */
-	public void setExecChannel(Channel execChannel) {
-		this.execChannel = new AtomicReference<ChannelExec>((ChannelExec) execChannel);
+	public void setClient(SshClient client) {
+		this.client.set(client);
 	}
 
 	/**
 	 * Get the sftp channel {@link org.eclipse.ice.commands.Connection#sftpChannel}
 	 * 
-	 * @return
+	 * @return - The Connection's sftp client
 	 */
-	public ChannelSftp getSftpChannel() {
-		return sftpChannel.get();
+	public SftpClient getSftpChannel() {
+		return sftpClient.get();
 	}
 
 	/**
 	 * Set the sftp channel {@link org.eclipse.ice.commands.Connection#sftpChannel}
 	 * 
-	 * @param sftpChannel
+	 * @param sftpChannel - the Connection's sftp client
 	 */
-	public void setSftpChannel(Channel sftpChannel) {
-		this.sftpChannel = new AtomicReference<ChannelSftp>((ChannelSftp) sftpChannel);
+	public void setSftpChannel(SftpClient sftpClient) {
+		this.sftpClient.set(sftpClient);
 	}
 
 	/**
 	 * Get the execution channel
 	 * {@link org.eclipse.ice.commands.Connection#execChannel}
 	 * 
-	 * @return
+	 * @return - the execution channel for this Connection
 	 */
 	public ChannelExec getExecChannel() {
 		return execChannel.get();
+	}
+
+	/**
+	 * Set the execution channel
+	 * {@link org.eclipse.ice.commands.Connection#execChannel}
+	 * 
+	 * @param execChannel - the execution channel for this Connection
+	 */
+	public void setExecChannel(ChannelExec execChannel) {
+		this.execChannel.set(execChannel);
 	}
 
 	/**
@@ -155,23 +163,23 @@ public class Connection {
 	 * 
 	 * @return {@link org.eclipse.ice.commands.Connection#session}
 	 */
-	public Session getSession() {
-		return session.get();
+	public ClientSession getSession() {
+		return clientSession.get();
 	}
 
 	/**
 	 * Set the session {@link org.eclipse.ice.commands.Connection#session}
 	 * 
-	 * @param _session
+	 * @param session - this connection's session
 	 */
-	public void setSession(Session session) {
-		this.session = new AtomicReference<Session>(session);
+	public void setSession(ClientSession session) {
+		clientSession.set(session);
 	}
 
 	/**
 	 * Set the input stream {@link org.eclipse.ice.commands.Connection#inputStream}
 	 * 
-	 * @param _stream
+	 * @param inputStream - this Connection's input stream for logging
 	 */
 	public void setInputStream(InputStream inputStream) {
 		this.inputStream = inputStream;
@@ -180,7 +188,7 @@ public class Connection {
 	/**
 	 * Get the input stream {@link org.eclipse.ice.commands.Connection#inputStream}
 	 * 
-	 * @return
+	 * @return - this Connection's input stream for logging
 	 */
 	public InputStream getInputStream() {
 		return inputStream;
@@ -190,7 +198,7 @@ public class Connection {
 	 * Set the output stream
 	 * {@link org.eclipse.ice.commands.Connection#outputStream}
 	 * 
-	 * @param _stream
+	 * @param outputStream - this Connection's output stream for logging
 	 */
 	public void setOutputStream(OutputStream outputStream) {
 		this.outputStream = outputStream;
@@ -200,7 +208,7 @@ public class Connection {
 	 * Get the output stream
 	 * {@link org.eclipse.ice.commands.Connection#outputStream}
 	 * 
-	 * @return
+	 * @return outputStream - this Connection's output stream for logging
 	 */
 	public OutputStream getOutputStream() {
 		return outputStream;
