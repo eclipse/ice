@@ -33,6 +33,9 @@ import org.eclipse.ice.commands.IFileHandler;
  * command is a script in which the script contains the logic to run a remote
  * command from host B to host C.
  * 
+ * Note that one needs to set the host keys below to hosts that they actually have
+ * keys to in order for this example to work.
+ * 
  * @author Joe Osborn
  *
  */
