@@ -45,7 +45,7 @@ public class RemoteCommand extends Command {
 	 * The particular connection associated to a particular RemoteCommand. Declare
 	 * this up front since by definition a RemoteCommand must have a connection.
 	 */
-	private AtomicReference<Connection> connection = new AtomicReference<Connection>(new Connection());
+	protected AtomicReference<Connection> connection = new AtomicReference<Connection>(new Connection());
 
 	/**
 	 * An additional connection that is used for multi-hop connections, where a user
