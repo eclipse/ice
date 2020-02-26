@@ -181,6 +181,14 @@ public class RemoteRemoteFileTransferCommand extends RemoteCommand {
 	public void setRemoteHostCAuthorization(KeyPathConnectionAuthorizationHandler remoteHostC) {
 		this.remoteHostC = remoteHostC;
 	}
+	
+	/**
+	 * Getter for remotehost C keypath authorization
+	 * @return
+	 */
+	protected KeyPathConnectionAuthorizationHandler getRemoteHostCAuthorization() {
+		return remoteHostC;
+	}
 
 	/**
 	 * Function that sets the connection configuration and checks to make sure it is

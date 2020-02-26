@@ -76,7 +76,7 @@ public class RemoteRemoteFileTransferTest {
 	 * Remote host C key path that is needed to establish connection between host B
 	 * and host C
 	 */
-	String remoteHostCKeyPath = "/home/4jo/.ssh/dummykey";
+	String remoteHostCKeyPath = "/path/to/keykey";
 
 	/**
 	 * Authorization for remote host C
@@ -88,7 +88,7 @@ public class RemoteRemoteFileTransferTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		RemoteFileHandlerTest.setUpBeforeClass();
+
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class RemoteRemoteFileTransferTest {
 	 * @throws Exception
 	 */
 	@Test
-	@Ignore // ignore for now until we get second dummy host running
+	// @Ignore // ignore for now until we get second dummy host running
 	public void testRemoteRemoteFileTransfer() throws Exception {
 		System.out.println("Testing RemoteRemote \n\n\n");
 
@@ -145,8 +145,10 @@ public class RemoteRemoteFileTransferTest {
 		command.createCommand();
 		CommandStatus status = command.execute();
 
+		// Check that command completed correctly
 		assertEquals(CommandStatus.SUCCESS, status);
 
+		// Check if file transfer was successful and deletes the moved file on host C
 		assertTrue(checkPathExistsRemoteHostC());
 
 		// Now clean up the file created
@@ -154,7 +156,12 @@ public class RemoteRemoteFileTransferTest {
 		System.out.println("End Test \n\n\n");
 	}
 
-	private void deleteHostBSource() throws IOException {
+	/**
+	 * Deletes the source file from the remote host B
+	 * 
+	 * @throws IOException
+	 */
+	protected void deleteHostBSource() throws IOException {
 		Connection conn = ConnectionManagerFactory.getConnectionManager().getConnection(hostBConnection.getName());
 		conn.setSftpChannel(SftpClientFactory.instance().createSftpClient(conn.getSession()));
 		SftpClient channel = conn.getSftpChannel();
@@ -166,7 +173,7 @@ public class RemoteRemoteFileTransferTest {
 	 * 
 	 * @throws IOException
 	 */
-	private void createRemoteHostBSourceFile() throws IOException {
+	protected void createRemoteHostBSourceFile() throws IOException {
 		Connection conn = ConnectionManagerFactory.getConnectionManager().openConnection(hostBConnection);
 		conn.setSftpChannel(SftpClientFactory.instance().createSftpClient(conn.getSession()));
 		SftpClient sftpChannel = conn.getSftpChannel();
@@ -227,10 +234,9 @@ public class RemoteRemoteFileTransferTest {
 	}
 
 	/**
-	 * Private function that just sets up the connection information for the test to
-	 * run
+	 * Function that just sets up the connection information for the test to run
 	 */
-	private void setupConnectionConfigs() {
+	protected void setupConnectionConfigs() {
 		remoteHostC = new KeyPathConnectionAuthorizationHandler();
 		remoteHostC.setUsername("dummy");
 		remoteHostC.setHostname("osbornjd-ice-host.ornl.gov");
@@ -252,7 +258,7 @@ public class RemoteRemoteFileTransferTest {
 	 * 
 	 * @throws IOException
 	 */
-	private boolean checkPathExistsRemoteHostC() throws IOException {
+	protected boolean checkPathExistsRemoteHostC() throws IOException {
 
 		// Get the filename by splitting the path by "/"
 		String separator = "/";
@@ -318,6 +324,30 @@ public class RemoteRemoteFileTransferTest {
 		if (!status.equals(CommandStatus.SUCCESS))
 			System.out.println("Couldn't delete destination file at : " + destination);
 		return true;
+	}
+
+	/**
+	 * Add some functions that can be used by other classes to take advantage of the
+	 * file creation and deletion code that was already created here
+	 */
+	public RemoteRemoteFileTransferTest() {
+
+	}
+
+	protected ConnectionConfiguration getRemoteHostBConnectionConfig() {
+		return hostBConnection;
+	}
+
+	protected KeyPathConnectionAuthorizationHandler getRemoteHostCAuth() {
+		return remoteHostC;
+	}
+
+	protected String getSource() {
+		return source;
+	}
+
+	protected String getDestination() {
+		return destination;
 	}
 
 }

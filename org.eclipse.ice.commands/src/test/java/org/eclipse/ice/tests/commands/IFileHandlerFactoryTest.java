@@ -15,11 +15,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.FileSystems;
 
+import org.apache.sshd.client.subsystem.sftp.SftpClientFactory;
 import org.eclipse.ice.commands.CommandStatus;
+import org.eclipse.ice.commands.Connection;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
@@ -29,6 +32,7 @@ import org.eclipse.ice.commands.FileHandler;
 import org.eclipse.ice.commands.FileHandlerFactory;
 import org.eclipse.ice.commands.HandleType;
 import org.eclipse.ice.commands.IFileHandler;
+import org.eclipse.ice.commands.KeyPathConnectionAuthorizationHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -387,6 +391,33 @@ public class IFileHandlerFactoryTest {
 		fileCreator.deleteLocalSource();
 		fileCreator.deleteRemoteDestination();
 
+	}
+	
+	/**
+	 * This tests the factory method returning a remote to remote file transfer
+	 * over different hosts
+	 * @throws IOException 
+	 */
+	@Test
+	public void testRemoteRemoteFileTransfer() throws IOException {
+		RemoteRemoteFileTransferTest transferTest = new RemoteRemoteFileTransferTest();
+		transferTest.setupConnectionConfigs();
+		ConnectionConfiguration remoteHostB = transferTest.getRemoteHostBConnectionConfig();
+		KeyPathConnectionAuthorizationHandler remoteHostC = transferTest.getRemoteHostCAuth();
+		
+		Connection bConn = ConnectionManagerFactory.getConnectionManager().openConnection(remoteHostB);
+		bConn.setSftpChannel(SftpClientFactory.instance().createSftpClient(bConn.getSession()));
+		
+		transferTest.createRemoteHostBSourceFile();
+		theSource = transferTest.getSource();
+		theDestination = "/tmp/";
+		
+		IFileHandler handler = factory.getFileHandler(remoteHostB, remoteHostC);
+
+		// This checks existence, and regardless that check is handled by the unit test
+		CommandStatus status = handler.copy(theSource, theDestination);
+		assertTrue(status.equals(CommandStatus.SUCCESS));
+		transferTest.deleteHostBSource();
 	}
 
 	/**

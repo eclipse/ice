@@ -65,6 +65,7 @@ public class RemoteFileHandler extends FileHandler {
 		} else {
 			// Get the connection if it is already available
 			connection.set(manager.getConnection(config.getName()));
+			logger.info("Got connection");
 		}
 		// Open an sftp channel for this remote file handler to use
 		try {
