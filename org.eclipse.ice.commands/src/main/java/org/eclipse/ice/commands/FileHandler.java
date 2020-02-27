@@ -62,6 +62,11 @@ public abstract class FileHandler implements IFileHandler {
 	protected HandleType HANDLE_TYPE = null;
 
 	/**
+	 * The source file name
+	 */
+	protected String filename = "";
+	
+	/**
 	 * Have a connection manager for commands that defaults to the static object
 	 * from the factory method. Users can override this if they want to through a
 	 * specific constructor which sets the manager.
@@ -81,7 +86,9 @@ public abstract class FileHandler implements IFileHandler {
 	public CommandStatus move(final String source, final String destination) {
 		// Set the transfer status to processing, to indicate the transfer is beginning
 		transferStatus = CommandStatus.PROCESSING;
-
+		
+		getFileName(source);
+		
 		// Check the file existence. If they don't exist, an exception is thrown
 		try {
 			checkExistence(source, destination);
@@ -100,7 +107,7 @@ public abstract class FileHandler implements IFileHandler {
 			logger.error("Destination file does not exist! File transfer failed!", e);
 			return CommandStatus.FAILED;
 		}
-
+	
 		// Return whether or not it succeeded
 		return transferStatus;
 	}
@@ -113,6 +120,8 @@ public abstract class FileHandler implements IFileHandler {
 		// Set the transfer status to processing, to indicate the transfer is beginning
 		transferStatus = CommandStatus.PROCESSING;
 
+		getFileName(source);
+		
 		// Check the file existence. If one or both don't exist, an exception is thrown
 		try {
 			checkExistence(source, destination);
@@ -131,7 +140,7 @@ public abstract class FileHandler implements IFileHandler {
 			logger.error("Destination file does not exist! File transfer failed!", e);
 			return CommandStatus.FAILED;
 		}
-
+		
 		// Return whether or not it succeeded
 		return transferStatus;
 	}
@@ -238,8 +247,17 @@ public abstract class FileHandler implements IFileHandler {
 		// Execute the file transfer
 		transferStatus = command.get().execute();
 
+		String separator = "/";
+		if(destination.contains("\\"))
+			separator = "\\";
+		
+		String totalDestination = destination;
+		// If the destination is just a path and not a path + filename, add the filename
+		if(destination.endsWith(separator))
+			totalDestination += filename;
+		
 		// Check that the move succeeded
-		if (!exists(destination))
+		if (!exists(totalDestination))
 			return CommandStatus.FAILED;
 
 		logger.info("File transfer successful!");
@@ -275,4 +293,12 @@ public abstract class FileHandler implements IFileHandler {
 		this.connection.set(connection);
 	}
 
+	
+	private void getFileName(String source) {
+		String separator = "/";
+		if(source.contains("\\"))
+			separator = "\\";
+		
+		filename = source.substring(source.lastIndexOf(separator) + 1);
+	}
 }
