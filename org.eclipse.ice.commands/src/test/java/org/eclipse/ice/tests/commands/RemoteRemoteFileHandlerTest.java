@@ -228,8 +228,6 @@ public class RemoteRemoteFileHandlerTest {
 		config.setErrFileName("lsErr.txt");
 		config.setOutFileName("lsOut.txt");
 		config.setNumProcs("1");
-		// WD doesn't matter since we are rming with an absolute path
-		config.setWorkingDirectory("/tmp/doesnt/matter");
 
 		// Get the command
 		CommandFactory factory = new CommandFactory();

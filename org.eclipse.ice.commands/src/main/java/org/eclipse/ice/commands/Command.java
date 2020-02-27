@@ -188,8 +188,7 @@ public abstract class Command {
 
 		// Check the info and return failure if something was not set
 		if (commandConfig.getExecutable() == null || commandConfig.getOutFileName() == null
-				|| commandConfig.getErrFileName() == null || commandConfig.getNumProcs() == null
-				|| commandConfig.getWorkingDirectory() == null) {
+				|| commandConfig.getErrFileName() == null || commandConfig.getNumProcs() == null) {
 			logger.error("An important piece of information is missing from the CommandConfiguration. Exiting.");
 			return CommandStatus.INFOERROR;
 		}
@@ -202,33 +201,36 @@ public abstract class Command {
 		String separator = "/";
 		if (commandConfig.getOS().toLowerCase().contains("win"))
 			separator = "\\";
-
+		
 		// Check if the working directory exists
 		String workingDir = commandConfig.getWorkingDirectory();
+		boolean exists = false, execExists = false;
+		if(workingDir != null) {
 		if (!workingDir.endsWith(separator))
 			workingDir += separator;
 
 		// Check that the directory exists
 		// Get the file handler factory
 		FileHandlerFactory factory = new FileHandlerFactory();
-		boolean exists = false, execExists = false;
+		
 		try {
 			// Get the handler for this particular connection, whether local or remote
 			FileHandler handler = factory.getFileHandler(connectionConfig);
 
 			// If the working directory was set, check that it exists. If it wasn't set,
 			// then the paths should have been explicitly identified
-			if (workingDir != null)
+		
 				exists = handler.exists(workingDir);
 
-			// Check if the executable exists in the working directory
-			execExists = handler.exists(workingDir + exec);
-
+				// Check if the executable exists in the working directory
+				execExists = handler.exists(workingDir + exec);
+			
 		} catch (IOException e) {
 			// If we can't get the file handler, then there was an error in the connection
 			// configuration
 			logger.error("Unable to connect to filehandler and check file existence. Exiting.", e);
 			return CommandStatus.INFOERROR;
+		}
 		}
 		// If the working directory doesn't exist, we won't be able to continue the job
 		// processing unless the full paths were specified. Warn the user

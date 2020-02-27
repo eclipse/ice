@@ -219,7 +219,8 @@ public class RemoteCommand extends Command {
 			logger.error(e.getLocalizedMessage());
 		}
 		try {
-			connection.get().getSftpChannel().close();
+			if(connection.get().getSftpChannel() != null)
+				connection.get().getSftpChannel().close();
 		} catch (IOException e) {
 			logger.error(e.getLocalizedMessage());
 		}
@@ -442,8 +443,11 @@ public class RemoteCommand extends Command {
 		} else {
 			// If this is not a jump host case, then just move the files from the local
 			// working directory to the remote host like normal
-			status = transferFiles(connectionConfig, commandConfig.getWorkingDirectory(),
-					commandConfig.getRemoteWorkingDirectory());
+			// Only do it if there are files to transfer
+			if(commandConfig.getWorkingDirectory() != null) {
+				status = transferFiles(connectionConfig, commandConfig.getWorkingDirectory(),
+						commandConfig.getRemoteWorkingDirectory());
+			}
 		}
 
 		return status;

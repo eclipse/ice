@@ -76,7 +76,7 @@ public class RemoteRemoteFileTransferTest {
 	 * Remote host C key path that is needed to establish connection between host B
 	 * and host C
 	 */
-	String remoteHostCKeyPath = "/home/4jo/.ssh/dummykey";
+	String remoteHostCKeyPath = "/some/key";
 
 	/**
 	 * Authorization for remote host C
@@ -245,9 +245,9 @@ public class RemoteRemoteFileTransferTest {
 		hostBConnection = new ConnectionConfiguration();
 		hostBConnection.setName("hostB");
 		ConnectionAuthorizationHandler bauth = new KeyPathConnectionAuthorizationHandler();
-		bauth.setHostname("denisovan");
-		bauth.setUsername("4jo");
-		bauth.setOption("/home/4jo/.ssh/denisovankey");
+		bauth.setHostname("host");
+		bauth.setUsername("user");
+		bauth.setOption(System.getProperty("user.home") + "/.ssh/somekey");
 
 		hostBConnection.setAuthorization(bauth);
 
@@ -288,9 +288,7 @@ public class RemoteRemoteFileTransferTest {
 		config.setErrFileName("lsErr.txt");
 		config.setOutFileName("lsOut.txt");
 		config.setNumProcs("1");
-		// WD doesn't matter since we are lsing with an absolute path
-		config.setWorkingDirectory("/tmp/doesnt/matter");
-
+	
 		// Get the command
 		CommandFactory factory = new CommandFactory();
 		Command Command = factory.getCommand(config, hostBConnection);
@@ -313,8 +311,6 @@ public class RemoteRemoteFileTransferTest {
 		config.setErrFileName("lsErr.txt");
 		config.setOutFileName("lsOut.txt");
 		config.setNumProcs("1");
-		// WD doesn't matter since we are rming with an absolute path
-		config.setWorkingDirectory("/tmp/doesnt/matter");
 
 		// Get the command
 		Command rmCommand = factory.getCommand(config, hostBConnection);

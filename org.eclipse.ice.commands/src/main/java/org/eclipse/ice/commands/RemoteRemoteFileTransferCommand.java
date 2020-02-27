@@ -102,7 +102,8 @@ public class RemoteRemoteFileTransferCommand extends RemoteCommand {
 			logger.error(e.getLocalizedMessage());
 		}
 		try {
-			connection.get().getSftpChannel().close();
+			if(connection.get().getSftpChannel() != null)
+				connection.get().getSftpChannel().close();
 		} catch (IOException e) {
 			logger.error(e.getLocalizedMessage());
 		}
@@ -146,7 +147,7 @@ public class RemoteRemoteFileTransferCommand extends RemoteCommand {
 		commandConfig.setCommandId(9999);
 		commandConfig.setNumProcs("1");
 		// set working directory to current directory
-		commandConfig.setWorkingDirectory(System.getProperty("user.dir"));
+		//commandConfig.setWorkingDirectory(System.getProperty("user.dir"));
 		// We'll set these and delete them at the end, so as to not create a bunch of
 		// err/out files
 		commandConfig.setErrFileName("scpErr.txt");
