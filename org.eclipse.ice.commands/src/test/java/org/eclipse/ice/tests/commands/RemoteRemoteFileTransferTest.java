@@ -35,15 +35,13 @@ import org.eclipse.ice.commands.CommandFactory;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.Connection;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
-import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
-import org.eclipse.ice.commands.HandleType;
 import org.eclipse.ice.commands.KeyPathConnectionAuthorizationHandler;
 import org.eclipse.ice.commands.RemoteRemoteFileTransferCommand;
-import org.junit.After;
+
 import org.junit.AfterClass;
-import org.junit.Before;
+
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -60,28 +58,33 @@ public class RemoteRemoteFileTransferTest {
 	/**
 	 * A source file to use for testing
 	 */
-	String source = "";
+	private String source = "";
 
 	/**
 	 * A destination to move the file
 	 */
-	String destination = "/tmp/";
+	private String destination = "/tmp/";
 
 	/**
 	 * Connection information for host B
 	 */
-	ConnectionConfiguration hostBConnection;
+	private ConnectionConfiguration hostBConnection;
 
 	/**
 	 * Remote host C key path that is needed to establish connection between host B
 	 * and host C
 	 */
-	String remoteHostCKeyPath = "/some/key";
+	private String remoteHostCKeyPath = "/some/key/connecting/B/to/C";
+
+	/**
+	 * Remote host B key path that is needed to connect host A to host B
+	 */
+	private String hostBKeyPath = System.getProperty("user.home") + "/.ssh/somekey";
 
 	/**
 	 * Authorization for remote host C
 	 */
-	KeyPathConnectionAuthorizationHandler remoteHostC;
+	private KeyPathConnectionAuthorizationHandler remoteHostC;
 
 	/**
 	 * @throws java.lang.Exception
@@ -130,14 +133,13 @@ public class RemoteRemoteFileTransferTest {
 	 * @throws Exception
 	 */
 	@Test
-	// @Ignore // ignore for now until we get second dummy host running
+	@Ignore // ignore for now until we get second dummy host running
 	public void testRemoteRemoteFileTransfer() throws Exception {
-		System.out.println("Testing RemoteRemote \n\n\n");
-
 		setupConnectionConfigs();
 
 		createRemoteHostBSourceFile();
 
+		// Create the command and initialize to be able to run
 		RemoteRemoteFileTransferCommand command = new RemoteRemoteFileTransferCommand();
 		command.setConnectionConfiguration(hostBConnection);
 		command.setRemoteHostCAuthorization(remoteHostC);
@@ -153,7 +155,6 @@ public class RemoteRemoteFileTransferTest {
 
 		// Now clean up the file created
 		deleteHostBSource();
-		System.out.println("End Test \n\n\n");
 	}
 
 	/**
@@ -169,7 +170,8 @@ public class RemoteRemoteFileTransferTest {
 	}
 
 	/**
-	 * Creates a source file to play with on remote host B
+	 * Creates a source file to play with on remote host B. Constructs a file
+	 * locally and then moves it to remote host B
 	 * 
 	 * @throws IOException
 	 */
@@ -204,10 +206,12 @@ public class RemoteRemoteFileTransferTest {
 		// Get the last index of tokens, which will be the filename
 		String filename = tokens[tokens.length - 1];
 
+		// If it is just a directory, add the file name
 		if (hostBsource.endsWith("/")) {
 			hostBsource += filename;
 		}
 
+		// Actually move the file
 		try (OutputStream dstStream = sftpChannel.write(hostBsource, OpenMode.Create, OpenMode.Write,
 				OpenMode.Truncate)) {
 			try (InputStream srcStream = new FileInputStream(sourcePath.toString())) {
@@ -234,7 +238,8 @@ public class RemoteRemoteFileTransferTest {
 	}
 
 	/**
-	 * Function that just sets up the connection information for the test to run
+	 * Function that just sets up the connection information for the test to run.
+	 * Other tests also take advantage of this
 	 */
 	protected void setupConnectionConfigs() {
 		remoteHostC = new KeyPathConnectionAuthorizationHandler();
@@ -247,14 +252,15 @@ public class RemoteRemoteFileTransferTest {
 		ConnectionAuthorizationHandler bauth = new KeyPathConnectionAuthorizationHandler();
 		bauth.setHostname("host");
 		bauth.setUsername("user");
-		bauth.setOption(System.getProperty("user.home") + "/.ssh/somekey");
+		bauth.setOption(hostBKeyPath);
 
 		hostBConnection.setAuthorization(bauth);
 
 	}
 
 	/**
-	 * This function checks if the file was properly moved to the remote host C
+	 * This function checks if the file was properly moved to the remote host C. It
+	 * also deletes the file after the check is completed
 	 * 
 	 * @throws IOException
 	 */
@@ -288,7 +294,7 @@ public class RemoteRemoteFileTransferTest {
 		config.setErrFileName("lsErr.txt");
 		config.setOutFileName("lsOut.txt");
 		config.setNumProcs("1");
-	
+
 		// Get the command
 		CommandFactory factory = new CommandFactory();
 		Command Command = factory.getCommand(config, hostBConnection);
@@ -319,7 +325,7 @@ public class RemoteRemoteFileTransferTest {
 		// Just warn, since it isn't a huge deal if a file wasn't successfully deleted
 		if (!status.equals(CommandStatus.SUCCESS))
 			System.out.println("Couldn't delete destination file at : " + destination);
-		
+
 		return true;
 	}
 
@@ -328,9 +334,11 @@ public class RemoteRemoteFileTransferTest {
 	 * file creation and deletion code that was already created here
 	 */
 	public RemoteRemoteFileTransferTest() {
-
 	}
 
+	/**
+	 * Getters and setters to be used by other classes
+	 */
 	protected ConnectionConfiguration getRemoteHostBConnectionConfig() {
 		return hostBConnection;
 	}

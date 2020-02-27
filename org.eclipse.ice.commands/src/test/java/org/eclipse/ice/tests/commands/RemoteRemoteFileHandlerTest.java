@@ -14,7 +14,6 @@ package org.eclipse.ice.tests.commands;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.nio.file.FileSystems;
 
 import org.apache.sshd.client.subsystem.sftp.SftpClientFactory;
 import org.eclipse.ice.commands.Command;
@@ -22,17 +21,16 @@ import org.eclipse.ice.commands.CommandConfiguration;
 import org.eclipse.ice.commands.CommandFactory;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.Connection;
-import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
-import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.KeyPathConnectionAuthorizationHandler;
 import org.eclipse.ice.commands.RemoteRemoteFileHandler;
-import org.junit.After;
+
 import org.junit.AfterClass;
-import org.junit.Before;
+
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -79,19 +77,21 @@ public class RemoteRemoteFileHandlerTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+	//@BeforeClass
+	//@Ignore // ignore for now until we get second dummy host running
+	// Have to comment out because JUnit runs this by default
+	
+	//public static void setUpBeforeClass() throws Exception {
+	//	ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
+	//	makeRemoteHostConfigs();
 
-		makeRemoteHostConfigs();
-
-		bConn = manager.openConnection(remoteHostB);
+	//	bConn = manager.openConnection(remoteHostB);
 
 		// Setup the sftp channel to remote host b so that we can create dummy files
 		// and put them there immediately
-		bConn.setSftpChannel(SftpClientFactory.instance().createSftpClient(bConn.getSession()));
-	}
-
+	//	bConn.setSftpChannel(SftpClientFactory.instance().createSftpClient(bConn.getSession()));
+	//}
+	 
 	/**
 	 * Make the connection configurations for the two remote hosts
 	 * 
@@ -107,6 +107,7 @@ public class RemoteRemoteFileHandlerTest {
 	 * @throws java.lang.Exception
 	 */
 	@AfterClass
+	@Ignore // ignore for now until we get second dummy host running
 	public static void tearDownAfterClass() throws Exception {
 		ConnectionManagerFactory.getConnectionManager().closeAllConnections();
 		
@@ -121,6 +122,7 @@ public class RemoteRemoteFileHandlerTest {
 	 * @throws IOException
 	 */
 	@Test
+	@Ignore // ignore for now until we get second dummy host running
 	public void testCheckExistence() throws IOException {
 
 		transferTest.createRemoteHostBSourceFile();
@@ -144,6 +146,7 @@ public class RemoteRemoteFileHandlerTest {
 	 * @throws IOException
 	 */
 	@Test(expected = IOException.class)
+	@Ignore // ignore for now until we get second dummy host running
 	public void testCheckExistenceNonExistentSource() throws IOException {
 		destination = "/tmp/";
 
@@ -162,6 +165,7 @@ public class RemoteRemoteFileHandlerTest {
 	 * @throws IOException
 	 */
 	@Test(expected = IOException.class)
+	@Ignore // ignore for now until we get second dummy host running
 	public void testCheckExistenceNonExistentDestination() throws IOException {
 
 		transferTest.createRemoteHostBSourceFile();
@@ -192,6 +196,7 @@ public class RemoteRemoteFileHandlerTest {
 	 * @throws IOException
 	 */
 	@Test
+	@Ignore // ignore for now until we get second dummy host running
 	public void testMove() throws IOException {
 
 		transferTest.createRemoteHostBSourceFile();

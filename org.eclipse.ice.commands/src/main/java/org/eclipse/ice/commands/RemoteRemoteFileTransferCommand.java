@@ -41,7 +41,8 @@ public class RemoteRemoteFileTransferCommand extends RemoteCommand {
 	 * The ConnectionAuthorizationHandler which will contain the necessary
 	 * configuration information to connect remote host B, where the source file is,
 	 * to remote host C, where the destination is. Required to be a keypath
-	 * connection
+	 * connection for the authorization to work, should not be a generic
+	 * ConnectionAuthorizationHandler
 	 */
 	private KeyPathConnectionAuthorizationHandler remoteHostC = null;
 
@@ -102,7 +103,7 @@ public class RemoteRemoteFileTransferCommand extends RemoteCommand {
 			logger.error(e.getLocalizedMessage());
 		}
 		try {
-			if(connection.get().getSftpChannel() != null)
+			if (connection.get().getSftpChannel() != null)
 				connection.get().getSftpChannel().close();
 		} catch (IOException e) {
 			logger.error(e.getLocalizedMessage());
@@ -114,7 +115,7 @@ public class RemoteRemoteFileTransferCommand extends RemoteCommand {
 		String workDir = commandConfig.getWorkingDirectory();
 		File outFile = new File(workDir + outPath);
 		File errFile = new File(workDir + errPath);
-		// Only delete if the command was successfull. If it wasn't, the files
+		// Only delete if the command was successful. If it wasn't, the files
 		// could be useful for debugging
 		if (status.equals(CommandStatus.SUCCESS)) {
 			if (!outFile.delete() || !errFile.delete()) {
@@ -147,7 +148,7 @@ public class RemoteRemoteFileTransferCommand extends RemoteCommand {
 		commandConfig.setCommandId(9999);
 		commandConfig.setNumProcs("1");
 		// set working directory to current directory
-		//commandConfig.setWorkingDirectory(System.getProperty("user.dir"));
+		// commandConfig.setWorkingDirectory(System.getProperty("user.dir"));
 		// We'll set these and delete them at the end, so as to not create a bunch of
 		// err/out files
 		commandConfig.setErrFileName("scpErr.txt");
@@ -182,9 +183,10 @@ public class RemoteRemoteFileTransferCommand extends RemoteCommand {
 	public void setRemoteHostCAuthorization(KeyPathConnectionAuthorizationHandler remoteHostC) {
 		this.remoteHostC = remoteHostC;
 	}
-	
+
 	/**
 	 * Getter for remotehost C keypath authorization
+	 * 
 	 * @return
 	 */
 	protected KeyPathConnectionAuthorizationHandler getRemoteHostCAuthorization() {

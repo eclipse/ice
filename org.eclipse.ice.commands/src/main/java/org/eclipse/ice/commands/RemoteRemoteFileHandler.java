@@ -1,16 +1,22 @@
-/**
- * 
- */
+/*******************************************************************************
+ * Copyright (c) 2019- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Joe Osborn
+ *******************************************************************************/
 package org.eclipse.ice.commands;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.sshd.client.subsystem.sftp.SftpClient;
-import org.apache.sshd.client.subsystem.sftp.SftpClientFactory;
 
 /**
  * This class implements the FileHandler class and contains the logic for
@@ -29,21 +35,19 @@ public class RemoteRemoteFileHandler extends RemoteFileHandler {
 	private KeyPathConnectionAuthorizationHandler remoteHostC = null;
 
 	/**
-	 * A string to  contain the directory of the destination, if the destination was
-	 * given as /path/to/dir/newFilename.whatever
-	 */
-	private String destinationDir = "";
-	
-	/**
 	 * Default constructor
 	 */
 	public RemoteRemoteFileHandler() {
 		// Create a new instance of the remote remote file transfer command for file
 		// existence checks
-
+		// HandleType is always the same for this type of move
 		HANDLE_TYPE = HandleType.remoteOtherRemote;
 	}
 
+	/**
+	 * See
+	 * {@link org.eclipse.ice.commands.FileHandler#configureMoveCommand(String, String)}
+	 */
 	@Override
 	protected void configureMoveCommand(String source, String destination) {
 		RemoteRemoteFileTransferCommand cmd = new RemoteRemoteFileTransferCommand();
@@ -56,6 +60,10 @@ public class RemoteRemoteFileHandler extends RemoteFileHandler {
 		command.set(cmd);
 	}
 
+	/**
+	 * See
+	 * {@link org.eclipse.ice.commands.FileHandler#configureCopyCommand(String, String)}
+	 */
 	@Override
 	protected void configureCopyCommand(String source, String destination) {
 		// copy and move are the same across remote hosts, i.e. scp
@@ -85,9 +93,7 @@ public class RemoteRemoteFileHandler extends RemoteFileHandler {
 	 */
 	@Override
 	public void checkExistence(String source, String destination) throws IOException {
-		
-		
-		
+
 		destinationExists(destination);
 
 		sourceExists(source);
@@ -108,7 +114,6 @@ public class RemoteRemoteFileHandler extends RemoteFileHandler {
 	private void destinationExists(String file) throws IOException {
 		// Run a command that checks whether or not the directory exists
 		// Need to first check and see if it is a directory
-		
 		// Create an ls command
 		String command = "ssh -i " + remoteHostC.getKeyPath() + " " + remoteHostC.getUsername() + "@"
 				+ remoteHostC.getHostname();
@@ -187,7 +192,6 @@ public class RemoteRemoteFileHandler extends RemoteFileHandler {
 		return;
 	}
 
-	
 	/**
 	 * Setter for the keypath information to connect remote host b to remote host c
 	 * 
