@@ -121,7 +121,6 @@ public class RemoteRemoteFileHandler extends RemoteFileHandler {
 		config.setErrFileName("lsErr.txt");
 		config.setOutFileName("lsOut.txt");
 		config.setNumProcs("1");
-		config.setWorkingDirectory("/notimportant");
 
 		CommandFactory factory = new CommandFactory();
 		Command lsCommand = factory.getCommand(config, connection.get().getConfiguration());
