@@ -17,6 +17,9 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 
 import org.apache.sshd.client.subsystem.sftp.SftpClientFactory;
+import org.eclipse.ice.commands.Command;
+import org.eclipse.ice.commands.CommandConfiguration;
+import org.eclipse.ice.commands.CommandFactory;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.Connection;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
@@ -106,6 +109,9 @@ public class RemoteRemoteFileHandlerTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		ConnectionManagerFactory.getConnectionManager().closeAllConnections();
+		
+		// Delete the output files that were made
+		RemoteRemoteFileTransferTest.tearDownAfterClass();
 	}
 
 	/**
@@ -164,11 +170,15 @@ public class RemoteRemoteFileHandlerTest {
 		RemoteRemoteFileHandler handler = new RemoteRemoteFileHandler();
 		handler.setConnectionConfiguration(remoteHostB);
 		handler.setDestinationAuthorization(remoteHostCAuth);
-
-		handler.checkExistence(source, "/nonexistent/destination/");
-
-		transferTest.deleteHostBSource();
-
+		try {
+			handler.checkExistence(source, "/nonexistent/destination/");
+		} catch (IOException e) {
+			// Expected exception, but still want to delete the host source file
+			transferTest.deleteHostBSource();
+			// If exception was caught, test was a success. So end it by throwing
+			// an exception
+			throw new IOException();
+		}
 	}
 
 	/**
@@ -187,6 +197,13 @@ public class RemoteRemoteFileHandlerTest {
 		transferTest.createRemoteHostBSourceFile();
 		source = transferTest.getSource();
 		destination = "/tmp/";
+		// Get the filename by splitting the path by "/"
+		String separator = "/";
+		if (source.contains("\\"))
+			separator = "\\";
+
+		String[] tokens = source.split(separator);
+		String filename = tokens[tokens.length - 1];
 
 		RemoteRemoteFileHandler handler = new RemoteRemoteFileHandler();
 		handler.setConnectionConfiguration(remoteHostB);
@@ -197,6 +214,31 @@ public class RemoteRemoteFileHandlerTest {
 		CommandStatus status = handler.move(source, destination);
 		assertTrue(status.equals(CommandStatus.SUCCESS));
 		transferTest.deleteHostBSource();
+
+		// Delete file from remote host C
+		// Delete the file that was moved with another command
+		String remoteHostCKeyPath = remoteHostCAuth.getKeyPath();
+		String command = "ssh -i " + remoteHostCKeyPath + " " + remoteHostCAuth.getUsername() + "@" + remoteHostCAuth.getHostname();
+		command += " \"rm " + destination + filename + "\"";
+
+		CommandConfiguration config = new CommandConfiguration();
+		config.setExecutable(command);
+		config.setAppendInput(false);
+		config.setCommandId(99);
+		config.setErrFileName("lsErr.txt");
+		config.setOutFileName("lsOut.txt");
+		config.setNumProcs("1");
+		// WD doesn't matter since we are rming with an absolute path
+		config.setWorkingDirectory("/tmp/doesnt/matter");
+
+		// Get the command
+		CommandFactory factory = new CommandFactory();
+		Command rmCommand = factory.getCommand(config, remoteHostB);
+
+		status = rmCommand.execute();
+		// Just warn, since it isn't a huge deal if a file wasn't successfully deleted
+		if (!status.equals(CommandStatus.SUCCESS))
+			System.out.println("Couldn't delete destination file at : " + destination + filename);
 
 	}
 

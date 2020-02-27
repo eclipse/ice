@@ -21,6 +21,9 @@ import java.net.UnknownHostException;
 import java.nio.file.FileSystems;
 
 import org.apache.sshd.client.subsystem.sftp.SftpClientFactory;
+import org.eclipse.ice.commands.Command;
+import org.eclipse.ice.commands.CommandConfiguration;
+import org.eclipse.ice.commands.CommandFactory;
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.Connection;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
@@ -89,6 +92,9 @@ public class IFileHandlerFactoryTest {
 	public static void tearDownAfterClass() throws Exception {
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 		manager.removeAllConnections();
+		
+		// Delete the output files that were created in the remote-remote test
+		RemoteRemoteFileTransferTest.tearDownAfterClass();
 	}
 
 	/**
@@ -287,7 +293,7 @@ public class IFileHandlerFactoryTest {
 		// Get the file transfer handler
 		IFileHandler handler = factory.getFileHandler(fileCreator.getConnection().getConfiguration());
 		String separator = FileSystems.getDefault().getSeparator();
-		String filename = theSource.substring(theSource.lastIndexOf(separator)+1);
+		String filename = theSource.substring(theSource.lastIndexOf(separator) + 1);
 		// Now try to copy the file
 
 		CommandStatus status = handler.copy(theSource, theDestination);
@@ -316,7 +322,7 @@ public class IFileHandlerFactoryTest {
 		theSource = fileCreator.getSource();
 		theDestination = fileCreator.getDestination();
 		String separator = FileSystems.getDefault().getSeparator();
-		String filename = theSource.substring(theSource.lastIndexOf(separator)+1);
+		String filename = theSource.substring(theSource.lastIndexOf(separator) + 1);
 
 		FileHandler handler = factory.getFileHandler(fileCreator.getConnection().getConfiguration());
 
@@ -347,7 +353,7 @@ public class IFileHandlerFactoryTest {
 		// Get the file transfer handler
 		IFileHandler handler = factory.getFileHandler(fileCreator.getConnection().getConfiguration());
 		String separator = FileSystems.getDefault().getSeparator();
-		String filename = theSource.substring(theSource.lastIndexOf(separator)+1);
+		String filename = theSource.substring(theSource.lastIndexOf(separator) + 1);
 		// Now try to move the file
 		CommandStatus status = handler.move(theSource, theDestination);
 		assertEquals(CommandStatus.SUCCESS, status);
@@ -392,11 +398,12 @@ public class IFileHandlerFactoryTest {
 		fileCreator.deleteRemoteDestination();
 
 	}
-	
+
 	/**
-	 * This tests the factory method returning a remote to remote file transfer
-	 * over different hosts
-	 * @throws IOException 
+	 * This tests the factory method returning a remote to remote file transfer over
+	 * different hosts
+	 * 
+	 * @throws IOException
 	 */
 	@Test
 	public void testRemoteRemoteFileTransfer() throws IOException {
@@ -404,20 +411,55 @@ public class IFileHandlerFactoryTest {
 		transferTest.setupConnectionConfigs();
 		ConnectionConfiguration remoteHostB = transferTest.getRemoteHostBConnectionConfig();
 		KeyPathConnectionAuthorizationHandler remoteHostC = transferTest.getRemoteHostCAuth();
-		
+
 		Connection bConn = ConnectionManagerFactory.getConnectionManager().openConnection(remoteHostB);
 		bConn.setSftpChannel(SftpClientFactory.instance().createSftpClient(bConn.getSession()));
-		
+
 		transferTest.createRemoteHostBSourceFile();
 		theSource = transferTest.getSource();
 		theDestination = "/tmp/";
-		
+
 		IFileHandler handler = factory.getFileHandler(remoteHostB, remoteHostC);
 
 		// This checks existence, and regardless that check is handled by the unit test
 		CommandStatus status = handler.copy(theSource, theDestination);
 		assertTrue(status.equals(CommandStatus.SUCCESS));
 		transferTest.deleteHostBSource();
+
+		// Get the filename by splitting the path by "/"
+		String separator = "/";
+		if (theSource.contains("\\"))
+			separator = "\\";
+
+		String[] tokens = theSource.split(separator);
+		String filename = tokens[tokens.length - 1];
+
+		// Delete file from remote host C
+		// Delete the file that was moved with another command
+		String remoteHostCKeyPath = remoteHostC.getKeyPath();
+		String command = "ssh -i " + remoteHostCKeyPath + " " + remoteHostC.getUsername() + "@"
+				+ remoteHostC.getHostname();
+		command += " \"rm " + theDestination + filename + "\"";
+
+		CommandConfiguration config = new CommandConfiguration();
+		config.setExecutable(command);
+		config.setAppendInput(false);
+		config.setCommandId(99);
+		config.setErrFileName("lsErr.txt");
+		config.setOutFileName("lsOut.txt");
+		config.setNumProcs("1");
+		// WD doesn't matter since we are rming with an absolute path
+		config.setWorkingDirectory("/tmp/doesnt/matter");
+
+		// Get the command
+		CommandFactory factory = new CommandFactory();
+		Command rmCommand = factory.getCommand(config, remoteHostB);
+
+		status = rmCommand.execute();
+		// Just warn, since it isn't a huge deal if a file wasn't successfully deleted
+		if (!status.equals(CommandStatus.SUCCESS))
+			System.out.println("Couldn't delete destination file at : " + theDestination + filename);
+
 	}
 
 	/**

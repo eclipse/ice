@@ -76,7 +76,7 @@ public class RemoteRemoteFileTransferTest {
 	 * Remote host C key path that is needed to establish connection between host B
 	 * and host C
 	 */
-	String remoteHostCKeyPath = "/path/to/keykey";
+	String remoteHostCKeyPath = "/home/4jo/.ssh/dummykey";
 
 	/**
 	 * Authorization for remote host C
@@ -245,9 +245,9 @@ public class RemoteRemoteFileTransferTest {
 		hostBConnection = new ConnectionConfiguration();
 		hostBConnection.setName("hostB");
 		ConnectionAuthorizationHandler bauth = new KeyPathConnectionAuthorizationHandler();
-		bauth.setHostname("host");
-		bauth.setUsername("user");
-		bauth.setOption("/path/to/key");
+		bauth.setHostname("denisovan");
+		bauth.setUsername("4jo");
+		bauth.setOption("/home/4jo/.ssh/denisovankey");
 
 		hostBConnection.setAuthorization(bauth);
 
@@ -323,6 +323,7 @@ public class RemoteRemoteFileTransferTest {
 		// Just warn, since it isn't a huge deal if a file wasn't successfully deleted
 		if (!status.equals(CommandStatus.SUCCESS))
 			System.out.println("Couldn't delete destination file at : " + destination);
+		
 		return true;
 	}
 
