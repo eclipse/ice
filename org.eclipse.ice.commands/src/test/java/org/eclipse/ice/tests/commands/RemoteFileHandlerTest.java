@@ -54,12 +54,12 @@ public class RemoteFileHandlerTest {
 	/**
 	 * A string containing the source file to move
 	 */
-	String theSource = "";
+	protected String theSource = "";
 
 	/**
 	 * A string containing the destination to move the source file to
 	 */
-	String theDestination = "";
+	protected String theDestination = "";
 
 	/**
 	 * A connection to use throughout the test
@@ -199,7 +199,7 @@ public class RemoteFileHandlerTest {
 
 		deleteLocalDestination();
 		deleteRemoteSource();
-	
+
 	}
 
 	/**
@@ -470,7 +470,7 @@ public class RemoteFileHandlerTest {
 		System.out.println("Moved source file to new remote source destination " + theSource);
 
 	}
-	
+
 	private void putFile(SftpClient client, String src, String dest) throws IOException {
 		if (dest.endsWith("/")) {
 			String separator = FileSystems.getDefault().getSeparator();
@@ -481,7 +481,7 @@ public class RemoteFileHandlerTest {
 		}
 		try (OutputStream dstStream = client.write(dest, OpenMode.Create, OpenMode.Write, OpenMode.Truncate)) {
 			try (InputStream srcStream = new FileInputStream(src)) {
-				byte[] buf = new byte[32*1024];
+				byte[] buf = new byte[32 * 1024];
 				while (srcStream.read(buf) > 0) {
 					dstStream.write(buf);
 				}

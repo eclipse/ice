@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.sshd.client.subsystem.sftp.SftpClient;
 import org.apache.sshd.client.subsystem.sftp.SftpClientFactory;
@@ -125,7 +126,7 @@ public class CommandFactoryTest {
 		rm += " somePythOutFile.txt somePythErrFile.txt someLsRemoteErrFile.txt someLsRemoteOutFile.txt";
 		rm += " src/test/java/org/eclipse/ice/tests/someInputFile.txt src/test/java/org/eclipse/ice/tests/someOtherInputFile.txt";
 		rm += " pythOutFile.txt pythErrFile.txt hopRemoteOutFile.txt hopRemoteErrFile.txt";
-		ArrayList<String> command = new ArrayList<String>();
+		List<String> command = new ArrayList<String>();
 		// Build a command
 		if (System.getProperty("os.name").toLowerCase().contains("win")) {
 			command.add("powershell.exe");
@@ -144,7 +145,7 @@ public class CommandFactoryTest {
 		Process job = builder.start();
 		job.waitFor(); // wait for it to finish
 
-		// Remove lal the connections that were opened in testing
+		// Remove all the connections that were opened in testing
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 		manager.removeAllConnections();
 
