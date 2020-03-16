@@ -1,6 +1,14 @@
 import {css, customElement, html, LitElement, property} from 'lit-element';
 import '@vaadin/vaadin-text-field';
 
+
+/**
+ * Tasks:
+ * 
+ * *Move DataElement<T> to its ts file. It would be really nice to put this in the data structures project since it shadows a class there.
+ * *Add a unit test?
+ */
+
 export class DataElement<T> {
      name: string;
      description: string;
@@ -12,6 +20,13 @@ export class DataElement<T> {
      }    
 }
 
+/**
+ * Tasks: 
+ * *This class should be templated or take a function call back in place of updateDataElement and loadData.
+ * *Add documentation as required.
+ * *Remove console debug statements
+ * *This is just an example so the rest doesn't matter much, (the rest being changing the render() function, etc.).
+ */
 @customElement("renderer-template")
 class Renderer extends LitElement {
   
@@ -64,7 +79,9 @@ class Renderer extends LitElement {
     console.log(this.dataElement.data);
   }
 
-  render() {  
+  render() {
+    // Might clean this up a bit - remove some of the <h2> statements.
+
     return html`
       <script>${this.loadData()}</script>
       <h1>Greetings ${this.dataElement.name}!</h1>
@@ -76,7 +93,7 @@ class Renderer extends LitElement {
           @input=${this.updateDataElement}
           ></vaadin-text-field>
       </div>
-      
+
       <h2>${this.dataElementJSON}</h2>
       
       <h2>${this.dataElement.description}</h2>

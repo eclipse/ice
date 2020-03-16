@@ -3,16 +3,20 @@
  */
 package gov.ornl.rse.renderer;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
+ * 
+ * TODO: Add tests, documentation, validation, Validator exclusion from JSON, also tags and other features from ICE's Entry, and logging.
+ * 
+ * Move the Offset and DataFile test classes to the test bundle.
+ * 
+ * Rename everything to org.eclipse.ice.*
+ * 
+ * Add license headers, etc.
+ * 
  * @author Jay Jay Billings
  *
  */
