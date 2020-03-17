@@ -1,9 +1,9 @@
 package gov.ornl.rse.renderer.client.test;
 
+import org.eclipse.ice.renderer.DataElement;
+
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
-
-import gov.ornl.rse.renderer.DataElement;
 
 @Route
 public class MainView extends VerticalLayout {

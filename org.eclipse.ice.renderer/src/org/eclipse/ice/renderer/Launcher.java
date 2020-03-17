@@ -1,4 +1,4 @@
-package gov.ornl.rse.renderer;
+package org.eclipse.ice.renderer;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package gov.ornl.rse.renderer;
+package org.eclipse.ice.renderer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

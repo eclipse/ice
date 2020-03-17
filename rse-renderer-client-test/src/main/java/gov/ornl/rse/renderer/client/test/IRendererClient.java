@@ -1,6 +1,6 @@
 package gov.ornl.rse.renderer.client.test;
 
-import gov.ornl.rse.renderer.DataElement;
+import org.eclipse.ice.renderer.DataElement;
 
 public interface IRendererClient<T> {
 

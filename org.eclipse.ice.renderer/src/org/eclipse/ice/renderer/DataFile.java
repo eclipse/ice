@@ -1,7 +1,7 @@
 /**
  * 
  */
-package gov.ornl.rse.renderer;
+package org.eclipse.ice.renderer;
 
 /**
  * @author Jay Jay Billings

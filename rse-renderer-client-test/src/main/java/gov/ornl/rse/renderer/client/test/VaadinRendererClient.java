@@ -3,6 +3,8 @@
  */
 package gov.ornl.rse.renderer.client.test;
 
+import org.eclipse.ice.renderer.DataElement;
+
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.JsModule;
@@ -10,7 +12,6 @@ import com.vaadin.flow.dom.DomListenerRegistration;
 
 import elemental.json.Json;
 import elemental.json.JsonObject;
-import gov.ornl.rse.renderer.DataElement;
 
 /**
  * This is a Vbase class for renderer clients tailored to Vaadin. It provides
