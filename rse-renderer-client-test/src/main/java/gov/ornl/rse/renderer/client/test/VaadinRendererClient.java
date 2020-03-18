@@ -1,7 +1,20 @@
 /**
  * 
  */
+/*******************************************************************************
+ * Copyright (c) 2020- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Jay Jay Billings
+ *******************************************************************************/
 package gov.ornl.rse.renderer.client.test;
+
+import org.eclipse.ice.renderer.DataElement;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Tag;
@@ -10,7 +23,6 @@ import com.vaadin.flow.dom.DomListenerRegistration;
 
 import elemental.json.Json;
 import elemental.json.JsonObject;
-import gov.ornl.rse.renderer.DataElement;
 
 /**
  * This is a Vbase class for renderer clients tailored to Vaadin. It provides

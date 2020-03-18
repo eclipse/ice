@@ -9,20 +9,37 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings
  *******************************************************************************/
-package gov.ornl.rse.renderer.client.test;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+package org.eclipse.ice.renderer;
 
 /**
- * The entry point of the Spring Boot application.
+ * @author Jay Jay Billings
+ *
  */
-@SpringBootApplication
-public class Application extends SpringBootServletInitializer {
-
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-
+public class Offset {
+	private boolean inUse;
+	private double offsetValue;
+	
+	public Offset() {}
+	
+	public double getValue() {
+		return offsetValue;
+	}
+	
+	public void setValue(double value) {
+		offsetValue = value;
+	}
+	
+	public boolean getUsed() {
+		return inUse;
+	}
+	
+	public void setUsed(boolean value) {
+		inUse = value;
+	}
+	
+	@Override
+	public String toString() {
+		return inUse + ", " + offsetValue; 
+	}
+	
 }

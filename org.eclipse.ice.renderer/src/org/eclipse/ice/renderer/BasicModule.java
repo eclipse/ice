@@ -9,20 +9,13 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings
  *******************************************************************************/
-package gov.ornl.rse.renderer.client.test;
+package org.eclipse.ice.renderer;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import com.google.inject.AbstractModule;
 
-/**
- * The entry point of the Spring Boot application.
- */
-@SpringBootApplication
-public class Application extends SpringBootServletInitializer {
-
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+public class BasicModule extends AbstractModule {
+    @Override
+    protected void configure() {
+        bind(RendererRunner.class).toInstance(new RendererRunner());;
     }
-
 }
