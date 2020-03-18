@@ -11,6 +11,10 @@
  *******************************************************************************/
 package org.eclipse.ice.renderer;
 
+import java.util.ArrayList;
+import java.util.Properties;
+import java.util.UUID;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +37,24 @@ public class DataElement<T> {
 	T data;
 	private String description;
 	private String name;
+	private UUID private_id;
+	private String public_id;
+	private String comment;
+	private ArrayList<String> keywords;
+	private String context;
+	private boolean required;
+	private boolean secret;
+	private Validator validator;
 
+	public Properties getProperties() {
+		Properties props = new Properties();
+		return (Properties) props.clone();
+	}
+	
+	public void setProperty(final String key, final String value) {
+		
+	}
+	
 	public T getData() {
 		return data;
 	}
@@ -86,29 +107,137 @@ public class DataElement<T> {
 		}
 		
 	}
-	
-	public Validator getValidator() {
-		return null;
-	}
 
-	public void setValidator(Validator validator) {
-
-	}
-
-	public String getDescription() {
+	/**
+	 * 
+	 * @return
+	 */
+	public final String getDescription() {
 		return description;
 	}
 
+	/**
+	 * 
+	 * @param desc
+	 */
 	public void setDescription(final String desc) {
 		description = desc;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * 
+	 * @param elemName
+	 */
 	public void setName(final String elemName) {
 		name = elemName;
 	}
 
+	/**
+	 * @return the public_id
+	 */
+	public String getPublicId() {
+		return public_id;
+	}
+
+	/**
+	 * @param public_id the public_id to set
+	 */
+	public void setId(final String public_id) {
+		this.public_id = public_id;
+	}
+
+	/**
+	 * @return the comment
+	 */
+	public String getComment() {
+		return comment;
+	}
+
+	/**
+	 * @param comment the comment to set
+	 */
+	public void setComment(final String comment) {
+		this.comment = comment;
+	}
+
+	/**
+	 * @return the keywords
+	 */
+	public ArrayList<String> getKeywords() {
+		return keywords;
+	}
+
+	/**
+	 * @param keywords the keywords to set
+	 */
+	public void setKeywords(final ArrayList<String> keywords) {
+		this.keywords = keywords;
+	}
+
+	/**
+	 * @return the context
+	 */
+	public String getContext() {
+		return context;
+	}
+
+	/**
+	 * @param context the context to set
+	 */
+	public void setContext(final String context) {
+		this.context = context;
+	}
+
+	/**
+	 * @return the required
+	 */
+	public boolean isRequired() {
+		return required;
+	}
+
+	/**
+	 * @param required the required to set
+	 */
+	public void setRequired(final boolean required) {
+		this.required = required;
+	}
+
+	/**
+	 * @return the secret
+	 */
+	public boolean isSecret() {
+		return secret;
+	}
+
+	/**
+	 * @param secret the secret to set
+	 */
+	public void setSecret(final boolean secret) {
+		this.secret = secret;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public Validator getValidator() {
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param validator
+	 */
+	public void setValidator(Validator validator) {
+
+	}
+	
 }
