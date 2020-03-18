@@ -9,7 +9,9 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings
  *******************************************************************************/
-package org.eclipse.ice.renderer;
+package gov.ornl.rse.renderer.client.test;
+
+import org.eclipse.ice.renderer.DataElement;
 
 /**
  * @author Jay Jay Billings

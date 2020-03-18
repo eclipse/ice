@@ -9,19 +9,21 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings
  *******************************************************************************/
-package org.eclipse.ice.renderer;
+package org.eclipse.ice.tests.renderer;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import org.eclipse.ice.renderer.DataElement;
 
-public class Launcher {
+public class HTMLView {
 
-	public static void main(String[] args) {
+	public HTMLView() {
 		
-	    Injector injector = Guice.createInjector(new BasicModule());
-	    RendererRunner runner  = injector.getInstance(RendererRunner.class);
-		
-		runner.run();
+	}
+	
+	public void draw(DataElement data) {
+		String content = "<html><head><title>Hello World!</title></head><body>Hello World! " + 
+						data.toString() + "</body></html>";
+		System.out.println(content);
+		return;
 	}
 
 }

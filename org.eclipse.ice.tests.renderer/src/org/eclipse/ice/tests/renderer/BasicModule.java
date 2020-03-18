@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings
  *******************************************************************************/
-package org.eclipse.ice.renderer;
+package org.eclipse.ice.tests.renderer;
 
 import com.google.inject.AbstractModule;
 
