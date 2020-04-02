@@ -31,13 +31,6 @@ public interface ICommandUpdateHandler {
 	 */
 	static final Logger logger = LoggerFactory.getLogger(ICommandUpdateHandler.class);
 
-	
-	/*
-	 * Public setter that must be implemented so that the child class can obtain a
-	 * place to send the update
-	 */
-	public void setOption(String option);
-
 	/*
 	 * This function processes the logic required to post an update about the job
 	 * for the class

@@ -61,7 +61,7 @@ public class EmailHandlerTest {
 		
 		EmailUpdateHandler email = new EmailUpdateHandler();
 		// Just send an email to itself
-		email.setOption("commandsapi@gmail.com");
+		email.setEmailAddress("someemail@gmail.com");
 		email.setEmailText("This is a test email");
 		email.setSubject("This is a test subject");
 		email.postUpdate();

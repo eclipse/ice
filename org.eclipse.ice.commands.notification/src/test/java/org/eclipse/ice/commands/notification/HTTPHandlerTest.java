@@ -13,6 +13,7 @@ package org.eclipse.ice.commands.notification;
 
 import java.io.IOException;
 
+import org.eclipse.ice.commands.CommandStatus;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -60,7 +61,8 @@ public class HTTPHandlerTest {
 	public void testHTTPNotificationPostUpdate() throws IOException {
 	
 		HTTPCommandUpdateHandler updater = new HTTPCommandUpdateHandler();
-		updater.setOption("www.example.com");
+		updater.setHTTPAddress("www.example.com");
+		updater.postStatus(CommandStatus.INFOERROR);
 		
 		updater.postUpdate();
 		

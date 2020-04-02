@@ -112,8 +112,8 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 	 * 
 	 * @param option
 	 */
-	public void setOption(String option) {
-		this.emailAddress = option;
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
 	}
 
 	/**
