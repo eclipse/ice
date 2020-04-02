@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
-package org.eclipse.ice.tests.commands;
+package org.eclipse.ice.commands.notification;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -82,8 +82,8 @@ public class EmailHandlerTest {
 
 		String hostname = addr.getHostName();
 		
-		EmailHandler email = new EmailHandler("myemailaddress@domain.com");
-		
+		EmailUpdateHandler email = new EmailUpdateHandler();
+		email.setOption("myemailaddress@domain.com");
 		String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
 
 		// Make a simple command configuration to just run an ls -lrt

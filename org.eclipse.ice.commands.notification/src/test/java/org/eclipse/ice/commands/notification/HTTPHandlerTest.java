@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
-package org.eclipse.ice.tests.commands;
+package org.eclipse.ice.commands.notification;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -81,8 +81,8 @@ public class HTTPHandlerTest {
 
 		String hostname = addr.getHostName();
 		
-		HTTPCommandUpdateHandler updater = new HTTPCommandUpdateHandler("www.example.com/update");
-		
+		HTTPCommandUpdateHandler updater = new HTTPCommandUpdateHandler();
+		updater.setOption("www.example.com");
 		String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
 
 		// Make a simple command configuration to just run an ls -lrt
