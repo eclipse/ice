@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.renderer;
 
+import java.io.Serializable;
 import java.util.function.BiConsumer;
 import javax.inject.Inject;
 
@@ -18,7 +19,7 @@ import javax.inject.Inject;
  * @author Jay Jay Billings
  *
  */
-public class Renderer<T, V> {
+public class Renderer<T, V extends Serializable> {
 
 	@Inject
 	private T viewer;

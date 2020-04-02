@@ -47,8 +47,9 @@ public class RendererRunner {
 
 	/**
 	 * @param args
+	 * @throws Exception 
 	 */
-	public void run() {
+	public void run() throws Exception {
 
 		// Configure a basic data element with a boolean value
 		data.setName("Injected.");
@@ -83,7 +84,7 @@ public class RendererRunner {
 		//osRenderer.render();
 	}
 
-	private void testSomeStuff() {
+	private void testSomeStuff() throws Exception {
 
 		// Decorated property - description
 		//sampleOffset.setDescription("Sample Offset in mm");

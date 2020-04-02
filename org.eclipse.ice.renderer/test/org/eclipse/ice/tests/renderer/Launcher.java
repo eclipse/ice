@@ -21,7 +21,12 @@ public class Launcher {
 	    Injector injector = Guice.createInjector(new BasicModule());
 	    RendererRunner runner  = injector.getInstance(RendererRunner.class);
 		
-		runner.run();
+		try {
+			runner.run();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
