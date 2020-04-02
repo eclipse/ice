@@ -11,20 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.commands.notification;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
-import org.eclipse.ice.commands.Command;
-import org.eclipse.ice.commands.CommandConfiguration;
-import org.eclipse.ice.commands.CommandFactory;
-import org.eclipse.ice.commands.CommandStatus;
-import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
-import org.eclipse.ice.commands.ConnectionConfiguration;
-import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -69,66 +57,16 @@ public class EmailHandlerTest {
 	}
 
 	@Test
-	public void testEmailNotification() {
-		fail("Not yet implemented");
-		
-		// Get the hostname for your local computer
-		InetAddress addr = null;
-		try {
-			addr = InetAddress.getLocalHost();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-
-		String hostname = addr.getHostName();
+	public void testEmailNotificationPostUpdate() throws IOException {
 		
 		EmailUpdateHandler email = new EmailUpdateHandler();
-		email.setOption("myemailaddress@domain.com");
-		String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
-
-		// Make a simple command configuration to just run an ls -lrt
-		CommandConfiguration cmdCfg = new CommandConfiguration();
-		cmdCfg.setNumProcs("1");
-		cmdCfg.setInstallDirectory("");
-		cmdCfg.setWorkingDirectory(pwd);
-		cmdCfg.setOS(System.getProperty("os.name"));
-		cmdCfg.setExecutable("ls -lrt");
-
-		if (System.getProperty("os.name").toLowerCase().contains("win")) {
-			// Add powershell interpeter if os is windows
-			cmdCfg.setInterpreter("powershell.exe");
-			// just use ls because powershell automatically adds the -lrt
-			// and doesn't know what -lrt is anyway
-			cmdCfg.setExecutable("ls");
-		}
-		cmdCfg.setInstallDirectory("");
-		cmdCfg.setAppendInput(false);
-		cmdCfg.setCommandId(1);
-		cmdCfg.setErrFileName("someLsErrFile.txt");
-		cmdCfg.setOutFileName("someLsOutFile.txt");
-		cmdCfg.setEmailHandler(email);
-		// Make the connection configuration
-		ConnectionConfiguration ctCfg = new ConnectionConfiguration();
-		ConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
-		handler.setHostname(hostname);
-		ctCfg.setAuthorization(handler);
-
-		// Get and run the command
-		CommandFactory factory = new CommandFactory();
-		Command cmd = null;
-		try {
-			cmd = factory.getCommand(cmdCfg, ctCfg);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		CommandStatus status = cmd.execute();
-
-		// Check that it properly finished
-		assertEquals(CommandStatus.SUCCESS, status);
+		// Just send an email to itself
+		email.setOption("commandsapi@gmail.com");
+		email.setEmailText("This is a test email");
+		email.setSubject("This is a test subject");
+		email.postUpdate();
 		
-		// Check that the HTTP address is valid and populated
-		assertEquals("check email sent somehow?");
-	
+		// If no exception is thrown, it completed correctly
 	}
 
 }

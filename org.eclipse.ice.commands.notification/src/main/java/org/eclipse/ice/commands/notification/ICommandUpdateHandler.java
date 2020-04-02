@@ -11,6 +11,11 @@
  *******************************************************************************/
 package org.eclipse.ice.commands.notification;
 
+import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This interface lays out the format for any Command update class. Command
  * update classes notify users via their implemented methods about the status of
@@ -21,6 +26,12 @@ package org.eclipse.ice.commands.notification;
  */
 public interface ICommandUpdateHandler {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	static final Logger logger = LoggerFactory.getLogger(ICommandUpdateHandler.class);
+
+	
 	/*
 	 * Public setter that must be implemented so that the child class can obtain a
 	 * place to send the update
@@ -31,5 +42,5 @@ public interface ICommandUpdateHandler {
 	 * This function processes the logic required to post an update about the job
 	 * for the class
 	 */
-	abstract void postUpdate();
+	abstract void postUpdate() throws IOException;
 }

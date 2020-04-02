@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.commands.notification;
 
+import java.io.IOException;
+
 /**
  * This class posts Command job updates to an HTTP link via POST
  * 
@@ -29,12 +31,11 @@ public class HTTPCommandUpdateHandler implements ICommandUpdateHandler{
 	}
 
 	public void setOption(String option) {
-		// TODO Auto-generated method stub
+		this.HTTPAddress = option;
 		
 	}
 
-	public void postUpdate() {
-		// TODO Auto-generated method stub
+	public void postUpdate() throws IOException {
 		
 	}
 
