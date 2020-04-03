@@ -12,31 +12,36 @@
 package org.eclipse.ice.renderer;
 
 import java.io.Serializable;
-
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * Two levels of validation: 1) Conformance to value specification (value) 2)
- * Conformance to business rules (logical)
+ * This class provides a simple utility for checking that the data in objects is
+ * valid and meets some basic expectations. For example, it can be used to check
+ * that numbers lie within certain bounds or that strings are spelled correctly.
  * 
- * 1 often possible through schemas - will investigate 2 requires custom
- * functions
+ * All validation in this class is performed using a Javascript function that is
+ * injected with the function accessors. All clients are expected to configure a
+ * validation function by passing a Javascript function in the form of a string
+ * to the setFunction() operation. The function signature is of the form "var
+ * checkData = function (data) {return data == 'Solar Fields';}" and this class
+ * expects to be able to call the checkData() function by name.
  * 
- * Clients are expected to configure a validation function by passing a
- * Javascript function in the form of a string to the setFunction() operation.
+ * Clients should provide functions that, in general, perform both verification
+ * and validation. That is, functions should verify that data exists within
+ * expected parameters and insure that the values provided are accurate in a
+ * larger context and conform to business rules.
  * 
  * Future ideas: 1) Can we take Javascript function objects instead of strings?
  * 2) Do we need to create a script engine for *every* validator? Most likely
  * not! 3) Can we get feedback from Javascript functions to identify what the
- * error was? 4) Can we read functions from files too?
+ * error was? 4) Can we read functions from files too? 5) Can we inject a
+ * function name to call instead of defaulting to checkData()?
  * 
  * @author Jay Jay Billings
  *
@@ -119,6 +124,9 @@ public class JavascriptValidator<T> implements Serializable {
 		this.function = function;
 	}
 
+	/**
+	 * See {@link java.lang.Object#equals(Object)}.
+	 */
 	@Override
 	public boolean equals(Object otherObject) {
 
@@ -154,7 +162,7 @@ public class JavascriptValidator<T> implements Serializable {
 			result = invocableEngine.invokeFunction("checkData", data);
 			retValue = (boolean) result;
 		} catch (ScriptException e) {
-			logger.error("Error running validation function!",e);
+			logger.error("Error running validation function!", e);
 		}
 
 		return retValue;
