@@ -15,7 +15,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.UUID;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -88,14 +89,19 @@ public class DataElement<T extends Serializable> implements Serializable {
 	private static final long serialVersionUID = 3710841338767820983L;
 
 	/**
+	 * Logging tool
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(DataElement.class);
+
+	/**
 	 * The data stored in the element
 	 */
-	T data;
+	private T data;
 
 	/**
 	 * Metadata entries for the data
 	 */
-	Properties dataProps = new Properties();
+	private Properties dataProps = new Properties();
 
 	/**
 	 * A unique private id that identifies the data element
@@ -214,8 +220,7 @@ public class DataElement<T extends Serializable> implements Serializable {
 		try {
 			value = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Unable to write DataElement to string!", e);
 		}
 
 		return value;
@@ -252,8 +257,7 @@ public class DataElement<T extends Serializable> implements Serializable {
 			validator = mapper.treeToValue(validatorNode, Validator.class);
 
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Unable to read DataElement from string!", e);
 		}
 
 		return;
@@ -536,7 +540,7 @@ public class DataElement<T extends Serializable> implements Serializable {
 			// Call the copy constructor to create the clone.
 			return new DataElement<T>(this);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Unable to clone DataElement!", e);
 			return null;
 		}
 	}
