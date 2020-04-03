@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Properties;
 
 import org.eclipse.ice.renderer.DataElement;
-import org.eclipse.ice.renderer.Validator;
+import org.eclipse.ice.renderer.JavascriptValidator;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -135,7 +135,7 @@ class DataElementTest {
 		assertEquals(element.isSecret(), secret);
 
 		// Make sure that adding validators works superficially
-		Validator validator = new Validator();
+		JavascriptValidator<String> validator = new JavascriptValidator<String>();
 		element.setValidator(validator);
 		assertEquals(element.getValidator(), validator);
 
@@ -211,6 +211,7 @@ class DataElementTest {
 		DataElement<String> element = getStringElement("Major Lazer & La Roux");
 		element.setSecret(true);
 		element.setRequired(true);
+		element.setValidator(new JavascriptValidator<String>());
 
 		// Add a custom property to make sure they are included in serialization
 		try {
@@ -228,7 +229,9 @@ class DataElementTest {
 		// Change some values then read back in the original to make sure fromString()
 		// correctly overwrites them.
 		element.setData("Eastern Sun");
+		System.out.println(output);
 		DataElement<String> element2 = getStringElement("Emancipator");
+		element2.setValidator(new JavascriptValidator<String>());
 		element2.fromString(output);
 		element.fromString(output);
 		assertEquals(element,element2);
@@ -248,6 +251,7 @@ class DataElementTest {
 		element.setData(new TestPOJO());
 		element.setSecret(true);
 		element.setRequired(true);
+		element.setValidator(new JavascriptValidator<TestPOJO>());
 
 		// Add a custom property to make sure they are included in serialization
 		try {
@@ -267,6 +271,7 @@ class DataElementTest {
 		DataElement<TestPOJO> element2 = new DataElement<TestPOJO>();
 		TestPOJO pojo2 = new TestPOJO();
 		pojo2.setDoubleValue(1.072);
+		element2.setValidator(new JavascriptValidator<TestPOJO>());
 		element2.setData(pojo2);
 		element2.fromString(output);
 		
@@ -293,12 +298,12 @@ class DataElementTest {
 		DataElement<String> element4 = getStringElement("Halsey");
 
 		// Need a validator for the tests that is shared on the equal elements.
-		Validator validator = new Validator();
+		JavascriptValidator<String> validator = new JavascriptValidator<String>();
 		element.setValidator(validator);
 		element2.setValidator(validator);
 		element4.setValidator(validator);
 		// Billie needs her own validator
-		element3.setValidator(new Validator());
+		element3.setValidator(new JavascriptValidator<String>());
 
 		// Data elements must be checked both for matching - a deep inequality except
 		// the UUID - and for a fully complete match that contains the UUID. Start with

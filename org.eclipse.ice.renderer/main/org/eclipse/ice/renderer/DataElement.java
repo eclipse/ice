@@ -12,7 +12,6 @@
 package org.eclipse.ice.renderer;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Properties;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -25,9 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 
- * TODO: Add tests, documentation, validation, Validator exclusion from JSON,
- * also tags and other features from ICE's Entry, and logging.
- * 
+ * TODO: validation, Validator exclusion from JSON,
+ *
  * This is a basic data container that conveniently weds the data with
  * co-located metadata such as names, descriptions, ids, and other values.
  * 
@@ -84,7 +82,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class DataElement<T extends Serializable> implements Serializable {
 
 	/**
-	 * A serializable id for the Serializable interface implementation.
+	 * An id for the Serializable interface implementation.
 	 */
 	private static final long serialVersionUID = 3710841338767820983L;
 
@@ -122,7 +120,7 @@ public class DataElement<T extends Serializable> implements Serializable {
 	/**
 	 * The validator used to check the correctness of the data
 	 */
-	private Validator validator;
+	private JavascriptValidator<T> validator;
 
 	/**
 	 * Default constructor
@@ -254,7 +252,7 @@ public class DataElement<T extends Serializable> implements Serializable {
 			privateId = mapper.treeToValue(idNode, UUID.class);
 			// Validators
 			JsonNode validatorNode = rootNode.get("validator");
-			validator = mapper.treeToValue(validatorNode, Validator.class);
+			validator = mapper.treeToValue(validatorNode, validator.getClass());
 
 		} catch (JsonProcessingException e) {
 			logger.error("Unable to read DataElement from string!", e);
@@ -518,7 +516,7 @@ public class DataElement<T extends Serializable> implements Serializable {
 		// here. It matches the version in the old ICE 2.x product line, but I
 		// incremented the initial hash seed to 31 from 11 since this is for version 3.
 		int hash = 31;
-		// The 31 here is just coincidental and part of the original source where I read
+		// The 31 below is just coincidental and part of the original source where I read
 		// about hash codes.
 		hash = 31 * hash + privateId.hashCode();
 		hash = 31 * hash + dataProps.hashCode();
@@ -535,6 +533,7 @@ public class DataElement<T extends Serializable> implements Serializable {
 	 * implementation in that it will return null if it cannot create the clone to
 	 * promote fast failure. See {@link java.lang.Object#clone()};
 	 */
+	@Override
 	public Object clone() {
 		try {
 			// Call the copy constructor to create the clone.
@@ -551,7 +550,7 @@ public class DataElement<T extends Serializable> implements Serializable {
 	 * 
 	 * @return the validator or null if it has not been set
 	 */
-	public Validator getValidator() {
+	public JavascriptValidator<T> getValidator() {
 		return validator;
 	}
 
@@ -560,7 +559,7 @@ public class DataElement<T extends Serializable> implements Serializable {
 	 * 
 	 * @param validator the validator or null to reset the reference
 	 */
-	public void setValidator(Validator validator) {
+	public void setValidator(JavascriptValidator<T> validator) {
 		this.validator = validator;
 	}
 
