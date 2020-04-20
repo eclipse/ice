@@ -14,6 +14,8 @@
  *******************************************************************************/
 package gov.ornl.rse.renderer.client.test;
 
+import java.io.Serializable;
+
 import org.eclipse.ice.renderer.DataElement;
 
 import com.vaadin.flow.component.Component;
@@ -25,14 +27,14 @@ import elemental.json.Json;
 import elemental.json.JsonObject;
 
 /**
- * This is a Vbase class for renderer clients tailored to Vaadin. It provides
+ * This is a base class for renderer clients tailored to Vaadin. It provides
  * the basic accessors for the data member.
  * 
  * @author Jay Jay Billings
  */
 @Tag("renderer-template")
 @JsModule("./src/renderer.ts")
-public class VaadinRendererClient<T> extends Component implements IRendererClient<T> {
+public class VaadinRendererClient<T extends Serializable> extends Component implements IRendererClient<T> {
 
 	/**
 	 * version UID

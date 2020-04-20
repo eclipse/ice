@@ -23,9 +23,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * 
- * TODO: validation, Validator exclusion from JSON,
- *
  * This is a basic data container that conveniently weds the data with
  * co-located metadata such as names, descriptions, ids, and other values.
  * 
@@ -55,7 +52,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Clients may retrieve or add their own properties/keywords using the
  * 'setProperty' operation. Accessors are available for the default properties
  * as well, as convenience methods. Clients may also designate whether or not
- * data elements are required and secret.
+ * data elements are required and secret. Please note that the convenience
+ * methods for default properties throw exceptions to enforce non-null values.
  * 
  * Clients are expected to set their own validators and validators are not
  * initialized by default.
@@ -516,7 +514,8 @@ public class DataElement<T extends Serializable> implements Serializable {
 		// here. It matches the version in the old ICE 2.x product line, but I
 		// incremented the initial hash seed to 31 from 11 since this is for version 3.
 		int hash = 31;
-		// The 31 below is just coincidental and part of the original source where I read
+		// The 31 below is just coincidental and part of the original source where I
+		// read
 		// about hash codes.
 		hash = 31 * hash + privateId.hashCode();
 		hash = 31 * hash + dataProps.hashCode();

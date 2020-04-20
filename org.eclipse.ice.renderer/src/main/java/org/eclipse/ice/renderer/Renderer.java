@@ -16,6 +16,22 @@ import java.util.function.BiConsumer;
 import javax.inject.Inject;
 
 /**
+ * This class is a basic controller that connects data and UI classes in a
+ * simple, pre-determined way. Data can be provided through the DataElement<V>
+ * class and functionality for working with UI elements of type T can be
+ * provided as call back functions (bi-consumers).
+ * 
+ * This class relies on dependency injection to locate and instantiate
+ * dependencies of types T and V. Both can be overwritten using the associated
+ * setters. However, call back functions must be injected with the
+ * setDrawMethod() function.
+ * 
+ * No special lifecycle management is provided by this class. Instead, the
+ * expectation is that the viewer T can handle updates directly.
+ * 
+ * Also how does that class relate to this
+ * one and the VaadinRenderer?
+ * 
  * @author Jay Jay Billings
  *
  */
@@ -23,10 +39,10 @@ public class Renderer<T, V extends Serializable> {
 
 	@Inject
 	private T viewer;
-	
+
 	@Inject
 	private DataElement<V> dataElement;
-	
+
 	private BiConsumer<T, DataElement<V>> drawMethod;
 
 	public void setViewer(T view) {
@@ -37,11 +53,11 @@ public class Renderer<T, V extends Serializable> {
 		dataElement = data;
 	}
 
-	public void setDrawMethod(BiConsumer<T,DataElement<V>> drawFunction) {
+	public void setDrawMethod(BiConsumer<T, DataElement<V>> drawFunction) {
 		drawMethod = drawFunction;
 	}
 
 	public void render() {
-		drawMethod.accept(viewer,dataElement);
+		drawMethod.accept(viewer, dataElement);
 	}
 }
