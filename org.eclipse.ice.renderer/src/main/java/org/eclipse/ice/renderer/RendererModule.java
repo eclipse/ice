@@ -9,21 +9,26 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings
  *******************************************************************************/
-package gov.ornl.rse.renderer.client.test;
+package org.eclipse.ice.renderer;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.Import;
+import dagger.Module;
+import dagger.Provides;
 
 /**
- * The entry point of the Spring Boot application.
+ * A Dagger Module binding for the renderer package.
+ * @author Jay Jay Billings
+ *
  */
-@SpringBootApplication
-public class Application extends SpringBootServletInitializer {
+@Module
+public class RendererModule {
 
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-
+	@Provides
+	public DataElement<?> getDataElement() {
+		return new DataElement();
+	}
+	
+	@Provides Renderer<?,?> getRenderer() {
+		return new Renderer();
+	}
+	
 }

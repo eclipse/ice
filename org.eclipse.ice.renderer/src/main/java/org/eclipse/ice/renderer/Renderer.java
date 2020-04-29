@@ -35,20 +35,24 @@ import javax.inject.Inject;
  * @author Jay Jay Billings
  *
  */
-public class Renderer<T, V extends Serializable> {
+public class Renderer<T, V extends Serializable> implements Serializable {
 
-	@Inject
+	/**
+	 * Serial version id
+	 */
+	private static final long serialVersionUID = -8514680453430699108L;
+
 	private T viewer;
-
-	@Inject
 	private DataElement<V> dataElement;
 
 	private BiConsumer<T, DataElement<V>> drawMethod;
 
+	@Inject
 	public void setViewer(T view) {
 		viewer = view;
 	}
-
+	
+	@Inject
 	public void setDataElement(DataElement<V> data) {
 		dataElement = data;
 	}

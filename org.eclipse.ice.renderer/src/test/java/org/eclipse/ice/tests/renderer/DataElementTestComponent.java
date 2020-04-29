@@ -11,11 +11,23 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.renderer;
 
-import com.google.inject.AbstractModule;
+import org.eclipse.ice.renderer.DataElement;
+import org.eclipse.ice.renderer.Renderer;
+import org.eclipse.ice.renderer.RendererModule;
 
-public class BasicModule extends AbstractModule {
-    @Override
-    protected void configure() {
-        bind(RendererRunner.class).toInstance(new RendererRunner());;
-    }
+import dagger.Component;
+
+/**
+ * @author Jay Jay Billings
+ *
+ */
+@Component(modules = {DataElementTestModule.class, RendererModule.class})
+public interface DataElementTestComponent {
+
+	public RendererRunner buildRendererRunner();
+	
+	public DataElement<?> buildDataElement();
+	
+	public Renderer<?,?> buildRenderer();
+	
 }

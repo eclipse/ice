@@ -11,15 +11,21 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.renderer;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import org.eclipse.ice.renderer.DaggerRendererComponent;
+import org.eclipse.ice.renderer.DataElement;
+import org.eclipse.ice.renderer.RendererComponent;
 
 public class Launcher {
-
-	public static void main(String[] args) {
+	
+	public static void main(String[] args) throws Exception {
 		
-	    Injector injector = Guice.createInjector(new BasicModule());
-	    RendererRunner runner  = injector.getInstance(RendererRunner.class);
+		RendererComponent rendererComponent = DaggerRendererComponent.create();
+		DataElement<String> element = (DataElement<String>) rendererComponent.buildDataElement();
+		element.setName("Enemy");
+		System.out.println(element.getName());
+		
+		DataElementTestComponent component = DaggerDataElementTestComponent.create();
+	    RendererRunner runner = component.buildRendererRunner();
 		
 		try {
 			runner.run();

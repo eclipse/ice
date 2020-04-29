@@ -13,10 +13,13 @@ package gov.ornl.rse.renderer.client.test;
 
 import java.util.function.BiConsumer;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.eclipse.ice.renderer.DataElement;
 import org.eclipse.ice.renderer.Renderer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -24,11 +27,22 @@ import com.vaadin.flow.router.Route;
 @Route
 public class MainView extends VerticalLayout {
 
-	@Inject
-	Renderer<VaadinRendererClient<String>,String> renderer;
-	
+	@Autowired
+	private Renderer<VaadinRendererClient<String>, String> renderer;
+
+	/**
+	 * Constructor
+	 */
 	public MainView() {
-		
+	}
+
+	/**
+	 * This operation draws the main view. It must be executed after construction
+	 * because it depends on dependencies that area injected into the class.
+	 */
+	@PostConstruct
+	public void render() {
+
 		// Nothing to do here - just sample setup
 		DataElement<String> nameElem = new DataElement<String>();
 		try {
@@ -39,10 +53,10 @@ public class MainView extends VerticalLayout {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		BiConsumer<VaadinRendererClient<String>, DataElement<String>> drawViewFunc = (v, w) -> {
-	        v.setData(w);
-	        add(v);
+			v.setData(w);
+			add(v);
 		};
 		renderer.setDataElement(nameElem);
 		renderer.setDrawMethod(drawViewFunc);
