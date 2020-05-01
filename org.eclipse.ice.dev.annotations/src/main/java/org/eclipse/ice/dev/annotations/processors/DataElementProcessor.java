@@ -28,16 +28,17 @@ public class DataElementProcessor extends AbstractProcessor {
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
+		messager.printMessage(Diagnostic.Kind.NOTE, "Printing: ");
+		
 		for (TypeElement te : annotations)
 			for (Element e : roundEnv.getElementsAnnotatedWith(te))
 				messager.printMessage(Diagnostic.Kind.NOTE, "Printing: " + e.toString());
 
 		try {
-			Thread.currentThread().sleep(100000);
 			FileWriter writer = new FileWriter("/home/bkj/test.txt");
 			writer.write("Howdy!");
 			writer.close();
-		} catch (IOException | InterruptedException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
