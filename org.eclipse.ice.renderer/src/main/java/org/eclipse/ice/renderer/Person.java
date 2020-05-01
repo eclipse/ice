@@ -7,4 +7,5 @@ import org.eclipse.ice.dev.annotations.DataField;
 @DataField(fieldName = "age", fieldType = String.class)
 @DataField(fieldName = "name", fieldType = String.class)
 public interface Person {
+	void foo();
 }
