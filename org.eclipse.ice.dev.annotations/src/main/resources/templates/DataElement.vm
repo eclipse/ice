@@ -1,0 +1,9 @@
+public class ${className}Implementation implements ${className} {
+#foreach($field in $fields)
+	protected ${field.ClassName} ${field.Name};
+#end
+
+	public static void main(String[] args) {
+		System.out.println("Hello, world!");
+	}
+}
