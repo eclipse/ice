@@ -1,17 +1,12 @@
 package org.eclipse.ice.dev.annotations.processors;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
+import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
@@ -26,19 +21,15 @@ import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.SimpleAnnotationValueVisitor8;
 import javax.tools.Diagnostic;
+import javax.tools.JavaFileObject;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.apache.velocity.exception.MethodInvocationException;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.exception.ResourceNotFoundException;
 import org.eclipse.ice.dev.annotations.DataField;
-import org.eclipse.ice.dev.annotations.DataFields;
 
 import com.google.auto.service.AutoService;
 
@@ -50,7 +41,7 @@ public class DataElementProcessor extends AbstractProcessor {
 	private static final String template = "templates/DataElement.vm";
 	protected Messager messager;
 
-	public class Fields {
+	private static class Fields {
 		public class Field {
 			String name;
 			String className;
@@ -68,7 +59,7 @@ public class DataElementProcessor extends AbstractProcessor {
 			}
 			@Override
 			public String toString() {
-				return "Field [name=" + name + ", className=" + className + "]";
+				return "Field (name=" + name + ", className=" + className + ")";
 			}
 		}
 
@@ -117,20 +108,11 @@ public class DataElementProcessor extends AbstractProcessor {
 
 		@Override
 		protected Void defaultAction(Object o, Fields f) {
-			System.out.println("Default action: " + o.toString());
-			return null;
-		}
-
-		@Override
-		public Void visitString(String s, Fields f) {
-			System.out.printf(">> stringValue: %s\n", s);
-			f.setName(s);
 			return null;
 		}
 
 		@Override
 		public Void visitAnnotation(AnnotationMirror a, Fields f) {
-			System.out.printf(">> annotationTypeValue: %s\n", a.toString());
 			if (a.getAnnotationType().toString().equals(DataField.class.getCanonicalName())) {
 				final Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues =
 						elementUtils.getElementValuesWithDefaults(a);
@@ -145,17 +127,22 @@ public class DataElementProcessor extends AbstractProcessor {
 		}
 
 		@Override
-		public Void visitType(TypeMirror t, Fields f) {
-			System.out.printf(">> classValue: %s\n", t.toString());
-			f.setClassName(t.toString());
-			return null;
-		}
-
-		@Override
 		public Void visitArray(List<? extends AnnotationValue> vals, Fields f) {
 			for (AnnotationValue val : vals) {
 				val.accept(this, f);
 			}
+			return null;
+		}
+
+		@Override
+		public Void visitString(String s, Fields f) {
+			f.setName(s);
+			return null;
+		}
+
+		@Override
+		public Void visitType(TypeMirror t, Fields f) {
+			f.setClassName(t.toString());
 			return null;
 		}
 	}
@@ -166,33 +153,39 @@ public class DataElementProcessor extends AbstractProcessor {
 		super.init(env);
 	}
 
-	private void writeClass(String className, Fields fields) {
+	private void writeClass(String className, Fields fields) throws IOException {
+		String packageName = null;
+		int lastDot = className.lastIndexOf('.');
+		if (lastDot > 0) {
+			packageName = className.substring(0, lastDot);
+		}
+
+		String interfaceName = className.substring(lastDot + 1);
+		String generatedClassName = className + "Implementation";
+		String generatedSimpleClassName = generatedClassName.substring(lastDot + 1);
+
+		Properties p = new Properties();
+		p.setProperty("resource.loader", "class");
+		p.setProperty(
+			"class.resource.loader.class",
+			"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"
+		);
+		Velocity.init(p);
 		VelocityContext context = new VelocityContext();
-		context.put("className", className);
+		context.put("package", packageName);
+		context.put("interface", interfaceName);
+		context.put("class", generatedSimpleClassName);
 		context.put("fields", fields.getFields());
-		FileWriter writer;
-		try {
-			writer = new FileWriter("/tmp/test.txt");
-			Properties p = new Properties();
-			p.setProperty("resource.loader", "class");
-			p.setProperty(
-				"class.resource.loader.class",
-				"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"
-			);
-			Velocity.init(p);
+		JavaFileObject generatedClassFile = processingEnv.getFiler().createSourceFile(generatedClassName);
+		try (Writer writer = generatedClassFile.openWriter()) {
 			Velocity.mergeTemplate(template, "UTF-8", context, writer);
-			writer.flush();
-			writer.close();
-		} catch (IOException | ParseErrorException | MethodInvocationException | ResourceNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		final Elements elementUtils = this.processingEnv.getElementUtils();
-		FieldVisitor valueVisitor = new FieldVisitor(elementUtils);
+		FieldVisitor fieldVisitor = new FieldVisitor(elementUtils);
 
 		for (TypeElement annotation : annotations) {
 			for (Element elem : roundEnv.getElementsAnnotatedWith(annotation)) {
@@ -207,10 +200,15 @@ public class DataElementProcessor extends AbstractProcessor {
 							elementUtils.getElementValuesWithDefaults(annotationMirror);
 					for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry
 							: elementValues.entrySet()) {
-						entry.getValue().accept(valueVisitor, fields);
+						entry.getValue().accept(fieldVisitor, fields);
 					}
 				}
-				this.writeClass(elem.getSimpleName().toString(), fields);
+				try {
+					this.writeClass(((TypeElement) elem).getQualifiedName().toString(), fields);
+				} catch (IOException e) {
+					messager.printMessage(Diagnostic.Kind.ERROR, e.getStackTrace().toString());
+					return false;
+				}
 			}
 		}
 		return true;

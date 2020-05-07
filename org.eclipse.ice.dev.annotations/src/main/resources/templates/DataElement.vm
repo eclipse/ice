@@ -1,4 +1,32 @@
-public class ${className}Implementation implements ${className} {
+#if($package)
+package $package;
+#end
+
+import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Data public class ${class} implements ${interface} {
+
+	/**
+	 * Logging tool
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(${class}.class);
+
+	/**
+	 * This value is true if the element should be regarded as a client as required.
+	 */
+	private boolean required;
+
+	/**
+	 * This value is true if the element should be regarded as a secret by a client,
+	 * such as for passwords.
+	 */
+	private boolean secret;
+
+	/**
+	 * Generated from DataField annotations
+	 */
 #foreach($field in $fields)
 	protected ${field.ClassName} ${field.Name};
 #end
