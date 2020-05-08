@@ -138,13 +138,17 @@ public class DataElementProcessor extends AbstractProcessor {
 
 		@Override
 		protected Optional<Exception> defaultAction(final Object o, final Fields f) {
-			return Optional.of(new UnexpectedValueError("An unexpected annotation value was encountered"));
+			return Optional.of(new UnexpectedValueError(
+				"An unexpected annotation value was encountered"
+			));
 		}
 
 		@Override
 		public Optional<Exception> visitAnnotation(final AnnotationMirror a, final Fields f) {
 			if (!a.getAnnotationType().toString().equals(DataField.class.getCanonicalName())) {
-				return Optional.of(new UnexpectedValueError("Found AnnotationMirror not of type DataField"));
+				return Optional.of(new UnexpectedValueError(
+					"Found AnnotationMirror not of type DataField"
+				));
 			}
 
 			f.begin();
@@ -172,8 +176,9 @@ public class DataElementProcessor extends AbstractProcessor {
 		@Override
 		public Optional<Exception> visitString(final String s, final Fields f) {
 			if (!f.isBuilding()) {
-				return Optional
-					.of(new UnexpectedValueError("Found String while still expecting DataField AnnotationMirror"));
+				return Optional.of(new UnexpectedValueError(
+					"Found String while still expecting DataField AnnotationMirror"
+				));
 			}
 			f.setName(s);
 			return Optional.empty();
@@ -182,8 +187,9 @@ public class DataElementProcessor extends AbstractProcessor {
 		@Override
 		public Optional<Exception> visitType(final TypeMirror t, final Fields f) {
 			if (!f.isBuilding()) {
-				return Optional
-					.of(new UnexpectedValueError("Found type while still expecting DataField Annotation Mirror"));
+				return Optional.of(new UnexpectedValueError(
+					"Found type while still expecting DataField Annotation Mirror"
+				));
 			}
 			f.setClassName(t.toString());
 			return Optional.empty();
@@ -216,7 +222,9 @@ public class DataElementProcessor extends AbstractProcessor {
 			}
 			final Fields fields = new Fields();
 			final List<? extends AnnotationValue> values = elem.getAnnotationMirrors().stream()
-				.map(mirror -> getAnnotationValuesForMirror(mirror)).flatMap(List::stream).collect(Collectors.toList());
+				.map(mirror -> getAnnotationValuesForMirror(mirror))
+				.flatMap(List::stream)
+				.collect(Collectors.toList());
 			for (AnnotationValue value : values) {
 				Optional<Exception> result = value.accept(fieldVisitor, fields);
 				if (result.isPresent()) {
@@ -254,7 +262,9 @@ public class DataElementProcessor extends AbstractProcessor {
 	private List<AnnotationValue> getAnnotationValuesForMirror(final AnnotationMirror mirror) {
 		final Map<? extends ExecutableElement, ? extends AnnotationValue> values = elementUtils
 			.getElementValuesWithDefaults(mirror);
-		return values.entrySet().stream().map(entry -> entry.getValue()).collect(Collectors.toList());
+		return values.entrySet().stream()
+			.map(entry -> entry.getValue())
+			.collect(Collectors.toList());
 	}
 
 	/**
@@ -277,7 +287,8 @@ public class DataElementProcessor extends AbstractProcessor {
 		final Properties p = new Properties();
 		p.setProperty("resource.loader", "class");
 		p.setProperty(
-			"class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"
+			"class.resource.loader.class",
+			"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"
 		);
 		Velocity.init(p);
 		final VelocityContext context = new VelocityContext();
