@@ -35,6 +35,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.eclipse.ice.dev.annotations.DataElement;
 import org.eclipse.ice.dev.annotations.DataField;
+import org.eclipse.ice.dev.annotations.DataFields;
 
 import com.google.auto.service.AutoService;
 
@@ -133,22 +134,32 @@ public class DataElementProcessor extends AbstractProcessor {
 
 	/**
 	 * Visitor that accumulates DataField information from AnnotationValues.
+	 * This Visitor is only intended for use on the AnnotationValues of
+	 * DataFields and DataField AnnotationMirrors.
 	 */
-	private class FieldVisitor extends SimpleAnnotationValueVisitor8<Optional<Exception>, Fields> {
+	private class DataFieldsVisitor extends SimpleAnnotationValueVisitor8<Optional<Exception>, Fields> {
 
+		/**
+		 * Return error as default action for unhandled annotation values.
+		 */
 		@Override
 		protected Optional<Exception> defaultAction(final Object o, final Fields f) {
 			return Optional.of(
 				new UnexpectedValueError(
-					"An unexpected annotation value was encountered"
+					"An unexpected annotation value was encountered: " + o.getClass().getCanonicalName()
 				)
 			);
 		}
 
+		/**
+		 * Visit DataField AnnotationMirror.
+		 */
 		@Override
 		public Optional<Exception> visitAnnotation(final AnnotationMirror a, final Fields f) {
 			if (!a.getAnnotationType().toString().equals(DataField.class.getCanonicalName())) {
-				return Optional.empty(); // Skip non-DataField annotations
+				return Optional.of( new UnexpectedValueError(
+					"Found AnnotationMirror not of type DataField"
+				));
 			}
 
 			f.begin();
@@ -162,6 +173,9 @@ public class DataElementProcessor extends AbstractProcessor {
 			return Optional.empty();
 		}
 
+		/**
+		 * Visit DataFields.value array of DataField.
+		 */
 		@Override
 		public Optional<Exception> visitArray(final List<? extends AnnotationValue> vals, final Fields f) {
 			for (final AnnotationValue val : vals) {
@@ -173,6 +187,9 @@ public class DataElementProcessor extends AbstractProcessor {
 			return Optional.empty();
 		}
 
+		/**
+		 * Visit DataField.fieldName.
+		 */
 		@Override
 		public Optional<Exception> visitString(final String s, final Fields f) {
 			if (!f.isBuilding()) {
@@ -186,6 +203,9 @@ public class DataElementProcessor extends AbstractProcessor {
 			return Optional.empty();
 		}
 
+		/**
+		 * Visit DataField.fieldType.
+		 */
 		@Override
 		public Optional<Exception> visitType(final TypeMirror t, final Fields f) {
 			if (!f.isBuilding()) {
@@ -207,29 +227,37 @@ public class DataElementProcessor extends AbstractProcessor {
 
 	protected Messager messager;
 	protected Elements elementUtils;
+	protected DataFieldsVisitor fieldVisitor;
 
 	@Override
 	public void init(final ProcessingEnvironment env) {
 		messager = env.getMessager();
 		elementUtils = env.getElementUtils();
+		fieldVisitor = new DataFieldsVisitor();
 		super.init(env);
 	}
 
 	@Override
 	public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
-		final FieldVisitor fieldVisitor = new FieldVisitor();
-
 		for (final Element elem : roundEnv.getElementsAnnotatedWith(DataElement.class)) {
 			if (!elem.getKind().isInterface()) {
-				messager.printMessage(Diagnostic.Kind.ERROR, "DataElement annotation is only for interfaces");
+				messager.printMessage(
+					Diagnostic.Kind.ERROR,
+					"DataElement annotation can only be applied to interfaces"
+				);
 				return false;
 			}
 			final Fields fields = new Fields();
-			final List<? extends AnnotationValue> values = elem.getAnnotationMirrors().stream()
+			final List<? extends AnnotationValue> fieldAnnotationValues = elem.getAnnotationMirrors().stream()
+				.filter(
+					mirror -> mirror.getAnnotationType().toString().equals(
+						DataFields.class.getCanonicalName()
+					)
+				)
 				.map(mirror -> getAnnotationValuesForMirror(mirror))
 				.flatMap(List::stream)
 				.collect(Collectors.toList());
-			for (AnnotationValue value : values) {
+			for (AnnotationValue value : fieldAnnotationValues) {
 				Optional<Exception> result = value.accept(fieldVisitor, fields);
 				if (result.isPresent()) {
 					messager.printMessage(Diagnostic.Kind.ERROR, stackTracetoString(result.get()));
