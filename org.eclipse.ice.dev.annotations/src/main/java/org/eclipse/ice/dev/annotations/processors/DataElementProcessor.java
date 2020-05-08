@@ -42,8 +42,8 @@ import com.google.auto.service.AutoService;
  * Processor for DataElement Annotations.
  * 
  * This will generate an implementation for an interface annotated with
- * DataElement, populating the implementation with metadata and fields
- * specified with the DataField annotation.
+ * DataElement, populating the implementation with metadata and fields specified
+ * with the DataField annotation.
  */
 @SupportedAnnotationTypes("org.eclipse.ice.dev.annotations.DataElement")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
@@ -138,17 +138,17 @@ public class DataElementProcessor extends AbstractProcessor {
 
 		@Override
 		protected Optional<Exception> defaultAction(final Object o, final Fields f) {
-			return Optional.of(new UnexpectedValueError(
-				"An unexpected annotation value was encountered"
-			));
+			return Optional.of(
+				new UnexpectedValueError(
+					"An unexpected annotation value was encountered"
+				)
+			);
 		}
 
 		@Override
 		public Optional<Exception> visitAnnotation(final AnnotationMirror a, final Fields f) {
 			if (!a.getAnnotationType().toString().equals(DataField.class.getCanonicalName())) {
-				return Optional.of(new UnexpectedValueError(
-					"Found AnnotationMirror not of type DataField"
-				));
+				return Optional.empty(); // Skip non-DataField annotations
 			}
 
 			f.begin();
@@ -176,9 +176,11 @@ public class DataElementProcessor extends AbstractProcessor {
 		@Override
 		public Optional<Exception> visitString(final String s, final Fields f) {
 			if (!f.isBuilding()) {
-				return Optional.of(new UnexpectedValueError(
-					"Found String while still expecting DataField AnnotationMirror"
-				));
+				return Optional.of(
+					new UnexpectedValueError(
+						"Found String while still expecting DataField AnnotationMirror"
+					)
+				);
 			}
 			f.setName(s);
 			return Optional.empty();
@@ -187,9 +189,11 @@ public class DataElementProcessor extends AbstractProcessor {
 		@Override
 		public Optional<Exception> visitType(final TypeMirror t, final Fields f) {
 			if (!f.isBuilding()) {
-				return Optional.of(new UnexpectedValueError(
-					"Found type while still expecting DataField Annotation Mirror"
-				));
+				return Optional.of(
+					new UnexpectedValueError(
+						"Found type while still expecting DataField Annotation Mirror"
+					)
+				);
 			}
 			f.setClassName(t.toString());
 			return Optional.empty();
