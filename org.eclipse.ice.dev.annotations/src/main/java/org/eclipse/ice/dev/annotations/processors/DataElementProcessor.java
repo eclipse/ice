@@ -41,7 +41,7 @@ import com.google.auto.service.AutoService;
 
 /**
  * Processor for DataElement Annotations.
- * 
+ *
  * This will generate an implementation for an interface annotated with
  * DataElement, populating the implementation with metadata and fields specified
  * with the DataField annotation.
@@ -51,11 +51,135 @@ import com.google.auto.service.AutoService;
 @AutoService(Processor.class)
 public class DataElementProcessor extends AbstractProcessor {
 
-	public class UnexpectedValueError extends Exception {
-		private static final long serialVersionUID = -8486833574190525020L;
+	/**
+	 * Visitor that accumulates DataField information from AnnotationValues. This
+	 * Visitor is only intended for use on the AnnotationValues of DataFields
+	 * AnnotationMirrors.
+	 */
+	private class DataFieldsVisitor extends SimpleAnnotationValueVisitor8<Optional<UnexpectedValueError>, Fields> {
 
-		public UnexpectedValueError(String message) {
-			super(message);
+		/**
+		 * Return error as default action for unhandled annotation values.
+		 */
+		@Override
+		protected Optional<UnexpectedValueError> defaultAction(final Object o, final Fields f) {
+			return Optional.of(
+				new UnexpectedValueError(
+					"An unexpected annotation value was encountered: " + o.getClass().getCanonicalName()
+				)
+			);
+		}
+
+		/**
+		 * Visit DataField AnnotationMirror.
+		 */
+		@Override
+		public Optional<UnexpectedValueError> visitAnnotation(final AnnotationMirror a, final Fields f) {
+			if (!a.getAnnotationType().toString().equals(DataField.class.getCanonicalName())) {
+				return Optional.of(
+					new UnexpectedValueError(
+						"Found AnnotationMirror not of type DataField"
+					)
+				);
+			}
+
+			for (final AnnotationValue value : getAnnotationValuesForMirror(a)) {
+				final Optional<UnexpectedValueError> result = value.accept(fieldVisitor, f);
+				if (result.isPresent()) {
+					return result;
+				}
+			}
+			return Optional.empty();
+		}
+
+		/**
+		 * Visit DataFields value (array of DataField AnnotationMirrors).
+		 */
+		@Override
+		public Optional<UnexpectedValueError> visitArray(final List<? extends AnnotationValue> vals, final Fields f) {
+			for (final AnnotationValue val : vals) {
+				final Optional<UnexpectedValueError> result = val.accept(this, f);
+				if (result.isPresent()) {
+					return result;
+				}
+			}
+			return Optional.empty();
+		}
+	}
+
+	/**
+	 * Visitor that accumulates DataField information from AnnotationValues. This
+	 * Visitor is only intended for use on the AnnotationValues of DataField
+	 * AnnotationMirrors.
+	 */
+	private class DataFieldVisitor extends SimpleAnnotationValueVisitor8<Optional<UnexpectedValueError>, Fields> {
+
+		/**
+		 * Return error as default action for unhandled annotation values.
+		 */
+		@Override
+		protected Optional<UnexpectedValueError> defaultAction(final Object o, final Fields f) {
+			return Optional.of(
+				new UnexpectedValueError(
+					"An unexpected annotation value was encountered: " + o.getClass().getCanonicalName()
+				)
+			);
+		}
+
+		/**
+		 * Visit DataField.fieldName.
+		 */
+		@Override
+		public Optional<UnexpectedValueError> visitString(final String s, final Fields f) {
+			if (!f.isBuilding()) {
+				f.begin();
+			}
+			f.setName(s);
+			if (f.isComplete()) {
+				f.finish();
+			}
+			return Optional.empty();
+		}
+
+		/**
+		 * Visit DataField.fieldType.
+		 */
+		@Override
+		public Optional<UnexpectedValueError> visitType(final TypeMirror t, final Fields f) {
+			if (!f.isBuilding()) {
+				f.begin();
+			}
+			f.setClassName(t.toString());
+			if (f.isComplete()) {
+				f.finish();
+			}
+			return Optional.empty();
+		}
+	}
+
+	public static class Field {
+		String name;
+		String className;
+
+		public String getClassName() {
+			return className;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setClassName(final String className) {
+			this.className = className;
+		}
+
+		public void setName(final String name) {
+			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return "Field (name=" + name + ", className=" + className + ")";
 		}
 	}
 
@@ -67,31 +191,6 @@ public class DataElementProcessor extends AbstractProcessor {
 		 * Container for name and class name attributes of DataField in string
 		 * representation.
 		 */
-		public class Field {
-			String name;
-			String className;
-
-			public String getClassName() {
-				return className;
-			}
-
-			public String getName() {
-				return name;
-			}
-
-			public void setClassName(final String className) {
-				this.className = className;
-			}
-
-			public void setName(final String name) {
-				this.name = name;
-			}
-
-			@Override
-			public String toString() {
-				return "Field (name=" + name + ", className=" + className + ")";
-			}
-		}
 
 		protected List<Field> fields;
 		protected Field building;
@@ -99,10 +198,6 @@ public class DataElementProcessor extends AbstractProcessor {
 		public Fields() {
 			this.fields = new ArrayList<>();
 			this.building = null;
-		}
-
-		public boolean isBuilding() {
-			return this.building != null;
 		}
 
 		public void begin() {
@@ -116,6 +211,14 @@ public class DataElementProcessor extends AbstractProcessor {
 
 		public List<Field> getFields() {
 			return fields;
+		}
+
+		public boolean isBuilding() {
+			return this.building != null;
+		}
+
+		public boolean isComplete() {
+			return (this.building.getClassName() != null) && (this.building.getName() != null);
 		}
 
 		public void setClassName(final String className) {
@@ -132,91 +235,11 @@ public class DataElementProcessor extends AbstractProcessor {
 		}
 	}
 
-	/**
-	 * Visitor that accumulates DataField information from AnnotationValues.
-	 * This Visitor is only intended for use on the AnnotationValues of
-	 * DataFields and DataField AnnotationMirrors.
-	 */
-	private class DataFieldsVisitor extends SimpleAnnotationValueVisitor8<Optional<Exception>, Fields> {
+	public static class UnexpectedValueError extends Exception {
+		private static final long serialVersionUID = -8486833574190525020L;
 
-		/**
-		 * Return error as default action for unhandled annotation values.
-		 */
-		@Override
-		protected Optional<Exception> defaultAction(final Object o, final Fields f) {
-			return Optional.of(
-				new UnexpectedValueError(
-					"An unexpected annotation value was encountered: " + o.getClass().getCanonicalName()
-				)
-			);
-		}
-
-		/**
-		 * Visit DataField AnnotationMirror.
-		 */
-		@Override
-		public Optional<Exception> visitAnnotation(final AnnotationMirror a, final Fields f) {
-			if (!a.getAnnotationType().toString().equals(DataField.class.getCanonicalName())) {
-				return Optional.of( new UnexpectedValueError(
-					"Found AnnotationMirror not of type DataField"
-				));
-			}
-
-			f.begin();
-			for (AnnotationValue value : getAnnotationValuesForMirror(a)) {
-				Optional<Exception> result = value.accept(this, f);
-				if (result.isPresent()) {
-					return result;
-				}
-			}
-			f.finish();
-			return Optional.empty();
-		}
-
-		/**
-		 * Visit DataFields.value array of DataField.
-		 */
-		@Override
-		public Optional<Exception> visitArray(final List<? extends AnnotationValue> vals, final Fields f) {
-			for (final AnnotationValue val : vals) {
-				Optional<Exception> result = val.accept(this, f);
-				if (result.isPresent()) {
-					return result;
-				}
-			}
-			return Optional.empty();
-		}
-
-		/**
-		 * Visit DataField.fieldName.
-		 */
-		@Override
-		public Optional<Exception> visitString(final String s, final Fields f) {
-			if (!f.isBuilding()) {
-				return Optional.of(
-					new UnexpectedValueError(
-						"Found String while still expecting DataField AnnotationMirror"
-					)
-				);
-			}
-			f.setName(s);
-			return Optional.empty();
-		}
-
-		/**
-		 * Visit DataField.fieldType.
-		 */
-		@Override
-		public Optional<Exception> visitType(final TypeMirror t, final Fields f) {
-			if (!f.isBuilding()) {
-				return Optional.of(
-					new UnexpectedValueError(
-						"Found type while still expecting DataField Annotation Mirror"
-					)
-				);
-			}
-			f.setClassName(t.toString());
-			return Optional.empty();
+		public UnexpectedValueError(final String message) {
+			super(message);
 		}
 	}
 
@@ -225,15 +248,54 @@ public class DataElementProcessor extends AbstractProcessor {
 	 */
 	private static final String template = "templates/DataElement.vm";
 
+	/**
+	 * Return stack trace as string.
+	 * @param e subject exception
+	 * @return stack trace as string
+	 */
+	private static String stackTracetoString(final Throwable e) {
+		final StringWriter sw = new StringWriter();
+		final PrintWriter pw = new PrintWriter(sw);
+		e.printStackTrace(pw);
+		return sw.toString();
+	}
+
+	/**
+	 * Unwrap an optional exception.
+	 * @param <T> Exception type
+	 * @param e Optional exception to throw if present
+	 * @throws T
+	 */
+	private static <T extends Throwable> void unwrap(final Optional<T> e) throws T {
+		if (e.isPresent()) {
+			throw e.get();
+		}
+	}
+
 	protected Messager messager;
 	protected Elements elementUtils;
-	protected DataFieldsVisitor fieldVisitor;
+	protected DataFieldsVisitor fieldsVisitor;
+	protected DataFieldVisitor fieldVisitor;
+
+	/**
+	 * Get a list of annotation values from an annotation mirror.
+	 * @param mirror the mirror from which to grab values.
+	 * @return list of AnnotationValue
+	 */
+	private List<AnnotationValue> getAnnotationValuesForMirror(final AnnotationMirror mirror) {
+		final Map<? extends ExecutableElement, ? extends AnnotationValue> values = elementUtils
+			.getElementValuesWithDefaults(mirror);
+		return values.entrySet().stream()
+			.map(entry -> entry.getValue())
+			.collect(Collectors.toList());
+	}
 
 	@Override
 	public void init(final ProcessingEnvironment env) {
 		messager = env.getMessager();
 		elementUtils = env.getElementUtils();
-		fieldVisitor = new DataFieldsVisitor();
+		fieldsVisitor = new DataFieldsVisitor();
+		fieldVisitor = new DataFieldVisitor();
 		super.init(env);
 	}
 
@@ -248,55 +310,37 @@ public class DataElementProcessor extends AbstractProcessor {
 				return false;
 			}
 			final Fields fields = new Fields();
-			final List<? extends AnnotationValue> fieldAnnotationValues = elem.getAnnotationMirrors().stream()
-				.filter(
-					mirror -> mirror.getAnnotationType().toString().equals(
-						DataFields.class.getCanonicalName()
-					)
-				)
-				.map(mirror -> getAnnotationValuesForMirror(mirror))
-				.flatMap(List::stream)
-				.collect(Collectors.toList());
-			for (AnnotationValue value : fieldAnnotationValues) {
-				Optional<Exception> result = value.accept(fieldVisitor, fields);
-				if (result.isPresent()) {
-					messager.printMessage(Diagnostic.Kind.ERROR, stackTracetoString(result.get()));
-					return false;
-				}
-			}
+			final List<? extends AnnotationMirror> mirrors = elem.getAnnotationMirrors();
 			try {
+				for (
+					final AnnotationValue value : mirrors.stream()
+						.filter(mirror -> mirror.getAnnotationType().toString().equals(
+							DataFields.class.getCanonicalName()
+						))
+						.map(mirror -> getAnnotationValuesForMirror(mirror))
+						.flatMap(List::stream)
+						.collect(Collectors.toList())
+				) {
+					unwrap(value.accept(fieldsVisitor, fields));
+				}
+				for (
+					final AnnotationValue value : mirrors.stream()
+						.filter( mirror -> mirror.getAnnotationType().toString().equals(
+							DataField.class.getCanonicalName()
+						))
+						.map(mirror -> getAnnotationValuesForMirror(mirror))
+						.flatMap(List::stream)
+						.collect(Collectors.toList())
+				) {
+					unwrap(value.accept(fieldVisitor, fields));
+				}
 				this.writeClass(((TypeElement) elem).getQualifiedName().toString(), fields);
-			} catch (final IOException e) {
+			} catch (final IOException | UnexpectedValueError e) {
 				messager.printMessage(Diagnostic.Kind.ERROR, stackTracetoString(e));
 				return false;
 			}
 		}
 		return true;
-	}
-
-	/**
-	 * Return stack trace as string.
-	 * @param e subject exception
-	 * @return stack trace as string
-	 */
-	private String stackTracetoString(Throwable e) {
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
-		e.printStackTrace(pw);
-		return sw.toString();
-	}
-
-	/**
-	 * Get a list of annotation values from an annotation mirror.
-	 * @param mirror the mirror from which to grab values.
-	 * @return list of AnnotationValue
-	 */
-	private List<AnnotationValue> getAnnotationValuesForMirror(final AnnotationMirror mirror) {
-		final Map<? extends ExecutableElement, ? extends AnnotationValue> values = elementUtils
-			.getElementValuesWithDefaults(mirror);
-		return values.entrySet().stream()
-			.map(entry -> entry.getValue())
-			.collect(Collectors.toList());
 	}
 
 	/**
