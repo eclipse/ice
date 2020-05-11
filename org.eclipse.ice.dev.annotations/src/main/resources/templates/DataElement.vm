@@ -30,8 +30,4 @@ import org.slf4j.LoggerFactory;
 #foreach($field in $fields)
 	protected ${field.ClassName} ${field.Name};
 #end
-
-	public static void main(String[] args) {
-		System.out.println("Hello, world!");
-	}
 }
