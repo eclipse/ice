@@ -283,9 +283,7 @@ public class DataElementProcessor extends AbstractProcessor {
 	 * @return list of AnnotationValue
 	 */
 	private List<AnnotationValue> getAnnotationValuesForMirror(final AnnotationMirror mirror) {
-		final Map<? extends ExecutableElement, ? extends AnnotationValue> values = elementUtils
-			.getElementValuesWithDefaults(mirror);
-		return values.entrySet().stream()
+		return elementUtils.getElementValuesWithDefaults(mirror).entrySet().stream()
 			.map(entry -> entry.getValue())
 			.collect(Collectors.toList());
 	}
