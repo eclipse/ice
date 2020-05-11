@@ -48,6 +48,9 @@ public class DataElementProcessor extends AbstractProcessor {
 
 	/**
 	 * Location of DataElement template for use with velocity.
+	 *
+	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
+	 * to the src/main/resources folder.
 	 */
 	private static final String template = "templates/DataElement.vm";
 
@@ -100,6 +103,17 @@ public class DataElementProcessor extends AbstractProcessor {
 		elementUtils = env.getElementUtils();
 		fieldVisitor = new DataFieldVisitor();
 		fieldsVisitor = new DataFieldsVisitor(elementUtils, fieldVisitor);
+
+		// Set up Velocity using the Singleton approach; ClasspathResourceLoader allows
+		// us to load templates from src/main/resources
+		final Properties p = new Properties();
+		p.setProperty("resource.loader", "class");
+		p.setProperty(
+			"class.resource.loader.class",
+			"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"
+		);
+		Velocity.init(p);
+
 		super.init(env);
 	}
 
@@ -109,13 +123,17 @@ public class DataElementProcessor extends AbstractProcessor {
 			if (!elem.getKind().isInterface()) {
 				messager.printMessage(
 					Diagnostic.Kind.ERROR,
-					"DataElement annotation can only be applied to interfaces"
+					"DataElement annotation can only be applied to interfaces, found " + elem.toString()
 				);
 				return false;
 			}
+
 			final Fields fields = new Fields();
+
 			final List<? extends AnnotationMirror> mirrors = elem.getAnnotationMirrors();
 			try {
+				// Iterate over the AnnotationValues of AnnotationMirrors of type DataFields.
+				// DataFields present when more than one DataField annotation is used.
 				for (
 					final AnnotationValue value : mirrors.stream()
 						.filter(
@@ -124,11 +142,15 @@ public class DataElementProcessor extends AbstractProcessor {
 							)
 						)
 						.map(mirror -> getAnnotationValuesForMirror(elementUtils, mirror))
-						.flatMap(List::stream)
+						.flatMap(List::stream) // Flatten List<List<AnnotationValue> to List<AnnotationValue>
 						.collect(Collectors.toList())
 				) {
+					// Traditional for-loop used to allow raising an exception with unwrap if the
+					// field visitor returns an error result
 					unwrap(value.accept(fieldsVisitor, fields));
 				}
+				// Iterate over the AnnotationValues of AnnotationMirrors of type DataField.
+				// Only present when only one DataField annotation is used.
 				for (
 					final AnnotationValue value : mirrors.stream()
 						.filter(
@@ -153,33 +175,30 @@ public class DataElementProcessor extends AbstractProcessor {
 
 	/**
 	 * Write the implementation of DataElement annotated class to file.
-	 * @param className the annotated class name
-	 * @param fields the fields extracted from DataField annotations on class
+	 * @param interfaceName the annotated interface name, used to determine package and
+	 *        name of the generated class
+	 * @param fields the fields extracted from DataField annotations on interface
 	 * @throws IOException
 	 */
-	private void writeClass(final String className, final Fields fields) throws IOException {
+	private void writeClass(final String interfaceName, final Fields fields) throws IOException {
+		// Determine package, class name from annotated interface name
 		String packageName = null;
-		final int lastDot = className.lastIndexOf('.');
+		final int lastDot = interfaceName.lastIndexOf('.');
 		if (lastDot > 0) {
-			packageName = className.substring(0, lastDot);
+			packageName = interfaceName.substring(0, lastDot);
 		}
-
-		final String interfaceName = className.substring(lastDot + 1);
-		final String generatedClassName = className + "Implementation";
+		final String simpleName = interfaceName.substring(lastDot + 1);
+		final String generatedClassName = interfaceName + "Implementation";
 		final String generatedSimpleClassName = generatedClassName.substring(lastDot + 1);
 
-		final Properties p = new Properties();
-		p.setProperty("resource.loader", "class");
-		p.setProperty(
-			"class.resource.loader.class",
-			"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"
-		);
-		Velocity.init(p);
+		// Prepare context of template
 		final VelocityContext context = new VelocityContext();
 		context.put("package", packageName);
-		context.put("interface", interfaceName);
+		context.put("interface", simpleName);
 		context.put("class", generatedSimpleClassName);
-		context.put("fields", fields.getFields());
+		context.put("fields", fields.getFields()); // Hand over the list directly so template can #foreach on fields
+
+		// Write to file
 		final JavaFileObject generatedClassFile = processingEnv.getFiler().createSourceFile(generatedClassName);
 		try (Writer writer = generatedClassFile.openWriter()) {
 			Velocity.mergeTemplate(template, "UTF-8", context, writer);
