@@ -2,6 +2,7 @@
 package $package;
 #end
 
+import java.util.UUID;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,36 @@ import org.slf4j.LoggerFactory;
 	 * Logging tool
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(${class}.class);
+
+	/**
+	 * A unique private id that identifies the data element
+	 */
+	private UUID privateId;
+
+	/**
+	 * a simple name for the data name
+	 */
+	private String name;
+
+	/**
+	 * a simple description for the data
+	 */
+	private String description;
+
+	/**
+	 * a unique identifier
+	 */
+	private String id;
+
+	/**
+	 * a comment that annotates the data in meaningful way
+	 */
+	private String comment;
+
+	/**
+	 * the context (a tag) in which the data should be considered
+	 */
+	private String context;
 
 	/**
 	 * This value is true if the element should be regarded as a client as required.
