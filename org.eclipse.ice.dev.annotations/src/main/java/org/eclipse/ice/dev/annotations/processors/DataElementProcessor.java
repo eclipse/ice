@@ -107,11 +107,9 @@ public class DataElementProcessor extends AbstractProcessor {
 		// Set up Velocity using the Singleton approach; ClasspathResourceLoader allows
 		// us to load templates from src/main/resources
 		final Properties p = new Properties();
-		p.setProperty("resource.loader", "class");
-		p.setProperty(
-			"class.resource.loader.class",
-			"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"
-		);
+		for (VelocityProperty vp : VelocityProperty.values()) {
+			p.setProperty(vp.key(), vp.value());
+		}
 		Velocity.init(p);
 
 		super.init(env);
@@ -122,10 +120,8 @@ public class DataElementProcessor extends AbstractProcessor {
 		// Iterate over all elements with DataElement Annotation
 		for (final Element elem : roundEnv.getElementsAnnotatedWith(DataElement.class)) {
 			if (!elem.getKind().isInterface()) {
-				messager.printMessage(
-					Diagnostic.Kind.ERROR,
-					"DataElement annotation can only be applied to interfaces, found " + elem.toString()
-				);
+				String errorMsg = "DataElement annotation can only be applied to interfaces, found " + elem.toString();
+				messager.printMessage(Diagnostic.Kind.ERROR, errorMsg);
 				return false;
 			}
 
@@ -194,10 +190,11 @@ public class DataElementProcessor extends AbstractProcessor {
 
 		// Prepare context of template
 		final VelocityContext context = new VelocityContext();
-		context.put("package", packageName);
-		context.put("interface", simpleName);
-		context.put("class", generatedSimpleClassName);
-		context.put("fields", fields.getFields()); // Hand over the list directly so template can #foreach on fields
+		context.put(ContextProperty.PACKAGE.key(), packageName);
+		context.put(ContextProperty.INTERFACE.key(), simpleName);
+		context.put(ContextProperty.CLASS.key(), generatedSimpleClassName);
+		// Hand over the list directly so template can #foreach on fields
+		context.put(ContextProperty.FIELDS.key(), fields.getFields());
 
 		// Write to file
 		final JavaFileObject generatedClassFile = processingEnv.getFiler().createSourceFile(generatedClassName);
