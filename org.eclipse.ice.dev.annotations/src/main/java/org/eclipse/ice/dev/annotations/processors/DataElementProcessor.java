@@ -72,7 +72,7 @@ public class DataElementProcessor extends AbstractProcessor {
 	 * @param e subject exception
 	 * @return stack trace as string
 	 */
-	private static String stackTracetoString(final Throwable e) {
+	private static String stackTraceToString(final Throwable e) {
 		final StringWriter sw = new StringWriter();
 		final PrintWriter pw = new PrintWriter(sw);
 		e.printStackTrace(pw);
@@ -166,7 +166,7 @@ public class DataElementProcessor extends AbstractProcessor {
 				}
 				this.writeClass(((TypeElement) elem).getQualifiedName().toString(), fields);
 			} catch (final IOException | UnexpectedValueError e) {
-				messager.printMessage(Diagnostic.Kind.ERROR, stackTracetoString(e));
+				messager.printMessage(Diagnostic.Kind.ERROR, stackTraceToString(e));
 				return false;
 			}
 		}
