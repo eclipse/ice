@@ -15,6 +15,17 @@ import org.eclipse.ice.dev.annotations.processors.Fields;
  * Visitor that accumulates DataField information from AnnotationValues. This
  * Visitor is only intended for use on the AnnotationValues of DataFields
  * AnnotationMirrors.
+ *
+ * Returns an Optional<UnexpectedValueError> to report errors to the caller
+ * while conforming to the AnnotationValueVisitor Interface which does not throw
+ * any exceptions. Return value should be checked.
+ *
+ * Additional Parameter Fields acts as the data accumulator, appending visited
+ * data to its list of fields.
+ *
+ * When visiting the value of DataFields Annotations, visitArray will visit the
+ * DataField Array then pass the AnnotationMirror of each DataField to
+ * visitAnnotation by recursively visiting the values.
  */
 class DataFieldsVisitor extends SimpleAnnotationValueVisitor8<Optional<UnexpectedValueError>, Fields> {
 	protected Elements elementUtils;
@@ -39,7 +50,8 @@ class DataFieldsVisitor extends SimpleAnnotationValueVisitor8<Optional<Unexpecte
 	}
 
 	/**
-	 * Visit DataField AnnotationMirror.
+	 * Visit AnnotationValues of type Annotation (as an AnnotationMirror), expected
+	 * to visit DataField AnnotationMirrors.
 	 */
 	@Override
 	public Optional<UnexpectedValueError> visitAnnotation(final AnnotationMirror a, final Fields f) {
@@ -61,7 +73,7 @@ class DataFieldsVisitor extends SimpleAnnotationValueVisitor8<Optional<Unexpecte
 	}
 
 	/**
-	 * Visit DataFields value (array of DataField AnnotationMirrors).
+	 * Visit AnnotationValues of type Array, visiting the Array of DataField AnnotationMirrors.
 	 */
 	@Override
 	public Optional<UnexpectedValueError> visitArray(final List<? extends AnnotationValue> vals, final Fields f) {

@@ -1,5 +1,9 @@
 package org.eclipse.ice.dev.annotations.processors;
 
+/**
+ * Container for Field information, taken from DataField Annotations, in
+ * simplified String form.
+ */
 public class Field {
 	String name;
 	String className;
