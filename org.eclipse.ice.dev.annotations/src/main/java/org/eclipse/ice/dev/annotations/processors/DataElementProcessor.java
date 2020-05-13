@@ -170,7 +170,7 @@ public class DataElementProcessor extends AbstractProcessor {
 				return false;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	/**
