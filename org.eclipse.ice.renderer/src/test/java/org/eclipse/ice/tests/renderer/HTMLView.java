@@ -13,7 +13,6 @@ package org.eclipse.ice.tests.renderer;
 
 import org.eclipse.ice.renderer.DataElement;
 
-@org.eclipse.ice.dev.annotations.DataElement
 public class HTMLView {
 
 	public HTMLView() {

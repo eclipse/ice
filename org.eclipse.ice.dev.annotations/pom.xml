@@ -20,6 +20,13 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>com.google.auto.service</groupId>
+							<artifactId>auto-service</artifactId>
+							<version>1.0-rc6</version>
+						</path>
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -46,7 +53,12 @@
 			<version>1.0-rc6</version>
 			<scope>provided</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.12</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 </project>

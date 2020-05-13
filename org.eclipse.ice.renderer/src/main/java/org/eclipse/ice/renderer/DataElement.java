@@ -77,7 +77,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Jay Jay Billings
  *
  */
-@org.eclipse.ice.dev.annotations.DataElement
 public class DataElement<T extends Serializable> implements Serializable {
 
 	/**
