@@ -11,7 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.commands.notification;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Scanner;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -59,12 +61,30 @@ public class EmailHandlerTest {
 	@Test
 	public void testEmailNotificationPostUpdate() throws IOException {
 		
-		EmailUpdateHandler email = new EmailUpdateHandler();
+		// Get a text file with credentials
+		String credFile = "/tmp/email-creds.txt";
+		if(System.getProperty("os.name").toLowerCase().contains("win"))
+			credFile = "C:\\Users\\Administrator\\email-creds.txt";
+		
+		String email = "";
+		String password = "";
+		String host = "";
+		
+		File file = new File(credFile);
+		try(Scanner scanner = new Scanner(file)) {
+			email = scanner.next();
+			password = scanner.next();
+			host = scanner.next();
+		}
+		
+		EmailUpdateHandler updater = new EmailUpdateHandler();
 		// Just send an email to itself
-		email.setEmailAddress("someemail@gmail.com");
-		email.setEmailText("This is a test email");
-		email.setSubject("This is a test subject");
-		email.postUpdate();
+		updater.setEmailAddress(email);
+		updater.setPassword(password);
+		updater.setSmtpHost(host);
+		updater.setEmailText("This is a test updater");
+		updater.setSubject("This is a test subject");
+		updater.postUpdate();
 		
 		// If no exception is thrown, it completed correctly
 	}

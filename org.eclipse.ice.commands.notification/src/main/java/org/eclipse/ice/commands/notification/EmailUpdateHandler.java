@@ -23,7 +23,9 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 /**
- * This class provides email updates for Command job statuses
+ * This class provides email updates for Command job statuses. It takes
+ * a provided email address, password, etc. and just sends an email to 
+ * the same address
  * 
  * @author Joe Osborn
  *
@@ -39,14 +41,11 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 	// The subject of the message
 	private String emailSubject = "";
 
-	// The default commands api email that will send the message
-	private String commandsEmail = "someemail@gmail.com";
-
 	// The host smtp server for the commands api email address
-	private String commandsHost = "smtp.gmail.com";
+	private String emailHost = "smtp.gmail.com";
 
-	
-	private String commandsPassword = "password";
+	// The password for the provided email to be able to send to itself
+	private String emailPassword = "";
 	
 	/**
 	 * Default constructor
@@ -58,18 +57,17 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 		// Create some properties and setup the default gmail
 		// server properties
 		Properties properties = System.getProperties();
-		properties.put("mail.smtp.host", commandsHost);
 		properties.put("mail.smtp.port", "25");
 		properties.put("mail.smtp.auth", "true");
 		properties.put("mail.smtp.starttls.enable", "true"); // TLS
 		// Setup mail server
-		properties.setProperty("mail.smtp.host", commandsHost);
+		properties.setProperty("mail.smtp.host", emailHost);
 
 		// Get the default Session object.
 		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(commandsEmail, commandsPassword);
+				return new PasswordAuthentication(emailAddress, emailPassword);
 			}
 		});
 		session.setDebug(true);
@@ -79,7 +77,7 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 			MimeMessage message = new MimeMessage(session);
 
 			// Set the sender and recipient of the email
-			message.setFrom(new InternetAddress(commandsEmail));
+			message.setFrom(new InternetAddress(emailAddress));
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailAddress));
 
 			// Give the email a subject and message content
@@ -115,7 +113,25 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
 	}
-
+	
+	/**
+	 * Setter for the email host for email authentication, see
+	 * {@link org.eclipse.ice.commands.notification.EmailUpdateHandler#emailHost}
+	 * @param emailPassword
+	 */
+	public void setSmtpHost(String emailHost) {
+		this.emailHost = emailHost;
+	}
+	
+	/**
+	 * Setter for the email password for email authentication, see
+	 * {@link org.eclipse.ice.commands.notification.EmailUpdateHandler#emailPassword}
+	 * @param emailPassword
+	 */
+	public void setPassword(String emailPassword) {
+		this.emailPassword = emailPassword;
+	}
+	
 	/**
 	 * Setter for the email message, see
 	 * {@link org.eclipse.ice.commands.notification.EmailUpdateHandler#emailText}
