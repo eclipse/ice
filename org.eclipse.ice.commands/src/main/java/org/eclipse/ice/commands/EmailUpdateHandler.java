@@ -53,6 +53,9 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 	public EmailUpdateHandler() {
 	}
 
+	/**
+	 * See {@link org.eclipse.ice.commands.ICommandUpdateHandler#postUpdate()}
+	 */
 	@Override
 	public void postUpdate() throws IOException {
 		// Create some properties and setup the default gmail
@@ -71,6 +74,7 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 				return new PasswordAuthentication(emailAddress, emailPassword);
 			}
 		});
+		// Set session to debug just to explicit
 		session.setDebug(true);
 
 		try {
@@ -85,7 +89,6 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 			message.setSubject(emailSubject);
 			message.setText(emailText);
 
-			// Send message
 			Transport.send(message);
 			logger.info("Email sent successfully");
 		} catch (MessagingException mex) {

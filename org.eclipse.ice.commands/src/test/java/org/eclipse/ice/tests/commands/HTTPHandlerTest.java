@@ -15,10 +15,6 @@ import java.io.IOException;
 
 import org.eclipse.ice.commands.CommandStatus;
 import org.eclipse.ice.commands.HTTPCommandUpdateHandler;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -30,43 +26,22 @@ import org.junit.Test;
  */
 public class HTTPHandlerTest {
 
+	
 	/**
-	 * @throws java.lang.Exception
+	 * This function tests the HTTP post logic for sending a post call with a given
+	 * message, primarily used for Commands posting updates
+	 * 
+	 * @throws IOException
 	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
 	@Test
 	public void testHTTPNotificationPostUpdate() throws IOException {
-	
+
 		HTTPCommandUpdateHandler updater = new HTTPCommandUpdateHandler();
 		updater.setHTTPAddress("www.example.com");
-		updater.postStatus(CommandStatus.INFOERROR);
-		
+		updater.setMessage("job finished with status " + CommandStatus.INFOERROR);
+
 		updater.postUpdate();
-		
+
 		// test is successful if no exception is thrown
 	}
 

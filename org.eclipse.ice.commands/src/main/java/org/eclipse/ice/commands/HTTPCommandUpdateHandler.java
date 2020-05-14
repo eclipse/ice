@@ -32,25 +32,29 @@ import org.apache.http.message.BasicNameValuePair;
  */
 public class HTTPCommandUpdateHandler implements ICommandUpdateHandler {
 
+	// HTTP address to post the update to
 	private String HTTPAddress = "";
 
-	CommandStatus status = null;
-	
+	// Message to be posted
 	String message = "";
+	
 	/**
 	 * Default constructor
 	 */
 	public HTTPCommandUpdateHandler() {
 	}
 
+	/**
+	 * Setter for http address to post to
+	 * @param HTTPAddress
+	 */
 	public void setHTTPAddress(String HTTPAddress) {
 		this.HTTPAddress = HTTPAddress;
 	}
 
-	public void postStatus(CommandStatus status) {
-		this.status = status;
-	}
-	
+	/**
+	 * See {@link org.eclipse.ice.commands.ICommandUpdateHandler#postUpdate()}
+	 */
 	@Override
 	public void postUpdate() throws IOException {
 
@@ -59,7 +63,7 @@ public class HTTPCommandUpdateHandler implements ICommandUpdateHandler {
 
 		// Setup the parameters to be passed in the post
 		List<NameValuePair> params = new ArrayList<NameValuePair>(1);
-		params.add(new BasicNameValuePair("status", status.toString()));
+		params.add(new BasicNameValuePair("status", message));
 		httpPost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
 		// Execute and get the response
