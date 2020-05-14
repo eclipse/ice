@@ -109,8 +109,7 @@ class GeneratedDataElementTest {
 	}
 
 	/**
-	 * Test method for {@link org.eclipse.ice.renderer.DataElement#getData()} and
-	 * {@link org.eclipse.ice.renderer.DataElement#setData(java.lang.Object)}.
+	 * Test method for accessing generated fields.
 	 */
 	@Test
 	void testDataAccessors() {
@@ -133,35 +132,35 @@ class GeneratedDataElementTest {
 		return;
 	}
 
-//	/**
-//	 * Test method for {@link org.eclipse.ice.renderer.DataElement#getData()} and
-//	 * {@link org.eclipse.ice.renderer.DataElement#setData(java.lang.Object)} when
-//	 * non-intrinsic POJOs are used.
-//	 */
-//	@Test
-//	void testDataAccessorsForPOJOs() {
-//
-//		// Use a test POJO for this that has members
-//		DataElement<TestPOJO> element = new DataElement<TestPOJO>();
-//		element.setData(new TestPOJO());
-//
-//		// No properties are configured here. Just want to make sure that the data
-//		// behaves as expected.
-//
-//		// Do the straight check
-//		TestPOJO pojo = element.getData();
-//		assertEquals("foo", pojo.getValue());
-//		assertEquals(2118.0, pojo.getDoubleValue(), 1.0e-15);
-//
-//		// Make sure that changing the value works round-trip
-//		pojo.setDoubleValue(1234.0);
-//		pojo.setValue("bar");
-//		assertEquals("bar", pojo.getValue());
-//		assertEquals(1234.0, pojo.getDoubleValue(), 1.0e-15);
-//
-//		return;
-//	}
-//
+	/**
+	 * Test method for {@link org.eclipse.ice.renderer.DataElement#getData()} and
+	 * {@link org.eclipse.ice.renderer.DataElement#setTestPOJO(java.lang.Object)} when
+	 * non-intrinsic POJOs are used.
+	 */
+	@Test
+	void testDataAccessorsForPOJOs() {
+
+		// Use a test POJO for this that has members
+		GeneratedDataElementPOJOImplementation element = new GeneratedDataElementPOJOImplementation();
+		element.setTestPOJO(new TestPOJO());
+
+		// No properties are configured here. Just want to make sure that the data
+		// behaves as expected.
+
+		// Do the straight check
+		TestPOJO pojo = element.getTestPOJO();
+		assertEquals("foo", pojo.getValue());
+		assertEquals(2118.0, pojo.getDoubleValue(), 1.0e-15);
+
+		// Make sure that changing the value works round-trip
+		pojo.setDoubleValue(1234.0);
+		pojo.setValue("bar");
+		assertEquals("bar", pojo.getValue());
+		assertEquals(1234.0, pojo.getDoubleValue(), 1.0e-15);
+
+		return;
+	}
+
 	/**
 	 * Test method for {@link org.eclipse.ice.renderer.DataElement#toString()} and
 	 * {@link org.eclipse.ice.renderer.DataElement#toString()} for intrinsic
@@ -192,116 +191,107 @@ class GeneratedDataElementTest {
 
 		return;
 	}
-//
-//	/**
-//	 * Test method for {@link org.eclipse.ice.renderer.DataElement#toString()} and
-//	 * {@link org.eclipse.ice.renderer.DataElement#toString()} for POJOs.
-//	 */
-//	@Test
-//	void testPOJOSerialization() {
-//
-//		// Use a test POJO for this that has members
-//		DataElement<TestPOJO> element = new DataElement<TestPOJO>();
-//		element.setData(new TestPOJO());
-//		element.setSecret(true);
-//		element.setRequired(true);
-//		element.setValidator(new JavascriptValidator<TestPOJO>());
-//
-//		// Add a custom property to make sure they are included in serialization
-//		try {
-//			element.setProperty("sail", "awolnation");
-//		} catch (Exception e) {
-//			// Complain
-//			e.printStackTrace();
-//			fail();
-//		}
-//		
-//		// Because of the private id changing and being unique, this cannot be checked
-//		// against a reference but can only be checked by inversion.
-//		String output = element.toString();
-//		
-//		// Change some values then read back in the original to make sure fromString()
-//		// correctly overwrites them.
-//		DataElement<TestPOJO> element2 = new DataElement<TestPOJO>();
-//		TestPOJO pojo2 = new TestPOJO();
-//		pojo2.setDoubleValue(1.072);
-//		element2.setValidator(new JavascriptValidator<TestPOJO>());
-//		element2.setData(pojo2);
-//		element2.fromString(output);
-//		
-//		assertEquals(element,element2);
-//
-//		return;
-//	}
-//
-//	/**
-//	 * Test method for
-//	 * {@link org.eclipse.ice.renderer.DataElement#matches(DataElement)},
-//	 * {@link org.eclipse.ice.renderer.DataElement#equals(java.lang.Object)},
-//	 * {@link org.eclipse.ice.renderer.DataElement#hashCode()},
-//	 * {@link org.eclipse.ice.renderer.DataElement#copy()}, and
-//	 * {@link org.eclipse.ice.renderer.DataElement#clone()}.
-//	 */
-//	@Test
-//	void testEquality() {
-//
-//		// Basic intrinsic class is good for this test
-//		GeneratedDataElementImplementation element = getStringElement("Halsey");
-//		GeneratedDataElementImplementation element2 = getStringElement("Halsey");
-//		GeneratedDataElementImplementation element3 = getStringElement("Billie Eilish");
-//		GeneratedDataElementImplementation element4 = getStringElement("Halsey");
-//
-//		// Need a validator for the tests that is shared on the equal elements.
-//		JavascriptValidator<String> validator = new JavascriptValidator<String>();
-//		element.setValidator(validator);
-//		element2.setValidator(validator);
-//		element4.setValidator(validator);
-//		// Billie needs her own validator
-//		element3.setValidator(new JavascriptValidator<String>());
-//
-//		// Data elements must be checked both for matching - a deep inequality except
-//		// the UUID - and for a fully complete match that contains the UUID. Start with
-//		// matching. Check reflexivity first
-//		assertTrue(element.matches(element));
-//		// Check symmetry
-//		assertTrue(element.matches(element2));
-//		assertTrue(element2.matches(element));
-//		// Check transitivity
-//		assertTrue(element.matches(element2));
-//		assertTrue(element2.matches(element4));
-//		assertTrue(element.matches(element4));
-//		// Check a wrong answer
-//		assertFalse(element.matches(element3));
-//		// Check null
-//		assertFalse(element.matches(null));
-//
-//		// Now check equality with a clone - therefore also confirming clone works
-//		GeneratedDataElementImplementation elementClone = (GeneratedDataElementImplementation) element.clone();
-//		// Check reflexivity first
-//		assertEquals(element, element);
-//		// Check symmetry
-//		assertEquals(element, elementClone);
-//		assertEquals(elementClone, element);
-//		// This is a sneaky way to use a copy constructor to check transitivity and get
-//		// around the UUID thing
-//		try {
-//			element4 = new GeneratedDataElementImplementation(elementClone);
-//		} catch (Exception e) {
-//			// Complain
-//			e.printStackTrace();
-//			fail();
-//		}
-//		assertEquals(element4, element);
-//		// Check a wrong answer
-//		assertFalse(element.equals(element3));
-//		// Check null
-//		assertFalse(element.equals(null));
-//		// Check against a string - this should fail
-//		assertFalse(element.equals("Halsey"));
-//
-//		// Check hashCode()
-//		assertEquals(element.hashCode(), elementClone.hashCode());
-//
-//		return;
-//	}
+
+	/**
+	 * Test method for {@link org.eclipse.ice.renderer.DataElement#toString()} and
+	 * {@link org.eclipse.ice.renderer.DataElement#toString()} for POJOs.
+	 */
+	@Test
+	void testPOJOSerialization() {
+
+		// Use a test POJO for this that has members
+		GeneratedDataElementPOJOImplementation element = new GeneratedDataElementPOJOImplementation();
+		element.setTestPOJO(new TestPOJO());
+		element.setSecret(true);
+		element.setRequired(true);
+		element.setValidator(new JavascriptValidator<GeneratedDataElementPOJOImplementation>());
+
+		// Because of the private id changing and being unique, this cannot be checked
+		// against a reference but can only be checked by inversion.
+		String output = element.toJSON();
+
+		// Change some values then read back in the original to make sure fromString()
+		// correctly overwrites them.
+		GeneratedDataElementPOJOImplementation element2 = new GeneratedDataElementPOJOImplementation();
+		TestPOJO pojo2 = new TestPOJO();
+		pojo2.setDoubleValue(1.072);
+		element2.setValidator(new JavascriptValidator<GeneratedDataElementPOJOImplementation>());
+		element2.setTestPOJO(pojo2);
+		element2.fromJSON(output);
+
+		assertEquals(element,element2);
+
+		return;
+	}
+
+	/**
+	 * Test method for
+	 * {@link org.eclipse.ice.renderer.DataElement#matches(DataElement)},
+	 * {@link org.eclipse.ice.renderer.DataElement#equals(java.lang.Object)},
+	 * {@link org.eclipse.ice.renderer.DataElement#hashCode()},
+	 * {@link org.eclipse.ice.renderer.DataElement#copy()}, and
+	 * {@link org.eclipse.ice.renderer.DataElement#clone()}.
+	 */
+	@Test
+	void testEquality() {
+
+		// Basic intrinsic class is good for this test
+		GeneratedDataElementImplementation element = getStringElement("Halsey");
+		GeneratedDataElementImplementation element2 = getStringElement("Halsey");
+		GeneratedDataElementImplementation element3 = getStringElement("Billie Eilish");
+		GeneratedDataElementImplementation element4 = getStringElement("Halsey");
+
+		// Need a validator for the tests that is shared on the equal elements.
+		JavascriptValidator<GeneratedDataElementImplementation> validator = new JavascriptValidator<GeneratedDataElementImplementation>();
+		element.setValidator(validator);
+		element2.setValidator(validator);
+		element4.setValidator(validator);
+		// Billie needs her own validator
+		element3.setValidator(new JavascriptValidator<GeneratedDataElementImplementation>());
+
+		// Data elements must be checked both for matching - a deep inequality except
+		// the UUID - and for a fully complete match that contains the UUID. Start with
+		// matching. Check reflexivity first
+		assertTrue(element.matches(element));
+		// Check symmetry
+		assertTrue(element.matches(element2));
+		assertTrue(element2.matches(element));
+		// Check transitivity
+		assertTrue(element.matches(element2));
+		assertTrue(element2.matches(element4));
+		assertTrue(element.matches(element4));
+		// Check a wrong answer
+		assertFalse(element.matches(element3));
+		// Check null
+		assertFalse(element.matches(null));
+
+		// Now check equality with a clone - therefore also confirming clone works
+		GeneratedDataElementImplementation elementClone = (GeneratedDataElementImplementation) element.clone();
+		// Check reflexivity first
+		assertEquals(element, element);
+		// Check symmetry
+		assertEquals(element, elementClone);
+		assertEquals(elementClone, element);
+		// This is a sneaky way to use a copy constructor to check transitivity and get
+		// around the UUID thing
+		try {
+			element4 = new GeneratedDataElementImplementation(elementClone);
+		} catch (Exception e) {
+			// Complain
+			e.printStackTrace();
+			fail();
+		}
+		assertEquals(element4, element);
+		// Check a wrong answer
+		assertFalse(element.equals(element3));
+		// Check null
+		assertFalse(element.equals(null));
+		// Check against a string - this should fail
+		assertFalse(element.equals("Halsey"));
+
+		// Check hashCode()
+		assertEquals(element.hashCode(), elementClone.hashCode());
+
+		return;
+	}
 }

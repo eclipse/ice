@@ -2,6 +2,7 @@ package org.eclipse.ice.dev.annotations.processors;
 
 import java.util.Optional;
 
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleAnnotationValueVisitor8;
 
@@ -20,6 +21,19 @@ import org.eclipse.ice.dev.annotations.processors.Fields;
  * data to its list of fields.
  */
 class DataFieldVisitor extends SimpleAnnotationValueVisitor8<Optional<UnexpectedValueError>, Fields> {
+
+	private static boolean isPrimitiveType(TypeMirror t) {
+		TypeKind kind = t.getKind();
+		return
+			kind == TypeKind.BOOLEAN ||
+			kind == TypeKind.BYTE ||
+			kind == TypeKind.CHAR ||
+			kind == TypeKind.DOUBLE ||
+			kind == TypeKind.FLOAT ||
+			kind == TypeKind.INT ||
+			kind == TypeKind.LONG ||
+			kind == TypeKind.SHORT;
+	}
 
 	/**
 	 * Return error as default action for unhandled annotation values.
@@ -59,6 +73,7 @@ class DataFieldVisitor extends SimpleAnnotationValueVisitor8<Optional<Unexpected
 			f.begin();
 		}
 		f.setClassName(t.toString());
+		f.setPrimitive(isPrimitiveType(t));
 		if (f.isComplete()) {
 			f.finish();
 		}
