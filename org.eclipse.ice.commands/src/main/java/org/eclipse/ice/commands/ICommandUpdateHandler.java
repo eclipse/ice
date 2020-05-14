@@ -36,4 +36,10 @@ public interface ICommandUpdateHandler {
 	 * for the class
 	 */
 	abstract void postUpdate() throws IOException;
+	
+	/**
+	 * Function to set the message that will be updated on
+	 * @param message
+	 */
+	abstract void setMessage(String message);
 }

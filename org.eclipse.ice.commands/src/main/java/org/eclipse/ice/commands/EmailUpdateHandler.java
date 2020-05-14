@@ -39,7 +39,7 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 	private String emailText = "";
 
 	// The subject of the message
-	private String emailSubject = "";
+	private String emailSubject = "Commands API Message";
 
 	// The host smtp server for the commands api email address
 	private String emailHost = "smtp.gmail.com";
@@ -134,13 +134,13 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 	}
 	
 	/**
-	 * Setter for the email message, see
-	 * {@link org.eclipse.ice.commands.notification.EmailUpdateHandler#emailText}
-	 * 
-	 * @param emailText
+	 * See {@link org.eclipse.ice.commands.ICommandUpdateHandler#setMessage(String)}
 	 */
-	public void setEmailText(String emailText) {
-		this.emailText = emailText;
+	@Override
+	public void setMessage(String message) {
+		this.emailText = message;
 	}
+
+
 
 }

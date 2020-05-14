@@ -36,6 +36,7 @@ public class HTTPCommandUpdateHandler implements ICommandUpdateHandler {
 
 	CommandStatus status = null;
 	
+	String message = "";
 	/**
 	 * Default constructor
 	 */
@@ -68,6 +69,14 @@ public class HTTPCommandUpdateHandler implements ICommandUpdateHandler {
 			logger.info("HTTP Post was not successful.", e);
 			throw new IOException();
 		}
+	}
+
+	/**
+	 * See {@link org.eclipse.ice.commands.ICommandUpdateHandler#setMessage(String)}
+	 */
+	@Override
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 }

@@ -16,10 +16,6 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import org.eclipse.ice.commands.EmailUpdateHandler;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -31,34 +27,11 @@ import org.junit.Test;
  */
 public class EmailHandlerTest {
 
+	
 	/**
-	 * @throws java.lang.Exception
+	 * Tests successful email notification posting
+	 * @throws IOException
 	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
 	@Test
 	public void testEmailNotificationPostUpdate() throws IOException {
 		
@@ -83,11 +56,33 @@ public class EmailHandlerTest {
 		updater.setEmailAddress(email);
 		updater.setPassword(password);
 		updater.setSmtpHost(host);
-		updater.setEmailText("This is a test updater");
+		updater.setMessage("This is a test updater");
 		updater.setSubject("This is a test subject");
 		updater.postUpdate();
 		
 		// If no exception is thrown, it completed correctly
 	}
+	
+	/**
+	 * Tests bad credential error throwing
+	 * @throws IOException
+	 */
+	@Test(expected = IOException.class)
+	public void testEmailNotificationPostUpdateBadCreds() throws IOException {
+		
+		String email = "badEmail";
+		String password = "badPassword";
+		String host = "some.smtp.com";
+		EmailUpdateHandler updater = new EmailUpdateHandler();
+		// Just send an email to itself
+		updater.setEmailAddress(email);
+		updater.setPassword(password);
+		updater.setSmtpHost(host);
+		updater.setMessage("Bad email");
+		updater.setSubject("This is a bad email");
+		updater.postUpdate();
+		// Expect exception
+	}
+	
 
 }
