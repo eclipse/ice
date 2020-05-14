@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
-package org.eclipse.ice.commands.notification;
+package org.eclipse.ice.commands;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -53,6 +53,7 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 	public EmailUpdateHandler() {
 	}
 
+	@Override
 	public void postUpdate() throws IOException {
 		// Create some properties and setup the default gmail
 		// server properties

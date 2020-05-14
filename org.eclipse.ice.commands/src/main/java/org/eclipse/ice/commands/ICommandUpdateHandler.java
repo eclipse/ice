@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
-package org.eclipse.ice.commands.notification;
+package org.eclipse.ice.commands;
 
 import java.io.IOException;
 

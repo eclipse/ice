@@ -9,12 +9,13 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
-package org.eclipse.ice.commands.notification;
+package org.eclipse.ice.tests.commands;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
+import org.eclipse.ice.commands.EmailUpdateHandler;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

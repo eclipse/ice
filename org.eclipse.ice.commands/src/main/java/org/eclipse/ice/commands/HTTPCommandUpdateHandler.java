@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
-package org.eclipse.ice.commands.notification;
+package org.eclipse.ice.commands;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +22,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.eclipse.ice.commands.CommandStatus;
 
 
 /**
@@ -51,6 +50,7 @@ public class HTTPCommandUpdateHandler implements ICommandUpdateHandler {
 		this.status = status;
 	}
 	
+	@Override
 	public void postUpdate() throws IOException {
 
 		HttpClient httpClient = HttpClients.createDefault();
