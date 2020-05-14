@@ -49,8 +49,33 @@ class Fields {
 		this.building.setName(name);
 	}
 
+	public void setPrimitive(boolean primitive) {
+		this.building.setPrimitive(primitive);
+	}
+
 	@Override
 	public String toString() {
 		return fields.toString();
+	}
+
+	public void add(Field field) {
+		this.fields.add(field);
+	}
+
+	public void addAll(Fields fields) {
+		this.fields.addAll(fields.getFields());
+	}
+
+	public void addAll(List<Field> fields) {
+		this.fields.addAll(fields);
+	}
+
+	public void addAll(Field[] fields) {
+		if (fields == null) {
+			return;
+		}
+		for (int i = 0; i < fields.length; i++) {
+			this.fields.add(fields[i]);
+		}
 	}
 }
