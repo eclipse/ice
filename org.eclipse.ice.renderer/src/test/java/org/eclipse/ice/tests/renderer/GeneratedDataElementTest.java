@@ -29,7 +29,7 @@ class GeneratedDataElementTest {
 	/**
 	 * This is a helper function for creating GeneratedDataElementImplementation values that are
 	 * used in most of the tests.
-	 * 
+	 *
 	 * @param data the value that should be stored in the element.
 	 * @return the data
 	 */

@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 /**
  * This is an implementation of $interface that satisfies the dependencies of
@@ -32,57 +33,8 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(${class}.class);
 
-	/**
-	 * A unique private id that identifies the data element
-	 */
-	private UUID privateId = UUID.randomUUID();
-
-	/**
-	 * A simple name for the data
-	 */
-	private String name = "name";
-
-	/**
-	 * A simple description for the data
-	 */
-	private String description = "description";
-
-	/**
-	 * A unique identifier
-	 */
-	private Long id = 0L;
-
-	/**
-	 * A comment that annotates the data in meaningful way
-	 */
-	private String comment = "no comment";
-
-	/**
-	 * The context (a tag) in which the data should be considered
-	 */
-	private String context = "default";
-
-	/**
-	 * This value is true if the element should be regarded as a client as required.
-	 */
-	private boolean required;
-
-	/**
-	 * This value is true if the element should be regarded as a secret by a client,
-	 * such as for passwords.
-	 */
-	private boolean secret;
-
-	/**
-	 * The validator used to check the correctness of the data
-	 */
-	private JavascriptValidator<${class}> validator;
-
-	/**
-	 * Generated from DataField annotations
-	 */
 	#foreach($field in $fields)
-	protected ${field.ClassName} ${field.Name};
+#if(!${field.Nullable} && !${field.Primitive})	@NonNull #else	#{end}protected #evaluate(${field.ClassName}) ${field.Name}#if(${field.DefaultValue}) = #evaluate(${field.DefaultValue})#end;
 	#end
 
 	public $class($class other) throws Exception {
@@ -92,12 +44,47 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 		if (!(other instanceof $class)) {
 			throw (new Exception("$class can copy only from other instances of $class."));
 		}
-		#foreach($prop in ["name", "description", "comment", "id", "context", "privateId", "validator", "secret", "required"])
-		this.$prop = other.$prop;
-		#end
 		#foreach($field in $fields)
 		this.${field.Name} = other.${field.Name};
 		#end
+	}
+
+	/**
+	 * This operation clones the object. Note that it differs from the base class
+	 * implementation in that it will return null if it cannot create the clone to
+	 * promote fast failure. See {@link java.lang.Object#clone()};
+	 */
+	@Override
+	public Object clone() {
+		try {
+			// Call the copy constructor to create the clone.
+			return new $class(this);
+		} catch (Exception e) {
+			logger.error("Unable to clone $class!", e);
+			return null;
+		}
+	}
+
+	public boolean matches(Object o) {
+		if (o == this) return true;
+		if (!(o instanceof $class)) return false;
+		$class other = ($class) o;
+		#foreach($field in $fields)
+		#if(${field.Match})
+		#if(${field.Nullable})
+		if (this.${field.Name} != null) {
+			if (!this.${field.Name}.equals(other.${field.Name})) return false;
+		} else {
+			if (this.${field.Name} != other.${field.Name}) return false;
+		}
+		#elseif(${field.Primitive})
+		if (this.${field.Name} != other.${field.Name}) return false;
+		#else
+		if (!this.${field.Name}.equals(other.${field.Name})) return false;
+		#end ## if nullable
+		#end ## if match
+		#end ## foreach
+		return true;
 	}
 
 	/**
@@ -136,41 +123,18 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 		try {
 			JsonNode rootNode = mapper.readTree(jsonDataElement);
 
-			// Static Fields
-			#foreach($prop in ["name", "description", "comment", "context"])
-			// $prop
-			JsonNode ${prop}Node = rootNode.get("$prop");
-			$prop = mapper.treeToValue(${prop}Node, String.class);
-
-			#end
-
-			// id
-			JsonNode idNode = rootNode.get("id");
-			id = mapper.treeToValue(idNode, Long.class);
-
-			// Required and secret booleans
-			JsonNode requiredNode = rootNode.get("required");
-			required = mapper.treeToValue(requiredNode, Boolean.class);
-			JsonNode secretNode = rootNode.get("secret");
-			secret = mapper.treeToValue(secretNode, Boolean.class);
-
-			// Private ids
-			JsonNode privateIdNode = rootNode.get("privateId");
-			privateId = mapper.treeToValue(privateIdNode, UUID.class);
-
-			// Validators
-			JsonNode validatorNode = rootNode.get("validator");
-			if (rootNode.hasNonNull("validator")) {
-				validator = mapper.treeToValue(validatorNode, validator.getClass());
-			} else {
-				validator = null;
-			}
-
-			// Dynamic Fields
 			#foreach($field in $fields)
 			// ${field.Name}
 			JsonNode ${field.Name}Node = rootNode.get("${field.Name}");
+			#if(${field.Nullable})
+			if (rootNode.hasNonNull("${field.Name}")) {
+				${field.Name} = mapper.treeToValue(${field.Name}Node, ${field.Name}.getClass());
+			} else {
+				${field.Name} = null;
+			}
+			#else
 			${field.Name} = mapper.treeToValue(${field.Name}Node, ${field.ClassName}.class);
+			#end
 
 			#end
 		} catch (JsonProcessingException e) {
