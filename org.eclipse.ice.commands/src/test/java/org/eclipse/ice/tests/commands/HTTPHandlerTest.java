@@ -26,7 +26,6 @@ import org.junit.Test;
  */
 public class HTTPHandlerTest {
 
-	
 	/**
 	 * This function tests the HTTP post logic for sending a post call with a given
 	 * message, primarily used for Commands posting updates
@@ -37,7 +36,7 @@ public class HTTPHandlerTest {
 	public void testHTTPNotificationPostUpdate() throws IOException {
 
 		HTTPCommandUpdateHandler updater = new HTTPCommandUpdateHandler();
-		updater.setHTTPAddress("www.example.com");
+		updater.setHTTPAddress("someaddress.com");
 		updater.setMessage("job finished with status " + CommandStatus.INFOERROR);
 
 		updater.postUpdate();

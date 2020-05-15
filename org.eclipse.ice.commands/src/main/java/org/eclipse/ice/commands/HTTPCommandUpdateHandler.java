@@ -23,7 +23,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
-
 /**
  * This class posts Command job updates to an HTTP link via POST
  * 
@@ -37,7 +36,7 @@ public class HTTPCommandUpdateHandler implements ICommandUpdateHandler {
 
 	// Message to be posted
 	String message = "";
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -46,6 +45,7 @@ public class HTTPCommandUpdateHandler implements ICommandUpdateHandler {
 
 	/**
 	 * Setter for http address to post to
+	 * 
 	 * @param HTTPAddress
 	 */
 	public void setHTTPAddress(String HTTPAddress) {
@@ -58,17 +58,18 @@ public class HTTPCommandUpdateHandler implements ICommandUpdateHandler {
 	@Override
 	public void postUpdate() throws IOException {
 
+		// Get a default httpClient to use to send the post
 		HttpClient httpClient = HttpClients.createDefault();
 		HttpPost httpPost = new HttpPost(HTTPAddress);
 
 		// Setup the parameters to be passed in the post
 		List<NameValuePair> params = new ArrayList<NameValuePair>(1);
-		params.add(new BasicNameValuePair("status", message));
+		params.add(new BasicNameValuePair("body", message));
 		httpPost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
 		// Execute and get the response
 		try {
-		HttpResponse response = httpClient.execute(httpPost);
+			HttpResponse response = httpClient.execute(httpPost);
 		} catch (Exception e) {
 			logger.info("HTTP Post was not successful.", e);
 			throw new IOException();

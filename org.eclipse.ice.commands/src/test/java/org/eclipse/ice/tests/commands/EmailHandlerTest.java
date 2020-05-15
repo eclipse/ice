@@ -27,30 +27,30 @@ import org.junit.Test;
  */
 public class EmailHandlerTest {
 
-	
 	/**
 	 * Tests successful email notification posting
+	 * 
 	 * @throws IOException
 	 */
 	@Test
 	public void testEmailNotificationPostUpdate() throws IOException {
-		
+
 		// Get a text file with credentials
 		String credFile = "/tmp/email-creds.txt";
-		if(System.getProperty("os.name").toLowerCase().contains("win"))
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
 			credFile = "C:\\Users\\Administrator\\email-creds.txt";
-		
+
 		String email = "";
 		String password = "";
 		String host = "";
-		
+
 		File file = new File(credFile);
-		try(Scanner scanner = new Scanner(file)) {
+		try (Scanner scanner = new Scanner(file)) {
 			email = scanner.next();
 			password = scanner.next();
 			host = scanner.next();
 		}
-		
+
 		EmailUpdateHandler updater = new EmailUpdateHandler();
 		// Just send an email to itself
 		updater.setEmailAddress(email);
@@ -59,17 +59,18 @@ public class EmailHandlerTest {
 		updater.setMessage("This is a test updater");
 		updater.setSubject("This is a test subject");
 		updater.postUpdate();
-		
+
 		// If no exception is thrown, it completed correctly
 	}
-	
+
 	/**
 	 * Tests bad credential error throwing
+	 * 
 	 * @throws IOException
 	 */
 	@Test(expected = IOException.class)
 	public void testEmailNotificationPostUpdateBadCreds() throws IOException {
-		
+
 		String email = "badEmail";
 		String password = "badPassword";
 		String host = "some.smtp.com";
@@ -83,6 +84,5 @@ public class EmailHandlerTest {
 		updater.postUpdate();
 		// Expect exception
 	}
-	
 
 }

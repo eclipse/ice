@@ -45,11 +45,12 @@ public class CommandFactoryUpdaterTest {
 	 */
 	@Test
 	public void testCommandWithHTTPUpdater() {
+		// Create and setup the command
 		CommandConfiguration commandConfig = setupCommandConfiguration();
 		commandConfig.setCommandId(3);
-		
+
 		ConnectionConfiguration connectionConfig = setupConnectionConfiguration();
-		
+
 		CommandFactory factory = new CommandFactory();
 		Command command = null;
 		try {
@@ -58,6 +59,7 @@ public class CommandFactoryUpdaterTest {
 			e.printStackTrace();
 		}
 
+		// Create an HTTP updater to be added to the command
 		HTTPCommandUpdateHandler updater = new HTTPCommandUpdateHandler();
 		updater.setHTTPAddress("someaddress.com");
 		command.setUpdateHandler(updater);
@@ -65,7 +67,7 @@ public class CommandFactoryUpdaterTest {
 		CommandStatus status = command.execute();
 
 		assertEquals(CommandStatus.SUCCESS, status);
-		
+
 	}
 
 	/**
@@ -73,15 +75,14 @@ public class CommandFactoryUpdaterTest {
 	 * email updater attached to the command, so that when the job finishes an email
 	 * is sent
 	 */
-	@Test
+	// @Test
 	public void testCommandWithEmailUpdater() {
 
-		
 		// Set some things specific to the local command
 		CommandConfiguration commandConfig = setupCommandConfiguration();
 		commandConfig.setCommandId(4);
 		ConnectionConfiguration connectionConfig = setupConnectionConfiguration();
-		
+
 		// Get the command
 		CommandFactory factory = new CommandFactory();
 		Command localCommand = null;
@@ -103,6 +104,7 @@ public class CommandFactoryUpdaterTest {
 
 	/**
 	 * Helper function to create and return a local connection configuration
+	 * 
 	 * @return
 	 */
 	private ConnectionConfiguration setupConnectionConfiguration() {
@@ -114,16 +116,18 @@ public class CommandFactoryUpdaterTest {
 		connectionConfig.setAuthorization(handler);
 		return connectionConfig;
 	}
-	
+
 	/**
 	 * Helper function to setup and create a local command configuration
+	 * 
 	 * @return
 	 */
 	private CommandConfiguration setupCommandConfiguration() {
 		CommandConfiguration commandConfig = new CommandConfiguration();
 		commandConfig.setNumProcs("1");
 		commandConfig.setInstallDirectory("");
-		commandConfig.setWorkingDirectory(System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/");
+		commandConfig
+				.setWorkingDirectory(System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/");
 		commandConfig.setOS(System.getProperty("os.name"));
 		commandConfig.setExecutable("./test_code_execution.sh");
 		// If it is windows, configure the test to run on windows
@@ -136,10 +140,10 @@ public class CommandFactoryUpdaterTest {
 		commandConfig.setCommandId(1);
 		commandConfig.setErrFileName("someLocalErrFile.txt");
 		commandConfig.setOutFileName("someLocalOutFile.txt");
-		
+
 		return commandConfig;
 	}
-	
+
 	/**
 	 * Sets up the dummy email address via a text file credential for CI
 	 * 

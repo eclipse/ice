@@ -23,9 +23,9 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 /**
- * This class provides email updates for Command job statuses. It takes
- * a provided email address, password, etc. and just sends an email to 
- * the same address
+ * This class provides email updates for Command job statuses. It takes a
+ * provided email address, password, etc. and just sends an email to the same
+ * address
  * 
  * @author Joe Osborn
  *
@@ -46,7 +46,7 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 
 	// The password for the provided email to be able to send to itself
 	private String emailPassword = "";
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -117,25 +117,27 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
 	}
-	
+
 	/**
 	 * Setter for the email host for email authentication, see
 	 * {@link org.eclipse.ice.commands.notification.EmailUpdateHandler#emailHost}
+	 * 
 	 * @param emailPassword
 	 */
 	public void setSmtpHost(String emailHost) {
 		this.emailHost = emailHost;
 	}
-	
+
 	/**
 	 * Setter for the email password for email authentication, see
 	 * {@link org.eclipse.ice.commands.notification.EmailUpdateHandler#emailPassword}
+	 * 
 	 * @param emailPassword
 	 */
 	public void setPassword(String emailPassword) {
 		this.emailPassword = emailPassword;
 	}
-	
+
 	/**
 	 * See {@link org.eclipse.ice.commands.ICommandUpdateHandler#setMessage(String)}
 	 */
@@ -143,7 +145,5 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 	public void setMessage(String message) {
 		this.emailText = message;
 	}
-
-
 
 }
