@@ -126,7 +126,7 @@ public class DataElementProcessor extends AbstractProcessor {
 			}
 
 			final Fields fields = new Fields();
-			fields.addAll(new DefaultFields());
+			fields.addAll(DefaultFields.get());
 
 			final List<? extends AnnotationMirror> mirrors = elem.getAnnotationMirrors();
 			try {

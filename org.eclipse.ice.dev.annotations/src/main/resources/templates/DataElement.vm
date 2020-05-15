@@ -34,7 +34,7 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 	private static final Logger logger = LoggerFactory.getLogger(${class}.class);
 
 	#foreach($field in $fields)
-#if(!${field.Nullable} && !${field.Primitive})	@NonNull #else	#{end}protected #evaluate(${field.ClassName}) ${field.Name}#if(${field.DefaultValue}) = #evaluate(${field.DefaultValue})#end;
+#if(!${field.Nullable} && !${field.Primitive})	@NonNull #else	#{end}protected #evaluate(${field.Type}) ${field.Name}#if(${field.DefaultValue}) = #evaluate(${field.DefaultValue})#end;
 	#end
 
 	public $class($class other) throws Exception {
@@ -84,6 +84,7 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 		#end ## if nullable
 		#end ## if match
 		#end ## foreach
+
 		return true;
 	}
 
@@ -133,7 +134,7 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 				${field.Name} = null;
 			}
 			#else
-			${field.Name} = mapper.treeToValue(${field.Name}Node, ${field.ClassName}.class);
+			${field.Name} = mapper.treeToValue(${field.Name}Node, ${field.Type}.class);
 			#end
 
 			#end

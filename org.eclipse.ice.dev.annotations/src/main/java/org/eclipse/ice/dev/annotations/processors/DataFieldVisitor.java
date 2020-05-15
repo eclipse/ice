@@ -22,6 +22,11 @@ import org.eclipse.ice.dev.annotations.processors.Fields;
  */
 class DataFieldVisitor extends SimpleAnnotationValueVisitor8<Optional<UnexpectedValueError>, Fields> {
 
+	/**
+	 * Check if the given type mirror represents a primitive type.
+	 * @param t type to check
+	 * @return true if primitive, false otherwise
+	 */
 	private static boolean isPrimitiveType(TypeMirror t) {
 		TypeKind kind = t.getKind();
 		return
@@ -72,7 +77,7 @@ class DataFieldVisitor extends SimpleAnnotationValueVisitor8<Optional<Unexpected
 		if (!f.isBuilding()) {
 			f.begin();
 		}
-		f.setClassName(t.toString());
+		f.setType(t.toString());
 		f.setPrimitive(isPrimitiveType(t));
 		if (f.isComplete()) {
 			f.finish();

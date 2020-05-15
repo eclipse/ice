@@ -7,13 +7,8 @@ import java.util.List;
  * A simple container for fields discovered on a DataElement.
  */
 class Fields {
-	/**
-	 * Container for name and class name attributes of DataField in string
-	 * representation.
-	 */
-
 	protected List<Field> fields;
-	protected Field building;
+	protected Field.FieldBuilder building;
 
 	public Fields() {
 		this.fields = new ArrayList<>();
@@ -21,11 +16,11 @@ class Fields {
 	}
 
 	public void begin() {
-		this.building = new Field();
+		this.building = Field.builder();
 	}
 
 	public void finish() {
-		this.fields.add(this.building);
+		this.fields.add(this.building.build());
 		this.building = null;
 	}
 
@@ -38,19 +33,20 @@ class Fields {
 	}
 
 	public boolean isComplete() {
-		return (this.building.getClassName() != null) && (this.building.getName() != null);
+		Field partial = this.building.build();
+		return (partial.getType() != null) && (partial.getName() != null);
 	}
 
-	public void setClassName(final String className) {
-		this.building.setClassName(className);
+	public void setType(final String type) {
+		this.building.type(Field.raw(type));
 	}
 
 	public void setName(final String name) {
-		this.building.setName(name);
+		this.building.name(name);
 	}
 
 	public void setPrimitive(boolean primitive) {
-		this.building.setPrimitive(primitive);
+		this.building.primitive(primitive);
 	}
 
 	@Override
