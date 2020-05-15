@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings
  *******************************************************************************/
 package org.eclipse.ice.tests.renderer;
@@ -20,8 +20,9 @@ import org.junit.jupiter.api.Test;
  * This class tests the DataElement class. With the exception of testing for
  * serialization to a string, it is sufficient to test this class with T=String.
  * For testing serialization, multiple types need to be tested.
- * 
+ *
  * @author Jay Jay Billings
+ * @author Daniel Bluhm
  *
  */
 class GeneratedDataElementTest {
@@ -42,10 +43,10 @@ class GeneratedDataElementTest {
 	}
 
 	/**
-	 * Test method for {@link org.eclipse.ice.renderer.DataElement#getProperties()}.
+	 * Test method for verifying expected defaults are present and modifiable.
 	 */
 	@Test
-	void testProperties() {
+	void testDefaultProps() {
 
 		// Use a basic string element for this test since it is looking at content on
 		// the base class.
@@ -133,9 +134,7 @@ class GeneratedDataElementTest {
 	}
 
 	/**
-	 * Test method for {@link org.eclipse.ice.renderer.DataElement#getData()} and
-	 * {@link org.eclipse.ice.renderer.DataElement#setTestPOJO(java.lang.Object)} when
-	 * non-intrinsic POJOs are used.
+	 * Test generated DataElement Implementation with POJO as a DataField.
 	 */
 	@Test
 	void testDataAccessorsForPOJOs() {
@@ -143,9 +142,6 @@ class GeneratedDataElementTest {
 		// Use a test POJO for this that has members
 		GeneratedDataElementPOJOImplementation element = new GeneratedDataElementPOJOImplementation();
 		element.setTestPOJO(new TestPOJO());
-
-		// No properties are configured here. Just want to make sure that the data
-		// behaves as expected.
 
 		// Do the straight check
 		TestPOJO pojo = element.getTestPOJO();
@@ -162,9 +158,7 @@ class GeneratedDataElementTest {
 	}
 
 	/**
-	 * Test method for {@link org.eclipse.ice.renderer.DataElement#toString()} and
-	 * {@link org.eclipse.ice.renderer.DataElement#toString()} for intrinsic
-	 * classes.
+	 * Test generated DataElement Implementation with Intrinsic class as DataField.
 	 */
 	@Test
 	void testStringSerialization() {

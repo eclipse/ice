@@ -37,6 +37,11 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 #if(!${field.Nullable} && !${field.Primitive})	@NonNull #else	#{end}protected #evaluate(${field.Type}) ${field.Name}#if(${field.DefaultValue}) = #evaluate(${field.DefaultValue})#end;
 	#end
 
+	/**
+	 * Copy constructor for $class.
+	 * @param other Instance of $class to copy
+	 * @throws Exception if other is null or not of type $class or other errors.
+	 */
 	public $class($class other) throws Exception {
 		if (other == null) {
 			throw (new Exception("$class to copy cannot be null."));
@@ -65,6 +70,16 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 		}
 	}
 
+	/**
+	 * This function checks deep equality of DataElements to see if all members are
+	 * equal ("match") with the exception of fields with match set to false (such
+	 * as an automatically generated UUID). This is important for checking if two
+	 * objects were generated separately but are otherwise equal.
+	 *
+	 * @param o the other element to compare
+	 * @return true if all members of the element except excluded fields match
+	 *         this element.
+	 */
 	public boolean matches(Object o) {
 		if (o == this) return true;
 		if (!(o instanceof $class)) return false;
@@ -81,16 +96,18 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 		if (this.${field.Name} != other.${field.Name}) return false;
 		#else
 		if (!this.${field.Name}.equals(other.${field.Name})) return false;
-		#end ## if nullable
-		#end ## if match
-		#end ## foreach
+		#end## if nullable
+		#else
+		// Not checking ${field.Name}
+		#end## if match
+		#end## foreach
 
 		return true;
 	}
 
 	/**
 	 * This operation serializes the data element to a string in verified JSON.
-	 * 
+	 *
 	 * @return a JSON string describing the element
 	 */
 	public String toJSON() {
@@ -114,7 +131,7 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 	/**
 	 * This operation deserializes a valid JSON string and tries to load it into the
 	 * object.
-	 * 
+	 *
 	 * @param jsonDataElement the contents of this data element as JSON
 	 */
 	public void fromJSON(final String jsonDataElement) {
