@@ -45,6 +45,16 @@ ConnectionManagerFactory.getConnectionManager().setRequireStrictHostKeyChecking(
 
 Note that this is also a way through which ssh validation can be performed in the package for running actual remote commands/file transfers.
 
+#### EmailHandler test
+To test the `EmailUpdateHandler` class, a similar file to the `/tmp/ice-remote-creds.txt` file must be created. Instead, a file in the location `/tmp/ice-email-creds.txt` must exist which contains the following information:
+
+```
+email@address
+password
+SmtpHost
+```
+
+The EmailHandler will send an email from your own address to the same address with updates on when the job finishes. In order for this to happen, the email address must be authenticated. In the case of the tests, and for CI purposes, these authentications are placed in the above text file. For developer use, one could simply enter this information as it is entered in EmailHandlerTest, or you could implement another method (e.g. through use of the text file).
 
 #### KeyGen Tests and Connections
 
