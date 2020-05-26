@@ -29,7 +29,6 @@ public class DefaultFields {
 		.name("id")
 		.type(long.class)
 		.defaultValue(0L)
-		.primitive(true)
 		.build();
 
 	/**
@@ -75,7 +74,6 @@ public class DefaultFields {
 		.name("required")
 		.type(boolean.class)
 		.defaultValue(false)
-		.primitive(true)
 		.build();
 
 	/**
@@ -86,7 +84,6 @@ public class DefaultFields {
 		.name("secret")
 		.type(boolean.class)
 		.defaultValue(false)
-		.primitive(true)
 		.build();
 
 	/**

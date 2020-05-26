@@ -30,16 +30,21 @@ public class Field {
 
 	/**
 	 * Whether or not this field can be null.
+	 *
+	 * This value affects the kind of checks generated in IDataElement.matches().
 	 */
 	boolean nullable;
 
 	/**
 	 * Whether or not the type of this field is a primitive type.
+	 *
+	 * This value affects the kind of checks generated in IDataElement.matches().
+	 * This is inferred from the Field's type.
 	 */
 	boolean primitive;
 
 	/**
-	 * Whether or not this field should be included in the matches method checks.
+	 * Whether or not this field should be included in IDataElement.matches().
 	 */
 	@Builder.Default boolean match = true;
 
@@ -97,6 +102,7 @@ public class Field {
 		 */
 		public FieldBuilder type(Class<?> type) {
 			this.type = type.getName().toString();
+			this.primitive = type.isPrimitive();
 			return this;
 		}
 
