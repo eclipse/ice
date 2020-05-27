@@ -34,6 +34,12 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 	private static final Logger logger = LoggerFactory.getLogger(${class}.class);
 
 	#foreach($field in $fields)
+
+	#if(${field.Comment})
+	/**
+	 * ${field.Comment}
+	 */
+	#end
 #if(!${field.Nullable} && !${field.Primitive})	@NonNull #else	#{end}protected #evaluate(${field.Type}) ${field.Name}#if(${field.DefaultValue}) = #evaluate(${field.DefaultValue})#end;
 	#end
 

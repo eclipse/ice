@@ -29,6 +29,11 @@ public class Field {
 	String defaultValue;
 
 	/**
+	 * Comment to add to the field declaration.
+	 */
+	String comment;
+
+	/**
 	 * Whether or not this field can be null.
 	 *
 	 * This value affects the kind of checks generated in IDataElement.matches().
