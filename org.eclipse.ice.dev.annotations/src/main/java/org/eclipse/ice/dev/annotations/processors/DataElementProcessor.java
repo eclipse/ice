@@ -2,8 +2,10 @@ package org.eclipse.ice.dev.annotations.processors;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -25,13 +27,16 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
+import javax.tools.StandardLocation;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.eclipse.ice.dev.annotations.DataElement;
 import org.eclipse.ice.dev.annotations.DataField;
+import org.eclipse.ice.dev.annotations.DataFieldJson;
 import org.eclipse.ice.dev.annotations.DataFields;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auto.service.AutoService;
 
 /**
@@ -128,40 +133,9 @@ public class DataElementProcessor extends AbstractProcessor {
 			final Fields fields = new Fields();
 			fields.addAll(DefaultFields.get());
 
-			final List<? extends AnnotationMirror> mirrors = elem.getAnnotationMirrors();
 			try {
-				// Iterate over the AnnotationValues of AnnotationMirrors of type DataFields.
-				// DataFields present when more than one DataField annotation is used.
-				for (
-					final AnnotationValue value : mirrors.stream()
-						.filter(
-							mirror -> mirror.getAnnotationType().toString().equals(
-								DataFields.class.getCanonicalName()
-							)
-						)
-						.map(mirror -> getAnnotationValuesForMirror(elementUtils, mirror))
-						.flatMap(List::stream) // Flatten List<List<AnnotationValue> to List<AnnotationValue>
-						.collect(Collectors.toList())
-				) {
-					// Traditional for-loop used to allow raising an exception with unwrap if the
-					// field visitor returns an error result
-					unwrap(value.accept(fieldsVisitor, fields));
-				}
-				// Iterate over the AnnotationValues of AnnotationMirrors of type DataField.
-				// Only present when only one DataField annotation is used.
-				for (
-					final AnnotationValue value : mirrors.stream()
-						.filter(
-							mirror -> mirror.getAnnotationType().toString().equals(
-								DataField.class.getCanonicalName()
-							)
-						)
-						.map(mirror -> getAnnotationValuesForMirror(elementUtils, mirror))
-						.flatMap(List::stream)
-						.collect(Collectors.toList())
-				) {
-					unwrap(value.accept(fieldVisitor, fields));
-				}
+				fields.addAll(collectFromDataFields(elem));
+				fields.addAll(collectFromDataFieldJson(elem));
 				this.writeClass(((TypeElement) elem).getQualifiedName().toString(), fields);
 			} catch (final IOException | UnexpectedValueError e) {
 				messager.printMessage(Diagnostic.Kind.ERROR, stackTraceToString(e));
@@ -169,6 +143,96 @@ public class DataElementProcessor extends AbstractProcessor {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Collect Fields from DataFieldJson Annotations.
+	 *
+	 * The JSON input files are searched for in the "CLASS_OUTPUT" location,
+	 * meaning the same folder to which compiled class files will be output.
+	 * JSON files placed in src/main/resources are moved to this location before
+	 * the annotation processing phase and are therefore available at this
+	 * location at the time of annotation processing.
+	 *
+	 * @param element potentially annotated with DataFieldJson
+	 * @return discovered fields
+	 * @throws IOException
+	 */
+	private Fields collectFromDataFieldJson(Element element) throws IOException {
+		final List<? extends AnnotationMirror> mirrors = element.getAnnotationMirrors();
+		Fields fields = new Fields();
+		// Iterate through AnnotationValues of AnnotationMirrors for DataFieldJson
+		for (
+			final AnnotationValue value : mirrors.stream()
+			.filter(
+				mirror -> mirror.getAnnotationType().toString().equals(
+					DataFieldJson.class.getCanonicalName()
+					)
+				)
+			.map(mirror -> getAnnotationValuesForMirror(elementUtils, mirror))
+			.flatMap(List::stream) // Flatten List<List<AnnotationValue> to List<AnnotationValue>
+			.collect(Collectors.toList())
+		) {
+			// Flatten the AnnotationValue List into List of Strings in Annotation
+			List<String> sources = ((List<? extends AnnotationValue>) value.getValue()).stream()
+				.map(val -> (String) val.getValue())
+				.collect(Collectors.toList());
+			// Iterate through each JSON Data Field source and attempt to read
+			// fields from JSON file.
+			for (String source : sources) {
+				Reader reader = processingEnv.getFiler()
+					.getResource(StandardLocation.CLASS_OUTPUT, "", source)
+					.openReader(false);
+				ObjectMapper mapper = new ObjectMapper();
+				fields.addAll(Arrays.asList(mapper.readValue(reader, Field[].class)));
+			}
+		}
+		return fields;
+	}
+
+	/**
+	 * Collect Fields from DataField and DataFields Annotations.
+	 *
+	 * @param element potentially annotated with one or more DataField Annotations.
+	 * @return discovered fields
+	 * @throws UnexpectedValueError
+	 */
+	private Fields collectFromDataFields(Element element) throws UnexpectedValueError {
+		final List<? extends AnnotationMirror> mirrors = element.getAnnotationMirrors();
+		Fields fields = new Fields();
+		// Iterate over the AnnotationValues of AnnotationMirrors of type DataFields.
+		// DataFields present when more than one DataField annotation is used.
+		for (
+			final AnnotationValue value : mirrors.stream()
+			.filter(
+				mirror -> mirror.getAnnotationType().toString().equals(
+					DataFields.class.getCanonicalName()
+					)
+				)
+			.map(mirror -> getAnnotationValuesForMirror(elementUtils, mirror))
+			.flatMap(List::stream) // Flatten List<List<AnnotationValue> to List<AnnotationValue>
+			.collect(Collectors.toList())
+			) {
+			// Traditional for-loop used to allow raising an exception with unwrap if the
+			// field visitor returns an error result
+			unwrap(value.accept(fieldsVisitor, fields));
+		}
+		// Iterate over the AnnotationValues of AnnotationMirrors of type DataField.
+		// Only present when only one DataField annotation is used.
+		for (
+			final AnnotationValue value : mirrors.stream()
+			.filter(
+				mirror -> mirror.getAnnotationType().toString().equals(
+					DataField.class.getCanonicalName()
+					)
+				)
+			.map(mirror -> getAnnotationValuesForMirror(elementUtils, mirror))
+			.flatMap(List::stream)
+			.collect(Collectors.toList())
+			) {
+			unwrap(value.accept(fieldVisitor, fields));
+		}
+		return fields;
 	}
 
 	/**
