@@ -1,3 +1,11 @@
+## Whitespace helpers
+#set($blank = "")
+#set($newline = "
+")
+#macro(noop)#end
+##
+## Begin Template
+##
 #if($package)
 package $package;
 #end
@@ -16,9 +24,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.Setter;
 
 /**
  * This is an implementation of $interface that satisfies the dependencies of
@@ -34,7 +45,47 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 	private static final Logger logger = LoggerFactory.getLogger(${class}.class);
 
 	#foreach($field in $fields)
-#if(!${field.Nullable} && !${field.Primitive})	@NonNull #else	#{end}protected #evaluate(${field.Type}) ${field.Name}#if(${field.DefaultValue}) = #evaluate(${field.DefaultValue})#end;
+
+	#if(${field.DocString})
+	/**
+	 * ${field.DocString}
+	 */
+	#end
+	#macro(fieldtype)#evaluate(${field.Type})#end
+	#macro(fielddecl)protected #evaluate(${field.Type}) ${field.Name}#if(${field.DefaultValue}) = #evaluate(${field.DefaultValue})#end;#end
+	#if(!${field.Nullable} && !${field.Primitive})
+	@NonNull
+	#end
+	#if(!${field.Getter})
+	@Getter(AccessLevel.NONE)
+	#end
+	#if(!${field.Setter})
+	@Setter(AccessLevel.NONE)
+	#end
+	$blank#fielddecl()
+	#end
+
+	#foreach($field in $fields)
+		#foreach($alias in ${field.aliases})
+			#if(${alias.Getter})
+	/**
+	 * Get ${field.Name} by alias ${alias.Alias}.
+	 * @return ${field.Name}
+	 */
+	public #fieldtype() get${alias.GetterName}() {
+		return ${field.Name};
+	}
+			#end
+			#if(${alias.Setter})
+	/**
+	 * Set ${field.Name} by alias ${alias.Alias}.
+	 * @return ${field.Name}
+	 */
+	public void set${alias.SetterName}(#if(!${field.Nullable} && !${field.Primitive})@NonNull #end#fieldtype() ${field.Name}) {
+		this.${$field.Name} = ${field.Name};
+	}
+			#end
+		#end
 	#end
 
 	/**
@@ -81,28 +132,50 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 	 *         this element.
 	 */
 	public boolean matches(Object o) {
-		if (o == this) return true;
-		if (!(o instanceof $class)) return false;
-		$class other = ($class) o;
-		#foreach($field in $fields)
-		#if(${field.Match})
-		#if(${field.Nullable})
-		if (this.${field.Name} != null) {
-			if (!this.${field.Name}.equals(other.${field.Name})) return false;
-		} else {
-			if (this.${field.Name} != other.${field.Name}) return false;
-		}
-		#elseif(${field.Primitive})
-		if (this.${field.Name} != other.${field.Name}) return false;
-		#else
-		if (!this.${field.Name}.equals(other.${field.Name})) return false;
-		#end## if nullable
-		#else
-		// Not checking ${field.Name}
-		#end## if match
-		#end## foreach
+		boolean retval = false;
 
-		return true;
+		// Outer check for null comparisons
+		if (o != null) {
+			// Next check for shallow comparison
+			if (this != o) {
+				if (o instanceof $class) {
+					$class other = ($class) o;
+
+					// Separate boolean checks used to enable better catching
+					// by debuggers.
+					#foreach($field in $fields)
+					#if(${field.Match})
+
+					boolean ${field.Name}Match =
+					#if(${field.Nullable})
+						this.${field.Name} == null ?
+							this.${field.Name} == other.${field.Name} :
+							this.${field.Name}.equals(other.${field.Name});
+					#elseif(${field.Primitive})
+						this.${field.Name} == other.${field.Name};
+					#else
+						this.${field.Name}.equals(other.${field.Name});
+					#end## if nullable
+					#else
+					// Not checking ${field.Name}
+					#end## if match
+					#end## foreach
+
+					#set($count = 0)
+					retval =
+						$blank#foreach($field in $fields)
+					#if(${field.Match})
+					#set($count = $count + 1)
+					#set($third = $count % 3)
+					#noop()${field.Name}Match#if($foreach.hasNext) &&#if($third == 0)$newline						#else #end#else;$newline#end#end#end
+				}
+			} else {
+				// This should be true if they are the same because the deep comparison is
+				// performed otherwise.
+				retval = true;
+			}
+		}
+		return retval;
 	}
 
 	/**
