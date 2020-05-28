@@ -3,6 +3,7 @@ package org.eclipse.ice.dev.annotations.processors;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
@@ -12,6 +13,8 @@ import javax.lang.model.util.SimpleAnnotationValueVisitor8;
 
 import org.apache.commons.lang3.ClassUtils;
 import org.eclipse.ice.dev.annotations.DataField;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Visitor that accumulates DataField information from AnnotationValues. This
@@ -31,10 +34,12 @@ import org.eclipse.ice.dev.annotations.DataField;
  */
 class DataFieldsVisitor extends SimpleAnnotationValueVisitor8<Optional<UnexpectedValueError>, List<Field>> {
 	protected Elements elementUtils;
+	protected ObjectMapper mapper;
 
 	public DataFieldsVisitor(Elements elementUtils) {
 		super();
 		this.elementUtils = elementUtils;
+		mapper = new ObjectMapper();
 	}
 
 	/**
@@ -63,23 +68,18 @@ class DataFieldsVisitor extends SimpleAnnotationValueVisitor8<Optional<Unexpecte
 			);
 		}
 
-		Field.FieldBuilder builder = Field.builder();
-		Map<String, Object> valueMap = DataElementProcessor.getAnnotationValueMapForMirror(elementUtils, a);
-		if (valueMap.containsKey("fieldName")) {
-			builder.name((String) valueMap.get("fieldName"));
-		}
-		if (valueMap.containsKey("fieldType")) {
-			TypeMirror type = (TypeMirror) valueMap.get("fieldType");
-			try {
-				builder.type(ClassUtils.getClass(type.toString()));
-			} catch (ClassNotFoundException e) {
-				builder.type(Field.raw(type.toString()));
-			}
-		}
-		if (valueMap.containsKey("docString")) {
-			builder.docString((String) valueMap.get("docString"));
-		}
-		f.add(builder.build());
+		Map<String, Object> valueMap = DataElementProcessor.getAnnotationValueMapForMirror(elementUtils, a).entrySet().stream()
+			.collect(Collectors.toMap(
+				entry -> entry.getKey(),
+				entry -> {
+					if (entry.getValue() instanceof TypeMirror) {
+						return ((TypeMirror) entry.getValue()).toString();
+					}
+					return entry.getValue();
+				}
+			));
+		Field field = mapper.convertValue(valueMap, Field.class);
+		f.add(field);
 		return Optional.empty();
 	}
 
