@@ -78,8 +78,7 @@ class DataFieldsVisitor extends SimpleAnnotationValueVisitor8<Optional<Unexpecte
 					return entry.getValue();
 				}
 			));
-		Field field = mapper.convertValue(valueMap, Field.class);
-		f.add(field);
+		f.add(mapper.convertValue(valueMap, Field.class));
 		return Optional.empty();
 	}
 
