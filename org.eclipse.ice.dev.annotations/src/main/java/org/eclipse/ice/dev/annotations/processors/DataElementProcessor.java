@@ -116,12 +116,14 @@ public class DataElementProcessor extends AbstractProcessor {
 	protected Messager messager;
 	protected Elements elementUtils;
 	protected DataFieldsVisitor fieldsVisitor;
+	protected ObjectMapper mapper;
 
 	@Override
 	public void init(final ProcessingEnvironment env) {
 		messager = env.getMessager();
 		elementUtils = env.getElementUtils();
 		fieldsVisitor = new DataFieldsVisitor(elementUtils);
+		mapper = new ObjectMapper();
 
 		// Set up Velocity using the Singleton approach; ClasspathResourceLoader allows
 		// us to load templates from src/main/resources
@@ -197,7 +199,6 @@ public class DataElementProcessor extends AbstractProcessor {
 				Reader reader = processingEnv.getFiler()
 					.getResource(StandardLocation.CLASS_OUTPUT, "", source)
 					.openReader(false);
-				ObjectMapper mapper = new ObjectMapper();
 				fields.addAll(Arrays.asList(mapper.readValue(reader, Field[].class)));
 			}
 		}
