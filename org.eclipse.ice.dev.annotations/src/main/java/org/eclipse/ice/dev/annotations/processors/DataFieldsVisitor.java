@@ -1,15 +1,17 @@
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.SimpleAnnotationValueVisitor8;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.eclipse.ice.dev.annotations.DataField;
-import org.eclipse.ice.dev.annotations.processors.Fields;
 
 /**
  * Visitor that accumulates DataField information from AnnotationValues. This
@@ -27,21 +29,19 @@ import org.eclipse.ice.dev.annotations.processors.Fields;
  * DataField Array then pass the AnnotationMirror of each DataField to
  * visitAnnotation by recursively visiting the values.
  */
-class DataFieldsVisitor extends SimpleAnnotationValueVisitor8<Optional<UnexpectedValueError>, Fields> {
+class DataFieldsVisitor extends SimpleAnnotationValueVisitor8<Optional<UnexpectedValueError>, List<Field>> {
 	protected Elements elementUtils;
-	protected DataFieldVisitor fieldVisitor;
 
-	public DataFieldsVisitor(Elements elementUtils, DataFieldVisitor fieldVisitor) {
+	public DataFieldsVisitor(Elements elementUtils) {
 		super();
 		this.elementUtils = elementUtils;
-		this.fieldVisitor = fieldVisitor;
 	}
 
 	/**
 	 * Return error as default action for unhandled annotation values.
 	 */
 	@Override
-	protected Optional<UnexpectedValueError> defaultAction(final Object o, final Fields f) {
+	protected Optional<UnexpectedValueError> defaultAction(final Object o, final List<Field> f) {
 		return Optional.of(
 			new UnexpectedValueError(
 				"An unexpected annotation value was encountered: " + o.getClass().getCanonicalName()
@@ -50,11 +50,11 @@ class DataFieldsVisitor extends SimpleAnnotationValueVisitor8<Optional<Unexpecte
 	}
 
 	/**
-	 * Visit AnnotationValues of type Annotation (as an AnnotationMirror), expected
-	 * to visit DataField AnnotationMirrors.
+	 * Visit AnnotationValues of type Annotation. AnnotationMirror for DataField is
+	 * expected.
 	 */
 	@Override
-	public Optional<UnexpectedValueError> visitAnnotation(final AnnotationMirror a, final Fields f) {
+	public Optional<UnexpectedValueError> visitAnnotation(final AnnotationMirror a, final List<Field> f) {
 		if (!a.getAnnotationType().toString().equals(DataField.class.getCanonicalName())) {
 			return Optional.of(
 				new UnexpectedValueError(
@@ -63,12 +63,23 @@ class DataFieldsVisitor extends SimpleAnnotationValueVisitor8<Optional<Unexpecte
 			);
 		}
 
-		for (final AnnotationValue value : DataElementProcessor.getAnnotationValuesForMirror(elementUtils, a)) {
-			final Optional<UnexpectedValueError> result = value.accept(fieldVisitor, f);
-			if (result.isPresent()) {
-				return result;
+		Field.FieldBuilder builder = Field.builder();
+		Map<String, Object> valueMap = DataElementProcessor.getAnnotationValueMapForMirror(elementUtils, a);
+		if (valueMap.containsKey("fieldName")) {
+			builder.name((String) valueMap.get("fieldName"));
+		}
+		if (valueMap.containsKey("fieldType")) {
+			TypeMirror type = (TypeMirror) valueMap.get("fieldType");
+			try {
+				builder.type(ClassUtils.getClass(type.toString()));
+			} catch (ClassNotFoundException e) {
+				builder.type(Field.raw(type.toString()));
 			}
 		}
+		if (valueMap.containsKey("docString")) {
+			builder.docString((String) valueMap.get("docString"));
+		}
+		f.add(builder.build());
 		return Optional.empty();
 	}
 
@@ -76,7 +87,7 @@ class DataFieldsVisitor extends SimpleAnnotationValueVisitor8<Optional<Unexpecte
 	 * Visit AnnotationValues of type Array, visiting the Array of DataField AnnotationMirrors.
 	 */
 	@Override
-	public Optional<UnexpectedValueError> visitArray(final List<? extends AnnotationValue> vals, final Fields f) {
+	public Optional<UnexpectedValueError> visitArray(final List<? extends AnnotationValue> vals, final List<Field> f) {
 		for (final AnnotationValue val : vals) {
 			final Optional<UnexpectedValueError> result = val.accept(this, f);
 			if (result.isPresent()) {

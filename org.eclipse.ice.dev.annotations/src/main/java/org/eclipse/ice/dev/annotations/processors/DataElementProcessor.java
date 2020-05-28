@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
@@ -68,6 +70,21 @@ public class DataElementProcessor extends AbstractProcessor {
 	}
 
 	/**
+	 * Get a list of annotation values from an annotation mirror.
+	 * @param mirror the mirror from which to grab values.
+	 * @return list of AnnotationValue
+	 */
+	public static Map<String, Object> getAnnotationValueMapForMirror(
+		final Elements elementUtils, final AnnotationMirror mirror
+	) {
+		return (Map<String, Object>) elementUtils.getElementValuesWithDefaults(mirror).entrySet().stream()
+			.collect(Collectors.toMap(
+				entry -> entry.getKey().getSimpleName().toString(),
+				entry -> entry.getValue().getValue()
+			));
+	}
+
+	/**
 	 * Return stack trace as string.
 	 * @param e subject exception
 	 * @return stack trace as string
@@ -95,14 +112,11 @@ public class DataElementProcessor extends AbstractProcessor {
 	protected Elements elementUtils;
 	protected DataFieldsVisitor fieldsVisitor;
 
-	protected DataFieldVisitor fieldVisitor;
-
 	@Override
 	public void init(final ProcessingEnvironment env) {
 		messager = env.getMessager();
 		elementUtils = env.getElementUtils();
-		fieldVisitor = new DataFieldVisitor();
-		fieldsVisitor = new DataFieldsVisitor(elementUtils, fieldVisitor);
+		fieldsVisitor = new DataFieldsVisitor(elementUtils);
 
 		// Set up Velocity using the Singleton approach; ClasspathResourceLoader allows
 		// us to load templates from src/main/resources
@@ -125,7 +139,8 @@ public class DataElementProcessor extends AbstractProcessor {
 				return false;
 			}
 
-			final Fields fields = new Fields();
+			List<Field> fields = new ArrayList<Field>();
+			fields.addAll(DefaultFields.get());
 
 			final List<? extends AnnotationMirror> mirrors = elem.getAnnotationMirrors();
 			try {
@@ -146,20 +161,18 @@ public class DataElementProcessor extends AbstractProcessor {
 					// field visitor returns an error result
 					unwrap(value.accept(fieldsVisitor, fields));
 				}
-				// Iterate over the AnnotationValues of AnnotationMirrors of type DataField.
-				// Only present when only one DataField annotation is used.
+				// Iterate over any DataField Annotations. Only present when only one DataField
+				// annotation is used.
 				for (
-					final AnnotationValue value : mirrors.stream()
+					final AnnotationMirror dataFieldMirror : mirrors.stream()
 						.filter(
 							mirror -> mirror.getAnnotationType().toString().equals(
 								DataField.class.getCanonicalName()
 							)
 						)
-						.map(mirror -> getAnnotationValuesForMirror(elementUtils, mirror))
-						.flatMap(List::stream)
 						.collect(Collectors.toList())
 				) {
-					unwrap(value.accept(fieldVisitor, fields));
+					unwrap(fieldsVisitor.visitAnnotation(dataFieldMirror, fields));
 				}
 				this.writeClass(((TypeElement) elem).getQualifiedName().toString(), fields);
 			} catch (final IOException | UnexpectedValueError e) {
@@ -177,7 +190,7 @@ public class DataElementProcessor extends AbstractProcessor {
 	 * @param fields the fields extracted from DataField annotations on interface
 	 * @throws IOException
 	 */
-	private void writeClass(final String interfaceName, final Fields fields) throws IOException {
+	private void writeClass(final String interfaceName, final List<Field> fields) throws IOException {
 		// Determine package, class name from annotated interface name
 		String packageName = null;
 		final int lastDot = interfaceName.lastIndexOf('.');
@@ -193,8 +206,7 @@ public class DataElementProcessor extends AbstractProcessor {
 		context.put(ContextProperty.PACKAGE.key(), packageName);
 		context.put(ContextProperty.INTERFACE.key(), simpleName);
 		context.put(ContextProperty.CLASS.key(), generatedSimpleClassName);
-		// Hand over the list directly so template can #foreach on fields
-		context.put(ContextProperty.FIELDS.key(), fields.getFields());
+		context.put(ContextProperty.FIELDS.key(), fields);
 
 		// Write to file
 		final JavaFileObject generatedClassFile = processingEnv.getFiler().createSourceFile(generatedClassName);
