@@ -1,6 +1,9 @@
 package org.eclipse.ice.dev.annotations.processors;
 
+import java.util.Collection;
 import java.util.List;
+
+import org.apache.commons.lang3.ClassUtils;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -83,10 +86,10 @@ public class Field {
 	 * based mechanism for customizing output based on the passed type.
 	 *
 	 * The methods prefixed with "json" are used for deserializing values from
-	 * JSON using Jackson and should not be used except for that case.
+	 * JSON using Jackson.
 	 */
 	@JsonPOJOBuilder(withPrefix = "json")
-	public static class FieldBuilder {
+	public static class FieldBuilder implements FieldBuilderMeta {
 		/**
 		 * Format long as String for use as default value initializer.
 		 * @param value the value to be formatted.
@@ -157,8 +160,7 @@ public class Field {
 		 */
 		@JsonAlias({"fieldName"})
 		public FieldBuilder jsonName(String name) {
-			this.name = name;
-			return this;
+			return this.name(name);
 		}
 
 		/**
@@ -170,11 +172,12 @@ public class Field {
 		 */
 		@JsonAlias({"fieldType"})
 		public FieldBuilder jsonType(String type) {
-			this.type = type;
-			if (stringRepresentsPrimitive(type)) {
-				this.primitive = true;
+			try {
+				Class<?> classForType = ClassUtils.getClass(type);
+				return this.type(classForType);
+			} catch (ClassNotFoundException e) {
+				return this.type(raw(type));
 			}
-			return this;
 		}
 
 		/**
@@ -186,8 +189,7 @@ public class Field {
 		 * @return builder
 		 */
 		public FieldBuilder jsonDefaultValue(String defaultValue) {
-			this.defaultValue = defaultValue;
-			return this;
+			return this.defaultValue(raw(defaultValue));
 		}
 
 		/**
@@ -196,8 +198,7 @@ public class Field {
 		 * @return builder
 		 */
 		public FieldBuilder jsonNullable(boolean nullable) {
-			this.nullable = nullable;
-			return this;
+			return this.nullable(nullable);
 		}
 
 		/**
@@ -206,24 +207,52 @@ public class Field {
 		 * @return builder
 		 */
 		public FieldBuilder jsonPrimitive(boolean primitive) {
-			this.primitive = primitive;
-			return this;
+			return this.primitive(primitive);
 		}
 
 		/**
 		 * Match builder for use in Deserialization.
 		 *
-		 * As a default was set for this property, setting it directly looks different
-		 * than the others, requiring match$value to be set as well as match$set to be
-		 * set to true.
 		 * @param match
-		 * @return
+		 * @return builder
 		 */
 		public FieldBuilder jsonMatch(boolean match) {
-			this.match$value = match;
-			this.match$set = true;
-			return this;
+			return this.match(match);
 		}
+
+		/**
+		 * DocString builder for use in Deserialization.
+		 * @param docString
+		 * @return builder
+		 */
+		public FieldBuilder jsonDocString(String docString) {
+			return this.docString(docString);
+		}
+
+		/**
+		 * Getter builder for use in Deserialization.
+		 * @param getter
+		 * @return
+		 */
+		public FieldBuilder jsonGetter(boolean getter) {
+			return this.getter(getter);
+		}
+
+		/**
+		 * Setter builder for use in Deserialization.
+		 * @param setter
+		 * @return
+		 */
+		public FieldBuilder jsonSetter(boolean setter) {
+			return this.setter(setter);
+		}
+	}
+
+	/**
+	 * Instruct Jackson how to deserialize aliases.
+	 */
+	private interface FieldBuilderMeta {
+		@JsonDeserialize(contentAs = FieldAlias.class) FieldBuilder aliases(Collection<? extends FieldAlias> aliases);
 	}
 
 	/**
@@ -241,23 +270,5 @@ public class Field {
 	 */
 	public static Raw raw(String value) {
 		return new Raw(value);
-	}
-
-	/**
-	 * Determine whether the passed string represents a primitive data type, i.e.
-	 * byte, short, int, long, float, double, boolean, or char.
-	 *
-	 * @param type
-	 * @return primitive data type or not
-	 */
-	private static boolean stringRepresentsPrimitive(String type) {
-		return type.equals("byte") ||
-			type.equals("short") ||
-			type.equals("int") ||
-			type.equals("long") ||
-			type.equals("float") ||
-			type.equals("double") ||
-			type.equals("boolean") ||
-			type.equals("char");
 	}
 }
