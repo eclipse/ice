@@ -46,9 +46,9 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 
 	#foreach($field in $fields)
 
-	#if(${field.Comment})
+	#if(${field.DocString})
 	/**
-	 * ${field.Comment}
+	 * ${field.DocString}
 	 */
 	#end
 	#macro(fieldtype)#evaluate(${field.Type})#end
@@ -140,6 +140,9 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 			if (this != o) {
 				if (o instanceof $class) {
 					$class other = ($class) o;
+
+					// Separate boolean checks used to enable better catching
+					// by debuggers.
 					#foreach($field in $fields)
 					#if(${field.Match})
 

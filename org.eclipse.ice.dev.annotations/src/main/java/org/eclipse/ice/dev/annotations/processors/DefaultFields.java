@@ -18,7 +18,7 @@ public class DefaultFields {
 	private static Field privateId = Field.builder()
 		.name("privateId")
 		.type(UUID.class)
-		.comment("The private UUID of this element. This field is left out of matches().")
+		.docString("The private UUID of this element. This field is left out of matches().")
 		.defaultValue(Field.raw("UUID.randomUUID()"))
 		.match(false)
 		.getter(false)
@@ -37,7 +37,7 @@ public class DefaultFields {
 	private static Field id = Field.builder()
 		.name("id")
 		.type(long.class)
-		.comment("A unique identifier for this element.")
+		.docString("A unique identifier for this element.")
 		.defaultValue(0L)
 		.build();
 
@@ -47,7 +47,7 @@ public class DefaultFields {
 	private static Field name = Field.builder()
 		.name("name")
 		.type(String.class)
-		.comment("A simple name for the data.")
+		.docString("A simple name for the data.")
 		.defaultValue("name")
 		.build();
 
@@ -57,7 +57,7 @@ public class DefaultFields {
 	private static Field description = Field.builder()
 		.name("description")
 		.type(String.class)
-		.comment("A simple description of the data")
+		.docString("A simple description of the data")
 		.defaultValue("description")
 		.build();
 
@@ -67,7 +67,7 @@ public class DefaultFields {
 	private static Field comment = Field.builder()
 		.name("comment")
 		.type(String.class)
-		.comment("A comment that annotates the data in a meaningful way.")
+		.docString("A comment that annotates the data in a meaningful way.")
 		.defaultValue("no comment")
 		.build();
 
@@ -77,7 +77,7 @@ public class DefaultFields {
 	private static Field context = Field.builder()
 		.name("context")
 		.type(String.class)
-		.comment("The context (a tag) in which the data should be considered.")
+		.docString("The context (a tag) in which the data should be considered.")
 		.defaultValue("default")
 		.build();
 
@@ -87,7 +87,7 @@ public class DefaultFields {
 	private static Field required = Field.builder()
 		.name("required")
 		.type(boolean.class)
-		.comment("This value is true if the element should be regarded by the client as required.")
+		.docString("This value is true if the element should be regarded by the client as required.")
 		.defaultValue(false)
 		.build();
 
@@ -98,7 +98,7 @@ public class DefaultFields {
 	private static Field secret = Field.builder()
 		.name("secret")
 		.type(boolean.class)
-		.comment("This value is true if the element should be regarded as a secret by the client, such as for passwords.")
+		.docString("This value is true if the element should be regarded as a secret by the client, such as for passwords.")
 		.defaultValue(false)
 		.build();
 
@@ -108,7 +108,7 @@ public class DefaultFields {
 	private static Field validator = Field.builder()
 		.name("validator")
 		.type(Field.raw("JavascriptValidator<$class>"))
-		.comment("The validator used to check the correctness of the data.")
+		.docString("The validator used to check the correctness of the data.")
 		.nullable(true)
 		.build();
 

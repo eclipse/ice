@@ -34,7 +34,7 @@ public class Field {
 	/**
 	 * Comment to add to the field declaration.
 	 */
-	String comment;
+	String docString;
 
 	/**
 	 * Whether or not this field can be null.

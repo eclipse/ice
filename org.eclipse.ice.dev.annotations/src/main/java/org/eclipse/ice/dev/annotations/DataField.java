@@ -12,4 +12,5 @@ import java.lang.annotation.Target;
 public @interface DataField {
 	String fieldName();
 	Class<?> fieldType() default String.class;
+	String docString() default "";
 }
