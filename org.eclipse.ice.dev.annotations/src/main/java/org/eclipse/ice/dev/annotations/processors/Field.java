@@ -1,8 +1,11 @@
 package org.eclipse.ice.dev.annotations.processors;
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
+import lombok.Singular;
 
 /**
  * Container for Field information, taken from DataField Annotations, in
@@ -52,6 +55,21 @@ public class Field {
 	 * Whether or not this field should be included in IDataElement.matches().
 	 */
 	@Builder.Default boolean match = true;
+
+	/**
+	 * Generate a getter for this field.
+	 */
+	@Builder.Default boolean getter = true;
+
+	/**
+	 * Generate a setter for this field.
+	 */
+	@Builder.Default boolean setter = true;
+
+	/**
+	 * A list of alternate names for this field.
+	 */
+	@Singular("alias") List<FieldAlias> aliases;
 
 	/**
 	 * Builder class for Field. This class must be a static inner class of Field in

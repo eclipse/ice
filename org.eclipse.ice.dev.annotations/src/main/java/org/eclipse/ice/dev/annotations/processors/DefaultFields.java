@@ -21,6 +21,14 @@ public class DefaultFields {
 		.comment("The private UUID of this element. This field is left out of matches().")
 		.defaultValue(Field.raw("UUID.randomUUID()"))
 		.match(false)
+		.getter(false)
+		.setter(false)
+		.alias(
+			FieldAlias.builder()
+				.alias("UUID")
+				.getter(true)
+				.build()
+		)
 		.build();
 
 	/**

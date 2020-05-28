@@ -104,7 +104,7 @@ class GeneratedDataElementTest {
 		assertEquals(element.getValidator(), validator);
 
 		// Make sure that the UUID is not null
-		assertNotNull(element.getPrivateId());
+		assertNotNull(element.getUUID());
 
 		return;
 	}
