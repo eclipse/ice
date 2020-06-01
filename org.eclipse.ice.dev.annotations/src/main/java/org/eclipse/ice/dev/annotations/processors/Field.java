@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.ClassUtils;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
@@ -97,17 +98,31 @@ public class Field {
 	}
 
 	/**
-	 * Determine if a class for the given string can be found.
+	 * Get a class by name or return null if not found
 	 * @param cls
-	 * @return if class found
+	 * @return found class or null
 	 */
-	private static boolean classFound(String cls) {
+	private static Class<?> getClassOrNull(String cls) {
 		try {
-			ClassUtils.getClass(cls);
-			return true;
+			return ClassUtils.getClass(cls);
 		} catch (ClassNotFoundException e) {
-			return false;
+			return null;
 		}
+	}
+
+	/**
+	 * Reverse the escaping performed on defaultValues when the type of the field is
+	 * a String. This is only used when serializing to JSON and will render a string
+	 * the builder for this class will recognize.
+	 * @return
+	 */
+	@JsonProperty("defaultValue")
+	public String unescapeDefaultValue() {
+		Class<?> cls = getClassOrNull(this.type);
+		if (this.defaultValue != null && cls != null && cls.equals(String.class)) {
+			return this.defaultValue.substring(1, this.defaultValue.length() - 1);
+		}
+		return this.defaultValue;
 	}
 
 	/**
@@ -128,7 +143,24 @@ public class Field {
 	 */
 	@JsonPOJOBuilder(withPrefix = "json")
 	public static class FieldBuilder implements FieldBuilderMeta {
+		/**
+		 * Store the Class of the field's type for use in determining whether the
+		 * defaultValue should be escaped and whether the field is a primitive type.
+		 */
 		private Class<?> actualType;
+
+		/**
+		 * Whether the default value has already been formatted.
+		 */
+		private boolean defaultValueFormatted = false;
+
+		private boolean shouldEscapeDefaultValue() {
+			return
+				this.defaultValue != null &&
+				this.defaultValueFormatted == false &&
+				this.actualType != null &&
+				this.actualType.equals(String.class);
+		}
 
 		/**
 		 * Format long as String for use as default value initializer.
@@ -137,6 +169,7 @@ public class Field {
 		 */
 		public FieldBuilder defaultValue(long value) {
 			this.defaultValue = Long.toString(value) + "L";
+			this.defaultValueFormatted = true;
 			return this;
 		}
 
@@ -147,6 +180,7 @@ public class Field {
 		 */
 		public FieldBuilder defaultValue(String value) {
 			this.defaultValue = "\"" + value + "\"";
+			this.defaultValueFormatted = true;
 			return this;
 		}
 
@@ -157,6 +191,7 @@ public class Field {
 		 */
 		public FieldBuilder defaultValue(boolean value) {
 			this.defaultValue = Boolean.toString(value);
+			this.defaultValueFormatted = true;
 			return this;
 		}
 
@@ -174,15 +209,12 @@ public class Field {
 		/**
 		 * Format type as String.
 		 * @param type the type to be formatted.
-		 * @return
+		 * @return this
 		 */
 		public FieldBuilder type(Class<?> type) {
 			this.type = type.getName().toString();
 			this.actualType = type;
 			this.primitive = type.isPrimitive();
-			if (this.defaultValue != null && this.actualType.equals(String.class)) {
-				this.defaultValue(defaultValue);
-			}
 			return this;
 		}
 
@@ -208,39 +240,44 @@ public class Field {
 		}
 
 		/**
-		 * Type builder for use in Deserialization. For convenience, the type is also
-		 * checked to determine whether it is a primitive type, setting the value of
-		 * primitive appropriately.
+		 * Type builder for use in Deserialization.
+		 *
+		 * If the type is recognized, it is loaded and type(Class<?> type) is run.
+		 * Also checks if the defaultValue needs to be escaped.
 		 * @param type
 		 * @return builder
 		 */
 		@JsonAlias({"fieldType"})
 		public FieldBuilder jsonType(String type) {
-			try {
-				if (classFound(type)) {
-					return this.type(ClassUtils.getClass(type));
-				} else if (classFound("java.lang." + type)) {
-					return this.type(ClassUtils.getClass("java.lang." + type));
-				}
-				return this.type(raw(type));
-			} catch (ClassNotFoundException e) {
-				return this.type(raw(type));
+			Class<?> cls = getClassOrNull(type);
+			if (cls == null) {
+				cls = getClassOrNull("java.lang." + type);
 			}
+			if (cls == null) {
+				this.type(raw(type));
+			} else {
+				this.type(cls);
+			}
+			if (shouldEscapeDefaultValue()) {
+				this.defaultValue(defaultValue);
+			}
+			return this;
 		}
 
 		/**
 		 * Default value builder for use in Deserialization.
 		 *
-		 * Values are passed through as is, similar to the behavior of the Raw
-		 * defaultValue builder.
+		 * If type is already set as string, the value is wrapped in quotes. Otherwise,
+		 * the value is passed through as is.
 		 * @param defaultValue
 		 * @return builder
 		 */
 		public FieldBuilder jsonDefaultValue(String defaultValue) {
-			if (this.actualType != null && this.actualType.equals(String.class)) {
-				return this.defaultValue(defaultValue);
+			this.defaultValue(raw(defaultValue));
+			if (shouldEscapeDefaultValue()) {
+				this.defaultValue(defaultValue);
 			}
-			return this.defaultValue(raw(defaultValue));
+			return this;
 		}
 
 		/**
