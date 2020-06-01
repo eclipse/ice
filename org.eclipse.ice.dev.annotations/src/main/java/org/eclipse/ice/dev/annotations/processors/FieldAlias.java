@@ -24,6 +24,10 @@ public class FieldAlias {
 		return alias.substring(0, 1).toUpperCase() + alias.substring(1);
 	}
 
+	public String getSetterName() {
+		return getGetterName();
+	}
+
 	@JsonPOJOBuilder(withPrefix = "")
 	public static class FieldAliasBuilder {
 	}

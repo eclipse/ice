@@ -83,7 +83,7 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 	 * @return ${field.Name}
 	 */
 	public void set${alias.SetterName}(#if(!${field.Nullable} && !${field.Primitive})@NonNull #end#fieldtype() ${field.Name}) {
-		this.${$field.Name} = ${field.Name};
+		this.${field.Name} = ${field.Name};
 	}
 			#end
 		#end
