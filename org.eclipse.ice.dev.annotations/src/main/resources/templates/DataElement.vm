@@ -64,10 +64,10 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 	#end
 	$blank#fielddecl()
 	#end
-
 	#foreach($field in $fields)
 		#foreach($alias in ${field.aliases})
 			#if(${alias.Getter})
+
 	/**
 	 * Get ${field.Name} by alias ${alias.Alias}.
 	 * @return ${field.Name}
@@ -77,6 +77,7 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 	}
 			#end
 			#if(${alias.Setter})
+
 	/**
 	 * Set ${field.Name} by alias ${alias.Alias}.
 	 * @return ${field.Name}
