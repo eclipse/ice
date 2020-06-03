@@ -1,21 +1,17 @@
 package org.eclipse.ice.dev.annotations.processors;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * Enumeration for Keys used in DataElement Velocity Template.
  */
-enum ContextProperty {
+@AllArgsConstructor
+enum DataElementTemplateProperty {
 	PACKAGE("package"),
 	FIELDS("fields"),
 	INTERFACE("interface"),
 	CLASS("class");
 
-	private String key;
-
-	ContextProperty(String key) {
-		this.key = key;
-	}
-
-	String key() {
-		return this.key;
-	}
+	@Getter private String key;
 }

@@ -267,10 +267,10 @@ public class DataElementProcessor extends AbstractProcessor {
 
 		// Prepare context of template
 		final VelocityContext context = new VelocityContext();
-		context.put(ContextProperty.PACKAGE.key(), packageName);
-		context.put(ContextProperty.INTERFACE.key(), simpleName);
-		context.put(ContextProperty.CLASS.key(), generatedSimpleClassName);
-		context.put(ContextProperty.FIELDS.key(), fields);
+		context.put(DataElementTemplateProperty.PACKAGE.getKey(), packageName);
+		context.put(DataElementTemplateProperty.INTERFACE.getKey(), simpleName);
+		context.put(DataElementTemplateProperty.CLASS.getKey(), generatedSimpleClassName);
+		context.put(DataElementTemplateProperty.FIELDS.getKey(), fields);
 
 		// Write to file
 		final JavaFileObject generatedClassFile = processingEnv.getFiler().createSourceFile(generatedClassName);
