@@ -55,57 +55,26 @@ public class $class implements $interface {
 		return (T) element;
 	}
 
+	#foreach($field in $fields)
+	#if(${field.Getter} && ${field.Search})
+
+	/**
+	 * Find $elementInterface by ${field.Name}.
+	 * @param ${field.Name}
+	 * @return Iterator of results
+	 */
+	#if(${field.DefaultField})
 	@Override
-	public <T extends IDataElement> Iterable<T> findById(long id) throws Exception {
-		return this.collection.find(Filters.eq("id", id))
+	#end
+	public <T extends IDataElement> Iterable<T> findBy${field.NameForMethod}(${field.Type} ${field.Name}) throws Exception {
+		return this.collection.find(Filters.eq("${field.Name}", ${field.Name}))
 			.map(doc -> new ${implementation}().fromJSON(doc));
 	}
+	#end
+	#end
 
 	@Override
-	public <T extends IDataElement> Iterable<T> findByName(String name) throws Exception {
-		return this.collection.find(Filters.eq("name", name))
-			.map(doc -> new ${implementation}().fromJSON(doc));
-	}
-
-	@Override
-	public <T extends IDataElement> Iterable<T> findByDescription(String description) throws Exception {
-		return this.collection.find(Filters.eq("description", description))
-			.map(doc -> new ${implementation}().fromJSON(doc));
-	}
-
-	@Override
-	public <T extends IDataElement> Iterable<T> findByComment(String comment) throws Exception {
-		return this.collection.find(Filters.eq("comment", comment))
-			.map(doc -> new ${implementation}().fromJSON(doc));
-	}
-
-	@Override
-	public <T extends IDataElement> Iterable<T> findByContext(String context) throws Exception {
-		return this.collection.find(Filters.eq("context", context))
-			.map(doc -> new ${implementation}().fromJSON(doc));
-	}
-
-	@Override
-	public <T extends IDataElement> Iterable<T> findRequired() throws Exception {
-		return this.collection.find(Filters.eq("required", true))
-			.map(doc -> new ${implementation}().fromJSON(doc));
-	}
-
-	@Override
-	public <T extends IDataElement> Iterable<T> findNotRequired() throws Exception {
-		return this.collection.find(Filters.eq("required", false))
-			.map(doc -> new ${implementation}().fromJSON(doc));
-	}
-
-	@Override
-	public <T extends IDataElement> Iterable<T> findSecret() throws Exception {
-		return this.collection.find(Filters.eq("secret", true))
-			.map(doc -> new ${implementation}().fromJSON(doc));
-	}
-
-	@Override
-	public <T extends IDataElement> Iterable<T> findNotSecret() throws Exception {
-		return this.collection.find(Filters.eq("secret", false))
-			.map(doc -> new ${implementation}().fromJSON(doc));
+	public long clear() throws Exception {
+		return this.collection.deleteMany(new Document()).getDeletedCount();
 	}
 }

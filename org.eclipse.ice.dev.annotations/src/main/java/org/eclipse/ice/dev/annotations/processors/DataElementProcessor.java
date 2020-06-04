@@ -135,7 +135,7 @@ public class DataElementProcessor extends AbstractProcessor {
 				// Check if Persistence should be generated.
 				if (dataElement.hasAnnotation(Persisted.class)) {
 					String collectionName = getCollectionName(dataElement);
-					writePersistence(dataElement, collectionName);
+					writePersistence(dataElement, collectionName, fields);
 				}
 			} catch (final IOException | UnexpectedValueError | InvalidDataElementRoot e) {
 				messager.printMessage(Diagnostic.Kind.ERROR, stackTraceToString(e));
@@ -265,7 +265,11 @@ public class DataElementProcessor extends AbstractProcessor {
 	 * @param fields the fields extracted from DataField annotations on interface
 	 * @throws IOException
 	 */
-	private void writePersistence(DataElementRoot element, final String collectionName) throws IOException {
+	private void writePersistence(
+		DataElementRoot element,
+		final String collectionName,
+		List<Field> fields
+	) throws IOException {
 		// Prepare context of template
 		final VelocityContext context = new VelocityContext();
 		context.put(
@@ -287,6 +291,10 @@ public class DataElementProcessor extends AbstractProcessor {
 		context.put(
 			PersistenceHandlerTemplateProperty.IMPLEMENTATION.getKey(),
 			element.getImplName()
+		);
+		context.put(
+			PersistenceHandlerTemplateProperty.FIELDS.getKey(),
+			fields
 		);
 
 		// Write to file

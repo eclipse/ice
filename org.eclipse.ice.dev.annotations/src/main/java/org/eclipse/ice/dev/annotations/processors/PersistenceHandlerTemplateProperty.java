@@ -13,7 +13,8 @@ enum PersistenceHandlerTemplateProperty {
 	ELEMENT_INTERFACE("elementInterface"),
 	CLASS("class"),
 	COLLECTION("collection"),
-	IMPLEMENTATION("implementation");
+	IMPLEMENTATION("implementation"),
+	FIELDS("fields");
 	
 	@Getter private String key;
 }
