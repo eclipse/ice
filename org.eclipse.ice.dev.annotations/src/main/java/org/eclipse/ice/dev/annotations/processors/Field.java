@@ -91,7 +91,7 @@ public class Field {
 	/**
 	 * A list of alternate names for this field.
 	 */
-	@Singular("alias") List<FieldAlias> aliases;
+	@Singular("alias") List<Field> aliases;
 
 	/**
 	 * Marker class used to mark a string value as one that should not be
@@ -154,7 +154,7 @@ public class Field {
 	 * Instruct Jackson how to deserialize aliases.
 	 */
 	private interface FieldBuilderMeta {
-		@JsonDeserialize(contentAs = FieldAlias.class) FieldBuilder aliases(Collection<? extends FieldAlias> aliases);
+		@JsonDeserialize(contentAs = Field.class) FieldBuilder aliases(Collection<? extends Field> aliases);
 	}
 
 	/**

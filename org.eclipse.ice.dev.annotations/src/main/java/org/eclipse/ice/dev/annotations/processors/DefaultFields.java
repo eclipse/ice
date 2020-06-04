@@ -24,8 +24,8 @@ public class DefaultFields {
 		.getter(false)
 		.setter(false)
 		.alias(
-			FieldAlias.builder()
-				.alias("UUID")
+			Field.builder()
+				.name("UUID")
 				.getter(true)
 				.build()
 		)

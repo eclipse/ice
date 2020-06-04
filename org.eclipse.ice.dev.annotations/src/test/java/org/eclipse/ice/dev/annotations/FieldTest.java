@@ -6,7 +6,6 @@ package org.eclipse.ice.dev.annotations;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.eclipse.ice.dev.annotations.processors.Field;
-import org.eclipse.ice.dev.annotations.processors.FieldAlias;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,7 +35,7 @@ class FieldTest {
 			.nullable(true)
 			.getter(false)
 			.setter(false)
-			.alias(FieldAlias.builder().alias("another").getter(true).build())
+			.alias(Field.builder().name("another").getter(true).build())
 			.build();
 
 		String fJson = mapper.writeValueAsString(f);
