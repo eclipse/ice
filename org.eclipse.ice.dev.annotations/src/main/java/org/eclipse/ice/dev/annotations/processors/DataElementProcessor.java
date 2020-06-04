@@ -8,7 +8,6 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
@@ -22,7 +21,6 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -60,35 +58,15 @@ public class DataElementProcessor extends AbstractProcessor {
 	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
 	 * to the src/main/resources folder.
 	 */
-	private static final String template = "templates/DataElement.vm";
+	private static final String DATAELEMENT_TEMPLATE = "templates/DataElement.vm";
 
 	/**
-	 * Get a list of annotation values from an annotation mirror.
-	 * @param mirror the mirror from which to grab values.
-	 * @return list of AnnotationValue
+	 * Location of DataElement template for use with velocity.
+	 *
+	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
+	 * to the src/main/resources folder.
 	 */
-	public static List<AnnotationValue> getAnnotationValuesForMirror(
-		final Elements elementUtils, final AnnotationMirror mirror
-	) {
-		return elementUtils.getElementValuesWithDefaults(mirror).entrySet().stream()
-			.map(entry -> entry.getValue())
-			.collect(Collectors.toList());
-	}
-
-	/**
-	 * Get a list of annotation values from an annotation mirror.
-	 * @param mirror the mirror from which to grab values.
-	 * @return list of AnnotationValue
-	 */
-	public static Map<String, Object> getAnnotationValueMapForMirror(
-		final Elements elementUtils, final AnnotationMirror mirror
-	) {
-		return (Map<String, Object>) elementUtils.getElementValuesWithDefaults(mirror).entrySet().stream()
-			.collect(Collectors.toMap(
-				entry -> entry.getKey().getSimpleName().toString(),
-				entry -> entry.getValue().getValue()
-			));
-	}
+	private static final String PERSISTENCE_HANDLER_TEMPLATE = "templates/PersistenceHandler.vm";
 
 	/**
 	 * Return stack trace as string.
@@ -141,20 +119,25 @@ public class DataElementProcessor extends AbstractProcessor {
 	public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
 		// Iterate over all elements with DataElement Annotation
 		for (final Element elem : roundEnv.getElementsAnnotatedWith(DataElement.class)) {
-			if (!elem.getKind().isInterface()) {
-				String errorMsg = "DataElement annotation can only be applied to interfaces, found " + elem.toString();
-				messager.printMessage(Diagnostic.Kind.ERROR, errorMsg);
-				return false;
-			}
-
-			List<Field> fields = new ArrayList<Field>();
-			fields.addAll(DefaultFields.get());
-
 			try {
-				fields.addAll(collectFromDataFields(elem));
-				fields.addAll(collectFromDataFieldJson(elem));
-				this.writeClass(((TypeElement) elem).getQualifiedName().toString(), fields);
-			} catch (final IOException | UnexpectedValueError e) {
+				DataElementRoot dataElement = new DataElementRoot(elementUtils, elem);
+				List<Field> fields = new ArrayList<Field>();
+
+				// Collect fields from Defaults, DataField Annotations, and DataFieldJson
+				// Annotations.
+				fields.addAll(DefaultFields.get());
+				fields.addAll(collectFromDataFields(dataElement));
+				fields.addAll(collectFromDataFieldJson(dataElement));
+
+				// Write the DataElement Implementation to file.
+				writeClass(dataElement, fields);
+
+				// Check if Persistence should be generated.
+				if (dataElement.hasAnnotation(Persisted.class)) {
+					String collectionName = getCollectionName(dataElement);
+					writePersistence(dataElement, collectionName);
+				}
+			} catch (final IOException | UnexpectedValueError | InvalidDataElementRoot e) {
 				messager.printMessage(Diagnostic.Kind.ERROR, stackTraceToString(e));
 				return false;
 			}
@@ -162,14 +145,23 @@ public class DataElementProcessor extends AbstractProcessor {
 		return false;
 	}
 
-	private AnnotationMirror getAnnotationMirror(Element element, Class<?> cls) {
-		Optional<? extends AnnotationMirror> mirror = element.getAnnotationMirrors().stream()
-			.filter(m -> m.getAnnotationType().toString().equals(cls.getCanonicalName()))
-			.findFirst();
-		if (mirror.isPresent()) {
-			return mirror.get();
+	/**
+	 * Return the collection name as extracted from the Persisted annotation.
+	 * @param element
+	 * @return
+	 */
+	private String getCollectionName(DataElementRoot element) {
+		if (!element.hasAnnotation(Persisted.class)) {
+			return null;
 		}
-		return null;
+		AnnotationValue value = element.getAnnotationValues(Persisted.class)
+			.stream()
+			.findAny()
+			.orElse(null);
+		 if (value == null) {
+			return null;
+		 }
+		 return (String) value.getValue();
 	}
 
 	/**
@@ -185,17 +177,16 @@ public class DataElementProcessor extends AbstractProcessor {
 	 * @return discovered fields
 	 * @throws IOException
 	 */
-	private List<Field> collectFromDataFieldJson(Element element) throws IOException {
+	@SuppressWarnings("unchecked")
+	private List<Field> collectFromDataFieldJson(DataElementRoot element) throws IOException {
 		List<Field> fields = new ArrayList<>();
-		final AnnotationMirror mirror = getAnnotationMirror(element, DataFieldJson.class);
-		if (mirror == null) {
+		if (!element.hasAnnotation(DataFieldJson.class)) {
 			return fields;
 		}
 
 		// Iterate through AnnotationValues of AnnotationMirrors for DataFieldJson
 		for (
-			final AnnotationValue value :
-				getAnnotationValuesForMirror(elementUtils, mirror)
+			final AnnotationValue value : element.getAnnotationValues(DataFieldJson.class)
 		) {
 			// Flatten the AnnotationValue List into List of Strings in Annotation
 			List<String> sources = ((List<? extends AnnotationValue>) value.getValue()).stream()
@@ -221,16 +212,14 @@ public class DataElementProcessor extends AbstractProcessor {
 	 * @return discovered fields
 	 * @throws UnexpectedValueError
 	 */
-	private List<Field> collectFromDataFields(Element element) throws UnexpectedValueError {
+	private List<Field> collectFromDataFields(DataElementRoot element) throws UnexpectedValueError {
 		List<Field> fields = new ArrayList<>();
 
 		// Iterate over the AnnotationValues of AnnotationMirrors of type DataFields.
 		// DataFields present when more than one DataField annotation is used.
-		final AnnotationMirror dataFieldsMirror = getAnnotationMirror(element, DataFields.class);
-		if (dataFieldsMirror != null) {
+		if (element.hasAnnotation(DataFields.class)) {
 			for (
-				final AnnotationValue value :
-					getAnnotationValuesForMirror(elementUtils, dataFieldsMirror)
+				final AnnotationValue value : element.getAnnotationValues(DataFields.class)
 			) {
 				// Traditional for-loop used to allow raising an exception with unwrap if the
 				// field visitor returns an error result
@@ -240,9 +229,8 @@ public class DataElementProcessor extends AbstractProcessor {
 
 		// Check for DataField and visit; only present when only one DataField
 		// Annotation used.
-		final AnnotationMirror dataFieldMirror = getAnnotationMirror(element, DataField.class);
-		if (dataFieldMirror != null) {
-			unwrap(fieldsVisitor.visitAnnotation(dataFieldMirror, fields));
+		if (element.hasAnnotation(DataField.class)) {
+			unwrap(fieldsVisitor.visitAnnotation(element.getAnnotation(DataField.class), fields));
 		}
 		return fields;
 	}
@@ -254,28 +242,58 @@ public class DataElementProcessor extends AbstractProcessor {
 	 * @param fields the fields extracted from DataField annotations on interface
 	 * @throws IOException
 	 */
-	private void writeClass(final String interfaceName, final List<Field> fields) throws IOException {
-		// Determine package, class name from annotated interface name
-		String packageName = null;
-		final int lastDot = interfaceName.lastIndexOf('.');
-		if (lastDot > 0) {
-			packageName = interfaceName.substring(0, lastDot);
-		}
-		final String simpleName = interfaceName.substring(lastDot + 1);
-		final String generatedClassName = interfaceName + "Implementation";
-		final String generatedSimpleClassName = generatedClassName.substring(lastDot + 1);
-
+	private void writeClass(DataElementRoot element, final List<Field> fields) throws IOException {
 		// Prepare context of template
 		final VelocityContext context = new VelocityContext();
-		context.put(DataElementTemplateProperty.PACKAGE.getKey(), packageName);
-		context.put(DataElementTemplateProperty.INTERFACE.getKey(), simpleName);
-		context.put(DataElementTemplateProperty.CLASS.getKey(), generatedSimpleClassName);
+		context.put(DataElementTemplateProperty.PACKAGE.getKey(), element.getPackageName());
+		context.put(DataElementTemplateProperty.INTERFACE.getKey(), element.getName());
+		context.put(DataElementTemplateProperty.CLASS.getKey(), element.getImplName());
 		context.put(DataElementTemplateProperty.FIELDS.getKey(), fields);
 
 		// Write to file
-		final JavaFileObject generatedClassFile = processingEnv.getFiler().createSourceFile(generatedClassName);
+		final JavaFileObject generatedClassFile = processingEnv.getFiler()
+			.createSourceFile(element.getQualifiedImplName());
 		try (Writer writer = generatedClassFile.openWriter()) {
-			Velocity.mergeTemplate(template, "UTF-8", context, writer);
+			Velocity.mergeTemplate(DATAELEMENT_TEMPLATE, "UTF-8", context, writer);
+		}
+	}
+
+	/**
+	 * Write the implementation of DataElement annotated class to file.
+	 * @param interfaceName the annotated interface name, used to determine package and
+	 *        name of the generated class
+	 * @param fields the fields extracted from DataField annotations on interface
+	 * @throws IOException
+	 */
+	private void writePersistence(DataElementRoot element, final String collectionName) throws IOException {
+		// Prepare context of template
+		final VelocityContext context = new VelocityContext();
+		context.put(
+			PersistenceHandlerTemplateProperty.PACKAGE.getKey(),
+			element.getPackageName()
+		);
+		context.put(
+			PersistenceHandlerTemplateProperty.ELEMENT_INTERFACE.getKey(),
+			element.getName()
+		);
+		context.put(
+			PersistenceHandlerTemplateProperty.CLASS.getKey(),
+			element.getPersistenceHandlerName()
+		);
+		context.put(
+			PersistenceHandlerTemplateProperty.COLLECTION.getKey(),
+			collectionName
+		);
+		context.put(
+			PersistenceHandlerTemplateProperty.IMPLEMENTATION.getKey(),
+			element.getImplName()
+		);
+
+		// Write to file
+		final JavaFileObject generatedClassFile = processingEnv.getFiler()
+			.createSourceFile(element.getQualifiedPersistenceHandlerName());
+		try (Writer writer = generatedClassFile.openWriter()) {
+			Velocity.mergeTemplate(PERSISTENCE_HANDLER_TEMPLATE, "UTF-8", context, writer);
 		}
 	}
 }
