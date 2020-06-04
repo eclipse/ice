@@ -1,0 +1,111 @@
+## Declarations
+#set($interface = "IPersistenceHandler")
+##
+#if($package)
+package $package;
+#end
+
+import java.util.UUID;
+
+import org.bson.Document;
+import org.eclipse.ice.dev.annotations.IDataElement;
+import org.eclipse.ice.dev.annotations.IPersistenceHandler;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+
+public class $class implements $interface {
+
+	/**
+	 * The name of the collection backing this PersistenceHandler.
+	 */
+	private final static String COLLECTION = "$collection";
+
+	/**
+	 * The collection in which implementations of $elementInterface will be stored.
+	 */
+	private MongoCollection<Document> collection;
+
+	/**
+	 * Convert values from Document to $implementation using mapper.
+	 */
+	private ObjectMapper mapper = new ObjectMapper();
+
+	public $class(MongoDatabase db) {
+		this.collection = db.getCollection(COLLECTION);
+	}
+
+	@Override
+	public <T extends IDataElement> void save(T element) throws Exception {
+		this.collection.insertOne(Document.parse(element.toJSON()));
+	}
+
+	@Override
+	public <T extends IDataElement> T findByUUID(UUID uuid) throws Exception {
+		Document doc = this.collection
+			.find(Filters.eq("privateId", uuid.toString()))
+			.first();
+		if (doc == null) {
+			return null;
+		}
+
+		Person element = new PersonImplementation().fromJSON(doc);
+		return (T) element;
+	}
+
+	@Override
+	public <T extends IDataElement> Iterable<T> findById(long id) throws Exception {
+		return this.collection.find(Filters.eq("id", id))
+			.map(doc -> new ${implementation}().fromJSON(doc));
+	}
+
+	@Override
+	public <T extends IDataElement> Iterable<T> findByName(String name) throws Exception {
+		return this.collection.find(Filters.eq("name", name))
+			.map(doc -> new ${implementation}().fromJSON(doc));
+	}
+
+	@Override
+	public <T extends IDataElement> Iterable<T> findByDescription(String description) throws Exception {
+		return this.collection.find(Filters.eq("description", description))
+			.map(doc -> new ${implementation}().fromJSON(doc));
+	}
+
+	@Override
+	public <T extends IDataElement> Iterable<T> findByComment(String comment) throws Exception {
+		return this.collection.find(Filters.eq("comment", comment))
+			.map(doc -> new ${implementation}().fromJSON(doc));
+	}
+
+	@Override
+	public <T extends IDataElement> Iterable<T> findByContext(String context) throws Exception {
+		return this.collection.find(Filters.eq("context", context))
+			.map(doc -> new ${implementation}().fromJSON(doc));
+	}
+
+	@Override
+	public <T extends IDataElement> Iterable<T> findRequired() throws Exception {
+		return this.collection.find(Filters.eq("required", true))
+			.map(doc -> new ${implementation}().fromJSON(doc));
+	}
+
+	@Override
+	public <T extends IDataElement> Iterable<T> findNotRequired() throws Exception {
+		return this.collection.find(Filters.eq("required", false))
+			.map(doc -> new ${implementation}().fromJSON(doc));
+	}
+
+	@Override
+	public <T extends IDataElement> Iterable<T> findSecret() throws Exception {
+		return this.collection.find(Filters.eq("secret", true))
+			.map(doc -> new ${implementation}().fromJSON(doc));
+	}
+
+	@Override
+	public <T extends IDataElement> Iterable<T> findNotSecret() throws Exception {
+		return this.collection.find(Filters.eq("secret", false))
+			.map(doc -> new ${implementation}().fromJSON(doc));
+	}
+}
