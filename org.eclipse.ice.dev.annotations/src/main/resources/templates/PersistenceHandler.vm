@@ -39,17 +39,34 @@ public class $class implements $interface {
 		this.collection = db.getCollection(COLLECTION);
 	}
 
+	/**
+	 * Save the $elementInterface.
+	 * @param <T> Object extending IDataElement
+	 * @param element
+	 * @throws Exception
+	 */
 	@Override
 	public <T extends IDataElement> void save(T element) throws Exception {
 		this.collection.insertOne(new Document(element.asMap()));
 	}
-	
+
+	/**
+	 * Retrieve all $elementInterface from the collection.
+	 * @param <T>
+	 * @return an iterable of the retrieved elements.
+	 * @throws Exception
+	 */
 	@Override
 	public <T extends IDataElement> Iterable<T> find() throws Exception {
 		return this.collection.find()
 			.map(doc -> new ${implementation}().fromJSON(doc));
 	}
 
+	/**
+	 * Clear all $elementInterface from the collection.
+	 * @return
+	 * @throws Exception
+	 */
 	@Override
 	public long clear() throws Exception {
 		long count = this.collection.count();
