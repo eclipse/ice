@@ -89,6 +89,11 @@ public class Field {
 	@Builder.Default boolean search = true;
 
 	/**
+	 * Whether this field should return only one from PersistenceHandler.
+	 */
+	boolean unique;
+
+	/**
 	 * A list of alternate names for this field.
 	 */
 	@Singular("alias") List<Field> aliases;
@@ -382,6 +387,15 @@ public class Field {
 		 */
 		public FieldBuilder jsonSearch(boolean search) {
 			return this.search(search);
+		}
+
+		/**
+		 * Unique builder for use in Deserialization.
+		 * @param search
+		 * @return
+		 */
+		public FieldBuilder jsonUnique(boolean search) {
+			return this.unique(unique);
 		}
 	}
 }

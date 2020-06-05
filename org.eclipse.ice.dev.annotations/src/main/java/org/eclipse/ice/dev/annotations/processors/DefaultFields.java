@@ -26,10 +26,11 @@ public class DefaultFields {
 		.alias(
 			Field.builder()
 				.name("UUID")
+				.unique(true)
 				.getter(true)
+				.defaultField(true)
 				.build()
 		)
-		.defaultField(true)
 		.build();
 
 	/**

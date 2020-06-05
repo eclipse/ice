@@ -5,12 +5,14 @@
 package $package;
 #end
 
+import java.util.Map;
 import java.util.UUID;
 
 import org.bson.Document;
 import org.eclipse.ice.dev.annotations.IDataElement;
 import org.eclipse.ice.dev.annotations.IPersistenceHandler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -39,42 +41,66 @@ public class $class implements $interface {
 
 	@Override
 	public <T extends IDataElement> void save(T element) throws Exception {
-		this.collection.insertOne(Document.parse(element.toJSON()));
+		this.collection.insertOne(new Document(element.asMap()));
+	}
+	
+	@Override
+	public <T extends IDataElement> Iterable<T> find() throws Exception {
+		return this.collection.find()
+			.map(doc -> new ${implementation}().fromJSON(doc));
 	}
 
 	@Override
-	public <T extends IDataElement> T findByUUID(UUID uuid) throws Exception {
+	public long clear() throws Exception {
+		long count = this.collection.count();
+		this.collection.drop();
+		return count;
+	}
+
+	#macro(findmethod $var $type $docName)
+	#if(${var.Getter} && ${var.Search})
+	#if(${var.Unique})
+
+	/**
+	 * Find $elementInterface by ${var.Name}.
+	 * @param ${var.Name}
+	 * @return found element or null
+	 */
+	#if(${var.DefaultField})
+	@Override
+	#end
+	public <T extends IDataElement> T findBy${var.NameForMethod}($type ${var.Name}) throws Exception {
 		Document doc = this.collection
-			.find(Filters.eq("privateId", uuid.toString()))
+			.find(Filters.eq("${docName}", ${var.Name}))
 			.first();
 		if (doc == null) {
 			return null;
 		}
 
-		Person element = new PersonImplementation().fromJSON(doc);
+		$elementInterface element = new ${implementation}().fromJSON(doc);
 		return (T) element;
 	}
-
-	#foreach($field in $fields)
-	#if(${field.Getter} && ${field.Search})
+	#else
 
 	/**
-	 * Find $elementInterface by ${field.Name}.
-	 * @param ${field.Name}
+	 * Find $elementInterface by ${var.Name}.
+	 * @param ${var.Name}
 	 * @return Iterator of results
 	 */
-	#if(${field.DefaultField})
+	#if(${var.DefaultField})
 	@Override
 	#end
-	public <T extends IDataElement> Iterable<T> findBy${field.NameForMethod}(${field.Type} ${field.Name}) throws Exception {
-		return this.collection.find(Filters.eq("${field.Name}", ${field.Name}))
+	public <T extends IDataElement> Iterable<T> findBy${var.NameForMethod}(${var.Type} ${var.Name}) throws Exception {
+		return this.collection.find(Filters.eq("${var.Name}", ${var.Name}))
 			.map(doc -> new ${implementation}().fromJSON(doc));
 	}
 	#end
 	#end
-
-	@Override
-	public long clear() throws Exception {
-		return this.collection.deleteMany(new Document()).getDeletedCount();
-	}
+	#end
+	#foreach($field in $fields)
+	#findmethod($field ${field.Type} ${field.Name})
+	#foreach($alias in $field.Aliases)
+	#findmethod($alias ${field.Type} ${field.Name})
+	#end
+	#end
 }

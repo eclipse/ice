@@ -11,8 +11,10 @@ package $package;
 #end
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.Map;
+import java.util.HashMap;
 
 import org.eclipse.ice.dev.annotations.IDataElement;
 import org.eclipse.ice.dev.annotations.JavascriptValidator;
@@ -178,6 +180,19 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 			}
 		}
 		return retval;
+	}
+
+	/**
+	 * This operation returns a Map representation of the Data Element for use
+	 * in persistence.
+	 * @return a Map<String, Object> describing the element.
+	 */
+	public Map<String, Object> asMap() {
+		Map<String, Object> valueMap = new HashMap<>();
+		#foreach($field in $fields)
+		valueMap.put("${field.Name}", ${field.Name});
+		#end
+		return Collections.unmodifiableMap(valueMap);
 	}
 
 	/**
