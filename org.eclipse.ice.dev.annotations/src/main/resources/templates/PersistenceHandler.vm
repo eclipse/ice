@@ -11,12 +11,12 @@ import java.util.UUID;
 import org.bson.Document;
 import org.eclipse.ice.dev.annotations.IDataElement;
 import org.eclipse.ice.dev.annotations.IPersistenceHandler;
+import org.eclipse.ice.dev.annotations.PersistenceFilters;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
 
 public class $class implements $interface {
 
@@ -88,7 +88,7 @@ public class $class implements $interface {
 	#end
 	public <T extends IDataElement> T findBy${var.NameForMethod}($type ${var.Name}) throws Exception {
 		Document doc = this.collection
-			.find(Filters.eq("${docName}", ${var.Name}))
+			.find(PersistenceFilters.eq("${docName}", ${var.Name}))
 			.first();
 		if (doc == null) {
 			return null;
@@ -108,7 +108,7 @@ public class $class implements $interface {
 	@Override
 	#end
 	public <T extends IDataElement> Iterable<T> findBy${var.NameForMethod}(${var.Type} ${var.Name}) throws Exception {
-		return this.collection.find(Filters.eq("${var.Name}", ${var.Name}))
+		return this.collection.find(PersistenceFilters.eq("${var.Name}", ${var.Name}))
 			.map(doc -> new ${implementation}().fromJSON(doc));
 	}
 	#end

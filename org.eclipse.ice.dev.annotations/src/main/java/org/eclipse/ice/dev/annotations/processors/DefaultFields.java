@@ -28,6 +28,7 @@ public class DefaultFields {
 				.name("UUID")
 				.unique(true)
 				.getter(true)
+				.setter(false)
 				.defaultField(true)
 				.build()
 		)
