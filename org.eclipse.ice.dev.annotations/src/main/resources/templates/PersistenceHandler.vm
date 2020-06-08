@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
-public class $class implements $interface {
+public class $class implements $interface<$elementInterface> {
 
 	/**
 	 * The name of the collection backing this PersistenceHandler.
@@ -46,7 +46,7 @@ public class $class implements $interface {
 	 * @throws Exception
 	 */
 	@Override
-	public <T extends IDataElement> void save(T element) throws Exception {
+	public void save($elementInterface element) throws Exception {
 		this.collection.insertOne(Document.parse(element.toJSON()));
 	}
 
@@ -57,7 +57,7 @@ public class $class implements $interface {
 	 * @throws Exception
 	 */
 	@Override
-	public <T extends IDataElement> Iterable<T> find() throws Exception {
+	public Iterable<$elementInterface> find() throws Exception {
 		return this.collection.find()
 			.map(doc -> new ${implementation}().fromJSON(doc));
 	}
@@ -86,7 +86,7 @@ public class $class implements $interface {
 	#if(${var.DefaultField})
 	@Override
 	#end
-	public <T extends IDataElement> T findBy${var.NameForMethod}($type ${var.Name}) throws Exception {
+	public $elementInterface findBy${var.NameForMethod}($type ${var.Name}) throws Exception {
 		Document doc = this.collection
 			.find(PersistenceFilters.eq("${docName}", ${var.Name}))
 			.first();
@@ -94,8 +94,7 @@ public class $class implements $interface {
 			return null;
 		}
 
-		$elementInterface element = new ${implementation}().fromJSON(doc);
-		return (T) element;
+		return new ${implementation}().fromJSON(doc);
 	}
 	#else
 
@@ -107,7 +106,7 @@ public class $class implements $interface {
 	#if(${var.DefaultField})
 	@Override
 	#end
-	public <T extends IDataElement> Iterable<T> findBy${var.NameForMethod}(${var.Type} ${var.Name}) throws Exception {
+	public Iterable<$elementInterface> findBy${var.NameForMethod}(${var.Type} ${var.Name}) throws Exception {
 		return this.collection.find(PersistenceFilters.eq("${var.Name}", ${var.Name}))
 			.map(doc -> new ${implementation}().fromJSON(doc));
 	}

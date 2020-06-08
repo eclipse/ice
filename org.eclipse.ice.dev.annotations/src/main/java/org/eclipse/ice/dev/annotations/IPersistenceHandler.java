@@ -2,14 +2,14 @@ package org.eclipse.ice.dev.annotations;
 
 import java.util.UUID;
 
-public interface IPersistenceHandler {
+public interface IPersistenceHandler<T> {
 	/**
 	 * Save the DataElement.
 	 * @param <T> Object extending IDataElement
 	 * @param element
 	 * @throws Exception
 	 */
-	public <T extends IDataElement> void save(T element) throws Exception;
+	public void save(T element) throws Exception;
 
 	/**
 	 * Clear all DataElements from the collection.
@@ -24,61 +24,61 @@ public interface IPersistenceHandler {
 	 * @return an iterable of the retrieved elements.
 	 * @throws Exception
 	 */
-	public <T extends IDataElement> Iterable<T> find() throws Exception;
+	public Iterable<T> find() throws Exception;
 
 	/**
 	 * Find DataElement by UUID.
 	 * @param UUID
 	 * @return found element or null
 	 */
-	public <T extends IDataElement> T findByUUID(UUID uuid) throws Exception;
+	public T findByUUID(UUID uuid) throws Exception;
 
 	/**
 	 * Find DataElement by id.
 	 * @param id
 	 * @return Iterator of results
 	 */
-	public <T extends IDataElement> Iterable<T> findById(long id) throws Exception;
+	public Iterable<T> findById(long id) throws Exception;
 
 	/**
 	 * Find DataElement by name.
 	 * @param name
 	 * @return Iterator of results
 	 */
-	public <T extends IDataElement> Iterable<T> findByName(String name) throws Exception;
+	public Iterable<T> findByName(String name) throws Exception;
 
 	/**
 	 * Find DataElement by description.
 	 * @param description
 	 * @return Iterator of results
 	 */
-	public <T extends IDataElement> Iterable<T> findByDescription(String description) throws Exception;
+	public Iterable<T> findByDescription(String description) throws Exception;
 
 	/**
 	 * Find DataElement by comment.
 	 * @param comment
 	 * @return Iterator of results
 	 */
-	public <T extends IDataElement> Iterable<T> findByComment(String comment) throws Exception;
+	public Iterable<T> findByComment(String comment) throws Exception;
 
 	/**
 	 * Find DataElement by context.
 	 * @param context
 	 * @return Iterator of results
 	 */
-	public <T extends IDataElement> Iterable<T> findByContext(String context) throws Exception;
+	public Iterable<T> findByContext(String context) throws Exception;
 
 	/**
 	 * Find DataElement by required.
 	 * @param required
 	 * @return Iterator of results
 	 */
-	public <T extends IDataElement> Iterable<T> findByRequired(boolean required) throws Exception;
+	public Iterable<T> findByRequired(boolean required) throws Exception;
 
 	/**
 	 * Find DataElement by secret.
 	 * @param secret
 	 * @return Iterator of results
 	 */
-	public <T extends IDataElement> Iterable<T> findBySecret(boolean secret) throws Exception;
+	public Iterable<T> findBySecret(boolean secret) throws Exception;
 }
