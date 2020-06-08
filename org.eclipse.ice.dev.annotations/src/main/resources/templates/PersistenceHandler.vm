@@ -47,7 +47,7 @@ public class $class implements $interface {
 	 */
 	@Override
 	public <T extends IDataElement> void save(T element) throws Exception {
-		this.collection.insertOne(new Document(element.asMap()));
+		this.collection.insertOne(Document.parse(element.toJSON()));
 	}
 
 	/**

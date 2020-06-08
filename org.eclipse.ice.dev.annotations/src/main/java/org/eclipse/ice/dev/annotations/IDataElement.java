@@ -162,13 +162,6 @@ public interface IDataElement {
 	public boolean matches(Object o);
 
 	/**
-	 * This operation returns a Map representation of the Data Element for use
-	 * in persistence.
-	 * @return a Map<String, Object> describing the element.
-	 */
-	public Map<String, Object> asMap();
-
-	/**
 	 * This operation serializes the data element to a string in verified JSON.
 	 *
 	 * @return a JSON string describing the element

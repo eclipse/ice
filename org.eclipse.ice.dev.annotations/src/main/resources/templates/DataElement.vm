@@ -183,19 +183,6 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 	}
 
 	/**
-	 * This operation returns a Map representation of the Data Element for use
-	 * in persistence.
-	 * @return a Map<String, Object> describing the element.
-	 */
-	public Map<String, Object> asMap() {
-		Map<String, Object> valueMap = new HashMap<>();
-		#foreach($field in $fields)
-		valueMap.put("${field.Name}", ${field.Name});
-		#end
-		return Collections.unmodifiableMap(valueMap);
-	}
-
-	/**
 	 * This operation serializes the data element to a string in verified JSON.
 	 *
 	 * @return a JSON string describing the element
