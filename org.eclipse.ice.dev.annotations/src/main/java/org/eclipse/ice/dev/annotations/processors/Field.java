@@ -252,6 +252,8 @@ public class Field {
 
 		/**
 		 * Format type as a String from a TypeMirror.
+		 * @param type
+		 * @return this
 		 */
 		public FieldBuilder type(TypeMirror type) {
 			this.type = type.toString();
@@ -262,8 +264,8 @@ public class Field {
 		/**
 		 * Take a raw string value and pass through without manipulating for use as
 		 * type.
-		 * @param type the type
-		 * @return
+		 * @param type
+		 * @return this
 		 */
 		public FieldBuilder type(Raw type) {
 			this.type = type.getValue();
