@@ -36,6 +36,18 @@ class DataFieldsVisitor extends SimpleAnnotationValueVisitor8<Optional<Unexpecte
 	protected Elements elementUtils;
 	protected ObjectMapper mapper;
 
+	/**
+	 * Unwrap an optional exception.
+	 * @param <T> Exception type
+	 * @param e Optional exception to throw if present
+	 * @throws T
+	 */
+	public static <T extends Throwable> void unwrap(final Optional<T> e) throws T {
+		if (e.isPresent()) {
+			throw e.get();
+		}
+	}
+
 	public DataFieldsVisitor(Elements elementUtils) {
 		super();
 		this.elementUtils = elementUtils;

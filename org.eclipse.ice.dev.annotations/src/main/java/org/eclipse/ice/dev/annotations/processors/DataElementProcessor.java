@@ -88,17 +88,6 @@ public class DataElementProcessor extends AbstractProcessor {
 		return sw.toString();
 	}
 
-	/**
-	 * Unwrap an optional exception.
-	 * @param <T> Exception type
-	 * @param e Optional exception to throw if present
-	 * @throws T
-	 */
-	private static <T extends Throwable> void unwrap(final Optional<T> e) throws T {
-		if (e.isPresent()) {
-			throw e.get();
-		}
-	}
 
 	protected Messager messager;
 	protected Elements elementUtils;
@@ -128,13 +117,13 @@ public class DataElementProcessor extends AbstractProcessor {
 		// Iterate over all elements with DataElement Annotation
 		for (final Element elem : roundEnv.getElementsAnnotatedWith(DataElement.class)) {
 			try {
-				DataElementRoot dataElement = new DataElementRoot(elementUtils, elem);
+				DataElementRoot dataElement = new DataElementRoot(elem, elementUtils);
 				List<Field> fields = new ArrayList<Field>();
 
 				// Collect fields from Defaults, DataField Annotations, and DataFieldJson
 				// Annotations.
 				fields.addAll(DefaultFields.get());
-				fields.addAll(collectFromDataFields(dataElement));
+				fields.addAll(dataElement.fieldsFromDataFields());
 				fields.addAll(collectFromDataFieldJson(dataElement));
 
 				// Write the DataElement Implementation to file.
@@ -169,60 +158,15 @@ public class DataElementProcessor extends AbstractProcessor {
 	 * @return discovered fields
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
 	private List<Field> collectFromDataFieldJson(DataElementRoot element) throws IOException {
 		List<Field> fields = new ArrayList<>();
-		if (!element.hasAnnotation(DataFieldJson.class)) {
-			return fields;
-		}
-
-		// Iterate through AnnotationValues of AnnotationMirrors for DataFieldJson
-		for (
-			final AnnotationValue value : element.getAnnotationValues(DataFieldJson.class)
-		) {
-			// Flatten the AnnotationValue List into List of Strings in Annotation
-			List<String> sources = ((List<? extends AnnotationValue>) value.getValue()).stream()
-				.map(val -> (String) val.getValue())
-				.collect(Collectors.toList());
-
-			// Iterate through each JSON Data Field source and attempt to read
-			// fields from JSON file.
-			for (String source : sources) {
-				Reader reader = processingEnv.getFiler()
-					.getResource(StandardLocation.CLASS_OUTPUT, "", source)
-					.openReader(false);
-				fields.addAll(Arrays.asList(mapper.readValue(reader, Field[].class)));
-			}
-		}
-		return fields;
-	}
-
-	/**
-	 * Collect Fields from DataField and DataFields Annotations.
-	 *
-	 * @param element potentially annotated with one or more DataField Annotations.
-	 * @return discovered fields
-	 * @throws UnexpectedValueError
-	 */
-	private List<Field> collectFromDataFields(DataElementRoot element) throws UnexpectedValueError {
-		List<Field> fields = new ArrayList<>();
-
-		// Iterate over the AnnotationValues of AnnotationMirrors of type DataFields.
-		// DataFields present when more than one DataField annotation is used.
-		if (element.hasAnnotation(DataFields.class)) {
-			for (
-				final AnnotationValue value : element.getAnnotationValues(DataFields.class)
-			) {
-				// Traditional for-loop used to allow raising an exception with unwrap if the
-				// field visitor returns an error result
-				unwrap(value.accept(fieldsVisitor, fields));
-			}
-		}
-
-		// Check for DataField and visit; only present when only one DataField
-		// Annotation used.
-		if (element.hasAnnotation(DataField.class)) {
-			unwrap(fieldsVisitor.visitAnnotation(element.getAnnotation(DataField.class), fields));
+		// Iterate through each JSON Data Field source and attempt to read
+		// fields from JSON file.
+		for (String source : element.getDataFieldJsonFileNames()) {
+			Reader reader = processingEnv.getFiler()
+				.getResource(StandardLocation.CLASS_OUTPUT, "", source)
+				.openReader(false);
+			fields.addAll(Arrays.asList(mapper.readValue(reader, Field[].class)));
 		}
 		return fields;
 	}

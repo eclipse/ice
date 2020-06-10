@@ -1,0 +1,136 @@
+package org.eclipse.ice.dev.annotations.processors;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.lang.model.element.Element;
+import javax.lang.model.util.Elements;
+
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
+
+/**
+ * Helper for accessing and working with Annotated Classes.
+ * @author Daniel Bluhm
+ */
+public abstract class AnnotatedClass {
+	/**
+	 * List of all annotation mirrors on this element.
+	 */
+	private List<? extends AnnotationMirror> mirrors;
+
+	/**
+	 * Elements used to retrieve defaults for annotation values.
+	 */
+	private Elements elementUtils;
+
+	/**
+	 * The element representing an interface annotated with
+	 * <code>@DataElement</code>.
+	 */
+	private Element element;
+
+	/**
+	 * A Map of Annotation Class to AnnotationMirrors on this element.
+	 */
+	private Map<Class<?>, AnnotationMirror> annotations;
+
+
+	/**
+	 * Construct a DataElementRoot from an Element.
+	 * @param elementUtils
+	 * @param element
+	 * @throws InvalidDataElementRoot
+	 */
+	public AnnotatedClass(Set<Class<?>> annotationClasses, Element element, Elements elementUtils) throws InvalidDataElementRoot {
+		this.element = element;
+		this.elementUtils = elementUtils;
+
+		// Construct annotations map
+		this.annotations = new HashMap<>();
+		for (Class<?> cls : annotationClasses) {
+			AnnotationMirror mirror = getAnnotationMirror(cls);
+			if (mirror != null) {
+				this.annotations.put(cls, mirror);
+			}
+		}
+	}
+
+	/**
+	 * Determine if an annotation of a given type decorates this element.
+	 * @param cls
+	 * @return
+	 */
+	public boolean hasAnnotation(Class<?> cls) {
+		return this.annotations.containsKey(cls);
+	}
+
+	/**
+	 * Get the AnnotationMirror of a given type if present on the element.
+	 * @param cls
+	 * @return AnnotationMirror or null if not found
+	 */
+	public AnnotationMirror getAnnotation(Class<?> cls) {
+		return this.annotations.get(cls);
+	}
+
+	/**
+	 * Get a map of annotation value names to the value identified by that name.
+	 * @param annotation the class of the annotation from which values will be retrieved.
+	 * @return Map of String to unwrapped AnnotationValue (Object)
+	 */
+	public Map<String, Object> getAnnotationValueMap(Class<?> annotation) {
+		if (!annotations.containsKey(annotation)) {
+			return null;
+		}
+		final AnnotationMirror mirror = annotations.get(annotation);
+		return DataElementRoot.getAnnotationValueMap(elementUtils, mirror);
+	}
+
+	/**
+	 * Get a map of annotation value names to the value identified by that name.
+	 * @param elementUtils
+	 * @param mirror
+	 * @return Map of String to unwrapped AnnotationValue (Object)
+	 */
+	public static Map<String, Object> getAnnotationValueMap(Elements elementUtils, AnnotationMirror mirror) {
+		return (Map<String, Object>) elementUtils.getElementValuesWithDefaults(mirror).entrySet().stream()
+			.collect(Collectors.toMap(
+				entry -> entry.getKey().getSimpleName().toString(),
+				entry -> entry.getValue().getValue()
+			));
+	}
+
+	/**
+	 * Get a list of annotation values from an annotation mirror of a given type.
+	 * @param annotation the class of the annotation from which values will be retrieved.
+	 * @return list of AnnotationValue
+	 */
+	public List<AnnotationValue> getAnnotationValues(Class<?> annotation) {
+		if (!annotations.containsKey(annotation)) {
+			return null;
+		}
+		final AnnotationMirror mirror = annotations.get(annotation);
+		return elementUtils.getElementValuesWithDefaults(mirror).entrySet().stream()
+			.map(entry -> entry.getValue())
+			.collect(Collectors.toList());
+	}
+
+	/**
+	 * Find and return annotation of type cls on this element or return null.
+	 * @param cls
+	 * @return
+	 */
+	private AnnotationMirror getAnnotationMirror(Class<?> cls) {
+		if (this.mirrors == null) {
+			this.mirrors = this.element.getAnnotationMirrors();
+		}
+		return this.mirrors.stream()
+			.filter(m -> m.getAnnotationType().toString().equals(cls.getCanonicalName()))
+			.findAny()
+			.orElse(null);
+	}
+}

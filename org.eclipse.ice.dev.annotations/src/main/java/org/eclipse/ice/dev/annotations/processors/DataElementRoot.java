@@ -1,8 +1,7 @@
 package org.eclipse.ice.dev.annotations.processors;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,7 +17,6 @@ import org.eclipse.ice.dev.annotations.Persisted;
 
 import lombok.Getter;
 
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 
 /**
@@ -26,7 +24,7 @@ import javax.lang.model.element.AnnotationValue;
  *
  * @author Daniel Bluhm
  */
-public class DataElementRoot {
+public class DataElementRoot extends AnnotatedClass {
 
 	/**
 	 * The Set of possible annotation classes we expect to see
@@ -51,25 +49,9 @@ public class DataElementRoot {
 	private final static String PERSISTENCE_SUFFIX = "PersistenceHandler";
 
 	/**
-	 * List of all annotation mirrors on this element.
+	 * FieldsVisitor for extracting DataField info from annotations.
 	 */
-	private List<? extends AnnotationMirror> mirrors;
-
-	/**
-	 * Elements used to retrieve defaults for annotation values.
-	 */
-	private Elements elementUtils;
-
-	/**
-	 * The element representing an interface annotated with
-	 * <code>@DataElement</code>.
-	 */
-	private Element element;
-
-	/**
-	 * A Map of Annotation Class to AnnotationMirrors on this element.
-	 */
-	private Map<Class<?>, AnnotationMirror> annotations;
+	private DataFieldsVisitor fieldsVisitor;
 
 	/**
 	 * The fully qualified name of this element.
@@ -86,6 +68,9 @@ public class DataElementRoot {
 	 */
 	@Getter private String packageName;
 
+	/**
+	 * The name of the collection as extracted from Persisted or null.
+	 */
 	@Getter private String collectionName;
 
 	/**
@@ -94,24 +79,16 @@ public class DataElementRoot {
 	 * @param element
 	 * @throws InvalidDataElementRoot
 	 */
-	public DataElementRoot(Elements elementUtils, Element element) throws InvalidDataElementRoot {
+	public DataElementRoot(Element element, Elements elementUtils) throws InvalidDataElementRoot {
+		super(ANNOTATION_CLASSES, element, elementUtils);
 		if (!element.getKind().isInterface()) {
 			throw new InvalidDataElementRoot(
 				"DataElementRoots must be interface, found "
 					+ element.toString()
 			);
 		}
-		this.element = element;
-		this.elementUtils = elementUtils;
 
-		// Construct annotations map
-		this.annotations = new HashMap<>();
-		for (Class<?> cls : ANNOTATION_CLASSES) {
-			AnnotationMirror mirror = getAnnotationMirror(cls);
-			if (mirror != null) {
-				this.annotations.put(cls, mirror);
-			}
-		}
+		this.fieldsVisitor = new DataFieldsVisitor(elementUtils);
 
 		// Names
 		this.name = this.extractName();
@@ -163,7 +140,6 @@ public class DataElementRoot {
 		 return (String) value.getValue();
 	}
 
-
 	/**
 	 * Get the name of the Implementation to be generated.
 	 * @return
@@ -197,77 +173,63 @@ public class DataElementRoot {
 	}
 
 	/**
-	 * Find and return annotation of type cls on this element or return null.
-	 * @param cls
-	 * @return
+	 * Collect Fields from DataField and DataFields Annotations.
+	 *
+	 * @return discovered fields
+	 * @throws UnexpectedValueError
 	 */
-	private AnnotationMirror getAnnotationMirror(Class<?> cls) {
-		if (this.mirrors == null) {
-			this.mirrors = this.element.getAnnotationMirrors();
+	public List<Field> fieldsFromDataFields() throws UnexpectedValueError {
+		List<Field> fields = new ArrayList<>();
+
+		// Iterate over the AnnotationValues of AnnotationMirrors of type DataFields.
+		// DataFields present when more than one DataField annotation is used.
+		if (hasAnnotation(DataFields.class)) {
+			for (
+				final AnnotationValue value : getAnnotationValues(DataFields.class)
+			) {
+				// Traditional for-loop used to allow raising an exception with unwrap if the
+				// field visitor returns an error result
+				DataFieldsVisitor.unwrap(value.accept(fieldsVisitor, fields));
+			}
 		}
-		return this.mirrors.stream()
-			.filter(m -> m.getAnnotationType().toString().equals(cls.getCanonicalName()))
+
+		// Check for DataField and visit; only present when only one DataField
+		// Annotation used.
+		if (hasAnnotation(DataField.class)) {
+			DataFieldsVisitor.unwrap(fieldsVisitor.visitAnnotation(
+				getAnnotation(DataField.class), fields
+			));
+		}
+		return fields;
+	}
+
+	/**
+	 * Collect JSON File Strings from DataFieldJson Annotations.
+	 *
+	 * @return discovered JSON file strings
+	 * @throws IOException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> getDataFieldJsonFileNames() {
+		List<String> fieldJsonStrings = new ArrayList<>();
+		if (!hasAnnotation(DataFieldJson.class)) {
+			return fieldJsonStrings;
+		}
+		AnnotationValue value = this.getAnnotationValues(DataFieldJson.class)
+			.stream()
 			.findAny()
 			.orElse(null);
-	}
-
-	/**
-	 * Get a map of annotation value names to the value identified by that name.
-	 * @param annotation the class of the annotation from which values will be retrieved.
-	 * @return Map of String to unwrapped AnnotationValue (Object)
-	 */
-	public Map<String, Object> getAnnotationValueMap(Class<?> annotation) {
-		if (!annotations.containsKey(annotation)) {
-			return null;
+		if (value == null) {
+			return fieldJsonStrings;
 		}
-		final AnnotationMirror mirror = annotations.get(annotation);
-		return DataElementRoot.getAnnotationValueMap(elementUtils, mirror);
-	}
 
-	/**
-	 * Get a map of annotation value names to the value identified by that name.
-	 * @param elementUtils
-	 * @param mirror
-	 * @return Map of String to unwrapped AnnotationValue (Object)
-	 */
-	public static Map<String, Object> getAnnotationValueMap(Elements elementUtils, AnnotationMirror mirror) {
-		return (Map<String, Object>) elementUtils.getElementValuesWithDefaults(mirror).entrySet().stream()
-			.collect(Collectors.toMap(
-				entry -> entry.getKey().getSimpleName().toString(),
-				entry -> entry.getValue().getValue()
-			));
-	}
+		// Flatten the AnnotationValue List into List of Strings in Annotation
+		fieldJsonStrings.addAll(
+			((List<? extends AnnotationValue>) value.getValue()).stream()
+				.map(val -> (String) val.getValue())
+				.collect(Collectors.toList())
+		);
 
-	/**
-	 * Get a list of annotation values from an annotation mirror of a given type.
-	 * @param annotation the class of the annotation from which values will be retrieved.
-	 * @return list of AnnotationValue
-	 */
-	public List<AnnotationValue> getAnnotationValues(Class<?> annotation) {
-		if (!annotations.containsKey(annotation)) {
-			return null;
-		}
-		final AnnotationMirror mirror = annotations.get(annotation);
-		return elementUtils.getElementValuesWithDefaults(mirror).entrySet().stream()
-			.map(entry -> entry.getValue())
-			.collect(Collectors.toList());
-	}
-
-	/**
-	 * Determine if an annotation of a given type decorates this element.
-	 * @param cls
-	 * @return
-	 */
-	public boolean hasAnnotation(Class<?> cls) {
-		return this.annotations.containsKey(cls);
-	}
-
-	/**
-	 * Get the AnnotationMirror of a given type if present on the element.
-	 * @param cls
-	 * @return AnnotationMirror or null if not found
-	 */
-	public AnnotationMirror getAnnotation(Class<?> cls) {
-		return this.annotations.get(cls);
+		return fieldJsonStrings;
 	}
 }
