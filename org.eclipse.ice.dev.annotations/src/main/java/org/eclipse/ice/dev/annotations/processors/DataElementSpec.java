@@ -177,7 +177,6 @@ public class DataElementSpec extends AnnotatedElement {
 	 * Collect Fields from DataField and DataFields Annotations.
 	 *
 	 * @return discovered fields
-	 * @throws UnexpectedValueError
 	 */
 	public List<Field> fieldsFromDataFields() {
 		List<Field> fields = new ArrayList<>();
@@ -197,7 +196,6 @@ public class DataElementSpec extends AnnotatedElement {
 	 * Collect JSON File Strings from DataFieldJson Annotations.
 	 *
 	 * @return discovered JSON file strings
-	 * @throws IOException
 	 */
 	@SuppressWarnings("unchecked")
 	public List<String> getDataFieldJsonFileNames() {
