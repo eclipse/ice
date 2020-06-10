@@ -10,9 +10,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
 import org.eclipse.ice.dev.annotations.DataElement;
-import org.eclipse.ice.dev.annotations.DataField;
 import org.eclipse.ice.dev.annotations.DataFieldJson;
-import org.eclipse.ice.dev.annotations.DataFields;
 import org.eclipse.ice.dev.annotations.Persisted;
 
 import lombok.Getter;
@@ -25,7 +23,7 @@ import javax.lang.model.element.AnnotationValue;
  *
  * @author Daniel Bluhm
  */
-public class DataElementSpec extends AnnotatedClass {
+public class DataElementSpec extends AnnotatedElement {
 
 	/**
 	 * The Set of possible annotation classes we expect to see
@@ -33,8 +31,6 @@ public class DataElementSpec extends AnnotatedClass {
 	 */
 	private final static Set<Class<?>> ANNOTATION_CLASSES = Set.of(
 		DataElement.class,
-		DataField.class,
-		DataFields.class,
 		DataFieldJson.class,
 		Persisted.class
 	);
@@ -75,6 +71,11 @@ public class DataElementSpec extends AnnotatedClass {
 	@Getter private String collectionName;
 
 	/**
+	 * The DataFields found in this DataElementSpec.
+	 */
+	@Getter private List<DataFieldSpec> dataFields;
+
+	/**
 	 * Construct a DataElementSpec from an Element.
 	 * @param elementUtils
 	 * @param element
@@ -82,9 +83,9 @@ public class DataElementSpec extends AnnotatedClass {
 	 */
 	public DataElementSpec(Element element, Elements elementUtils) throws InvalidDataElementRoot {
 		super(ANNOTATION_CLASSES, element, elementUtils);
-		if (!element.getKind().isInterface()) {
+		if (!element.getKind().isClass()) {
 			throw new InvalidDataElementRoot(
-				"DataElementSpecs must be interface, found "
+				"DataElementSpec must be class, found "
 					+ element.toString()
 			);
 		}
@@ -103,6 +104,11 @@ public class DataElementSpec extends AnnotatedClass {
 			this.fullyQualifiedName = this.name;
 		}
 		this.collectionName = this.extractCollectionName();
+
+		this.dataFields = this.element.getEnclosedElements().stream()
+			.filter(DataFieldSpec::isDataField)
+			.map(enclosedElement -> new DataFieldSpec(enclosedElement, elementUtils))
+			.collect(Collectors.toList());
 	}
 
 	/**
@@ -181,25 +187,18 @@ public class DataElementSpec extends AnnotatedClass {
 	 */
 	public List<Field> fieldsFromDataFields() throws UnexpectedValueError {
 		List<Field> fields = new ArrayList<>();
-
-		// Iterate over the AnnotationValues of AnnotationMirrors of type DataFields.
-		// DataFields present when more than one DataField annotation is used.
-		if (hasAnnotation(DataFields.class)) {
-			for (
-				final AnnotationValue value : getAnnotationValues(DataFields.class)
-			) {
-				// Traditional for-loop used to allow raising an exception with unwrap if the
-				// field visitor returns an error result
-				DataFieldsVisitor.unwrap(value.accept(fieldsVisitor, fields));
+		for (DataFieldSpec field : dataFields) {
+			try {
+				fields.add(
+					Field.builder()
+						.name(field.getFieldName())
+						.type(field.getFieldClass())
+						.docString(field.getDocString())
+						.build()
+				);
+			} catch (ClassNotFoundException e) {
+				throw new UnexpectedValueError("Could not find class for DataField");
 			}
-		}
-
-		// Check for DataField and visit; only present when only one DataField
-		// Annotation used.
-		if (hasAnnotation(DataField.class)) {
-			DataFieldsVisitor.unwrap(fieldsVisitor.visitAnnotation(
-				getAnnotation(DataField.class), fields
-			));
 		}
 		return fields;
 	}

@@ -51,7 +51,7 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 
 	#if(${field.DocString})
 	/**
-	 * ${field.DocString}
+	 * $field.DocString.trim().replace("\\n", "\\n\\t * ")
 	 */
 	#end
 	#macro(fieldtype)#evaluate(${field.Type})#end

@@ -7,7 +7,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.lang.model.element.Element;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+
+import org.apache.commons.lang3.ClassUtils;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
@@ -16,7 +19,7 @@ import javax.lang.model.element.AnnotationValue;
  * Helper for accessing and working with Annotated Classes.
  * @author Daniel Bluhm
  */
-public abstract class AnnotatedClass {
+public abstract class AnnotatedElement {
 	/**
 	 * List of all annotation mirrors on this element.
 	 */
@@ -25,13 +28,13 @@ public abstract class AnnotatedClass {
 	/**
 	 * Elements used to retrieve defaults for annotation values.
 	 */
-	private Elements elementUtils;
+	protected Elements elementUtils;
 
 	/**
 	 * The element representing an interface annotated with
 	 * <code>@DataElement</code>.
 	 */
-	private Element element;
+	protected Element element;
 
 	/**
 	 * A Map of Annotation Class to AnnotationMirrors on this element.
@@ -45,7 +48,7 @@ public abstract class AnnotatedClass {
 	 * @param element
 	 * @throws InvalidDataElementRoot
 	 */
-	public AnnotatedClass(Set<Class<?>> annotationClasses, Element element, Elements elementUtils) throws InvalidDataElementRoot {
+	public AnnotatedElement(Set<Class<?>> annotationClasses, Element element, Elements elementUtils) {
 		this.element = element;
 		this.elementUtils = elementUtils;
 
@@ -132,5 +135,14 @@ public abstract class AnnotatedClass {
 			.filter(m -> m.getAnnotationType().toString().equals(cls.getCanonicalName()))
 			.findAny()
 			.orElse(null);
+	}
+
+	/**
+	 * Return the Class represented by the TypeMirror or null if not found.
+	 * @param mirror
+	 * @return class for type mirror
+	 */
+	public static Class<?> typeMirrorToClass(TypeMirror mirror) throws ClassNotFoundException {
+		return ClassUtils.getClass(mirror.toString());
 	}
 }
