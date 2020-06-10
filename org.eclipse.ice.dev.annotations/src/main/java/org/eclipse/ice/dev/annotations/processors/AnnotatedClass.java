@@ -40,7 +40,7 @@ public abstract class AnnotatedClass {
 
 
 	/**
-	 * Construct a DataElementRoot from an Element.
+	 * Construct a AnnotaedClass from an Element.
 	 * @param elementUtils
 	 * @param element
 	 * @throws InvalidDataElementRoot
@@ -87,7 +87,7 @@ public abstract class AnnotatedClass {
 			return null;
 		}
 		final AnnotationMirror mirror = annotations.get(annotation);
-		return DataElementRoot.getAnnotationValueMap(elementUtils, mirror);
+		return DataElementSpec.getAnnotationValueMap(elementUtils, mirror);
 	}
 
 	/**

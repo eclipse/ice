@@ -80,7 +80,7 @@ class DataFieldsVisitor extends SimpleAnnotationValueVisitor8<Optional<Unexpecte
 			);
 		}
 
-		Map<String, Object> valueMap = DataElementRoot.getAnnotationValueMap(elementUtils, a).entrySet().stream()
+		Map<String, Object> valueMap = DataElementSpec.getAnnotationValueMap(elementUtils, a).entrySet().stream()
 			.collect(Collectors.toMap(
 				entry -> entry.getKey(),
 				entry -> {

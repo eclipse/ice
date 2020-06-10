@@ -117,7 +117,7 @@ public class DataElementProcessor extends AbstractProcessor {
 		// Iterate over all elements with DataElement Annotation
 		for (final Element elem : roundEnv.getElementsAnnotatedWith(DataElement.class)) {
 			try {
-				DataElementRoot dataElement = new DataElementRoot(elem, elementUtils);
+				DataElementSpec dataElement = new DataElementSpec(elem, elementUtils);
 				List<Field> fields = new ArrayList<Field>();
 
 				// Collect fields from Defaults, DataField Annotations, and DataFieldJson
@@ -158,7 +158,7 @@ public class DataElementProcessor extends AbstractProcessor {
 	 * @return discovered fields
 	 * @throws IOException
 	 */
-	private List<Field> collectFromDataFieldJson(DataElementRoot element) throws IOException {
+	private List<Field> collectFromDataFieldJson(DataElementSpec element) throws IOException {
 		List<Field> fields = new ArrayList<>();
 		// Iterate through each JSON Data Field source and attempt to read
 		// fields from JSON file.
@@ -178,7 +178,7 @@ public class DataElementProcessor extends AbstractProcessor {
 	 * @param fields the fields extracted from DataField annotations on interface
 	 * @throws IOException
 	 */
-	private void writeClass(DataElementRoot element, final List<Field> fields) throws IOException {
+	private void writeClass(DataElementSpec element, final List<Field> fields) throws IOException {
 		// Prepare context of template
 		final VelocityContext context = new VelocityContext();
 		context.put(DataElementTemplateProperty.PACKAGE.getKey(), element.getPackageName());
@@ -202,7 +202,7 @@ public class DataElementProcessor extends AbstractProcessor {
 	 * @throws IOException
 	 */
 	private void writePersistence(
-		DataElementRoot element,
+		DataElementSpec element,
 		final String collectionName,
 		List<Field> fields
 	) throws IOException {
@@ -249,7 +249,7 @@ public class DataElementProcessor extends AbstractProcessor {
 	 * @throws IOException
 	 */
 	private void writeInterface(
-		DataElementRoot element,
+		DataElementSpec element,
 		List<Field> fields
 	) throws IOException {
 		// Prepare context of template

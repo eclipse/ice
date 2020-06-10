@@ -20,11 +20,12 @@ import lombok.Getter;
 import javax.lang.model.element.AnnotationValue;
 
 /**
- * Helpers for working with Elements that form the "root" of a DataElement.
+ * Helper class for extracting data from DataElementSpec classes and their
+ * annotations.
  *
  * @author Daniel Bluhm
  */
-public class DataElementRoot extends AnnotatedClass {
+public class DataElementSpec extends AnnotatedClass {
 
 	/**
 	 * The Set of possible annotation classes we expect to see
@@ -74,16 +75,16 @@ public class DataElementRoot extends AnnotatedClass {
 	@Getter private String collectionName;
 
 	/**
-	 * Construct a DataElementRoot from an Element.
+	 * Construct a DataElementSpec from an Element.
 	 * @param elementUtils
 	 * @param element
 	 * @throws InvalidDataElementRoot
 	 */
-	public DataElementRoot(Element element, Elements elementUtils) throws InvalidDataElementRoot {
+	public DataElementSpec(Element element, Elements elementUtils) throws InvalidDataElementRoot {
 		super(ANNOTATION_CLASSES, element, elementUtils);
 		if (!element.getKind().isInterface()) {
 			throw new InvalidDataElementRoot(
-				"DataElementRoots must be interface, found "
+				"DataElementSpecs must be interface, found "
 					+ element.toString()
 			);
 		}
