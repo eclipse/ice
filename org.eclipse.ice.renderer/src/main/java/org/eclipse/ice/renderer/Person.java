@@ -11,5 +11,10 @@ import org.eclipse.ice.dev.annotations.Persisted;
 @DataField(fieldName = "lastName", fieldType = String.class, docString = "The last name of the Person.")
 @Persisted(collection = "people")
 public interface Person extends IDataElement {
-	//void foo();
+	public int getAge();
+	public void setAge(int age);
+	public String getFirstName();
+	public void setFirstName(String firstName);
+	public String getLastName();
+	public void setLastName(String lastName);
 }
