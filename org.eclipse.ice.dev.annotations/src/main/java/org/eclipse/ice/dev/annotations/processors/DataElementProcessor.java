@@ -168,9 +168,8 @@ public class DataElementProcessor extends AbstractProcessor {
 
 	/**
 	 * Write the implementation of DataElement annotated class to file.
-	 * @param interfaceName the annotated interface name, used to determine package and
-	 *        name of the generated class
-	 * @param fields the fields extracted from DataField annotations on interface
+	 * @param element
+	 * @param fields
 	 * @throws IOException
 	 */
 	private void writeClass(DataElementSpec element, final List<Field> fields) throws IOException {
@@ -191,9 +190,9 @@ public class DataElementProcessor extends AbstractProcessor {
 
 	/**
 	 * Write the persistence handler of DataElement annotated class to file.
-	 * @param interfaceName the annotated interface name, used to determine package and
-	 *        name of the generated class
-	 * @param fields the fields extracted from DataField annotations on interface
+	 * @param element
+	 * @param collectionName
+	 * @param fields
 	 * @throws IOException
 	 */
 	private void writePersistence(
@@ -238,9 +237,8 @@ public class DataElementProcessor extends AbstractProcessor {
 
 	/**
 	 * Write the interface of DataElement annotated class to file.
-	 * @param interfaceName the annotated interface name, used to determine package and
-	 *        name of the generated class
-	 * @param fields the fields extracted from DataField annotations on interface
+	 * @param element
+	 * @param fields
 	 * @throws IOException
 	 */
 	private void writeInterface(
