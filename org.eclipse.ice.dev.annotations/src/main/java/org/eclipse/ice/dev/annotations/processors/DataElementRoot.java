@@ -10,6 +10,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
+import org.eclipse.ice.dev.annotations.DataElement;
 import org.eclipse.ice.dev.annotations.DataField;
 import org.eclipse.ice.dev.annotations.DataFieldJson;
 import org.eclipse.ice.dev.annotations.DataFields;
@@ -32,6 +33,7 @@ public class DataElementRoot {
 	 * on DataElements.
 	 */
 	private final static Set<Class<?>> ANNOTATION_CLASSES = Set.of(
+		DataElement.class,
 		DataField.class,
 		DataFields.class,
 		DataFieldJson.class,
@@ -75,7 +77,7 @@ public class DataElementRoot {
 	private String fullyQualifiedName;
 
 	/**
-	 * The simple name of this element.
+	 * The name of the DataElement as extracted from the DataElement annotation.
 	 */
 	@Getter private String name;
 
@@ -83,6 +85,8 @@ public class DataElementRoot {
 	 * The package of this element represented as a String.
 	 */
 	@Getter private String packageName;
+
+	@Getter private String collectionName;
 
 	/**
 	 * Construct a DataElementRoot from an Element.
@@ -100,15 +104,6 @@ public class DataElementRoot {
 		this.element = element;
 		this.elementUtils = elementUtils;
 
-		// Names
-		this.fullyQualifiedName = ((TypeElement) element).getQualifiedName().toString();
-		this.name = ((TypeElement) element).getSimpleName().toString();
-		packageName = null;
-		final int lastDot = fullyQualifiedName.lastIndexOf('.');
-		if (lastDot > 0) {
-			packageName = fullyQualifiedName.substring(0, lastDot);
-		}
-
 		// Construct annotations map
 		this.annotations = new HashMap<>();
 		for (Class<?> cls : ANNOTATION_CLASSES) {
@@ -117,7 +112,57 @@ public class DataElementRoot {
 				this.annotations.put(cls, mirror);
 			}
 		}
+
+		// Names
+		this.name = this.extractName();
+		String elementFQN = ((TypeElement) element).getQualifiedName().toString();
+		this.packageName = null;
+		final int lastDot = elementFQN.lastIndexOf('.');
+		if (lastDot > 0) {
+			this.packageName = elementFQN.substring(0, lastDot);
+			this.fullyQualifiedName = this.packageName + "." + this.name;
+		} else {
+			this.fullyQualifiedName = this.name;
+		}
+		this.collectionName = this.extractCollectionName();
 	}
+
+	/**
+	 * Return the element name as extracted from the DataElement annotation.
+	 * @param element
+	 * @return
+	 */
+	public String extractName() {
+		AnnotationValue value = this.getAnnotationValues(DataElement.class)
+			.stream()
+			.findAny()
+			.orElse(null);
+		 if (value == null) {
+			return null;
+		 }
+		 return (String) value.getValue();
+	}
+
+
+	/**
+	 * Return the collection name as extracted from the Persisted annotation.
+	 * @param element
+	 * @return
+	 */
+	public String extractCollectionName() {
+		if (!this.hasAnnotation(Persisted.class)) {
+			return null;
+		}
+		AnnotationValue value = this.getAnnotationValues(Persisted.class)
+			.stream()
+			.findAny()
+			.orElse(null);
+		 if (value == null) {
+			return null;
+		 }
+		 return (String) value.getValue();
+	}
+
 
 	/**
 	 * Get the name of the Implementation to be generated.

@@ -8,5 +8,5 @@ import java.lang.annotation.RetentionPolicy;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.SOURCE)
 public @interface DataElement {
-
+	String name();
 }

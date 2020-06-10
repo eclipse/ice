@@ -5,7 +5,7 @@ import org.eclipse.ice.dev.annotations.DataField;
 import org.eclipse.ice.dev.annotations.IDataElement;
 import org.eclipse.ice.dev.annotations.Persisted;
 
-@DataElement
+@DataElement(name = "Person")
 @DataField(fieldName = "age", fieldType = int.class, docString = "The age of the person.")
 @DataField(fieldName = "firstName", fieldType = String.class, docString = "The first name of the person.")
 @DataField(fieldName = "lastName", fieldType = String.class, docString = "The last name of the Person.")

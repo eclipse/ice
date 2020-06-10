@@ -142,8 +142,11 @@ public class DataElementProcessor extends AbstractProcessor {
 
 				// Check if Persistence should be generated.
 				if (dataElement.hasAnnotation(Persisted.class)) {
-					String collectionName = getCollectionName(dataElement);
-					writePersistence(dataElement, collectionName, fields);
+					writePersistence(
+						dataElement,
+						dataElement.getCollectionName(),
+						fields
+					);
 				}
 			} catch (final IOException | UnexpectedValueError | InvalidDataElementRoot e) {
 				messager.printMessage(Diagnostic.Kind.ERROR, stackTraceToString(e));
@@ -151,25 +154,6 @@ public class DataElementProcessor extends AbstractProcessor {
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Return the collection name as extracted from the Persisted annotation.
-	 * @param element
-	 * @return
-	 */
-	private String getCollectionName(DataElementRoot element) {
-		if (!element.hasAnnotation(Persisted.class)) {
-			return null;
-		}
-		AnnotationValue value = element.getAnnotationValues(Persisted.class)
-			.stream()
-			.findAny()
-			.orElse(null);
-		 if (value == null) {
-			return null;
-		 }
-		 return (String) value.getValue();
 	}
 
 	/**
