@@ -179,7 +179,7 @@ public class DataElementSpec extends AnnotatedElement {
 	 * @return discovered fields
 	 * @throws UnexpectedValueError
 	 */
-	public List<Field> fieldsFromDataFields() throws UnexpectedValueError {
+	public List<Field> fieldsFromDataFields() {
 		List<Field> fields = new ArrayList<>();
 		for (DataFieldSpec field : dataFields) {
 			fields.add(

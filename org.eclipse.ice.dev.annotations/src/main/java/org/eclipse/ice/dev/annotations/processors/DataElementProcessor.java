@@ -85,14 +85,12 @@ public class DataElementProcessor extends AbstractProcessor {
 
 	protected Messager messager;
 	protected Elements elementUtils;
-	protected DataFieldsVisitor fieldsVisitor;
 	protected ObjectMapper mapper;
 
 	@Override
 	public void init(final ProcessingEnvironment env) {
 		messager = env.getMessager();
 		elementUtils = env.getElementUtils();
-		fieldsVisitor = new DataFieldsVisitor(elementUtils);
 		mapper = new ObjectMapper();
 
 		// Set up Velocity using the Singleton approach; ClasspathResourceLoader allows
@@ -134,7 +132,7 @@ public class DataElementProcessor extends AbstractProcessor {
 						fields
 					);
 				}
-			} catch (final IOException | UnexpectedValueError | InvalidDataElementRoot e) {
+			} catch (final IOException | InvalidDataElementRoot e) {
 				messager.printMessage(Diagnostic.Kind.ERROR, stackTraceToString(e));
 				return false;
 			}
