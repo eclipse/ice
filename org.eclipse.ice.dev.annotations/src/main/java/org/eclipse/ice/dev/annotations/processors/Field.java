@@ -3,6 +3,8 @@ package org.eclipse.ice.dev.annotations.processors;
 import java.util.Collection;
 import java.util.List;
 
+import javax.lang.model.type.TypeMirror;
+
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -245,6 +247,15 @@ public class Field {
 			this.type = type.getName().toString();
 			this.actualType = type;
 			this.primitive = type.isPrimitive();
+			return this;
+		}
+
+		/**
+		 * Format type as a String from a TypeMirror.
+		 */
+		public FieldBuilder type(TypeMirror type) {
+			this.type = type.toString();
+			this.primitive = type.getKind().isPrimitive();
 			return this;
 		}
 

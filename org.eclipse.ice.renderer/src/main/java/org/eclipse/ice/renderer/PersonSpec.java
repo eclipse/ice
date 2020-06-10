@@ -10,15 +10,15 @@ public class PersonSpec {
 	/**
 	 * The person's age.
 	 */
-	@DataField public int age = 42;
+	@DataField public int age;
 
 	/**
 	 * The person's first name.
 	 */
-	@DataField public String firstName = "NA";
+	@DataField public String firstName;
 
 	/**
 	 * The person's last name.
 	 */
-	@DataField public String lastName = "NA";
+	@DataField public String lastName;
 }

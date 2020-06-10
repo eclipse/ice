@@ -120,6 +120,9 @@ public class DataElementProcessor extends AbstractProcessor {
 				fields.addAll(dataElement.fieldsFromDataFields());
 				fields.addAll(collectFromDataFieldJson(dataElement));
 
+				// Write the DataElement's interface to file.
+				writeInterface(dataElement, fields);
+
 				// Write the DataElement Implementation to file.
 				writeClass(dataElement, fields);
 
@@ -263,7 +266,7 @@ public class DataElementProcessor extends AbstractProcessor {
 
 		// Write to file
 		final JavaFileObject generatedClassFile = processingEnv.getFiler()
-			.createSourceFile(element.getQualifiedPersistenceHandlerName());
+			.createSourceFile(element.getFullyQualifiedName());
 		try (Writer writer = generatedClassFile.openWriter()) {
 			Velocity.mergeTemplate(INTERFACE_TEMPLATE, "UTF-8", context, writer);
 		}

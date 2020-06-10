@@ -46,14 +46,9 @@ public class DataElementSpec extends AnnotatedElement {
 	private final static String PERSISTENCE_SUFFIX = "PersistenceHandler";
 
 	/**
-	 * FieldsVisitor for extracting DataField info from annotations.
-	 */
-	private DataFieldsVisitor fieldsVisitor;
-
-	/**
 	 * The fully qualified name of this element.
 	 */
-	private String fullyQualifiedName;
+	@Getter private String fullyQualifiedName;
 
 	/**
 	 * The name of the DataElement as extracted from the DataElement annotation.
@@ -90,8 +85,6 @@ public class DataElementSpec extends AnnotatedElement {
 			);
 		}
 
-		this.fieldsVisitor = new DataFieldsVisitor(elementUtils);
-
 		// Names
 		this.name = this.extractName();
 		String elementFQN = ((TypeElement) element).getQualifiedName().toString();
@@ -105,6 +98,7 @@ public class DataElementSpec extends AnnotatedElement {
 		}
 		this.collectionName = this.extractCollectionName();
 
+		// Gather DataFields
 		this.dataFields = this.element.getEnclosedElements().stream()
 			.filter(DataFieldSpec::isDataField)
 			.map(enclosedElement -> new DataFieldSpec(enclosedElement, elementUtils))
@@ -188,17 +182,13 @@ public class DataElementSpec extends AnnotatedElement {
 	public List<Field> fieldsFromDataFields() throws UnexpectedValueError {
 		List<Field> fields = new ArrayList<>();
 		for (DataFieldSpec field : dataFields) {
-			try {
-				fields.add(
-					Field.builder()
-						.name(field.getFieldName())
-						.type(field.getFieldClass())
-						.docString(field.getDocString())
-						.build()
-				);
-			} catch (ClassNotFoundException e) {
-				throw new UnexpectedValueError("Could not find class for DataField");
-			}
+			fields.add(
+				Field.builder()
+					.name(field.getFieldName())
+					.type(field.getFieldClass())
+					.docString(field.getDocString())
+					.build()
+			);
 		}
 		return fields;
 	}

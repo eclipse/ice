@@ -40,7 +40,7 @@ import lombok.Setter;
  */
 @Data
 @NoArgsConstructor
-public class ${class} implements ${interface}, Serializable, IDataElement {
+public class ${class} implements ${interface}, Serializable {
 
 	/**
 	 * Logging tool
@@ -233,7 +233,7 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 	 *
 	 * @param jsonDataElement the contents of this data element as JSON
 	 */
-	public <T extends IDataElement> T fromJSON(final String jsonDataElement) {
+	public $interface fromJSON(final String jsonDataElement) {
 
 		// Load the data from the string with Jackson.
 		ObjectMapper mapper = new ObjectMapper();
@@ -244,7 +244,7 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 			logger.error("Unable to read DataElement from string!", e);
 		}
 
-		return (T) this;
+		return this;
 	}
 
 	/**
@@ -254,7 +254,7 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 	 *
 	 * @param jsonDataElement the contents of this data element as a Map<String, Object>
 	 */
-	public <T extends Map<String, Object>, S extends IDataElement> S fromJSON(final T jsonDataElement) {
+	public <T extends Map<String, Object>> $interface fromJSON(final T jsonDataElement) {
 
 		// Load the data from the string with Jackson.
 		ObjectMapper mapper = new ObjectMapper();
@@ -265,6 +265,6 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 			logger.error("Unable to read DataElement from string!", e);
 		}
 
-		return (S) this;
+		return this;
 	}
 }
