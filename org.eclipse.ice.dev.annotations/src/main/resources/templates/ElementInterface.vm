@@ -1,0 +1,18 @@
+#if($package)
+package $package;
+#end
+
+import org.eclipse.ice.dev.annotations.IDataElement;
+
+public interface $interface extends IDataElement {
+	#foreach($field in $fields)
+	#if(!${field.DefaultField})
+	#if(${field.Getter})
+	public #evaluate(${field.Type}) get${field.NameForMethod}();
+	#end## if Getter
+	#if(${field.Setter})
+	public void set${field.NameForMethod}(#evaluate(${field.Type}) ${field.Name});
+	#end## if Setter
+	#end## if DefaultField
+	#end## foreach field
+}

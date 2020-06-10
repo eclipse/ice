@@ -61,12 +61,20 @@ public class DataElementProcessor extends AbstractProcessor {
 	private static final String DATAELEMENT_TEMPLATE = "templates/DataElement.vm";
 
 	/**
-	 * Location of DataElement template for use with velocity.
+	 * Location of PersistenceHandler template for use with velocity.
 	 *
 	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
 	 * to the src/main/resources folder.
 	 */
 	private static final String PERSISTENCE_HANDLER_TEMPLATE = "templates/PersistenceHandler.vm";
+
+	/**
+	 * Location of Interface template for use with velocity.
+	 *
+	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
+	 * to the src/main/resources folder.
+	 */
+	private static final String INTERFACE_TEMPLATE = "templates/ElementInterface.vm";
 
 	/**
 	 * Return stack trace as string.
@@ -259,7 +267,7 @@ public class DataElementProcessor extends AbstractProcessor {
 	}
 
 	/**
-	 * Write the implementation of DataElement annotated class to file.
+	 * Write the persistence handler of DataElement annotated class to file.
 	 * @param interfaceName the annotated interface name, used to determine package and
 	 *        name of the generated class
 	 * @param fields the fields extracted from DataField annotations on interface
@@ -302,6 +310,40 @@ public class DataElementProcessor extends AbstractProcessor {
 			.createSourceFile(element.getQualifiedPersistenceHandlerName());
 		try (Writer writer = generatedClassFile.openWriter()) {
 			Velocity.mergeTemplate(PERSISTENCE_HANDLER_TEMPLATE, "UTF-8", context, writer);
+		}
+	}
+
+	/**
+	 * Write the interface of DataElement annotated class to file.
+	 * @param interfaceName the annotated interface name, used to determine package and
+	 *        name of the generated class
+	 * @param fields the fields extracted from DataField annotations on interface
+	 * @throws IOException
+	 */
+	private void writeInterface(
+		DataElementRoot element,
+		List<Field> fields
+	) throws IOException {
+		// Prepare context of template
+		final VelocityContext context = new VelocityContext();
+		context.put(
+			InterfaceTemplateProperty.PACKAGE.getKey(),
+			element.getPackageName()
+		);
+		context.put(
+			InterfaceTemplateProperty.INTERFACE.getKey(),
+			element.getName()
+		);
+		context.put(
+			PersistenceHandlerTemplateProperty.FIELDS.getKey(),
+			fields
+		);
+
+		// Write to file
+		final JavaFileObject generatedClassFile = processingEnv.getFiler()
+			.createSourceFile(element.getQualifiedPersistenceHandlerName());
+		try (Writer writer = generatedClassFile.openWriter()) {
+			Velocity.mergeTemplate(INTERFACE_TEMPLATE, "UTF-8", context, writer);
 		}
 	}
 }
