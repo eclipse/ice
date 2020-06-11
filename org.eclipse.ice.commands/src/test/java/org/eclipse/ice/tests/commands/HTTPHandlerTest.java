@@ -36,7 +36,7 @@ public class HTTPHandlerTest {
 	public void testHTTPNotificationPostUpdate() throws IOException {
 
 		HTTPCommandUpdateHandler updater = new HTTPCommandUpdateHandler();
-		updater.setHTTPAddress("someaddress.com");
+		updater.setHTTPAddress("https://225eee153c45329a1bcedd6da637643f.m.pipedream.net");
 		updater.setMessage("job finished with status " + CommandStatus.INFOERROR);
 
 		updater.postUpdate();

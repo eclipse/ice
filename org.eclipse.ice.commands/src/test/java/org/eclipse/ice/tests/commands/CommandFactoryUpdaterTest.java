@@ -75,7 +75,7 @@ public class CommandFactoryUpdaterTest {
 	 * email updater attached to the command, so that when the job finishes an email
 	 * is sent
 	 */
-	// @Test
+	 @Test
 	public void testCommandWithEmailUpdater() {
 
 		// Set some things specific to the local command

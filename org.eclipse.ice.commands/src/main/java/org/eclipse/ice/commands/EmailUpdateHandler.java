@@ -41,8 +41,8 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 	// The subject of the message
 	private String emailSubject = "Commands API Message";
 
-	// The host smtp server for the commands api email address
-	private String emailHost = "smtp.gmail.com";
+	// The host smtp server for the email address
+	private String emailHost = "";
 
 	// The password for the provided email to be able to send to itself
 	private String emailPassword = "";
