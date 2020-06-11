@@ -2,6 +2,7 @@
 #set($blank = "")
 #set($newline = "
 ")
+#set($tab = "	")
 #macro(noop)#end
 ##
 ## Begin Template
@@ -51,7 +52,7 @@ public class ${class} implements ${interface}, Serializable {
 
 	#if(${field.DocString})
 	/**
-	 * $field.DocString.trim().replace("\\n", "\\n\\t * ")
+	 * $field.DocString.trim().replace("$newline", "$newline$tab *")
 	 */
 	#end
 	#macro(fieldtype)#evaluate(${field.Type})#end
