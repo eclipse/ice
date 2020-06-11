@@ -131,7 +131,8 @@ public class SWTConnectionAuthorizationHandler extends ConnectionAuthorizationHa
 	 * 
 	 * @param password
 	 */
-	public void setPassword(char[] password) {
-		this.password = password;
+	@Override
+	public void setOption(String option) {
+		this.password = option.toCharArray();
 	}
 }
