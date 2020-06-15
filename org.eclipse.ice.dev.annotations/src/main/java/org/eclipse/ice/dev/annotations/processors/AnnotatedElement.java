@@ -1,5 +1,6 @@
 package org.eclipse.ice.dev.annotations.processors;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,7 +115,7 @@ public abstract class AnnotatedElement {
 	 */
 	public List<AnnotationValue> getAnnotationValues(Class<?> annotation) {
 		if (!annotations.containsKey(annotation)) {
-			return null;
+			return Collections.emptyList();
 		}
 		final AnnotationMirror mirror = annotations.get(annotation);
 		return elementUtils.getElementValuesWithDefaults(mirror).entrySet().stream()
