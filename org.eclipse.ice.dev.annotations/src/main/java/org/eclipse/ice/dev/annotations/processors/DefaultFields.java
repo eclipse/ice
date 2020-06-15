@@ -19,7 +19,7 @@ public class DefaultFields {
 		.name("privateId")
 		.type(UUID.class)
 		.docString("The private UUID of this element. This field is left out of matches().")
-		.defaultValue(Field.raw("UUID.randomUUID()"))
+		.defaultValue("UUID.randomUUID()")
 		.match(false)
 		.getter(false)
 		.setter(false)
@@ -41,7 +41,7 @@ public class DefaultFields {
 		.name("id")
 		.type(long.class)
 		.docString("A unique identifier for this element.")
-		.defaultValue(0L)
+		.defaultValue(javaSource(0L))
 		.defaultField(true)
 		.build();
 
@@ -52,7 +52,7 @@ public class DefaultFields {
 		.name("name")
 		.type(String.class)
 		.docString("A simple name for the data.")
-		.defaultValue("name")
+		.defaultValue(javaSource("name"))
 		.defaultField(true)
 		.build();
 
@@ -63,7 +63,7 @@ public class DefaultFields {
 		.name("description")
 		.type(String.class)
 		.docString("A simple description of the data")
-		.defaultValue("description")
+		.defaultValue(javaSource("description"))
 		.defaultField(true)
 		.build();
 
@@ -74,7 +74,7 @@ public class DefaultFields {
 		.name("comment")
 		.type(String.class)
 		.docString("A comment that annotates the data in a meaningful way.")
-		.defaultValue("no comment")
+		.defaultValue(javaSource("no comment"))
 		.defaultField(true)
 		.build();
 
@@ -85,7 +85,7 @@ public class DefaultFields {
 		.name("context")
 		.type(String.class)
 		.docString("The context (a tag) in which the data should be considered.")
-		.defaultValue("default")
+		.defaultValue(javaSource("default"))
 		.defaultField(true)
 		.build();
 
@@ -96,7 +96,7 @@ public class DefaultFields {
 		.name("required")
 		.type(boolean.class)
 		.docString("This value is true if the element should be regarded by the client as required.")
-		.defaultValue(false)
+		.defaultValue(javaSource(false))
 		.defaultField(true)
 		.build();
 
@@ -108,7 +108,7 @@ public class DefaultFields {
 		.name("secret")
 		.type(boolean.class)
 		.docString("This value is true if the element should be regarded as a secret by the client, such as for passwords.")
-		.defaultValue(false)
+		.defaultValue(javaSource(false))
 		.defaultField(true)
 		.build();
 
@@ -117,7 +117,7 @@ public class DefaultFields {
 	 */
 	private static Field validator = Field.builder()
 		.name("validator")
-		.type(Field.raw("JavascriptValidator<$interface>"))
+		.type("JavascriptValidator<$interface>")
 		.docString("The validator used to check the correctness of the data.")
 		.nullable(true)
 		.defaultField(true)
@@ -133,5 +133,32 @@ public class DefaultFields {
 			privateId, id, name, description, comment,
 			context, required, secret, validator
 		);
+	}
+
+	/**
+	 * Format long as String for use as default value initializer.
+	 * @param value the value to be formatted.
+	 * @return String
+	 */
+	private static String javaSource(long value) {
+		return Long.toString(value) + "L";
+	}
+
+	/**
+	 * Format String as escaped String for use as default value initializer.
+	 * @param value the value to be formatted.
+	 * @return String
+	 */
+	private static String javaSource(String value) {
+		return "\"" + value + "\"";
+	}
+
+	/**
+	 * Format boolean as String for use as default value initializer.
+	 * @param value the value to be formatted.
+	 * @return String
+	 */
+	private static String javaSource(boolean value) {
+		return Boolean.toString(value);
 	}
 }
