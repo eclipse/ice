@@ -1,3 +1,4 @@
+#parse("templates/common.vm")
 #if($package)
 package $package;
 #end
@@ -17,14 +18,14 @@ public interface $interface extends IDataElement<${interface}> {
 	 * Get ${field.Name}.
 	 * @return ${field.Name}
 	 */
-	public #evaluate(${field.Type}) get${field.NameForMethod}();
+	public #fieldtype get${field.NameForMethod}();
 	#end## if Getter
 	#if(${field.Setter})
 
 	/**
 	 * Set ${field.Name}.
 	 */
-	public void set${field.NameForMethod}(#evaluate(${field.Type}) ${field.Name});
+	public void set${field.NameForMethod}(#fieldtype ${field.Name});
 	#end## if Setter
 	#end## if DefaultField
 	#end## foreach field

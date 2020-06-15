@@ -1,0 +1,17 @@
+## Whitespace helpers
+#set($blank = "")
+#set($newline = "
+")
+#set($tab = "	")
+#macro(noop)#end
+##
+## Field helpers
+#macro(fieldtype)#evaluate(${field.Type})#end
+#macro(annotations $annotations)
+#foreach($annotation in $annotations)$annotation #end
+#end
+#macro(modifiers $modifiers)
+#foreach($modifier in $modifiers)$modifier #end
+#end
+#macro(fielddecl)#annotations(${field.Annotations})#modifiers(${field.Modifiers})#fieldtype() ${field.Name}#if(${field.DefaultValue}) = #evaluate(${field.DefaultValue})#end;#end
+#macro(nonnull)#if(!${field.Nullable} && !${field.Primitive})@NonNull#end#end

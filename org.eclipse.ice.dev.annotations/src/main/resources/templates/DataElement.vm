@@ -1,12 +1,4 @@
-## Whitespace helpers
-#set($blank = "")
-#set($newline = "
-")
-#set($tab = "	")
-#macro(noop)#end
-##
-## Begin Template
-##
+#parse("templates/common.vm")
 #if($package)
 package $package;
 #end
@@ -53,18 +45,14 @@ public class ${class} implements ${interface}, Serializable {
 	 * $field.DocString.trim().replace("$newline", "$newline$tab *")
 	 */
 	#end
-	#macro(fieldtype)#evaluate(${field.Type})#end
-	#macro(fielddecl)protected #evaluate(${field.Type}) ${field.Name}#if(${field.DefaultValue}) = #evaluate(${field.DefaultValue})#end;#end
-	#if(!${field.Nullable} && !${field.Primitive})
-	@NonNull
-	#end
+	$blank#nonnull
 	#if(!${field.Getter})
 	@Getter(AccessLevel.NONE)
 	#end
 	#if(!${field.Setter})
 	@Setter(AccessLevel.NONE)
 	#end
-	$blank#fielddecl()
+	$blank#fielddecl
 	#end
 	#foreach($field in $fields)
 		#foreach($alias in ${field.aliases})
@@ -74,7 +62,7 @@ public class ${class} implements ${interface}, Serializable {
 	 * Get ${field.Name} by alias ${alias.Name}.
 	 * @return ${field.Name}
 	 */
-	public #fieldtype() get${alias.NameForMethod}() {
+	public #fieldtype get${alias.NameForMethod}() {
 		return ${field.Name};
 	}
 			#end
@@ -83,7 +71,7 @@ public class ${class} implements ${interface}, Serializable {
 	/**
 	 * Set ${field.Name} by alias ${alias.Name}.
 	 */
-	public void set${alias.NameForMethod}(#if(!${field.Nullable} && !${field.Primitive})@NonNull #end#fieldtype() ${field.Name}) {
+	public void set${alias.NameForMethod}(#nonnull #fieldtype ${field.Name}) {
 		this.${field.Name} = ${field.Name};
 	}
 			#end
