@@ -140,7 +140,7 @@ class GeneratedDataElementTest {
 	void testDataAccessorsForPOJOs() {
 
 		// Use a test POJO for this that has members
-		GeneratedDataElementPOJOImplementation element = new GeneratedDataElementPOJOImplementation();
+		GeneratedDataElementPOJO element = new GeneratedDataElementPOJOImplementation();
 		element.setTestPOJO(new TestPOJO());
 
 		// Do the straight check
@@ -194,7 +194,7 @@ class GeneratedDataElementTest {
 	void testPOJOSerialization() {
 
 		// Use a test POJO for this that has members
-		GeneratedDataElementPOJOImplementation element = new GeneratedDataElementPOJOImplementation();
+		GeneratedDataElementPOJO element = new GeneratedDataElementPOJOImplementation();
 		element.setTestPOJO(new TestPOJO());
 		element.setSecret(true);
 		element.setRequired(true);
@@ -206,7 +206,7 @@ class GeneratedDataElementTest {
 
 		// Change some values then read back in the original to make sure fromString()
 		// correctly overwrites them.
-		GeneratedDataElementPOJOImplementation element2 = new GeneratedDataElementPOJOImplementation();
+		GeneratedDataElementPOJO element2 = new GeneratedDataElementPOJOImplementation();
 		TestPOJO pojo2 = new TestPOJO();
 		pojo2.setDoubleValue(1.072);
 		element2.setValidator(new JavascriptValidator<GeneratedDataElementPOJO>());
