@@ -10,6 +10,7 @@ public class PersonSpec {
 	/**
 	 * The person's age.
 	 */
+	@DataField.Default("42")
 	@DataField public int age;
 
 	/**

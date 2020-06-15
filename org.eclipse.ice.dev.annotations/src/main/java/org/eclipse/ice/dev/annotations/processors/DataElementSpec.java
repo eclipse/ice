@@ -169,19 +169,9 @@ public class DataElementSpec extends AnnotatedElement {
 	 * @return discovered fields
 	 */
 	public List<Field> fieldsFromDataFields() {
-		List<Field> fields = new ArrayList<>();
-		for (DataFieldSpec field : dataFields) {
-			fields.add(
-				Field.builder()
-					.name(field.getFieldName())
-					.type(field.getFieldClass())
-					.docString(field.getDocString())
-					.annotations(field.getAnnotations())
-					//.modifiers(field.getModifiers())
-					.build()
-			);
-		}
-		return fields;
+		return dataFields.stream()
+			.map(dataField -> dataField.toField())
+			.collect(Collectors.toList());
 	}
 
 	/**

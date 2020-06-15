@@ -1,6 +1,7 @@
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,14 +18,51 @@ import org.eclipse.ice.dev.annotations.DataField;
  */
 public class DataFieldSpec extends AnnotatedElement {
 
+	/**
+	 * The set of Annotations processed by this AnnotatedElement.
+	 */
 	private static final Set<Class<?>> ANNOTATION_CLASSES = Set.of(
-		DataField.class
+		DataField.class,
+		DataField.Default.class
 	);
 
+	/**
+	 * Set of Annotation names that extractAnnotations should filter out.
+	 */
 	private static final Set<String> ANNOTATION_CLASS_NAMES =
 		ANNOTATION_CLASSES.stream()
 			.map(cls -> cls.getCanonicalName())
 			.collect(Collectors.toSet());
+
+	/**
+	 * @see org.eclipse.ice.dev.annotations.processor.Field#getter
+	 */
+	private boolean getter;
+
+	/**
+	 * @see org.eclipse.ice.dev.annotations.processor.Field#setter
+	 */
+	private boolean setter;
+
+	/**
+	 * @see org.eclipse.ice.dev.annotations.processor.Field#match
+	 */
+	private boolean match;
+
+	/**
+	 * @see org.eclipse.ice.dev.annotations.processor.Field#unique
+	 */
+	private boolean unique;
+
+	/**
+	 * @see org.eclipse.ice.dev.annotations.processor.Field#search
+	 */
+	private boolean search;
+
+	/**
+	 * @see org.eclipse.ice.dev.annotations.processor.Field#nullable
+	 */
+	private boolean nullable;
 
 	/**
 	 * Instantiate a DataFieldSpec.
@@ -33,6 +71,13 @@ public class DataFieldSpec extends AnnotatedElement {
 	 */
 	public DataFieldSpec(Element element, Elements elementUtils) {
 		super(ANNOTATION_CLASSES, element, elementUtils);
+		Map<String, Object> annotationValues = this.getAnnotationValueMap(DataField.class);
+		this.getter = (boolean) annotationValues.get(DataFieldValues.GETTER.getKey());
+		this.setter = (boolean) annotationValues.get(DataFieldValues.SETTER.getKey());
+		this.match = (boolean) annotationValues.get(DataFieldValues.MATCH.getKey());
+		this.unique = (boolean) annotationValues.get(DataFieldValues.UNIQUE.getKey());
+		this.search = (boolean) annotationValues.get(DataFieldValues.SEARCH.getKey());
+		this.nullable = (boolean) annotationValues.get(DataFieldValues.NULLABLE.getKey());
 	}
 
 	/**
@@ -48,7 +93,7 @@ public class DataFieldSpec extends AnnotatedElement {
 	 * Return the set of access modifiers on this Field.
 	 * @return
 	 */
-	public Set<Modifier> getModifiers() {
+	private Set<Modifier> extractModifiers() {
 		return this.element.getModifiers();
 	}
 
@@ -57,7 +102,7 @@ public class DataFieldSpec extends AnnotatedElement {
 	 * Annotation itself.
 	 * @return
 	 */
-	public List<String> getAnnotations() {
+	private List<String> extractAnnotations() {
 		return this.element.getAnnotationMirrors().stream()
 			.filter(mirror -> !ANNOTATION_CLASS_NAMES.contains(
 				mirror.getAnnotationType().toString()
@@ -69,9 +114,8 @@ public class DataFieldSpec extends AnnotatedElement {
 	/**
 	 * Return the class of this Field.
 	 * @return
-	 * @throws ClassNotFoundException
 	 */
-	public TypeMirror getFieldClass() {
+	private TypeMirror extractFieldType() {
 		return this.element.asType();
 	}
 
@@ -79,7 +123,7 @@ public class DataFieldSpec extends AnnotatedElement {
 	 * Return the name of this Field.
 	 * @return
 	 */
-	public String getFieldName() {
+	private String extractFieldName() {
 		return this.element.getSimpleName().toString();
 	}
 
@@ -87,7 +131,35 @@ public class DataFieldSpec extends AnnotatedElement {
 	 * Return the DocString of this Field.
 	 * @return
 	 */
-	public String getDocString() {
+	private String extractDocString() {
 		return this.elementUtils.getDocComment(this.element);
+	}
+
+	/**
+	 * Extract the defaultValue of this Field.
+	 * @return
+	 */
+	private String extractDefaultValue() {
+		return this.getSingleValue(DataField.Default.class, String.class);
+	}
+
+	/**
+	 * Return a this DataFieldSpec as a Field.
+	 * @return field
+	 */
+	public Field toField() {
+		return Field.builder()
+			.name(extractFieldName())
+			.type(extractFieldType())
+			.defaultValue(extractDefaultValue())
+			.docString(extractDocString())
+			.annotations(extractAnnotations())
+			.getter(getter)
+			.setter(setter)
+			.match(match)
+			.unique(unique)
+			.search(search)
+			.nullable(nullable)
+			.build();
 	}
 }
