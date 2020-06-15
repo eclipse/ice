@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import org.eclipse.ice.dev.annotations.JavascriptValidator;
+
 /**
  * Aggregation of fields generated and included in <code>@DataElement</code>
  * by default.
@@ -117,7 +119,7 @@ public class DefaultFields {
 	 */
 	private static Field validator = Field.builder()
 		.name("validator")
-		.type("JavascriptValidator<$interface>")
+		.type(JavascriptValidator.class.getCanonicalName() + "<$interface>")
 		.docString("The validator used to check the correctness of the data.")
 		.nullable(true)
 		.defaultField(true)
