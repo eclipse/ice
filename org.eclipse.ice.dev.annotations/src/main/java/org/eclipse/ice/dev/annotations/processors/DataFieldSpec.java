@@ -21,6 +21,11 @@ public class DataFieldSpec extends AnnotatedElement {
 		DataField.class
 	);
 
+	private static final Set<String> ANNOTATION_CLASS_NAMES =
+		ANNOTATION_CLASSES.stream()
+			.map(cls -> cls.getCanonicalName())
+			.collect(Collectors.toSet());
+
 	/**
 	 * Instantiate a DataFieldSpec.
 	 * @param element
@@ -54,8 +59,8 @@ public class DataFieldSpec extends AnnotatedElement {
 	 */
 	public List<String> getAnnotations() {
 		return this.element.getAnnotationMirrors().stream()
-			.filter(mirror -> !mirror.getAnnotationType().toString().equals(
-				DataField.class.getCanonicalName().toString()
+			.filter(mirror -> !ANNOTATION_CLASS_NAMES.contains(
+				mirror.getAnnotationType().toString()
 			))
 			.map(mirror -> mirror.toString())
 			.collect(Collectors.toList());
