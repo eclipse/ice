@@ -2,7 +2,10 @@ package org.eclipse.ice.dev.annotations.processors;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeMirror;
 
 import org.apache.commons.lang3.ClassUtils;
@@ -105,6 +108,11 @@ public class Field {
 	@Singular("annotation") List<String> annotations;
 
 	/**
+	 * Set of Modifiers (public, static, final, etc.) to apply to this field.
+	 */
+	@Builder.Default Set<String> modifiers = Set.of("protected");
+
+	/**
 	 * Get a class by name or return null if not found
 	 * @param cls
 	 * @return found class or null
@@ -132,6 +140,7 @@ public class Field {
 	private interface FieldBuilderMeta {
 		@JsonDeserialize(contentAs = Field.class) FieldBuilder aliases(Collection<? extends Field> aliases);
 		@JsonDeserialize(contentAs = String.class) FieldBuilder annotations(Collection<? extends String> annotations);
+		@JsonDeserialize(contentAs = String.class) FieldBuilder modifiers(Set<String> modifiers);
 		@JsonAlias("fieldName") FieldBuilder name(String name);
 	}
 
@@ -188,6 +197,18 @@ public class Field {
 				this.type = type;
 			}
 			return this;
+		}
+
+		/**
+		 * Format Modifiers as string.
+		 * @param modifiers
+		 * @return this
+		 */
+		@JsonIgnore
+		public FieldBuilder modifiersToString(Set<Modifier> modifiers) {
+			return this.modifiers(modifiers.stream()
+				.map(modifier -> modifier.toString())
+				.collect(Collectors.toSet()));
 		}
 	}
 }

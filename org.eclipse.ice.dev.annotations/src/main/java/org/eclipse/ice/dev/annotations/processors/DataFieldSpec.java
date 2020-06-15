@@ -154,6 +154,7 @@ public class DataFieldSpec extends AnnotatedElement {
 			.defaultValue(extractDefaultValue())
 			.docString(extractDocString())
 			.annotations(extractAnnotations())
+			.modifiersToString(extractModifiers())
 			.getter(getter)
 			.setter(setter)
 			.match(match)
