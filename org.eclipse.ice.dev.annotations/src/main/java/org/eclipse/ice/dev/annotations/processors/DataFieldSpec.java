@@ -1,6 +1,8 @@
 package org.eclipse.ice.dev.annotations.processors;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
@@ -43,6 +45,20 @@ public class DataFieldSpec extends AnnotatedElement {
 	 */
 	public Set<Modifier> getModifiers() {
 		return this.element.getModifiers();
+	}
+
+	/**
+	 * Return the set of annotations on this DataField, excepting the DataField
+	 * Annotation itself.
+	 * @return
+	 */
+	public List<String> getAnnotations() {
+		return this.element.getAnnotationMirrors().stream()
+			.filter(mirror -> !mirror.getAnnotationType().toString().equals(
+				DataField.class.getCanonicalName().toString()
+			))
+			.map(mirror -> mirror.toString())
+			.collect(Collectors.toList());
 	}
 
 	/**

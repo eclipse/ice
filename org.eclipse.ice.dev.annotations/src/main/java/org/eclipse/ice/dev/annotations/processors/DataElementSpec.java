@@ -99,7 +99,15 @@ public class DataElementSpec extends AnnotatedElement {
 		this.collectionName = this.extractCollectionName();
 
 		// Gather DataFields
-		this.dataFields = this.element.getEnclosedElements().stream()
+		this.dataFields = this.extractDataFields();
+	}
+
+	/**
+	 * Extract data fields from enclosed elements.
+	 * @return list of data field specs
+	 */
+	public List<DataFieldSpec> extractDataFields() {
+		return this.element.getEnclosedElements().stream()
 			.filter(DataFieldSpec::isDataField)
 			.map(enclosedElement -> new DataFieldSpec(enclosedElement, elementUtils))
 			.collect(Collectors.toList());
@@ -186,6 +194,8 @@ public class DataElementSpec extends AnnotatedElement {
 					.name(field.getFieldName())
 					.type(field.getFieldClass())
 					.docString(field.getDocString())
+					.annotations(field.getAnnotations())
+					//.modifiers(field.getModifiers())
 					.build()
 			);
 		}
