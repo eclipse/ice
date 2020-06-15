@@ -20,5 +20,6 @@ public @interface DataField {
 	@Retention(RetentionPolicy.SOURCE)
 	public @interface Default {
 		String value();
+		boolean isString() default false;
 	}
 }

@@ -16,10 +16,12 @@ public class PersonSpec {
 	/**
 	 * The person's first name.
 	 */
+	@DataField.Default(value = "Bob", isString = true)
 	@DataField private String firstName;
 
 	/**
 	 * The person's last name.
 	 */
+	@DataField.Default(value = "Builder", isString = true)
 	@DataField private String lastName;
 }

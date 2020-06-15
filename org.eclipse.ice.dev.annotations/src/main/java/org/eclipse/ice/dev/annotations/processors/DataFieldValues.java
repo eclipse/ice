@@ -13,4 +13,12 @@ public enum DataFieldValues {
 	NULLABLE("nullable");
 
 	@Getter private String key;
+
+	@AllArgsConstructor
+	public enum Default {
+		IS_STRING("isString"),
+		VALUE("value");
+
+		@Getter private String key;
+	}
 }

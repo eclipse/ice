@@ -140,7 +140,13 @@ public class DataFieldSpec extends AnnotatedElement {
 	 * @return
 	 */
 	private String extractDefaultValue() {
-		return this.getSingleValue(DataField.Default.class, String.class);
+		Map<String, Object> map = this.getAnnotationValueMap(DataField.Default.class);
+		boolean isString = (boolean) map.get(DataFieldValues.Default.IS_STRING.getKey());
+		String value = (String) map.get(DataFieldValues.Default.VALUE.getKey());
+		if (isString) {
+			return this.elementUtils.getConstantExpression(value);
+		}
+		return value;
 	}
 
 	/**
