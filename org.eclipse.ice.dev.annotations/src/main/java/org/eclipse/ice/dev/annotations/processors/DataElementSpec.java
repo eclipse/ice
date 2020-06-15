@@ -119,16 +119,8 @@ public class DataElementSpec extends AnnotatedElement {
 	 * @return
 	 */
 	public String extractName() {
-		AnnotationValue value = this.getAnnotationValues(DataElement.class)
-			.stream()
-			.findAny()
-			.orElse(null);
-		 if (value == null) {
-			return null;
-		 }
-		 return (String) value.getValue();
+		return this.getSingleValue(DataElement.class, String.class);
 	}
-
 
 	/**
 	 * Return the collection name as extracted from the Persisted annotation.
@@ -136,17 +128,7 @@ public class DataElementSpec extends AnnotatedElement {
 	 * @return
 	 */
 	public String extractCollectionName() {
-		if (!this.hasAnnotation(Persisted.class)) {
-			return null;
-		}
-		AnnotationValue value = this.getAnnotationValues(Persisted.class)
-			.stream()
-			.findAny()
-			.orElse(null);
-		 if (value == null) {
-			return null;
-		 }
-		 return (String) value.getValue();
+		return this.getSingleValue(Persisted.class, String.class);
 	}
 
 	/**

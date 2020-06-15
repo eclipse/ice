@@ -124,6 +124,32 @@ public abstract class AnnotatedElement {
 	}
 
 	/**
+	 * Extract the value from an annotation. This is useful for extracting the value
+	 * from annotations where there is only a single annotation value.
+	 * @param <T> The type of the value to which it will be cast
+	 * @param annotation the annotation to extract a value from
+	 * @param targetType The type of the value to which it will be cast
+	 * @return the value
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T getSingleValue(Class<?> annotation, Class<T> targetType) {
+		Object retval = null;
+		if (this.hasAnnotation(annotation)) {
+			AnnotationValue value = this.getAnnotationValues(annotation)
+				.stream()
+				.findAny()
+				.orElse(null);
+			if (value != null) {
+				Object v = value.getValue();
+				if (targetType.isInstance(v)) {
+					retval = v;
+				}
+			}
+		}
+		return (T) retval;
+	}
+
+	/**
 	 * Find and return annotation of type cls on this element or return null.
 	 * @param cls
 	 * @return
