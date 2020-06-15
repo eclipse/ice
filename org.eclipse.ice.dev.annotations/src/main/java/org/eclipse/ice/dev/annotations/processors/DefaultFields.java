@@ -21,7 +21,7 @@ public class DefaultFields {
 		.name("privateId")
 		.type(UUID.class)
 		.docString("The private UUID of this element. This field is left out of matches().")
-		.defaultValue("UUID.randomUUID()")
+		.defaultValue(UUID.class.getCanonicalName() + ".randomUUID()")
 		.match(false)
 		.getter(false)
 		.setter(false)

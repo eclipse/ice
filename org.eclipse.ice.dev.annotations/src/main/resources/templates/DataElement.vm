@@ -5,7 +5,6 @@ package $package;
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.UUID;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -45,7 +44,9 @@ public class ${class} implements ${interface}, Serializable {
 	 * $field.DocString.trim().replace("$newline", "$newline$tab *")
 	 */
 	#end
-	$blank#nonnull
+	#if(!${field.Nullable} && !${field.Primitive})
+	@NonNull
+	#end
 	#if(!${field.Getter})
 	@Getter(AccessLevel.NONE)
 	#end

@@ -88,7 +88,7 @@ public abstract class AnnotatedElement {
 	 */
 	public Map<String, Object> getAnnotationValueMap(Class<?> annotation) {
 		if (!annotations.containsKey(annotation)) {
-			return null;
+			return Collections.emptyMap();
 		}
 		final AnnotationMirror mirror = annotations.get(annotation);
 		return DataElementSpec.getAnnotationValueMap(elementUtils, mirror);
