@@ -141,6 +141,9 @@ public class DataFieldSpec extends AnnotatedElement {
 	 */
 	private String extractDefaultValue() {
 		Map<String, Object> map = this.getAnnotationValueMap(DataField.Default.class);
+		if (map.isEmpty()) {
+			return null;
+		}
 		boolean isString = (boolean) map.get(DataFieldValues.Default.IS_STRING.getKey());
 		String value = (String) map.get(DataFieldValues.Default.VALUE.getKey());
 		if (isString) {
