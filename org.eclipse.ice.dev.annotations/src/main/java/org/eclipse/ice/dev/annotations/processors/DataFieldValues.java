@@ -3,6 +3,12 @@ package org.eclipse.ice.dev.annotations.processors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * String constants corresponding to the annotation values in DataField.
+ * @see org.eclipse.ice.dev.annotations.DataField
+ * @see org.eclipse.ice.dev.annotations.processors.Field
+ * @author Daniel Bluhm
+ */
 @AllArgsConstructor
 public enum DataFieldValues {
 	GETTER("getter"),
@@ -14,6 +20,11 @@ public enum DataFieldValues {
 
 	@Getter private String key;
 
+	/**
+	 * String constants corresponding to the annotation values in DataField.Default.
+	 * @see org.eclipse.ice.dev.annotations.DataField.Default
+	 * @author Daniel Bluhm
+	 */
 	@AllArgsConstructor
 	public enum Default {
 		IS_STRING("isString"),
