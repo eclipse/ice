@@ -41,7 +41,12 @@ import com.google.auto.service.AutoService;
  * DataElement, populating the implementation with metadata and fields specified
  * with the DataField annotation.
  */
-@SupportedAnnotationTypes("org.eclipse.ice.dev.annotations.DataElement")
+@SupportedAnnotationTypes({
+	"org.eclipse.ice.dev.annotations.DataElement",
+	"org.eclipse.ice.dev.annotations.DataField",
+	"org.eclipse.ice.dev.annotations.DataField.Default",
+	"org.eclipse.ice.dev.annotations.Persisted"
+})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @AutoService(Processor.class)
 public class DataElementProcessor extends AbstractProcessor {
