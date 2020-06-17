@@ -115,13 +115,13 @@ public class DataElementProcessor extends AbstractProcessor {
 		for (final Element elem : roundEnv.getElementsAnnotatedWith(DataElement.class)) {
 			try {
 				DataElementSpec dataElement = new DataElementSpec(elem, elementUtils);
-				List<Field> fields = new ArrayList<Field>();
+				Fields fields = new Fields();
 
 				// Collect fields from Defaults, DataField Annotations, and DataFieldJson
 				// Annotations.
-				fields.addAll(DefaultFields.get());
-				fields.addAll(dataElement.fieldsFromDataFields());
-				fields.addAll(collectFromDataFieldJson(dataElement));
+				fields.collect(DefaultFields.get());
+				fields.collect(dataElement.fieldsFromDataFields());
+				fields.collect(collectFromDataFieldJson(dataElement));
 
 				// Write the DataElement's interface to file.
 				writeInterface(dataElement, fields);
@@ -177,7 +177,7 @@ public class DataElementProcessor extends AbstractProcessor {
 	 * @param fields
 	 * @throws IOException
 	 */
-	private void writeClass(DataElementSpec element, final List<Field> fields) throws IOException {
+	private void writeClass(DataElementSpec element, final Fields fields) throws IOException {
 		// Prepare context of template
 		final VelocityContext context = new VelocityContext();
 		context.put(DataElementTemplateProperty.PACKAGE.getKey(), element.getPackageName());
@@ -203,7 +203,7 @@ public class DataElementProcessor extends AbstractProcessor {
 	private void writePersistence(
 		DataElementSpec element,
 		final String collectionName,
-		List<Field> fields
+		Fields fields
 	) throws IOException {
 		// Prepare context of template
 		final VelocityContext context = new VelocityContext();
@@ -248,7 +248,7 @@ public class DataElementProcessor extends AbstractProcessor {
 	 */
 	private void writeInterface(
 		DataElementSpec element,
-		List<Field> fields
+		Fields fields
 	) throws IOException {
 		// Prepare context of template
 		final VelocityContext context = new VelocityContext();

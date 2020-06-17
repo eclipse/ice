@@ -135,6 +135,15 @@ public class Field {
 	}
 
 	/**
+	 * Return if this field has a final modifier and is therefore a constant value.
+	 * @return field is constant
+	 */
+	@JsonIgnore
+	public boolean isConstant() {
+		return this.modifiers.contains("final");
+	}
+
+	/**
 	 * Instruct Jackson how to deserialize fields.
 	 */
 	private interface FieldBuilderMeta {
