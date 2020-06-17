@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.eclipse.ice.tests.dev.annotations;
+package org.eclipse.ice.tests.dev.annotations.processors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
