@@ -8,7 +8,7 @@ import lombok.Getter;
  * @author Daniel Bluhm
  */
 @AllArgsConstructor
-public enum InterfaceTemplateProperty {
+enum InterfaceTemplateProperty {
 	PACKAGE("package"),
 	INTERFACE("interface"),
 	FIELDS("fields");

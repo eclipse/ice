@@ -10,7 +10,7 @@ import lombok.Getter;
  * @author Daniel Bluhm
  */
 @AllArgsConstructor
-public enum DataFieldValues {
+enum DataFieldValues {
 	GETTER("getter"),
 	SETTER("setter"),
 	MATCH("match"),

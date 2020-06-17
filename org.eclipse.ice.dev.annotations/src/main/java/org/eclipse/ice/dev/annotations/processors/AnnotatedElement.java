@@ -8,10 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.lang.model.element.Element;
-import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
-
-import org.apache.commons.lang3.ClassUtils;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
@@ -162,14 +159,5 @@ public abstract class AnnotatedElement {
 			.filter(m -> m.getAnnotationType().toString().equals(cls.getCanonicalName()))
 			.findAny()
 			.orElse(null);
-	}
-
-	/**
-	 * Return the Class represented by the TypeMirror or null if not found.
-	 * @param mirror
-	 * @return class for type mirror
-	 */
-	public static Class<?> typeMirrorToClass(TypeMirror mirror) throws ClassNotFoundException {
-		return ClassUtils.getClass(mirror.toString());
 	}
 }

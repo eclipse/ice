@@ -136,6 +136,7 @@ public class JavascriptValidator<T> implements Serializable {
 		if (this == otherObject) {
 			retValue = true;
 		} else if (otherObject instanceof JavascriptValidator<?>) {
+			@SuppressWarnings("unchecked")
 			JavascriptValidator<T> otherValidator = (JavascriptValidator<T>) otherObject;
 			retValue = this.function.equals(otherValidator.function);
 		}
