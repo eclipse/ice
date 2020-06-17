@@ -1,6 +1,7 @@
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -181,25 +182,20 @@ public class DataElementSpec extends AnnotatedElement {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<String> getDataFieldJsonFileNames() {
-		List<String> fieldJsonStrings = new ArrayList<>();
 		if (!hasAnnotation(DataFieldJson.class)) {
-			return fieldJsonStrings;
+			return Collections.emptyList();
 		}
 		AnnotationValue value = this.getAnnotationValues(DataFieldJson.class)
 			.stream()
 			.findAny()
 			.orElse(null);
 		if (value == null) {
-			return fieldJsonStrings;
+			return Collections.emptyList();
 		}
 
 		// Flatten the AnnotationValue List into List of Strings in Annotation
-		fieldJsonStrings.addAll(
-			((List<? extends AnnotationValue>) value.getValue()).stream()
-				.map(val -> (String) val.getValue())
-				.collect(Collectors.toList())
-		);
-
-		return fieldJsonStrings;
+		return ((List<? extends AnnotationValue>) value.getValue()).stream()
+			.map(val -> (String) val.getValue())
+			.collect(Collectors.toList());
 	}
 }
