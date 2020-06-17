@@ -88,16 +88,6 @@ public abstract class AnnotatedElement {
 			return Collections.emptyMap();
 		}
 		final AnnotationMirror mirror = annotations.get(annotation);
-		return DataElementSpec.getAnnotationValueMap(elementUtils, mirror);
-	}
-
-	/**
-	 * Get a map of annotation value names to the value identified by that name.
-	 * @param elementUtils
-	 * @param mirror
-	 * @return Map of String to unwrapped AnnotationValue (Object)
-	 */
-	public static Map<String, Object> getAnnotationValueMap(Elements elementUtils, AnnotationMirror mirror) {
 		return (Map<String, Object>) elementUtils.getElementValuesWithDefaults(mirror).entrySet().stream()
 			.collect(Collectors.toMap(
 				entry -> entry.getKey().getSimpleName().toString(),
