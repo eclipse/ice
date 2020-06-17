@@ -36,24 +36,22 @@ public class ${class} implements ${interface}, Serializable {
 	 * Logging tool
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(${class}.class);
-
 	#foreach($field in $fields)
 
-	#if(${field.DocString})
-	/**
-	 * $field.DocString.trim().replace("$newline", "$newline$tab *")
-	 */
-	#end
-	#if(!${field.Nullable} && !${field.Primitive})
-	@NonNull
-	#end
-	#if(!${field.Getter})
+		#fielddoc
+		#nonnull($tab, $newline)
+		#if(!${field.Getter})
 	@Getter(AccessLevel.NONE)
-	#end
-	#if(!${field.Setter})
+		#end
+		#if(!${field.Setter})
 	@Setter(AccessLevel.NONE)
+		#end
+		#fielddecl
 	#end
-	$blank#fielddecl
+	#foreach($field in ${fields.Constants})
+
+		#fielddoc
+		#fielddecl
 	#end
 	#foreach($field in $fields)
 		#foreach($alias in ${field.aliases})
@@ -134,8 +132,7 @@ public class ${class} implements ${interface}, Serializable {
 
 					// Separate boolean checks used to enable better catching
 					// by debuggers.
-					#foreach($field in $fields)
-					#if(${field.Match})
+					#foreach($field in ${fields.Match})
 
 					boolean ${field.Name}Match =
 					#if(${field.Nullable})
@@ -149,16 +146,14 @@ public class ${class} implements ${interface}, Serializable {
 					#end## if nullable
 					#else
 					// Not checking ${field.Name}
-					#end## if match
 					#end## foreach
 
-					#set($count = 0)
 					retval =
-						$blank#foreach($field in $fields)
-					#if(${field.Match})
-					#set($count = $count + 1)
-					#set($third = $count % 3)
-					#noop()${field.Name}Match#if($foreach.hasNext) &&#if($third == 0)$newline						#else #end#else;$newline#end#end#end
+					#@settab(6)
+						#foreach($field in ${fields.Match})#@nonewline
+						${field.Name}Match#if($foreach.hasNext) &&#if($foreach.count % 3 == 0)$newline#else #end#else;$newline#end
+						#end#end
+					#end
 				}
 			} else {
 				// This should be true if they are the same because the deep comparison is
