@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 
@@ -140,16 +141,22 @@ public class DataFieldSpec extends AnnotatedElement {
 	 * @return
 	 */
 	private String extractDefaultValue() {
-		Map<String, Object> map = this.getAnnotationValueMap(DataField.Default.class);
-		if (map.isEmpty()) {
-			return null;
+		String retval = null;
+		if (this.hasAnnotation(DataField.Default.class)) {
+			Map<String, Object> map = this.getAnnotationValueMap(DataField.Default.class);
+			boolean isString = (boolean) map.get(DataFieldValues.Default.IS_STRING.getKey());
+			String value = (String) map.get(DataFieldValues.Default.VALUE.getKey());
+			if (isString) {
+				retval = this.elementUtils.getConstantExpression(value);
+			} else {
+				retval = value;
+			}
+		} else if (this.element.getModifiers().contains(Modifier.FINAL)) {
+			retval = this.elementUtils.getConstantExpression(
+				((VariableElement) this.element).getConstantValue()
+			);
 		}
-		boolean isString = (boolean) map.get(DataFieldValues.Default.IS_STRING.getKey());
-		String value = (String) map.get(DataFieldValues.Default.VALUE.getKey());
-		if (isString) {
-			return this.elementUtils.getConstantExpression(value);
-		}
-		return value;
+		return retval;
 	}
 
 	/**
