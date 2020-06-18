@@ -1,6 +1,5 @@
 package org.eclipse.ice.dev.annotations.processors;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -27,8 +26,7 @@ import javax.lang.model.element.AnnotationValue;
 public class DataElementSpec extends AnnotatedElement {
 
 	/**
-	 * The Set of possible annotation classes we expect to see
-	 * on DataElements.
+	 * The Set of possible annotation classes we expect to see on DataElements.
 	 */
 	private final static Set<Class<?>> ANNOTATION_CLASSES = Set.of(
 		DataElement.class,
@@ -49,40 +47,45 @@ public class DataElementSpec extends AnnotatedElement {
 	/**
 	 * The fully qualified name of this element.
 	 */
-	@Getter private String fullyQualifiedName;
+	@Getter
+	private String fullyQualifiedName;
 
 	/**
 	 * The name of the DataElement as extracted from the DataElement annotation.
 	 */
-	@Getter private String name;
+	@Getter
+	private String name;
 
 	/**
 	 * The package of this element represented as a String.
 	 */
-	@Getter private String packageName;
+	@Getter
+	private String packageName;
 
 	/**
 	 * The name of the collection as extracted from Persisted or null.
 	 */
-	@Getter private String collectionName;
+	@Getter
+	private String collectionName;
 
 	/**
 	 * The DataFields found in this DataElementSpec.
 	 */
-	@Getter private List<DataFieldSpec> dataFields;
+	@Getter
+	private List<DataFieldSpec> dataFields;
 
 	/**
 	 * Construct a DataElementSpec from an Element.
-	 * @param elementUtils
-	 * @param element
-	 * @throws InvalidDataElementRoot
+	 * @param element the element annotated with {@code @DataElement}
+	 * @param elementUtils Elements class from processing environment
+	 * @throws InvalidDataElementSpec if given element is in an invalid element
+	 *         specification
 	 */
-	public DataElementSpec(Element element, Elements elementUtils) throws InvalidDataElementRoot {
+	public DataElementSpec(Element element, Elements elementUtils) throws InvalidDataElementSpec {
 		super(ANNOTATION_CLASSES, element, elementUtils);
 		if (!element.getKind().isClass()) {
-			throw new InvalidDataElementRoot(
-				"DataElementSpec must be class, found "
-					+ element.toString()
+			throw new InvalidDataElementSpec(
+				"DataElementSpec must be class, found " + element.toString()
 			);
 		}
 
@@ -116,8 +119,7 @@ public class DataElementSpec extends AnnotatedElement {
 
 	/**
 	 * Return the element name as extracted from the DataElement annotation.
-	 * @param element
-	 * @return
+	 * @return the extracted name
 	 */
 	public String extractName() {
 		return this.getSingleValue(DataElement.class, String.class);
@@ -125,8 +127,7 @@ public class DataElementSpec extends AnnotatedElement {
 
 	/**
 	 * Return the collection name as extracted from the Persisted annotation.
-	 * @param element
-	 * @return
+	 * @return the extracted collection name
 	 */
 	public String extractCollectionName() {
 		return this.getSingleValue(Persisted.class, String.class);
@@ -134,7 +135,7 @@ public class DataElementSpec extends AnnotatedElement {
 
 	/**
 	 * Get the name of the Implementation to be generated.
-	 * @return
+	 * @return implementation name
 	 */
 	public String getImplName() {
 		return this.name + IMPL_SUFFIX;
@@ -142,7 +143,7 @@ public class DataElementSpec extends AnnotatedElement {
 
 	/**
 	 * Get the fully qualified name of the Implementation to be generated.
-	 * @return
+	 * @return fully qualified implementation name
 	 */
 	public String getQualifiedImplName() {
 		return this.fullyQualifiedName + IMPL_SUFFIX;
@@ -150,7 +151,7 @@ public class DataElementSpec extends AnnotatedElement {
 
 	/**
 	 * Get the name of the Persistence Handler to be generated.
-	 * @return
+	 * @return persistence handler name
 	 */
 	public String getPersistenceHandlerName() {
 		return this.name + PERSISTENCE_SUFFIX;
@@ -158,7 +159,7 @@ public class DataElementSpec extends AnnotatedElement {
 
 	/**
 	 * Get the fully qualified name of the Persistence Handler to be generated.
-	 * @return
+	 * @return fully qualified persistence handler name
 	 */
 	public String getQualifiedPersistenceHandlerName() {
 		return this.fullyQualifiedName + PERSISTENCE_SUFFIX;
@@ -166,7 +167,6 @@ public class DataElementSpec extends AnnotatedElement {
 
 	/**
 	 * Collect Fields from DataField and DataFields Annotations.
-	 *
 	 * @return discovered fields
 	 */
 	public List<Field> fieldsFromDataFields() {
@@ -177,7 +177,6 @@ public class DataElementSpec extends AnnotatedElement {
 
 	/**
 	 * Collect JSON File Strings from DataFieldJson Annotations.
-	 *
 	 * @return discovered JSON file strings
 	 */
 	@SuppressWarnings("unchecked")

@@ -41,10 +41,10 @@ public abstract class AnnotatedElement {
 
 
 	/**
-	 * Construct a AnnotaedClass from an Element.
-	 * @param elementUtils
-	 * @param element
-	 * @throws InvalidDataElementRoot
+	 * Construct an AnnotatedElement from an Element.
+	 * @param annotationClasses The set of classes that this element expects
+	 * @param element The annotated element
+	 * @param elementUtils Elements helper from processing environment
 	 */
 	public AnnotatedElement(Set<Class<?>> annotationClasses, Element element, Elements elementUtils) {
 		this.element = element;
@@ -62,8 +62,8 @@ public abstract class AnnotatedElement {
 
 	/**
 	 * Determine if an annotation of a given type decorates this element.
-	 * @param cls
-	 * @return
+	 * @param cls class of annotation to check
+	 * @return whether annotation is present or not
 	 */
 	public boolean hasAnnotation(Class<?> cls) {
 		return this.annotations.containsKey(cls);
@@ -71,7 +71,7 @@ public abstract class AnnotatedElement {
 
 	/**
 	 * Get the AnnotationMirror of a given type if present on the element.
-	 * @param cls
+	 * @param cls class of annotation to retrieve
 	 * @return AnnotationMirror or null if not found
 	 */
 	public AnnotationMirror getAnnotation(Class<?> cls) {

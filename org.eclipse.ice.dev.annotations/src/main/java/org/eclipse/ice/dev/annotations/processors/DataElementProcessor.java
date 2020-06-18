@@ -137,7 +137,7 @@ public class DataElementProcessor extends AbstractProcessor {
 						fields
 					);
 				}
-			} catch (final IOException | InvalidDataElementRoot e) {
+			} catch (final IOException | InvalidDataElementSpec e) {
 				messager.printMessage(Diagnostic.Kind.ERROR, stackTraceToString(e));
 				return false;
 			}
