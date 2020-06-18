@@ -86,6 +86,7 @@ public class JavascriptValidator<T> implements Serializable {
 
 	/**
 	 * Copy constructor
+	 * @param otherValidator to copy
 	 */
 	public JavascriptValidator(JavascriptValidator<T> otherValidator) {
 		if (otherValidator != null) {

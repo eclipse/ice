@@ -19,18 +19,24 @@ public @interface DataField {
 	/**
 	 * Flag whether this field should have an associated getter
 	 * generated.
+	 * @return getter annotation value
+	 * @see org.eclipse.ice.dev.annotations.processors.Field#getter
 	 */
 	boolean getter() default true;
 
 	/**
 	 * Flag whether this field should have an associated setter
 	 * generated.
+	 * @return setter annotation value
+	 * @see org.eclipse.ice.dev.annotations.processors.Field#setter
 	 */
 	boolean setter() default true;
 
 	/**
 	 * Flag whether this field should be included in
 	 * {@link org.eclipse.ice.dev.annotations.IDataElement#matches(Object)}.
+	 * @return match annotation value
+	 * @see org.eclipse.ice.dev.annotations.processors.Field#match
 	 */
 	boolean match() default true;
 
@@ -38,6 +44,8 @@ public @interface DataField {
 	 * Flag whether this field is considered unique in a collection.
 	 * This causes persistence retrieval methods to return a single value
 	 * rather than an iterable of values.
+	 * @return unique annotation value
+	 * @see org.eclipse.ice.dev.annotations.processors.Field#unique
 	 */
 	boolean unique() default false;
 
@@ -45,6 +53,8 @@ public @interface DataField {
 	 * Flag whether this field should be searchable in a collection.
 	 * This causes persistence retrieval methods to be generated for this
 	 * field.
+	 * @return search annotation value
+	 * @see org.eclipse.ice.dev.annotations.processors.Field#search
 	 */
 	boolean search() default true;
 
@@ -52,6 +62,8 @@ public @interface DataField {
 	 * Flag whether this field can have a value of null. This causes
 	 * this field to be annotated with {@code @NonNull} from Lombok. Defaults
 	 * to false.
+	 * @return nullable annotation value
+	 * @see org.eclipse.ice.dev.annotations.processors.Field#nullable
 	 */
 	boolean nullable() default false;
 
@@ -85,12 +97,14 @@ public @interface DataField {
 	public @interface Default {
 		/**
 		 * The default value of this field represented as a String.
+		 * @return defaultValue annotation value
 		 */
 		String value();
 
 		/**
 		 * Flag whether the value is itself intended to be a String and
 		 * should be escaped.
+		 * @return isString annotation value
 		 */
 		boolean isString() default false;
 	}

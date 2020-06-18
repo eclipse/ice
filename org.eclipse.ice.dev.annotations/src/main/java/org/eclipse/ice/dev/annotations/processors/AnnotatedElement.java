@@ -30,13 +30,12 @@ public abstract class AnnotatedElement {
 
 	/**
 	 * The element representing an interface annotated with
-	 * <code>@DataElement</code>.
+	 * {@code @DataElement}.
 	 */
 	protected Element element;
 
 	/**
 	 * Construct an AnnotatedElement from an Element.
-	 * @param annotationClasses The set of classes that this element expects
 	 * @param element The annotated element
 	 * @param elementUtils Elements helper from processing environment
 	 */
@@ -56,6 +55,7 @@ public abstract class AnnotatedElement {
 
 	/**
 	 * Get the AnnotationMirror of a given type if present on the element.
+	 * @param <T> Type of annotation to retrieve
 	 * @param cls class of annotation to retrieve
 	 * @return AnnotationMirror or null if not found
 	 */
@@ -71,9 +71,10 @@ public abstract class AnnotatedElement {
 	 * Get a map of annotation value names to the value identified by that name.
 	 *
 	 * This is useful when dealing with a complicated Annotation potentially
-	 * containing a value that is a Class<?> object. Otherwise, it is recommended to
+	 * containing a value that is a Class object. Otherwise, it is recommended to
 	 * directly retrieve the value from an Annotation instance.
-	 * @param annotation the class of the annotation from which values will be retrieved.
+	 * @param annotationClass the class of the annotation from which values
+	 *        will be retrieved.
 	 * @return Map of String to unwrapped AnnotationValue (Object)
 	 */
 	public Map<String, Object> getAnnotationValueMap(Class<?> annotationClass) {
@@ -91,7 +92,7 @@ public abstract class AnnotatedElement {
 	 * Get a list of annotation values from an annotation mirror of a given type.
 	 *
 	 * This is useful when dealing with a complicated Annotation potentially
-	 * containing a value that is a Class<?> object. Otherwise, it is recommended to
+	 * containing a value that is a Class object. Otherwise, it is recommended to
 	 * directly retrieve the value from an Annotation instance.
 	 * @param annotationClass the class of the annotation from which values will be
 	 *        retrieved.

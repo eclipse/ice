@@ -36,7 +36,7 @@ public interface IDataElement<T> {
 	/**
 	 * Set the simple name of the element
 	 *
-	 * @param elemName a simple name
+	 * @param name a simple name
 	 * @throws Exception An exception is thrown if the value is null, which is
 	 *                   unallowable.
 	 */
@@ -153,6 +153,7 @@ public interface IDataElement<T> {
 	 * This operation clones the object. Note that it differs from the base class
 	 * implementation in that it will return null if it cannot create the clone to
 	 * promote fast failure. See {@link java.lang.Object#clone()};
+	 * @return the cloned object
 	 */
 	public Object clone();
 
@@ -180,15 +181,19 @@ public interface IDataElement<T> {
 	 * object.
 	 *
 	 * @param jsonDataElement the contents of this data element as JSON
+	 * @return the deserialized DataElement
 	 */
 	public T fromJSON(final String jsonDataElement);
 
 	/**
 	 * Load from a String-Object Map, skipping the String parsing step. Structures
-	 * such as <code>org.bson.Document</code> implement Map<String, Object> and
+	 * such as {@link org.bson.Document} implement {@code Map<String, Object>} and
 	 * therefore do not need to be processed from raw String form.
 	 *
-	 * @param jsonDataElement the contents of this data element as a Map<String, Object>
+	 * @param <S> Object extending {@code Map<String, Object>}
+	 * @param jsonDataElement the contents of this data element as a
+	 *        {@code Map<String, Object>}
+	 * @return the deserialized DataElement
 	 */
 	public <S extends Map<String, Object>> T fromJSON(final S jsonDataElement);
 

@@ -47,6 +47,7 @@ import java.lang.annotation.RetentionPolicy;
 public @interface DataElement {
 	/**
 	 * Name of the DataElement to generate
+	 * @return name annotation value
 	 */
 	String name();
 }
