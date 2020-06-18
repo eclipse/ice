@@ -1,7 +1,6 @@
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,71 +19,35 @@ import org.eclipse.ice.dev.annotations.DataField;
 public class DataFieldSpec extends AnnotatedElement {
 
 	/**
-	 * The set of Annotations processed by this AnnotatedElement.
-	 */
-	private static final Set<Class<?>> ANNOTATION_CLASSES = Set.of(
-		DataField.class,
-		DataField.Default.class
-	);
-
-	/**
 	 * Set of Annotation names that extractAnnotations should filter out.
 	 */
 	private static final Set<String> ANNOTATION_CLASS_NAMES =
-		ANNOTATION_CLASSES.stream()
+		Set.of(
+			DataField.class,
+			DataField.Default.class
+		).stream()
 			.map(cls -> cls.getCanonicalName())
 			.collect(Collectors.toSet());
 
 	/**
-	 * @see org.eclipse.ice.dev.annotations.processor.Field#getter
+	 * Used to get DataField Annotation values.
 	 */
-	private boolean getter;
-
-	/**
-	 * @see org.eclipse.ice.dev.annotations.processor.Field#setter
-	 */
-	private boolean setter;
-
-	/**
-	 * @see org.eclipse.ice.dev.annotations.processor.Field#match
-	 */
-	private boolean match;
-
-	/**
-	 * @see org.eclipse.ice.dev.annotations.processor.Field#unique
-	 */
-	private boolean unique;
-
-	/**
-	 * @see org.eclipse.ice.dev.annotations.processor.Field#search
-	 */
-	private boolean search;
-
-	/**
-	 * @see org.eclipse.ice.dev.annotations.processor.Field#nullable
-	 */
-	private boolean nullable;
+	private DataField fieldInfo;
 
 	/**
 	 * Instantiate a DataFieldSpec.
-	 * @param element
-	 * @param elementUtils
+	 * @param element annotated with {@code @DataField}
+	 * @param elementUtils Elements helper class from processing environment
 	 */
 	public DataFieldSpec(Element element, Elements elementUtils) {
-		super(ANNOTATION_CLASSES, element, elementUtils);
-		Map<String, Object> annotationValues = this.getAnnotationValueMap(DataField.class);
-		this.getter = (boolean) annotationValues.get(DataFieldValues.GETTER.getKey());
-		this.setter = (boolean) annotationValues.get(DataFieldValues.SETTER.getKey());
-		this.match = (boolean) annotationValues.get(DataFieldValues.MATCH.getKey());
-		this.unique = (boolean) annotationValues.get(DataFieldValues.UNIQUE.getKey());
-		this.search = (boolean) annotationValues.get(DataFieldValues.SEARCH.getKey());
-		this.nullable = (boolean) annotationValues.get(DataFieldValues.NULLABLE.getKey());
+		super(element, elementUtils);
+		this.fieldInfo = this.element.getAnnotation(DataField.class);
 	}
 
 	/**
 	 * Determine if the passed field is a DataField.
-	 * @param element
-	 * @return
+	 * @param element to check
+	 * @return whether element is a DataField
 	 */
 	public static boolean isDataField(Element element) {
 		return element.getAnnotation(DataField.class) != null;
@@ -92,7 +55,8 @@ public class DataFieldSpec extends AnnotatedElement {
 
 	/**
 	 * Return the set of access modifiers on this Field.
-	 * @return
+	 * @return extract field modifiers
+	 * @see Modifier
 	 */
 	private Set<Modifier> extractModifiers() {
 		return this.element.getModifiers();
@@ -101,7 +65,7 @@ public class DataFieldSpec extends AnnotatedElement {
 	/**
 	 * Return the set of annotations on this DataField, excepting the DataField
 	 * Annotation itself.
-	 * @return
+	 * @return extracted annotations, excluding DataField related annotations
 	 */
 	private List<String> extractAnnotations() {
 		return this.element.getAnnotationMirrors().stream()
@@ -114,7 +78,7 @@ public class DataFieldSpec extends AnnotatedElement {
 
 	/**
 	 * Return the class of this Field.
-	 * @return
+	 * @return extracted field type
 	 */
 	private TypeMirror extractFieldType() {
 		return this.element.asType();
@@ -122,7 +86,7 @@ public class DataFieldSpec extends AnnotatedElement {
 
 	/**
 	 * Return the name of this Field.
-	 * @return
+	 * @return extracted field name
 	 */
 	private String extractFieldName() {
 		return this.element.getSimpleName().toString();
@@ -130,7 +94,7 @@ public class DataFieldSpec extends AnnotatedElement {
 
 	/**
 	 * Return the DocString of this Field.
-	 * @return
+	 * @return extracted doc comment
 	 */
 	private String extractDocString() {
 		return this.elementUtils.getDocComment(this.element);
@@ -138,18 +102,16 @@ public class DataFieldSpec extends AnnotatedElement {
 
 	/**
 	 * Extract the defaultValue of this Field.
-	 * @return
+	 * @return extracted default value
 	 */
 	private String extractDefaultValue() {
 		String retval = null;
-		if (this.hasAnnotation(DataField.Default.class)) {
-			Map<String, Object> map = this.getAnnotationValueMap(DataField.Default.class);
-			boolean isString = (boolean) map.get(DataFieldValues.Default.IS_STRING.getKey());
-			String value = (String) map.get(DataFieldValues.Default.VALUE.getKey());
-			if (isString) {
-				retval = this.elementUtils.getConstantExpression(value);
+		DataField.Default defaults = this.element.getAnnotation(DataField.Default.class);
+		if (defaults != null) {
+			if (defaults.isString()) {
+				retval = this.elementUtils.getConstantExpression(defaults.value());
 			} else {
-				retval = value;
+				retval = defaults.value();
 			}
 		} else if (this.element.getModifiers().contains(Modifier.FINAL)) {
 			retval = this.elementUtils.getConstantExpression(
@@ -171,12 +133,12 @@ public class DataFieldSpec extends AnnotatedElement {
 			.docString(extractDocString())
 			.annotations(extractAnnotations())
 			.modifiersToString(extractModifiers())
-			.getter(getter)
-			.setter(setter)
-			.match(match)
-			.unique(unique)
-			.search(search)
-			.nullable(nullable)
+			.getter(fieldInfo.getter())
+			.setter(fieldInfo.setter())
+			.match(fieldInfo.match())
+			.unique(fieldInfo.unique())
+			.search(fieldInfo.search())
+			.nullable(fieldInfo.nullable())
 			.build();
 	}
 }

@@ -1,8 +1,9 @@
 package org.eclipse.ice.dev.annotations.processors;
 
+import java.util.Arrays;
+
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.lang.model.element.Element;
@@ -15,8 +16,6 @@ import org.eclipse.ice.dev.annotations.Persisted;
 
 import lombok.Getter;
 
-import javax.lang.model.element.AnnotationValue;
-
 /**
  * Helper class for extracting data from DataElementSpec classes and their
  * annotations.
@@ -24,15 +23,6 @@ import javax.lang.model.element.AnnotationValue;
  * @author Daniel Bluhm
  */
 public class DataElementSpec extends AnnotatedElement {
-
-	/**
-	 * The Set of possible annotation classes we expect to see on DataElements.
-	 */
-	private final static Set<Class<?>> ANNOTATION_CLASSES = Set.of(
-		DataElement.class,
-		DataFieldJson.class,
-		Persisted.class
-	);
 
 	/**
 	 * The value appended to DataElement implementation class names.
@@ -82,7 +72,7 @@ public class DataElementSpec extends AnnotatedElement {
 	 *         specification
 	 */
 	public DataElementSpec(Element element, Elements elementUtils) throws InvalidDataElementSpec {
-		super(ANNOTATION_CLASSES, element, elementUtils);
+		super(element, elementUtils);
 		if (!element.getKind().isClass()) {
 			throw new InvalidDataElementSpec(
 				"DataElementSpec must be class, found " + element.toString()
@@ -122,7 +112,9 @@ public class DataElementSpec extends AnnotatedElement {
 	 * @return the extracted name
 	 */
 	public String extractName() {
-		return this.getSingleValue(DataElement.class, String.class);
+		return this.getAnnotation(DataElement.class)
+			.map(e -> e.name())
+			.orElse(null);
 	}
 
 	/**
@@ -130,7 +122,9 @@ public class DataElementSpec extends AnnotatedElement {
 	 * @return the extracted collection name
 	 */
 	public String extractCollectionName() {
-		return this.getSingleValue(Persisted.class, String.class);
+		return this.getAnnotation(Persisted.class)
+			.map(p -> p.collection())
+			.orElse(null);
 	}
 
 	/**
@@ -179,22 +173,9 @@ public class DataElementSpec extends AnnotatedElement {
 	 * Collect JSON File Strings from DataFieldJson Annotations.
 	 * @return discovered JSON file strings
 	 */
-	@SuppressWarnings("unchecked")
 	public List<String> getDataFieldJsonFileNames() {
-		if (!hasAnnotation(DataFieldJson.class)) {
-			return Collections.emptyList();
-		}
-		AnnotationValue value = this.getAnnotationValues(DataFieldJson.class)
-			.stream()
-			.findAny()
-			.orElse(null);
-		if (value == null) {
-			return Collections.emptyList();
-		}
-
-		// Flatten the AnnotationValue List into List of Strings in Annotation
-		return ((List<? extends AnnotationValue>) value.getValue()).stream()
-			.map(val -> (String) val.getValue())
-			.collect(Collectors.toList());
+		return this.getAnnotation(DataFieldJson.class)
+			.map(jsons -> Arrays.asList(jsons.value()))
+			.orElse(Collections.emptyList());
 	}
 }

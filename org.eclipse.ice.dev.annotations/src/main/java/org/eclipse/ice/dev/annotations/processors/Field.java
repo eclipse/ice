@@ -174,7 +174,7 @@ public class Field {
 
 		/**
 		 * Format type as a String from a TypeMirror.
-		 * @param type
+		 * @param type typemirror representing the type of this Field
 		 * @return this
 		 */
 		@JsonIgnore
@@ -187,7 +187,7 @@ public class Field {
 		/**
 		 * Take a raw string value and pass through without manipulating for use as
 		 * type.
-		 * @param type
+		 * @param type String representation of type of this Field
 		 * @return this
 		 */
 		@JsonProperty
@@ -210,7 +210,7 @@ public class Field {
 
 		/**
 		 * Format Modifiers as string.
-		 * @param modifiers
+		 * @param modifiers set of {@link Modifier}s
 		 * @return this
 		 */
 		@JsonIgnore
