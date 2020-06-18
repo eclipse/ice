@@ -38,7 +38,9 @@ public class Fields implements Iterable<Field> {
 	}
 
 	/**
-	 * @return iterator over fields that are constants
+	 * Return iterator over constant fields.
+	 *
+	 * @return iterator over fields
 	 * @see Field#isConstant()
 	 */
 	public Iterator<Field> getConstants() {
@@ -48,7 +50,9 @@ public class Fields implements Iterable<Field> {
 	}
 
 	/**
-	 * @return iterator over fields that are mutable (not constant)
+	 * Return iterator over mutable fields (fields that are not constant).
+	 *
+	 * @return iterator over the fields
 	 * @see Field#isConstant()
 	 */
 	public Iterator<Field> getMutable() {
@@ -58,7 +62,9 @@ public class Fields implements Iterable<Field> {
 	}
 
 	/**
-	 * @return iterator over the fields that are set to be used in matches method.
+	 * Return iterator over fields that are set to be used in matches.
+	 *
+	 * @return iterator over the fields
 	 * @see org.eclipse.ice.dev.annotations.IDataElement#matches(Object)
 	 */
 	public Iterator<Field> getMatch() {
@@ -71,7 +77,6 @@ public class Fields implements Iterable<Field> {
 	 * Returns an iterator over the mutable fields found in this collection. The
 	 * mutable fields are the default set iterated over because they are the most
 	 * used fields in the templates for DataElement generation.
-	 * @return an iterator over the mutable fields.
 	 */
 	@Override
 	public Iterator<Field> iterator() {
