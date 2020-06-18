@@ -51,13 +51,13 @@ public class $class implements $interface<$elementInterface> {
 	}
 
 	/**
-	 * Retrieve all $elementInterface from the collection.
+	 * Find and retrieve all $elementInterface from the collection.
 	 * @param <T>
 	 * @return an iterable of the retrieved elements.
 	 * @throws Exception
 	 */
 	@Override
-	public Iterable<$elementInterface> find() throws Exception {
+	public Iterable<$elementInterface> findAll() throws Exception {
 		return this.collection.find()
 			.map(doc -> new ${implementation}().fromJSON(doc));
 	}

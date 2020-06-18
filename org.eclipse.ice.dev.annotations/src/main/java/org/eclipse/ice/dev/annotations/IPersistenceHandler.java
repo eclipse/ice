@@ -19,12 +19,12 @@ public interface IPersistenceHandler<T> {
 	public long clear() throws Exception;
 
 	/**
-	 * Retrieve all DataElements from the collection.
+	 * Find and retrieve all DataElements from the collection.
 	 * @param <T>
 	 * @return an iterable of the retrieved elements.
 	 * @throws Exception
 	 */
-	public Iterable<T> find() throws Exception;
+	public Iterable<T> findAll() throws Exception;
 
 	/**
 	 * Find DataElement by UUID.
