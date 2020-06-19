@@ -24,4 +24,9 @@ public class PersonSpec {
 	 */
 	@DataField.Default(value = "Builder", isString = true)
 	@DataField private String lastName;
+
+	/**
+	 * An example constant value. This one probably doesn't actually make sense.
+	 */
+	@DataField public static final String COLLECTION = "people";
 }
