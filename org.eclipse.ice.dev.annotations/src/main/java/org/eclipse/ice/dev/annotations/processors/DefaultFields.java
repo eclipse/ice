@@ -24,9 +24,12 @@ public class DefaultFields {
 		.getter(false)
 		.setter(false)
 		.alias(
-			FieldAlias.builder()
-				.alias("UUID")
+			Field.builder()
+				.name("UUID")
+				.unique(true)
 				.getter(true)
+				.setter(false)
+				.defaultField(true)
 				.build()
 		)
 		.build();
@@ -39,6 +42,7 @@ public class DefaultFields {
 		.type(long.class)
 		.docString("A unique identifier for this element.")
 		.defaultValue(0L)
+		.defaultField(true)
 		.build();
 
 	/**
@@ -49,6 +53,7 @@ public class DefaultFields {
 		.type(String.class)
 		.docString("A simple name for the data.")
 		.defaultValue("name")
+		.defaultField(true)
 		.build();
 
 	/**
@@ -59,6 +64,7 @@ public class DefaultFields {
 		.type(String.class)
 		.docString("A simple description of the data")
 		.defaultValue("description")
+		.defaultField(true)
 		.build();
 
 	/**
@@ -69,6 +75,7 @@ public class DefaultFields {
 		.type(String.class)
 		.docString("A comment that annotates the data in a meaningful way.")
 		.defaultValue("no comment")
+		.defaultField(true)
 		.build();
 
 	/**
@@ -79,6 +86,7 @@ public class DefaultFields {
 		.type(String.class)
 		.docString("The context (a tag) in which the data should be considered.")
 		.defaultValue("default")
+		.defaultField(true)
 		.build();
 
 	/**
@@ -89,6 +97,7 @@ public class DefaultFields {
 		.type(boolean.class)
 		.docString("This value is true if the element should be regarded by the client as required.")
 		.defaultValue(false)
+		.defaultField(true)
 		.build();
 
 	/**
@@ -100,6 +109,7 @@ public class DefaultFields {
 		.type(boolean.class)
 		.docString("This value is true if the element should be regarded as a secret by the client, such as for passwords.")
 		.defaultValue(false)
+		.defaultField(true)
 		.build();
 
 	/**
@@ -110,6 +120,8 @@ public class DefaultFields {
 		.type(Field.raw("JavascriptValidator<$class>"))
 		.docString("The validator used to check the correctness of the data.")
 		.nullable(true)
+		.defaultField(true)
+		.search(false)
 		.build();
 
 	/**

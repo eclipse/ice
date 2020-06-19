@@ -4,8 +4,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -76,9 +78,25 @@ public class Field {
 	@Builder.Default boolean setter = true;
 
 	/**
+	 * Whether this field is considered a "default" or included in all
+	 * DataElements.
+	 */
+	boolean defaultField;
+
+	/**
+	 * Whether this field should be searchable with PersistenceHandler.
+	 */
+	@Builder.Default boolean search = true;
+
+	/**
+	 * Whether this field should return only one from PersistenceHandler.
+	 */
+	boolean unique;
+
+	/**
 	 * A list of alternate names for this field.
 	 */
-	@Singular("alias") List<FieldAlias> aliases;
+	@Singular("alias") List<Field> aliases;
 
 	/**
 	 * Marker class used to mark a string value as one that should not be
@@ -111,6 +129,15 @@ public class Field {
 	}
 
 	/**
+	 * Return this Fields name ready for use in a method.
+	 * @return capitalized name
+	 */
+	@JsonIgnore
+	public String getNameForMethod() {
+		return StringUtils.capitalize(this.name);
+	}
+
+	/**
 	 * Reverse the escaping performed on defaultValues when the type of the field is
 	 * a String. This is only used when serializing to JSON and will render a string
 	 * the builder for this class will recognize.
@@ -118,6 +145,9 @@ public class Field {
 	 */
 	@JsonProperty("defaultValue")
 	public String unescapeDefaultValue() {
+		if (this.type == null) {
+			return this.defaultValue;
+		}
 		Class<?> cls = getClassOrNull(this.type);
 		if (this.defaultValue != null && cls != null && cls.equals(String.class)) {
 			return this.defaultValue.substring(1, this.defaultValue.length() - 1);
@@ -129,7 +159,7 @@ public class Field {
 	 * Instruct Jackson how to deserialize aliases.
 	 */
 	private interface FieldBuilderMeta {
-		@JsonDeserialize(contentAs = FieldAlias.class) FieldBuilder aliases(Collection<? extends FieldAlias> aliases);
+		@JsonDeserialize(contentAs = Field.class) FieldBuilder aliases(Collection<? extends Field> aliases);
 	}
 
 	/**
@@ -249,6 +279,9 @@ public class Field {
 		 */
 		@JsonAlias({"fieldType"})
 		public FieldBuilder jsonType(String type) {
+			if (type == null) {
+				return this;
+			}
 			Class<?> cls = getClassOrNull(type);
 			if (cls == null) {
 				cls = getClassOrNull("java.lang." + type);
@@ -273,6 +306,9 @@ public class Field {
 		 * @return builder
 		 */
 		public FieldBuilder jsonDefaultValue(String defaultValue) {
+			if (defaultValue == null) {
+				return this;
+			}
 			this.defaultValue(raw(defaultValue));
 			if (shouldEscapeDefaultValue()) {
 				this.defaultValue(defaultValue);
@@ -333,6 +369,33 @@ public class Field {
 		 */
 		public FieldBuilder jsonSetter(boolean setter) {
 			return this.setter(setter);
+		}
+
+		/**
+		 * DefaultField builder for use in Deserialization.
+		 * @param defaultField
+		 * @return
+		 */
+		public FieldBuilder jsonDefaultField(boolean defaultField) {
+			return this.defaultField(defaultField);
+		}
+
+		/**
+		 * Search builder for use in Deserialization.
+		 * @param search
+		 * @return
+		 */
+		public FieldBuilder jsonSearch(boolean search) {
+			return this.search(search);
+		}
+
+		/**
+		 * Unique builder for use in Deserialization.
+		 * @param search
+		 * @return
+		 */
+		public FieldBuilder jsonUnique(boolean search) {
+			return this.unique(unique);
 		}
 	}
 }

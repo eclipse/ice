@@ -11,7 +11,10 @@ package $package;
 #end
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.UUID;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.eclipse.ice.dev.annotations.IDataElement;
 import org.eclipse.ice.dev.annotations.JavascriptValidator;
@@ -69,20 +72,20 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 			#if(${alias.Getter})
 
 	/**
-	 * Get ${field.Name} by alias ${alias.Alias}.
+	 * Get ${field.Name} by alias ${alias.Name}.
 	 * @return ${field.Name}
 	 */
-	public #fieldtype() get${alias.GetterName}() {
+	public #fieldtype() get${alias.NameForMethod}() {
 		return ${field.Name};
 	}
 			#end
 			#if(${alias.Setter})
 
 	/**
-	 * Set ${field.Name} by alias ${alias.Alias}.
+	 * Set ${field.Name} by alias ${alias.Name}.
 	 * @return ${field.Name}
 	 */
-	public void set${alias.SetterName}(#if(!${field.Nullable} && !${field.Primitive})@NonNull #end#fieldtype() ${field.Name}) {
+	public void set${alias.NameForMethod}(#if(!${field.Nullable} && !${field.Primitive})@NonNull #end#fieldtype() ${field.Name}) {
 		this.${field.Name} = ${field.Name};
 	}
 			#end
@@ -203,36 +206,65 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 	}
 
 	/**
+	 * Load DataElement from JsonNode.
+	 * @param rootNode DataElement root as JsonNode
+	 * @param mapper ObjectMapper to convert values
+	 */
+	private void fromJsonNode(final JsonNode rootNode, final ObjectMapper mapper) throws JsonProcessingException {
+		#foreach($field in $fields)
+		// ${field.Name}
+		JsonNode ${field.Name}Node = rootNode.get("${field.Name}");
+		#if(${field.Nullable})
+		if (rootNode.hasNonNull("${field.Name}")) {
+			${field.Name} = mapper.treeToValue(${field.Name}Node, ${field.Name}.getClass());
+		} else {
+			${field.Name} = null;
+		}
+		#else
+		${field.Name} = mapper.treeToValue(${field.Name}Node, ${field.Type}.class);
+		#end
+
+		#end
+	}
+
+	/**
 	 * This operation deserializes a valid JSON string and tries to load it into the
 	 * object.
 	 *
 	 * @param jsonDataElement the contents of this data element as JSON
 	 */
-	public void fromJSON(final String jsonDataElement) {
+	public <T extends IDataElement> T fromJSON(final String jsonDataElement) {
 
 		// Load the data from the string with Jackson.
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			JsonNode rootNode = mapper.readTree(jsonDataElement);
-
-			#foreach($field in $fields)
-			// ${field.Name}
-			JsonNode ${field.Name}Node = rootNode.get("${field.Name}");
-			#if(${field.Nullable})
-			if (rootNode.hasNonNull("${field.Name}")) {
-				${field.Name} = mapper.treeToValue(${field.Name}Node, ${field.Name}.getClass());
-			} else {
-				${field.Name} = null;
-			}
-			#else
-			${field.Name} = mapper.treeToValue(${field.Name}Node, ${field.Type}.class);
-			#end
-
-			#end
+			fromJsonNode(rootNode, mapper);
 		} catch (JsonProcessingException e) {
 			logger.error("Unable to read DataElement from string!", e);
 		}
 
-		return;
+		return (T) this;
+	}
+
+	/**
+	 * Load from a String-Object Map, skipping the String parsing step. Structures
+	 * such as <code>org.bson.Document</code> implement Map<String, Object> and
+	 * therefore do not need to be processed from raw String form.
+	 *
+	 * @param jsonDataElement the contents of this data element as a Map<String, Object>
+	 */
+	public <T extends Map<String, Object>, S extends IDataElement> S fromJSON(final T jsonDataElement) {
+
+		// Load the data from the string with Jackson.
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			JsonNode rootNode = mapper.valueToTree(jsonDataElement);
+			fromJsonNode(rootNode, mapper);
+		} catch (JsonProcessingException e) {
+			logger.error("Unable to read DataElement from string!", e);
+		}
+
+		return (S) this;
 	}
 }

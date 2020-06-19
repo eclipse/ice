@@ -1,5 +1,6 @@
 package org.eclipse.ice.dev.annotations;
 
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -173,5 +174,14 @@ public interface IDataElement {
 	 *
 	 * @param jsonDataElement the contents of this data element as JSON
 	 */
-	public void fromJSON(final String jsonDataElement);
+	public <T extends IDataElement> T fromJSON(final String jsonDataElement);
+
+	/**
+	 * Load from a String-Object Map, skipping the String parsing step. Structures
+	 * such as <code>org.bson.Document</code> implement Map<String, Object> and
+	 * therefore do not need to be processed from raw String form.
+	 *
+	 * @param jsonDataElement the contents of this data element as a Map<String, Object>
+	 */
+	public <T extends Map<String, Object>, S extends IDataElement> S fromJSON(final T jsonDataElement);
 }
