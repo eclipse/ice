@@ -108,17 +108,18 @@ public abstract class AnnotatedElement {
 	}
 
 	/**
-	 * Find and return annotation of type cls on this element or return null.
-	 * @param cls
-	 * @return
+	 * Find and return annotation of a given on this element.
+	 * @param annotationClass Class of annotation mirror to retrieve
+	 * @return {@link Optional} of annotation mirror
 	 */
-	private Optional<AnnotationMirror> getAnnotationMirror(Class<?> cls) {
+	private Optional<AnnotationMirror> getAnnotationMirror(Class<?> annotationClass) {
 		if (this.mirrors == null) {
 			this.mirrors = this.element.getAnnotationMirrors();
 		}
 		return this.mirrors.stream()
-			.filter(m -> m.getAnnotationType().toString().equals(cls.getCanonicalName()))
-			.findAny()
+			.filter(m -> m.getAnnotationType()
+				.toString().equals(annotationClass.getCanonicalName())
+			).findAny()
 			.map(m -> Optional.of((AnnotationMirror) m))
 			.orElse(Optional.empty());
 	}
