@@ -21,13 +21,12 @@ public class DataFieldSpec extends AnnotatedElement {
 	/**
 	 * Set of Annotation names that extractAnnotations should filter out.
 	 */
-	private static final Set<String> ANNOTATION_CLASS_NAMES =
-		Set.of(
-			DataField.class,
-			DataField.Default.class
-		).stream()
-			.map(cls -> cls.getCanonicalName())
-			.collect(Collectors.toSet());
+	private static final Set<String> ANNOTATION_CLASS_NAMES = Set.of(
+		DataField.class,
+		DataField.Default.class
+	).stream()
+		.map(cls -> cls.getCanonicalName())
+		.collect(Collectors.toSet());
 
 	/**
 	 * Used to get DataField Annotation values.
@@ -101,7 +100,9 @@ public class DataFieldSpec extends AnnotatedElement {
 	}
 
 	/**
-	 * Extract the defaultValue of this Field.
+	 * Extract the defaultValue of this Field. Checks for {@link DataField.Default}
+	 * and if not present checks for a constant expression if the field is
+	 * {@code final}.
 	 * @return extracted default value
 	 */
 	private String extractDefaultValue() {
