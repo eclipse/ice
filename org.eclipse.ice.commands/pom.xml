@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.eclipse.ice</groupId>
+  <artifactId>org.eclipse.ice.commands</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Eclipse ICE Commands API</name>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+  <description>This project provides a simple set of utilities for executing commands such as job launches and file transfers.</description>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.4</version>
+		</dependency>
+		<dependency>
+      		<groupId>org.slf4j</groupId>
+     	    <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.12</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+           <version>1.2.17</version>
+        </dependency> 
+        <dependency>
+        	<groupId>com.jcraft</groupId>
+        	<artifactId>jsch</artifactId>
+        	<version>0.1.55</version>
+        </dependency>
+	</dependencies>
+</project>

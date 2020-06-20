@@ -14,7 +14,7 @@ package org.eclipse.tests.ice.item;
 import java.util.List;
 
 import org.eclipse.ice.datastructures.form.Material;
-import org.eclipse.ice.materials.IMaterialsDatabase;
+import org.eclipse.ice.item.model.IMaterialsDatabase;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.gui.TableFormat;

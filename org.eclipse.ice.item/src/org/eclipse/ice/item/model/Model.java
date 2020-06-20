@@ -14,7 +14,6 @@ package org.eclipse.ice.item.model;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.materials.IMaterialsDatabase;
 
 /**
  * A Model in ICE contains all of the information necessary to describe a

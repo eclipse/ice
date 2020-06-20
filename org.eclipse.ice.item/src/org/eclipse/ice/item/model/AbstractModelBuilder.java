@@ -15,7 +15,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.materials.IMaterialsDatabase;
 
 /**
  * This is a subclass of AbstractItemBuilder specifically focused on adding

@@ -45,25 +45,12 @@
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.eavp.feature.feature.group" version="0.0.0"/>
+<repository location="http://download.eclipse.org/eavp/builds/next"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="javax.ws.rs" version="1.1.1.v20130318-1750"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.apache.log4j" version="0.0.0"/>
-<unit id="org.eclipse.swtbot.eclipse.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.swtbot.eclipse.gef.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.swtbot.eclipse.test.junit.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.swtbot.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.swtbot.forms.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.swtbot.generator.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.swtbot.ide.feature.group" version="0.0.0"/>
-<unit id="org.hamcrest.core" version="0.0.0"/>
-<unit id="org.hamcrest.library" version="0.0.0"/>
-<repository location="http://download.eclipse.org/technology/swtbot/releases/latest"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.ease.engine.jython.feature.feature.group" version="0.0.0"/>
-<repository location="http://bintray.com/artifact/download/pontesegger/ease-engines/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.cdt.autotools.feature.group" version="0.0.0"/>
@@ -88,17 +75,18 @@
 <unit id="org.eclipse.emf.diffmerge.sdk.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.emf.ecore.xcore.sdk.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.emf.ecoretools.sdk.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.emf.ecp.emfforms.sdk.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.emf.ecp.sdk.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.emf.eef.sdk-feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.emf.facet.sdk.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.emf.oda.sdk.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.emf.query.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.emf.sdk.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.emf.transaction.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.emf.validation.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.emf.validation.sdk.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.epp.logging.aeri.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.epp.mpc.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.equinox.sdk.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.fx.ide.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.gef.sdk.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.graphiti.export.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.graphiti.feature.feature.group" version="0.0.0"/>
@@ -130,34 +118,10 @@
 <unit id="org.eclipse.wst.web_ui.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.wst.xml_ui.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.wst.xsl.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.xsd.mapping.editor.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.xsd.mapping.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.zest.sdk.feature.group" version="0.0.0"/>
 <repository location="http://download.eclipse.org/releases/oxygen/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.january.form" version="0.0.0"/>
-<unit id="org.eclipse.january.geometry.dsl.iges" version="0.0.0"/>
-<unit id="org.eclipse.january.geometry.dsl.mtl" version="0.0.0"/>
-<unit id="org.eclipse.january.geometry.dsl.obj" version="0.0.0"/>
-<unit id="org.eclipse.january.geometry.dsl.vtk" version="0.0.0"/>
-<unit id="org.eclipse.january.geometry.model" version="0.0.0"/>
-<repository location="http://download.eclipse.org/january/builds/january-forms-master/latest/repository/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.ease.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.lang.javascript.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.lang.jvm.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.lang.python.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.lang.ruby.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.lang.scriptarchive.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.lang.unittest.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.modules.charting.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.modules.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.modules.modeling.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.modules.team.git.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.modules.team.svn.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.python.jython.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.ui.feature.feature.group" version="0.0.0"/>
-<repository location="http://download.eclipse.org/ease/update/nightly"/>
 </location>
 </locations>
 </target>

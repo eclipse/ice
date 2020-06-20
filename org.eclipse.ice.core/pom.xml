@@ -12,5 +12,4 @@
 	<groupId>org.eclipse.ice</groupId>
 	<artifactId>org.eclipse.ice.core</artifactId>
 	<packaging>eclipse-plugin</packaging>
-
 </project>

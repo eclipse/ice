@@ -1,0 +1,14 @@
+@prefix : <#> .
+@prefix ice-wf:<https://www.eclipse.org/ice/workflows#> .
+@prefix ice-data:<https://www.eclipse.org/ice/data#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Set the move action type and target method 
+:moveActionType a ice-wf:JavaClass;
+	rdfs:label "Move File Action";
+	ice-wf:targetMethod "org.eclipse.ice.actions.targets.MoveActionTarget.move"^^xsd:string .
+
+# Create the action.
+:moveAction a ice-wf:Action;
+	ice-wf:ActionType :moveActionType .

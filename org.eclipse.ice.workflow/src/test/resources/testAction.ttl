@@ -1,0 +1,18 @@
+@prefix : <#> .
+@prefix ice-wf: <https://www.eclipse.org/ice/workflows#> .
+@prefix ice-data: <https://www.eclipse.org/ice/data#> .
+@prefix co: <http://purl.org/co> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+# Create a basic action target with no actual implementation details.
+:testActionTarget rdf:type ice-wf:ActionTarget ;
+	rdf:label "Test Action Target" .
+
+:testActionType rdf:type ice-wf:ActionType ;
+	rdf:label "Test Action Type" .
+
+# Create the action.
+:testAction
+	rdf:type ice-wf:Action ;
+	ice-wf:ActionType :testActionType ;
+	ice-wf:ActionTarget :testActionTarget.

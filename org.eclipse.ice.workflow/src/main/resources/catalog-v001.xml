@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    <uri id="User Entered Import Resolution" name="http://swan.mindinformatics.org/ontologies/1.2/collections.owl" uri="file:/home/bkj/ICEIII/collections-ontology/collections.owl"/>
+    <uri id="User Entered Import Resolution" name="http://www.essepuntato.it/2009/10/error" uri="file:/home/bkj/ICEIII/collections-ontology/alignment.owl"/>
+    <uri id="User Entered Import Resolution" name="http://purl.org/co" uri="file:/home/bkj/ICEIII/collections-ontology/collections.owl"/>
+    <group id="Folder Repository, directory=, recursive=true, Auto-Update=true, version=2" prefer="public" xml:base=""/>
+</catalog>

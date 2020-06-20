@@ -1,0 +1,100 @@
+@prefix : <#> .
+@prefix ice-wf:<https://www.eclipse.org/ice/workflows#> .
+@prefix ice-data:<https://www.eclipse.org/ice/data#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@base <http://www.example.org> .
+
+# Create a basic key-value pair where the name is the key and range is the value.
+:keyValue a owl:ObjectProperty ;
+	rdfs:range xsd:string.
+
+#####
+# Cycle task configuration
+#####
+
+# File counter that returns true if the number of files is above 50.
+:fileCounter a ice-wf:JavaClass;
+	rdfs:label "fileCounter";
+	rdfs:comment "A simple file counter in that returns true if the number of files is greater than 50.";
+	ice-wf:targetMethod "org.example.test.FileCounter"^^xsd:string .
+
+# Total limit cycle condition
+:totalLimitCycleCondition a ice-wf:Cycle;
+	rdfs:label "Total limiter";
+	rdfs:comment "It counts the number of files and stops at 50.";
+    ice-wf:targetMethod :fileCounter.
+
+# Touch action type to launch the touch shell script. 
+:touchActionType a ice-wf:ShellScript;
+	rdfs:label "touch script";
+	rdfs:comment "It creates a new file named after the date.";
+	ice-wf:targetMethod "touch `date '+%Y_%m_%d__%H_%M_%S'`"^^xsd:string .
+
+# Conditional action that keeps the cycle going or kills it
+:cycleAction a ice-wf:ConditionalAction;
+	rdfs:label "Total Limiter Condition";
+	rdfs:comment "This action executes a script that ensures the number of files has crossed a threshold.";
+	ice-wf:ActionType :totalLimitCycleCondition.
+
+# Action for touching a file to create it
+:touchAction a ice-wf:Action;
+	rdfs:label "Touch action";
+	rdfs:comment "This action touches a file to create it.";
+	ice-wf:ActionType :touchActionType.
+
+# Cycle condition task
+:cycleTask a ice-wf:Task;
+	rdfs:label "Cycling task";
+	rdfs:comment "This task cycles until the cycle condition is met.";
+	ice-wf:hasCondition :cycleAction;
+	ice-wf:hasAction :touchAction.
+
+#####
+# Loop task configuration
+#####
+
+# Loop action type limited to 50 iterations
+:loopActionType a ice-wf:Loop;
+	rdfs:label "50-iteration loop";
+	rdfs:comment "This loop executes for fifty iterations.";
+	ice-wf:lowerBound 0;
+	ice-wf:upperBound 49;
+	ice-wf:stepSize 1.
+
+# Loop action
+:loopAction a ice-wf:ConditionalAction;
+	rdfs:label "Loop condition";
+	rdfs:comment "This condition loops under the specified configuration.";
+	ice-wf:ActionType :loopActionType.
+
+# Remove command line argument values
+:propValue rdf:value "${propValue}".
+
+# Remove action type
+:rmActionType a ice-wf:ShellScript;
+	rdfs:label "rm script";
+	rdfs:comment "This action will remove a file with the rm script.";
+	ice-wf:targetMethod "rm `ls | sort -n | head -1`"^^xsd:string .
+
+# Remove action
+:rmAction a ice-wf:Action;
+	rdfs:label "rm action" ;
+	rdfs:comment "The file removal action";
+	ice-wf:ActionType :rmActionType.
+
+# Loop task
+:loopTask a ice-wf:Task;
+	rdfs:label "Loop task";
+	rdfs:comment"This task executes its action 50 times.";
+	ice-wf:hasCondition :loopAction;
+	ice-wf:hasAction :rmAction;
+	ice-wf:dependsOn :cycleTask;
+	ice-wf:hasProperties :propValue.
+
+# Wire up the workflow
+:cycle-loop-test a ice-wf:WorkflowDescription ;
+	ice-wf:executes :cycleTask;
+	ice-wf:executes :loopTask.

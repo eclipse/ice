@@ -1,0 +1,185 @@
+@prefix : <#> .
+@prefix ice-wf:<https://www.eclipse.org/ice/workflows#> .
+@prefix ice-data:<https://www.eclipse.org/ice/data#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@base <http://www.example.org> .
+
+#####
+# New properties
+#####
+
+# Create a basic command line argument object property
+:commandLineArg a owl:ObjectProperty ;
+	rdfs:range xsd:string.
+
+# File location property
+:location a owl:ObjectProperty ;
+	rdfs:label "File Location" ;
+	rdfs:comment "The location of a file on the file system" ;
+	rdfs:subPropertyOf owl:topObjectProperty ;
+	rdfs:range xsd:string .
+
+#####
+# Curl task
+#####
+
+# Retrieve the pegasus.html file using curl. First, create a curl action.
+:curlAction a ice-wf:Action ;
+	rdfs:label "Curl pull" ;
+	rdfs:comment "This action pulls a file with Curl.";
+	ice-wf:ActionType :curlActionType.
+
+# Create the curl action type that calls the curl program in BASH.
+:curlActionType a ice-wf:ShellScript;
+	rdfs:label "Curl pull Action";
+	ice-wf:targetMethod "curl"^^xsd:string .
+
+# Pegasus homepage file name
+:pegasusHTMLFile a :location;
+	rdf:value "pegasus.html"^^xsd:string.
+
+# Create properties for executing curl
+:curlActionProperties a owl:Class;
+	:commandLineArg "-o"^^xsd:string;
+	:commandLineArg :pegasusHTMLFile;
+	:commandLineArg "http://pegasus.isi.edu"^^xsd:string.
+
+# Wire up the curl task
+:curlTask a ice-wf:Task;
+	rdfs:label "Curl Task";
+	rdfs:comment "This task will call the curl utility"; 
+	ice-wf:hasAction :curlAction;
+	ice-wf:hasProperties :curlActionProperties .
+
+#####
+# Split task
+#####
+
+# New files created using split
+:partAFile a :location;
+	rdf:value "part.a"^^xsd:string.
+:partBFile a :location;
+	rdf:value "part.b"^^xsd:string.
+:partCFile a :location;
+	rdf:value "part.c"^^xsd:string.
+:partDFile a :location;
+	rdf:value "part.d"^^xsd:string.
+
+# Create a split action.
+:splitAction a ice-wf:Action ;
+	rdfs:label "Split" ;
+	rdfs:comment "This action splits a file.";
+	ice-wf:ActionType :splitActionType.
+
+# Create the split action type that calls the split program in Bash.
+:splitActionType a ice-wf:ShellScript;
+	rdfs:label "Split action type";
+	ice-wf:targetMethod "split"^^xsd:string .
+
+# Create properties for executing split
+:splitActionProperties a owl:Class;
+	:commandLineArg "-l 100 -a 1"^^xsd:string;
+	:commandLineArg :pegasusHTMLFile;
+	:commandLineArg "part."^^xsd:string.
+
+# Wire up the split task
+:splitTask a ice-wf:Task;
+	rdfs:label "Split Task";
+	rdfs:comment "This task will call the split utility to split files"; 
+	ice-wf:hasAction :splitAction;
+	ice-wf:hasProperties :splitActionProperties;
+	ice-wf:dependsOn :curlTask .
+
+#####
+# wc
+#####
+
+# Output locations for wc tasks
+:countAFile a :location;
+	rdf:value "count.a"^^xsd:string.
+:countBFile a :location;
+	rdf:value "count.b"^^xsd:string.
+:countCFile a :location;
+	rdf:value "count.c"^^xsd:string.
+:countDFile a :location;
+	rdf:value "count.d"^^xsd:string.
+
+# Create a wc action.
+:wcAction a ice-wf:Action;
+	rdfs:label "wc";
+	rdfs:comment "This action counts words/lines with wc.";
+	ice-wf:ActionType :wcActionType .
+
+# Create the wc action type that calls the wc program in Bash.
+:wcActionType a ice-wf:ShellScript;
+	rdfs:label "wc action type";
+	ice-wf:targetMethod "wc"^^xsd:string .
+
+# Create properties for executing wc on part.a
+:partAWCActionProperties a owl:Class;
+	:commandLineArg "-l"^^xsd:string;
+	:commandLineArg :partAFile;
+	:commandLineArg ">"^^xsd:string;
+	:commandLineArg :countAFile.
+
+# Create properties for executing wc on part.b
+:partBWCActionProperties a owl:Class;
+	:commandLineArg "-l"^^xsd:string;
+	:commandLineArg :partBFile;
+	:commandLineArg ">"^^xsd:string;
+	:commandLineArg :countBFile.
+
+# Create properties for executing wc on part.c
+:partCWCActionProperties a owl:Class;
+	:commandLineArg "-l"^^xsd:string;
+	:commandLineArg :partCcFile;
+	:commandLineArg ">"^^xsd:string;
+	:commandLineArg :countCFile.
+
+# Create properties for executing wc on part.d
+:partDWCActionProperties a owl:Class;
+	:commandLineArg "-l"^^xsd:string;
+	:commandLineArg :partDFile;
+	:commandLineArg ">"^^xsd:string;
+	:commandLineArg :countDFile.
+
+# Wire up the wc tasks for all four files
+:wcTaskA a ice-wf:Task;
+	rdfs:label "wc Task A";
+	rdfs:comment "This task will call wc -l on part.a"; 
+	ice-wf:hasAction :wcAction;
+	ice-wf:hasProperties :partAWCActionProperties;
+	ice-wf:dependsOn :splitTask .
+
+:wcTaskB a ice-wf:Task;
+	rdfs:label "wc Task B";
+	rdfs:comment "This task will call wc -l on part.b"; 
+	ice-wf:hasAction :wcAction;
+	ice-wf:hasProperties :partBWCActionProperties ;
+	ice-wf:dependsOn :splitTask .
+
+:wcTaskC a ice-wf:Task;
+	rdfs:label "wc Task C";
+	rdfs:comment "This task will call wc -l on part.c"; 
+	ice-wf:hasAction :wcAction;
+	ice-wf:hasProperties :partCWCActionProperties ;
+	ice-wf:dependsOn :splitTask .
+
+:wcTaskD a ice-wf:Task;
+	rdfs:label "wc Task D";
+	rdfs:comment "This task will call wc -l on part.d"; 
+	ice-wf:hasAction :wcAction;
+	ice-wf:hasProperties :partDWCActionProperties ;
+	ice-wf:dependsOn :splitTask .
+
+# Wire up the workflow
+:splitWFD a ice-wf:WorkflowDescription ;
+	ice-wf:executes :curlTask;
+	ice-wf:executes :splitTask;
+	ice-wf:executes :wcTaskA;
+	ice-wf:executes :wcTaskB;
+	ice-wf:executes :wcTaskC;
+	ice-wf:executes :wcTaskD.
