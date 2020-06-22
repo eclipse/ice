@@ -34,9 +34,9 @@ class GeneratedDataElementTest {
 	 * @param data the value that should be stored in the element.
 	 * @return the data
 	 */
-	private GeneratedDataElementImplementation getStringElement(final String data) {
+	private GeneratedDataElement getStringElement(final String data) {
 
-		GeneratedDataElementImplementation element = new GeneratedDataElementImplementation();
+		GeneratedDataElement element = new GeneratedDataElementImplementation();
 		element.setTestField(data);
 
 		return element;
@@ -50,7 +50,7 @@ class GeneratedDataElementTest {
 
 		// Use a basic string element for this test since it is looking at content on
 		// the base class.
-		GeneratedDataElementImplementation element = getStringElement("Phutureprimitive");
+		GeneratedDataElement element = getStringElement("Phutureprimitive");
 
 		// Now check the getters
 		assertEquals(element.getName(), "name");
@@ -99,7 +99,7 @@ class GeneratedDataElementTest {
 		assertEquals(element.isSecret(), secret);
 
 		// Make sure that adding validators works superficially
-		JavascriptValidator<GeneratedDataElementImplementation> validator = new JavascriptValidator<GeneratedDataElementImplementation>();
+		JavascriptValidator<GeneratedDataElement> validator = new JavascriptValidator<GeneratedDataElement>();
 		element.setValidator(validator);
 		assertEquals(element.getValidator(), validator);
 
@@ -116,7 +116,7 @@ class GeneratedDataElementTest {
 	void testDataAccessors() {
 
 		// Basic intrinsic class is good for this test
-		GeneratedDataElementImplementation element = getStringElement("Phutureprimitive");
+		GeneratedDataElement element = getStringElement("Phutureprimitive");
 
 		// No properties are configured here. Just want to make sure that the data
 		// behaves as expected.
@@ -140,7 +140,7 @@ class GeneratedDataElementTest {
 	void testDataAccessorsForPOJOs() {
 
 		// Use a test POJO for this that has members
-		GeneratedDataElementPOJOImplementation element = new GeneratedDataElementPOJOImplementation();
+		GeneratedDataElementPOJO element = new GeneratedDataElementPOJOImplementation();
 		element.setTestPOJO(new TestPOJO());
 
 		// Do the straight check
@@ -164,10 +164,10 @@ class GeneratedDataElementTest {
 	void testStringSerialization() {
 
 		// Basic intrinsic class is good for this test
-		GeneratedDataElementImplementation element = getStringElement("Major Lazer & La Roux");
+		GeneratedDataElement element = getStringElement("Major Lazer & La Roux");
 		element.setSecret(true);
 		element.setRequired(true);
-		element.setValidator(new JavascriptValidator<GeneratedDataElementImplementation>());
+		element.setValidator(new JavascriptValidator<GeneratedDataElement>());
 
 		// Because of the private id changing and being unique, this cannot be checked
 		// against a reference but can only be checked by inversion.
@@ -177,8 +177,8 @@ class GeneratedDataElementTest {
 		// correctly overwrites them.
 		element.setTestField("Eastern Sun");
 		System.out.println(output);
-		GeneratedDataElementImplementation element2 = getStringElement("Emancipator");
-		element2.setValidator(new JavascriptValidator<GeneratedDataElementImplementation>());
+		GeneratedDataElement element2 = getStringElement("Emancipator");
+		element2.setValidator(new JavascriptValidator<GeneratedDataElement>());
 		element2.fromJSON(output);
 		element.fromJSON(output);
 		assertEquals(element,element2);
@@ -194,11 +194,11 @@ class GeneratedDataElementTest {
 	void testPOJOSerialization() {
 
 		// Use a test POJO for this that has members
-		GeneratedDataElementPOJOImplementation element = new GeneratedDataElementPOJOImplementation();
+		GeneratedDataElementPOJO element = new GeneratedDataElementPOJOImplementation();
 		element.setTestPOJO(new TestPOJO());
 		element.setSecret(true);
 		element.setRequired(true);
-		element.setValidator(new JavascriptValidator<GeneratedDataElementPOJOImplementation>());
+		element.setValidator(new JavascriptValidator<GeneratedDataElementPOJO>());
 
 		// Because of the private id changing and being unique, this cannot be checked
 		// against a reference but can only be checked by inversion.
@@ -206,10 +206,10 @@ class GeneratedDataElementTest {
 
 		// Change some values then read back in the original to make sure fromString()
 		// correctly overwrites them.
-		GeneratedDataElementPOJOImplementation element2 = new GeneratedDataElementPOJOImplementation();
+		GeneratedDataElementPOJO element2 = new GeneratedDataElementPOJOImplementation();
 		TestPOJO pojo2 = new TestPOJO();
 		pojo2.setDoubleValue(1.072);
-		element2.setValidator(new JavascriptValidator<GeneratedDataElementPOJOImplementation>());
+		element2.setValidator(new JavascriptValidator<GeneratedDataElementPOJO>());
 		element2.setTestPOJO(pojo2);
 		element2.fromJSON(output);
 
@@ -230,18 +230,18 @@ class GeneratedDataElementTest {
 	void testEquality() {
 
 		// Basic intrinsic class is good for this test
-		GeneratedDataElementImplementation element = getStringElement("Halsey");
-		GeneratedDataElementImplementation element2 = getStringElement("Halsey");
-		GeneratedDataElementImplementation element3 = getStringElement("Billie Eilish");
-		GeneratedDataElementImplementation element4 = getStringElement("Halsey");
+		GeneratedDataElement element = getStringElement("Halsey");
+		GeneratedDataElement element2 = getStringElement("Halsey");
+		GeneratedDataElement element3 = getStringElement("Billie Eilish");
+		GeneratedDataElement element4 = getStringElement("Halsey");
 
 		// Need a validator for the tests that is shared on the equal elements.
-		JavascriptValidator<GeneratedDataElementImplementation> validator = new JavascriptValidator<GeneratedDataElementImplementation>();
+		JavascriptValidator<GeneratedDataElement> validator = new JavascriptValidator<GeneratedDataElement>();
 		element.setValidator(validator);
 		element2.setValidator(validator);
 		element4.setValidator(validator);
 		// Billie needs her own validator
-		element3.setValidator(new JavascriptValidator<GeneratedDataElementImplementation>());
+		element3.setValidator(new JavascriptValidator<GeneratedDataElement>());
 
 		// Data elements must be checked both for matching - a deep inequality except
 		// the UUID - and for a fully complete match that contains the UUID. Start with
@@ -260,7 +260,7 @@ class GeneratedDataElementTest {
 		assertFalse(element.matches(null));
 
 		// Now check equality with a clone - therefore also confirming clone works
-		GeneratedDataElementImplementation elementClone = (GeneratedDataElementImplementation) element.clone();
+		GeneratedDataElement elementClone = (GeneratedDataElementImplementation) element.clone();
 		// Check reflexivity first
 		assertEquals(element, element);
 		// Check symmetry
@@ -269,7 +269,9 @@ class GeneratedDataElementTest {
 		// This is a sneaky way to use a copy constructor to check transitivity and get
 		// around the UUID thing
 		try {
-			element4 = new GeneratedDataElementImplementation(elementClone);
+			element4 = (GeneratedDataElement) new GeneratedDataElementImplementation(
+				(GeneratedDataElementImplementation) elementClone
+			);
 		} catch (Exception e) {
 			// Complain
 			e.printStackTrace();

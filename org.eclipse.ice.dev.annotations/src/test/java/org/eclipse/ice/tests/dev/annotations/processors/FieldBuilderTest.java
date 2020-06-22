@@ -1,4 +1,4 @@
-package org.eclipse.ice.dev.annotations;
+package org.eclipse.ice.tests.dev.annotations.processors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,27 +13,6 @@ import org.junit.jupiter.api.Test;
  * @author Daniel Bluhm
  */
 class FieldBuilderTest {
-
-	@Test
-	void testDefaultValue() {
-		FieldBuilder builder = Field.builder();
-
-		// Boolean
-		builder.defaultValue(true);
-		assertEquals("true", builder.build().getDefaultValue());
-
-		// Long
-		builder.defaultValue(10L);
-		assertEquals("10L", builder.build().getDefaultValue());
-
-		// String
-		builder.defaultValue("test");
-		assertEquals("\"test\"", builder.build().getDefaultValue());
-
-		// Raw
-		builder.defaultValue(Field.raw("test"));
-		assertEquals("test", builder.build().getDefaultValue());
-	}
 
 	@Test
 	void testTypeNonPrimitive() {
@@ -65,7 +44,7 @@ class FieldBuilderTest {
 		Field f;
 
 		// Raw
-		builder.type(Field.raw("java.util.Date"));
+		builder.type("java.util.Date");
 		f = builder.build();
 		assertEquals("java.util.Date", f.getType());
 		// While Dates are not primitive values, because the type is set
@@ -82,64 +61,45 @@ class FieldBuilderTest {
 
 		builder = Field.builder();
 		// Raw - not a real class
-		builder.type(Field.raw("Asdf"));
+		builder.type("Asdf");
 		f = builder.build();
 		assertEquals("Asdf", f.getType());
 		assertFalse(f.isPrimitive());
 	}
 
 	@Test
-	void testGuessTypeFromJsonPrimitive() {
+	void testGuessTypeFromStringPrimitive() {
 		FieldBuilder builder = Field.builder();
 		Field f;
 
 		// Guess primitive
-		builder.jsonType("int");
+		builder.type("int");
 		f = builder.build();
 		assertEquals("int", f.getType());
 		assertTrue(f.isPrimitive());
 	}
 
 	@Test
-	void testGuessTypeFromJsonNonPrimitive() {
+	void testGuessTypeFromStringNonPrimitive() {
 		FieldBuilder builder = Field.builder();
 		Field f;
 
 		// Guess non-primitive
-		builder.jsonType("String");
+		builder.type("String");
 		f = builder.build();
 		assertEquals("java.lang.String", f.getType());
 		assertFalse(f.isPrimitive());
 	}
 
 	@Test
-	void testGuessTypeFromJsonNonPrimitiveOutsideOfLang() {
+	void testGuessTypeFromStringNonPrimitiveOutsideOfLang() {
 		FieldBuilder builder = Field.builder();
 		Field f;
 
 		// Guess non-primitive
-		builder.jsonType("java.util.Date");
+		builder.type("java.util.Date");
 		f = builder.build();
 		assertEquals("java.util.Date", f.getType());
 		assertFalse(f.isPrimitive());
-	}
-
-	@Test
-	void testJsonTypeStringEscapesDefaultValue() {
-		FieldBuilder builder = Field.builder();
-		Field f;
-
-		// Default value set first
-		builder.jsonDefaultValue("test");
-		builder.jsonType("String");
-		f = builder.build();
-		assertEquals("\"test\"", f.getDefaultValue());
-
-		// Now reversed; type set first
-		builder = Field.builder();
-		builder.jsonType("String");
-		builder.jsonDefaultValue("test");
-		f = builder.build();
-		assertEquals("\"test\"", f.getDefaultValue());
 	}
 }

@@ -1,23 +1,13 @@
-## Whitespace helpers
-#set($blank = "")
-#set($newline = "
-")
-#macro(noop)#end
-##
-## Begin Template
-##
+#parse("templates/common.vm")
 #if($package)
 package $package;
 #end
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.UUID;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.eclipse.ice.dev.annotations.IDataElement;
-import org.eclipse.ice.dev.annotations.JavascriptValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,32 +30,28 @@ import lombok.Setter;
  */
 @Data
 @NoArgsConstructor
-public class ${class} implements ${interface}, Serializable, IDataElement {
+public class ${class} implements ${interface}, Serializable {
 
 	/**
 	 * Logging tool
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(${class}.class);
-
 	#foreach($field in $fields)
 
-	#if(${field.DocString})
-	/**
-	 * ${field.DocString}
-	 */
-	#end
-	#macro(fieldtype)#evaluate(${field.Type})#end
-	#macro(fielddecl)protected #evaluate(${field.Type}) ${field.Name}#if(${field.DefaultValue}) = #evaluate(${field.DefaultValue})#end;#end
-	#if(!${field.Nullable} && !${field.Primitive})
-	@NonNull
-	#end
-	#if(!${field.Getter})
+		#fielddoc
+		#nonnull($tab, $newline)
+		#if(!${field.Getter})
 	@Getter(AccessLevel.NONE)
-	#end
-	#if(!${field.Setter})
+		#end
+		#if(!${field.Setter})
 	@Setter(AccessLevel.NONE)
+		#end
+		#fielddecl
 	#end
-	$blank#fielddecl()
+	#foreach($field in ${fields.Constants})
+
+		#fielddoc
+		#fielddecl
 	#end
 	#foreach($field in $fields)
 		#foreach($alias in ${field.aliases})
@@ -75,7 +61,7 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 	 * Get ${field.Name} by alias ${alias.Name}.
 	 * @return ${field.Name}
 	 */
-	public #fieldtype() get${alias.NameForMethod}() {
+	public #fieldtype get${alias.NameForMethod}() {
 		return ${field.Name};
 	}
 			#end
@@ -83,9 +69,8 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 
 	/**
 	 * Set ${field.Name} by alias ${alias.Name}.
-	 * @return ${field.Name}
 	 */
-	public void set${alias.NameForMethod}(#if(!${field.Nullable} && !${field.Primitive})@NonNull #end#fieldtype() ${field.Name}) {
+	public void set${alias.NameForMethod}(#nonnull #fieldtype ${field.Name}) {
 		this.${field.Name} = ${field.Name};
 	}
 			#end
@@ -147,8 +132,7 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 
 					// Separate boolean checks used to enable better catching
 					// by debuggers.
-					#foreach($field in $fields)
-					#if(${field.Match})
+					#foreach($field in ${fields.Match})
 
 					boolean ${field.Name}Match =
 					#if(${field.Nullable})
@@ -162,16 +146,14 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 					#end## if nullable
 					#else
 					// Not checking ${field.Name}
-					#end## if match
 					#end## foreach
 
-					#set($count = 0)
 					retval =
-						$blank#foreach($field in $fields)
-					#if(${field.Match})
-					#set($count = $count + 1)
-					#set($third = $count % 3)
-					#noop()${field.Name}Match#if($foreach.hasNext) &&#if($third == 0)$newline						#else #end#else;$newline#end#end#end
+					#@settab(6)
+						#foreach($field in ${fields.Match})#@nonewline
+						${field.Name}Match#if($foreach.hasNext) &&#if($foreach.count % 3 == 0)$newline#else #end#else;$newline#end
+						#end#end
+					#end
 				}
 			} else {
 				// This should be true if they are the same because the deep comparison is
@@ -233,7 +215,7 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 	 *
 	 * @param jsonDataElement the contents of this data element as JSON
 	 */
-	public <T extends IDataElement> T fromJSON(final String jsonDataElement) {
+	public $interface fromJSON(final String jsonDataElement) {
 
 		// Load the data from the string with Jackson.
 		ObjectMapper mapper = new ObjectMapper();
@@ -244,7 +226,7 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 			logger.error("Unable to read DataElement from string!", e);
 		}
 
-		return (T) this;
+		return this;
 	}
 
 	/**
@@ -254,7 +236,7 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 	 *
 	 * @param jsonDataElement the contents of this data element as a Map<String, Object>
 	 */
-	public <T extends Map<String, Object>, S extends IDataElement> S fromJSON(final T jsonDataElement) {
+	public <T extends Map<String, Object>> $interface fromJSON(final T jsonDataElement) {
 
 		// Load the data from the string with Jackson.
 		ObjectMapper mapper = new ObjectMapper();
@@ -265,6 +247,6 @@ public class ${class} implements ${interface}, Serializable, IDataElement {
 			logger.error("Unable to read DataElement from string!", e);
 		}
 
-		return (S) this;
+		return this;
 	}
 }

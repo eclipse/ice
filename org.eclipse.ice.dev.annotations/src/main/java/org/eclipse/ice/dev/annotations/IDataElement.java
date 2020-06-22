@@ -6,7 +6,7 @@ import java.util.UUID;
 /**
  * Marker interface for DataElements.
  */
-public interface IDataElement {
+public interface IDataElement<T> {
 
 	/**
 	 * Get the public identifier of the data element. This is a common id that may
@@ -36,7 +36,7 @@ public interface IDataElement {
 	/**
 	 * Set the simple name of the element
 	 *
-	 * @param elemName a simple name
+	 * @param name a simple name
 	 * @throws Exception An exception is thrown if the value is null, which is
 	 *                   unallowable.
 	 */
@@ -150,6 +150,14 @@ public interface IDataElement {
 	public String toString();
 
 	/**
+	 * This operation clones the object. Note that it differs from the base class
+	 * implementation in that it will return null if it cannot create the clone to
+	 * promote fast failure. See {@link java.lang.Object#clone()};
+	 * @return the cloned object
+	 */
+	public Object clone();
+
+	/**
 	 * This function checks deep equality of DataElements to see if all members are
 	 * equal ("match") with the exception of fields with match set to false (such
 	 * as an automatically generated UUID). This is important for checking if two
@@ -173,15 +181,34 @@ public interface IDataElement {
 	 * object.
 	 *
 	 * @param jsonDataElement the contents of this data element as JSON
+	 * @return the deserialized DataElement
 	 */
-	public <T extends IDataElement> T fromJSON(final String jsonDataElement);
+	public T fromJSON(final String jsonDataElement);
 
 	/**
 	 * Load from a String-Object Map, skipping the String parsing step. Structures
-	 * such as <code>org.bson.Document</code> implement Map<String, Object> and
+	 * such as {@link org.bson.Document} implement {@code Map<String, Object>} and
 	 * therefore do not need to be processed from raw String form.
 	 *
-	 * @param jsonDataElement the contents of this data element as a Map<String, Object>
+	 * @param <S> Object extending {@code Map<String, Object>}
+	 * @param jsonDataElement the contents of this data element as a
+	 *        {@code Map<String, Object>}
+	 * @return the deserialized DataElement
 	 */
-	public <T extends Map<String, Object>, S extends IDataElement> S fromJSON(final T jsonDataElement);
+	public <S extends Map<String, Object>> T fromJSON(final S jsonDataElement);
+
+	/**
+	 * This operation returns the validator that has been configured for this
+	 * element.
+	 *
+	 * @return the validator or null if it has not been set
+	 */
+	public JavascriptValidator<T> getValidator();
+
+	/**
+	 * This operation sets the validator associated with this element.
+	 *
+	 * @param validator the validator or null to reset the reference
+	 */
+	public void setValidator(JavascriptValidator<T> validator);
 }
