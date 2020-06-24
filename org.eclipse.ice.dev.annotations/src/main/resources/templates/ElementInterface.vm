@@ -18,7 +18,7 @@ public interface $interface extends IDataElement<${interface}> {
 	 * Get ${field.Name}.
 	 * @return ${field.Name}
 	 */
-	public #fieldtype get${field.NameForMethod}();
+	public #fieldtype #getterprefix${field.NameForMethod}();
 	#end## if Getter
 	#if(${field.Setter})
 
