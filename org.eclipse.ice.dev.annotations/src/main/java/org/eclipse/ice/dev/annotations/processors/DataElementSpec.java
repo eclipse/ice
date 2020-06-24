@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
@@ -73,7 +74,7 @@ public class DataElementSpec extends AnnotatedElement {
 	 */
 	public DataElementSpec(Element element, Elements elementUtils) throws InvalidDataElementSpec {
 		super(element, elementUtils);
-		if (!element.getKind().isClass()) {
+		if (element.getKind() != ElementKind.CLASS) {
 			throw new InvalidDataElementSpec(
 				"DataElementSpec must be class, found " + element.toString()
 			);
