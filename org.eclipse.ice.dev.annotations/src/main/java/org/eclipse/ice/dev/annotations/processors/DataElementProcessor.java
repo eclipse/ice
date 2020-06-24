@@ -47,7 +47,7 @@ import com.google.auto.service.AutoService;
 	"org.eclipse.ice.dev.annotations.DataField.Default",
 	"org.eclipse.ice.dev.annotations.Persisted"
 })
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_11)
 @AutoService(Processor.class)
 public class DataElementProcessor extends AbstractProcessor {
 
