@@ -1,7 +1,5 @@
 package org.eclipse.ice.tests.dev.annotations.processors;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -19,11 +17,39 @@ import com.google.testing.compile.JavaFileObjects;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * Test the output of the DataElement Annotation Processor.
+ *
+ * Most of the tests use the "golden file" test strategy with the exception that
+ * the golden files are actually patterns. ASTs are parsed from the golden files
+ * and compared with the ASTs of the files generated from the input.
+ *
+ * All test DataElements should use the name "Test" for simplicity, as in:
+ * <pre>
+ * {@code @DataElement(name = "Test")}
+ * public class MyTestElement {
+ * 	...
+ * }
+ * </pre>
+ * @author Daniel Bluhm
+ *
+ */
 class DataElementProcessorTest {
 
+	/**
+	 * Fully qualified name of the generated interface.
+	 */
 	private static final String INTERFACE = "Test";
+
+	/**
+	 * Fully qualified name of the generated implementation.
+	 */
 	private static final String IMPLEMENTATION = "TestImplementation";
 
+	/**
+	 * Enumeration of inputs used in testing.
+	 * @author Daniel Bluhm
+	 */
 	@AllArgsConstructor
 	private static enum Inputs {
 		HELLO_WORLD("HelloWorld.java"),
@@ -37,13 +63,29 @@ class DataElementProcessorTest {
 		MANY_NON_PRIMITIVE("ManyNonPrimitive.java"),
 		ACCESSIBILITY_PRESERVED("AccessibilityPreserved.java");
 
+		/**
+		 * Parent directory of inputs. Prepended to all paths.
+		 */
 		private static final String PARENT = "input/";
+
+		/**
+		 * Path to inputs.
+		 */
 		private String path;
+
+		/**
+		 * Retrieve the JavaFileObject corresponding to this input.
+		 * @return input as a JavaFileObject
+		 */
 		public JavaFileObject get() {
 			return JavaFileObjects.forResource(PARENT + this.path);
 		}
 	}
 
+	/**
+	 * Enumeration of patterns used in testing.
+	 * @author Daniel Bluhm
+	 */
 	@AllArgsConstructor
 	private static enum Patterns {
 		DEFAULTS_INT("Defaults.java"),
@@ -58,8 +100,20 @@ class DataElementProcessorTest {
 		MANY_NON_PRIMITIVE_IMPL("ManyNonPrimitiveImplementation.java"),
 		ACCESSIBILITY_PRESERVED("AccessibilityPreserved.java");
 
+		/**
+		 * Parent directory of inputs. Prepended to all paths.
+		 */
 		private static final String PARENT = "patterns/";
+
+		/**
+		 * Path to inputs.
+		 */
 		private String path;
+
+		/**
+		 * Retrieve the JavaFileObject corresponding to this pattern.
+		 * @return input as a JavaFileObject
+		 */
 		public JavaFileObject get() {
 			return JavaFileObjects.forResource(PARENT + this.path);
 		}
@@ -89,6 +143,11 @@ class DataElementProcessorTest {
 		return p;
 	}
 
+	/**
+	 * Compile the sources with needed processors.
+	 * @param sources to compile
+	 * @return Compilation result
+	 */
 	private static Compilation compile(JavaFileObject... sources) {
 		return javac()
 			.withProcessors(
@@ -97,29 +156,56 @@ class DataElementProcessorTest {
 			).compile(sources);
 	}
 
+	/**
+	 * Assert that the interface generated in this compilation matches the given
+	 * pattern.
+	 * @param compilation about which the assertion is made
+	 * @param inter interface pattern
+	 */
 	private static void assertInterfaceMatches(Compilation compilation, JavaFileObject inter) {
 		assertThat(compilation)
 			.generatedSourceFile(INTERFACE)
 			.containsElementsIn(inter);
 	}
 
-	private static void assertImplementationMatches(Compilation compilation, JavaFileObject impl) {
+	/**
+	 * Assert that the implementation generated in this compilation matches the
+	 * given pattern.
+	 * @param compilation about which the assertion is made
+	 * @param impl implementation pattern
+	 */
+	private static void assertImplementationMatches(
+		Compilation compilation,
+		JavaFileObject impl
+	) {
 		assertThat(compilation)
 			.generatedSourceFile(IMPLEMENTATION)
 			.containsElementsIn(impl);
 	}
 
+	/**
+	 * Assert that the default fields were generated.
+	 * @param compilation about which the assertion is made
+	 */
 	private static void assertDefaultsPresent(Compilation compilation) {
 		assertInterfaceMatches(compilation, Patterns.DEFAULTS_INT.get());
 		assertImplementationMatches(compilation, Patterns.DEFAULTS_IMPL.get());
 	}
 
+	/**
+	 * Test that a class not annotated with {@code @DataElement} does not cause any
+	 * errors.
+	 */
 	@Test
 	void testNoAnnotationsToProcessSucceeds() {
 		Compilation compilation = compile(Inputs.HELLO_WORLD.get());
 		assertThat(compilation).succeeded();
 	}
 
+	/**
+	 * Test that omitting the name from the {@code @DataElement} annotation causes
+	 * an error.
+	 */
 	@Test
 	void testMissingNameFails() {
 		Compilation compilation = compile(Inputs.NAME_MISSING.get());
@@ -129,6 +215,9 @@ class DataElementProcessorTest {
 			);
 	}
 
+	/**
+	 * Test that annotating an interface with {@code @DataElement} causes an error.
+	 */
 	@Test
 	void testAnnotateInterfaceFails() {
 		Compilation compilation = compile(Inputs.ON_INTERFACE.get());
@@ -136,6 +225,9 @@ class DataElementProcessorTest {
 			.hadErrorContaining("DataElementSpec must be class");
 	}
 
+	/**
+	 * Test that annotating an enum with {@code @DataElement} causes an error.
+	 */
 	@Test
 	void testAnnotateEnumFails() {
 		Compilation compilation = compile(Inputs.ON_ENUM.get());
@@ -143,12 +235,19 @@ class DataElementProcessorTest {
 			.hadErrorContaining("DataElementSpec must be class");
 	}
 
+	/**
+	 * Test that omitting any additional DataFields will result in at least the
+	 * default fields.
+	 */
 	@Test
 	void testNoDataFieldsSucceeds() {
 		Compilation compilation = compile(Inputs.NO_DATAFIELDS.get());
 		assertDefaultsPresent(compilation);
 	}
 
+	/**
+	 * Test that a single DataField generates as expected.
+	 */
 	@Test
 	void testWithSingleDataFieldSucceeds() {
 		Compilation compilation = compile(Inputs.SINGLE.get());
@@ -157,6 +256,9 @@ class DataElementProcessorTest {
 		assertImplementationMatches(compilation, Patterns.SINGLE_IMPL.get());
 	}
 
+	/**
+	 * Test that many DataFields generate as expected.
+	 */
 	@Test
 	void testWithManyDataFieldsSucceeds() {
 		Compilation compilation = compile(Inputs.MANY.get());
@@ -165,6 +267,9 @@ class DataElementProcessorTest {
 		assertImplementationMatches(compilation, Patterns.MANY_IMPL.get());
 	}
 
+	/**
+	 * Test that a single Non-primitive DataField generates as expected.
+	 */
 	@Test
 	void testSingleNonPrimitiveDataFieldSucceeds() {
 		Compilation compilation = compile(Inputs.SINGLE_NON_PRIMITIVE.get());
@@ -173,6 +278,9 @@ class DataElementProcessorTest {
 		assertImplementationMatches(compilation, Patterns.SINGLE_NON_PRIMITIVE_IMPL.get());
 	}
 
+	/**
+	 * Test that many non-primitive DataFields generate as expected.
+	 */
 	@Test
 	void testManyNonPrimitiveDataFieldSucceeds() {
 		Compilation compilation = compile(Inputs.MANY_NON_PRIMITIVE.get());
@@ -181,6 +289,10 @@ class DataElementProcessorTest {
 		assertImplementationMatches(compilation, Patterns.MANY_NON_PRIMITIVE_IMPL.get());
 	}
 
+	/**
+	 * Test that Doc Comments are preserved on elements annotated with
+	 * {@code @DataField}.
+	 */
 	@Test
 	void testDocStringsPreserved() {
 		Compilation compilation = compile(Inputs.SINGLE.get());
@@ -192,9 +304,19 @@ class DataElementProcessorTest {
 			.contains("* AND ANOTHER ON A NEW LINE.");
 	}
 
+	/**
+	 * Test that the accessiblity level is preserved on elements annotated with
+	 * {@code @DataField}.
+	 */
 	@Test
 	void testAccessibilityPreserved() {
 		Compilation compilation = compile(Inputs.ACCESSIBILITY_PRESERVED.get());
 		assertImplementationMatches(compilation, Patterns.ACCESSIBILITY_PRESERVED.get());
 	}
+
+	// TODO test that annotating something other than a field with @DataField fails
+	// TODO test that @DataField.Default generates as expected
+	// TODO test @DataFieldJson works
+	// TODO kitchen sink element
+
 }
