@@ -1,5 +1,7 @@
 package org.eclipse.ice.tests.dev.annotations.processors;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -61,7 +63,8 @@ class DataElementProcessorTest {
 		MANY("Many.java"),
 		SINGLE_NON_PRIMITIVE("SingleNonPrimitive.java"),
 		MANY_NON_PRIMITIVE("ManyNonPrimitive.java"),
-		ACCESSIBILITY_PRESERVED("AccessibilityPreserved.java");
+		ACCESSIBILITY_PRESERVED("AccessibilityPreserved.java"),
+		DATAFIELD_ON_CLASS("DataFieldOnClass.java");
 
 		/**
 		 * Parent directory of inputs. Prepended to all paths.
@@ -133,10 +136,12 @@ class DataElementProcessorTest {
 			Constructor<?> constructor = c.getConstructor();
 			constructor.setAccessible(true);
 			p = (Processor) constructor.newInstance();
-		} catch (ClassNotFoundException | InstantiationException |
+		} catch (
+			ClassNotFoundException | InstantiationException |
 			IllegalAccessException | IllegalArgumentException |
 			InvocationTargetException | NoSuchMethodException |
-			SecurityException e) {
+			SecurityException e
+		) {
 			System.err.println("Failed to get Lombok AnnotationProcessor!");
 			e.printStackTrace();
 		}
@@ -314,9 +319,72 @@ class DataElementProcessorTest {
 		assertImplementationMatches(compilation, Patterns.ACCESSIBILITY_PRESERVED.get());
 	}
 
-	// TODO test that annotating something other than a field with @DataField fails
-	// TODO test that @DataField.Default generates as expected
-	// TODO test @DataFieldJson works
-	// TODO kitchen sink element
+	/**
+	 * Test that annotating a class with {@code @DataField} fails.
+	 *
+	 * This should be enough to also ensure that it will fail for other types as
+	 * well.
+	 */
+	@Test
+	void testDataFieldOnClassFails() {
+		Compilation compilation = compile(Inputs.DATAFIELD_ON_CLASS.get());
+		assertThat(compilation)
+			.hadErrorContaining("annotation type not applicable");
+	}
 
+	/**
+	 * Test DataField Getter option.
+	 */
+	@Test
+	void testDataFieldGetterOption() {
+		fail("Getter option not yet implemented");
+	}
+
+	/**
+	 * Test DataField Setter option.
+	 */
+	@Test
+	void testDataFieldSetterOption() {
+		fail("Setter option not yet implemented");
+	}
+
+	/**
+	 * Test DataField Match option.
+	 */
+	@Test
+	void testDataFieldMatchOption() {
+		fail("Match option not yet implemented");
+	}
+
+	/**
+	 * Test Persisted Annotation.
+	 */
+	@Test
+	void testPersisted() {
+		fail("Persisted not yet implemented");
+	}
+
+	/**
+	 * Test DataField Search option.
+	 */
+	@Test
+	void testDataFieldSearchOption() {
+		fail("Search option not yet implemented");
+	}
+
+	/**
+	 * Test DataField.Default generation.
+	 */
+	@Test
+	void testDataFieldDefault() {
+		fail("DataField.Default not yet implemented");
+	}
+
+	/**
+	 * Test DataFieldJson annotation.
+	 */
+	@Test
+	void testDataFieldJson() {
+		fail("DataFieldJson not yet implemented");
+	}
 }
