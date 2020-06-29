@@ -2,9 +2,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.eclipse.ice</groupId>
 	<artifactId>org.eclipse.ice.dev.annotations</artifactId>
-	<version>3.0.0-SNAPSHOT</version>
 	<name>Eclipse ICE Developer Annotations</name>
 	<description>Annotations for use with Eclipse ICE development</description>
 
@@ -94,4 +92,9 @@
 		</dependency>
 	</dependencies>
 
+	<parent>
+		<groupId>org.eclipse.ice.dev</groupId>
+		<artifactId>org.eclipse.ice.dev</artifactId>
+		<version>3.0.0-SNAPSHOT</version>
+	</parent>
 </project>
