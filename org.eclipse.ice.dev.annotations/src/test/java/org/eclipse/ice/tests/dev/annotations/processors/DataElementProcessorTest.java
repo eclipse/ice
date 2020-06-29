@@ -64,7 +64,13 @@ class DataElementProcessorTest {
 		SINGLE_NON_PRIMITIVE("SingleNonPrimitive.java"),
 		MANY_NON_PRIMITIVE("ManyNonPrimitive.java"),
 		ACCESSIBILITY_PRESERVED("AccessibilityPreserved.java"),
-		DATAFIELD_ON_CLASS("DataFieldOnClass.java");
+		DATAFIELD_ON_CLASS("DataFieldOnClass.java"),
+		DATAFIELD_ON_METHOD("DataFieldOnMethod.java"),
+		DATAFIELD_GETTER("Getter.java"),
+		DATAFIELD_SETTER("Setter.java"),
+		DATAFIELD_MATCH("Match.java"),
+		DEFAULT_NON_STRING("DefaultNonString.java"),
+		DEFAULT_STRING("DefaultString.java");
 
 		/**
 		 * Parent directory of inputs. Prepended to all paths.
@@ -101,7 +107,11 @@ class DataElementProcessorTest {
 		SINGLE_NON_PRIMITIVE_IMPL("SingleNonPrimitiveImplementation.java"),
 		MANY_NON_PRIMITIVE_INT("ManyNonPrimitive.java"),
 		MANY_NON_PRIMITIVE_IMPL("ManyNonPrimitiveImplementation.java"),
-		ACCESSIBILITY_PRESERVED("AccessibilityPreserved.java");
+		ACCESSIBILITY_PRESERVED("AccessibilityPreserved.java"),
+		DATAFIELD_GETTER_INT("Getter.java"),
+		DATAFIELD_SETTER_INT("Setter.java"),
+		DEFAULT_NON_STRING_IMPL("DefaultNonStringImplementation.java"),
+		DEFAULT_STRING_IMPL("DefaultStringImplementation.java");
 
 		/**
 		 * Parent directory of inputs. Prepended to all paths.
@@ -322,8 +332,8 @@ class DataElementProcessorTest {
 	/**
 	 * Test that annotating a class with {@code @DataField} fails.
 	 *
-	 * This should be enough to also ensure that it will fail for other types as
-	 * well.
+	 * This should be enough to also ensure that it will fail for other types (enum,
+	 * interface, etc.).
 	 */
 	@Test
 	void testDataFieldOnClassFails() {
@@ -333,11 +343,24 @@ class DataElementProcessorTest {
 	}
 
 	/**
+	 * Test that annotating a class method with {@code @DataField} fails.
+	 */
+	@Test
+	void testDataFieldOnMethodFails() {
+		Compilation compilation = compile(Inputs.DATAFIELD_ON_METHOD.get());
+		assertThat(compilation)
+			.hadErrorContaining("annotation type not applicable");
+	}
+
+	/**
 	 * Test DataField Getter option.
 	 */
 	@Test
 	void testDataFieldGetterOption() {
-		fail("Getter option not yet implemented");
+		Compilation compilation = compile(Inputs.DATAFIELD_GETTER.get());
+		assertThat(compilation)
+			.generatedSourceFile(INTERFACE)
+			.hasSourceEquivalentTo(Patterns.DATAFIELD_GETTER_INT.get());
 	}
 
 	/**
@@ -345,7 +368,10 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testDataFieldSetterOption() {
-		fail("Setter option not yet implemented");
+		Compilation compilation = compile(Inputs.DATAFIELD_SETTER.get());
+		assertThat(compilation)
+			.generatedSourceFile(INTERFACE)
+			.hasSourceEquivalentTo(Patterns.DATAFIELD_SETTER_INT.get());
 	}
 
 	/**
@@ -353,38 +379,47 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testDataFieldMatchOption() {
-		fail("Match option not yet implemented");
+		Compilation compilation = compile(Inputs.DATAFIELD_MATCH.get());
+		assertThat(compilation)
+			.generatedSourceFile(IMPLEMENTATION)
+			.contentsAsUtf8String()
+			.contains("Matching toBeMatched");
+		assertThat(compilation)
+			.generatedSourceFile(IMPLEMENTATION)
+			.contentsAsUtf8String()
+			.doesNotContain("Matching toNotBeMatched");
 	}
 
 	/**
-	 * Test Persisted Annotation.
+	 * Test DataField.Default generation for Non-String values.
 	 */
 	@Test
-	void testPersisted() {
-		fail("Persisted not yet implemented");
+	void testDataFieldDefaultNonString() {
+		Compilation compilation = compile(Inputs.DEFAULT_NON_STRING.get());
+		assertImplementationMatches(
+			compilation,
+			Patterns.DEFAULT_NON_STRING_IMPL.get()
+		);
 	}
 
 	/**
-	 * Test DataField Search option.
+	 * Test DataField.Default generation for String values.
 	 */
 	@Test
-	void testDataFieldSearchOption() {
-		fail("Search option not yet implemented");
+	void testDataFieldDefaultString() {
+		Compilation compilation = compile(Inputs.DEFAULT_STRING.get());
+		assertImplementationMatches(
+			compilation,
+			Patterns.DEFAULT_STRING_IMPL.get()
+		);
 	}
 
-	/**
-	 * Test DataField.Default generation.
-	 */
-	@Test
-	void testDataFieldDefault() {
-		fail("DataField.Default not yet implemented");
-	}
-
-	/**
-	 * Test DataFieldJson annotation.
-	 */
-	@Test
-	void testDataFieldJson() {
-		fail("DataFieldJson not yet implemented");
-	}
+	// TODO rework DataFieldJson? Merge into DataElement Annotation?
+//	/**
+//	 * Test DataFieldJson annotation.
+//	 */
+//	@Test
+//	void testDataFieldJson() {
+//		fail("DataFieldJson not yet implemented");
+//	}
 }
