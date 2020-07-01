@@ -11,7 +11,10 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.fail;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -33,7 +36,7 @@ public class EmailHandlerTest {
 	 * @throws IOException
 	 */
 	@Test
-	public void testEmailNotificationPostUpdate() throws IOException {
+	public void testEmailNotificationPostUpdate() {
 
 		// Get a text file with credentials
 		String credFile = "/tmp/email-creds.txt";
@@ -49,6 +52,9 @@ public class EmailHandlerTest {
 			email = scanner.next();
 			password = scanner.next();
 			host = scanner.next();
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+			System.out.println("Email credential file not found in testEmailNotificationPostUpdate");
 		}
 
 		EmailUpdateHandler updater = new EmailUpdateHandler();
@@ -58,9 +64,13 @@ public class EmailHandlerTest {
 		updater.setSmtpHost(host);
 		updater.setMessage("This is a test updater");
 		updater.setSubject("This is a test subject");
-		updater.postUpdate();
-
-		// If no exception is thrown, it completed correctly
+		try {
+			updater.postUpdate();
+		} catch (IOException e) {
+			// If exception is thrown, test failed
+			e.printStackTrace();
+			fail("testEmailNotificationPostUpdate failed");
+		}
 	}
 
 	/**
