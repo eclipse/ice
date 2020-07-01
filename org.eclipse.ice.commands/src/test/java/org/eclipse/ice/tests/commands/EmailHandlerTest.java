@@ -13,6 +13,7 @@ package org.eclipse.ice.tests.commands;
 
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -96,7 +97,12 @@ public class EmailHandlerTest {
 			System.out.println("Exception correctly caught");
 			e.printStackTrace();
 		}
-		// Expect exception. If not thrown, it failed
+		
+		// Delete the dummy file we made
+		File fileDel = new File(credFile);
+		fileDel.delete();
+		
+		
 	}
 
 }
