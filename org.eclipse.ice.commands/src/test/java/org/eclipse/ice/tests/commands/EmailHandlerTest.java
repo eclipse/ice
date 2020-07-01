@@ -13,12 +13,11 @@ package org.eclipse.ice.tests.commands;
 
 import static org.junit.Assert.fail;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Scanner;
 
 import org.eclipse.ice.commands.EmailUpdateHandler;
+import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
 import org.junit.Test;
 
 /**
@@ -43,25 +42,12 @@ public class EmailHandlerTest {
 		if (System.getProperty("os.name").toLowerCase().contains("win"))
 			credFile = "C:\\Users\\Administrator\\email-creds.txt";
 
-		String email = "";
-		String password = "";
-		String host = "";
-
-		File file = new File(credFile);
-		try (Scanner scanner = new Scanner(file)) {
-			email = scanner.next();
-			password = scanner.next();
-			host = scanner.next();
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-			System.out.println("Email credential file not found in testEmailNotificationPostUpdate");
-		}
+		TxtFileConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
+		handler.setOption(credFile);
 
 		EmailUpdateHandler updater = new EmailUpdateHandler();
 		// Just send an email to itself
-		updater.setEmailAddress(email);
-		updater.setPassword(password);
-		updater.setSmtpHost(host);
+		updater.setCredHandler(handler);
 		updater.setMessage("This is a test updater");
 		updater.setSubject("This is a test subject");
 		try {
@@ -76,23 +62,41 @@ public class EmailHandlerTest {
 	/**
 	 * Tests bad credential error throwing
 	 * 
-	 * @throws IOException
 	 */
-	@Test(expected = IOException.class)
-	public void testEmailNotificationPostUpdateBadCreds() throws IOException {
+	@Test
+	public void testEmailNotificationPostUpdateBadCreds()  {
+		String  credFile = "/tmp/dumFile.txt";
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
+			credFile = "C:\\Users\\Administrator\\dumFile.txt";
 
-		String email = "badEmail";
-		String password = "badPassword";
-		String host = "some.smtp.com";
+		TxtFileConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
+		// Create and write bad values to a dummy text file
+		FileWriter file;
+		try {
+			file = new FileWriter(credFile);
+			file.write("badHost\nsomeEmail\nbaddPass");
+			file.close();
+		} catch (IOException e) {
+			System.out.println("Couldn't create file to run test");
+			e.printStackTrace();
+		}
+		
+		handler.setOption(credFile);
+		
 		EmailUpdateHandler updater = new EmailUpdateHandler();
-		// Just send an email to itself
-		updater.setEmailAddress(email);
-		updater.setPassword(password);
-		updater.setSmtpHost(host);
+		// Setup a bad credential file
+		updater.setCredHandler(handler);
 		updater.setMessage("Bad email");
 		updater.setSubject("This is a bad email");
-		updater.postUpdate();
-		// Expect exception
+		try {
+			updater.postUpdate();
+			/// IF it worked, the test failed
+			fail("The test worked, and it should have caught an exception!");
+		} catch (IOException e) {
+			System.out.println("Exception correctly caught");
+			e.printStackTrace();
+		}
+		// Expect exception. If not thrown, it failed
 	}
 
 }
