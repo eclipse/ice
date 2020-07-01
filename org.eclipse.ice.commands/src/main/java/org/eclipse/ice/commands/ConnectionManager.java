@@ -442,7 +442,13 @@ public class ConnectionManager {
 	 */
 	public boolean isConnectionOpen(String connectionName) {
 		Connection connection = getConnection(connectionName);
-		return connection.getSession().isOpen();
+		if(connection == null)
+			return false;
+		
+		if(!connection.getSession().isOpen())
+			return false;
+		
+		return true;
 	}
 
 	/**
