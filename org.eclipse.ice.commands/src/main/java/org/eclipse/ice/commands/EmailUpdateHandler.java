@@ -32,20 +32,14 @@ import javax.mail.internet.MimeMessage;
  */
 public class EmailUpdateHandler implements ICommandUpdateHandler {
 
-	// The email address to send the message to
-	private String emailAddress = "";
-
 	// The text that the message should contain
 	private String emailText = "";
 
 	// The subject of the message
 	private String emailSubject = "Commands API Message";
 
-	// The host smtp server for the email address
-	private String emailHost = "";
-
-	// The password for the provided email to be able to send to itself
-	private String emailPassword = "";
+	// Text file credential handler for sender's email creds
+	TxtFileConnectionAuthorizationHandler credHandler;
 
 	/**
 	 * Default constructor
@@ -58,23 +52,24 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 	 */
 	@Override
 	public void postUpdate() throws IOException {
-		// Create some properties and setup the default gmail
+		// Create some properties and setup the default 
 		// server properties
 		Properties properties = System.getProperties();
 		properties.put("mail.smtp.port", "25");
 		properties.put("mail.smtp.auth", "true");
 		properties.put("mail.smtp.starttls.enable", "true"); // TLS
 		// Setup mail server
-		properties.setProperty("mail.smtp.host", emailHost);
-
+		properties.setProperty("mail.smtp.host", credHandler.getHostname());
+	
 		// Get the default Session object.
 		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(emailAddress, emailPassword);
+				return new PasswordAuthentication(credHandler.getUsername(), 
+						                          String.valueOf(credHandler.getPassword()));
 			}
 		});
-		// Set session to debug just to explicit
+		// Set session to debug just to be explicit
 		session.setDebug(true);
 
 		try {
@@ -82,8 +77,8 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 			MimeMessage message = new MimeMessage(session);
 
 			// Set the sender and recipient of the email
-			message.setFrom(new InternetAddress(emailAddress));
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailAddress));
+			message.setFrom(new InternetAddress(credHandler.getUsername()));
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress(credHandler.getUsername()));
 
 			// Give the email a subject and message content
 			message.setSubject(emailSubject);
@@ -100,7 +95,7 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 
 	/**
 	 * Setter for the email subject, see
-	 * {@link org.eclipse.ice.commands.notification.EmailUpdateHandler#emailSubject}
+	 * {@link org.eclipse.ice.commands.EmailUpdateHandler#emailSubject}
 	 * 
 	 * @param emailSubject
 	 */
@@ -109,33 +104,13 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 	}
 
 	/**
-	 * Setter for the email address, see
-	 * {@link org.eclipse.ice.commands.notification.EmailUpdateHandler#emailAddress}
+	 * Setter for the text file credential handler, see
+	 * {@link org.eclipse.ice.commands.EmailUpdateHandler#credHandler}
 	 * 
-	 * @param option
+	 * @param credHandler
 	 */
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
-	}
-
-	/**
-	 * Setter for the email host for email authentication, see
-	 * {@link org.eclipse.ice.commands.notification.EmailUpdateHandler#emailHost}
-	 * 
-	 * @param emailPassword
-	 */
-	public void setSmtpHost(String emailHost) {
-		this.emailHost = emailHost;
-	}
-
-	/**
-	 * Setter for the email password for email authentication, see
-	 * {@link org.eclipse.ice.commands.notification.EmailUpdateHandler#emailPassword}
-	 * 
-	 * @param emailPassword
-	 */
-	public void setPassword(String emailPassword) {
-		this.emailPassword = emailPassword;
+	public void setCredHandler(TxtFileConnectionAuthorizationHandler credHandler){
+		this.credHandler = credHandler;
 	}
 
 	/**

@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 
 import org.eclipse.ice.commands.CommandStatus;
@@ -33,15 +35,21 @@ public class HTTPHandlerTest {
 	 * @throws IOException
 	 */
 	@Test
-	public void testHTTPNotificationPostUpdate() throws IOException {
+	public void testHTTPNotificationPostUpdate(){
 
 		HTTPCommandUpdateHandler updater = new HTTPCommandUpdateHandler();
 		updater.setHTTPAddress("https://225eee153c45329a1bcedd6da637643f.m.pipedream.net");
 		updater.setMessage("job finished with status " + CommandStatus.INFOERROR);
 
-		updater.postUpdate();
+		try {
+			updater.postUpdate();
+		} catch (IOException e) {
+			// If an exception is thrown, test failed
+			e.printStackTrace();
+			fail("testHTTPNotificationPostUpdate threw an exception and thus failed.");
+		}
 
-		// test is successful if no exception is thrown
+		
 	}
 
 }

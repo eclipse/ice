@@ -13,10 +13,7 @@ package org.eclipse.ice.tests.commands;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Scanner;
 
 import org.eclipse.ice.commands.Command;
 import org.eclipse.ice.commands.CommandConfiguration;
@@ -126,8 +123,7 @@ public class CommandFactoryUpdaterTest {
 		CommandConfiguration commandConfig = new CommandConfiguration();
 		commandConfig.setNumProcs("1");
 		commandConfig.setInstallDirectory("");
-		commandConfig
-				.setWorkingDirectory(System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/");
+		commandConfig.setWorkingDirectory(System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/");
 		commandConfig.setOS(System.getProperty("os.name"));
 		commandConfig.setExecutable("./test_code_execution.sh");
 		// If it is windows, configure the test to run on windows
@@ -155,23 +151,10 @@ public class CommandFactoryUpdaterTest {
 		if (System.getProperty("os.name").toLowerCase().contains("win"))
 			credFile = "C:\\Users\\Administrator\\email-creds.txt";
 
-		String email = "";
-		String password = "";
-		String host = "";
-
-		File file = new File(credFile);
-		try (Scanner scanner = new Scanner(file)) {
-			email = scanner.next();
-			password = scanner.next();
-			host = scanner.next();
-		} catch (FileNotFoundException e) {
-			System.out.println("Email credential file not found, can't continue with test...");
-			e.printStackTrace();
-		}
+		TxtFileConnectionAuthorizationHandler auth = new TxtFileConnectionAuthorizationHandler();
+		auth.setOption(credFile);
 		EmailUpdateHandler handler = new EmailUpdateHandler();
-		handler.setEmailAddress(email);
-		handler.setPassword(password);
-		handler.setSmtpHost(host);
+		handler.setCredHandler(auth);
 
 		return handler;
 	}
