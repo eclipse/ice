@@ -70,6 +70,12 @@ public abstract class Command {
 	 */
 	protected ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 
+	
+	/**
+	 * An optional update handler that can provide status updates for the command
+	 */
+	ICommandUpdateHandler updater = null;
+	
 	/**
 	 * Default constructor
 	 */
@@ -104,6 +110,18 @@ public abstract class Command {
 
 		// Confirm the job finished with some status
 		logger.info("The job finished with status: " + status);
+		if(updater != null) {
+			String message = "Job number " + commandConfig.getCommandId() 
+			+ " finished with status " + status +"\n "
+			+ "Check your log/out/error files for more details";
+			updater.setMessage(message);
+			try {
+				updater.postUpdate();
+			} catch (IOException e) {
+				// Just warn since it is not indicative of a job failing
+				logger.warn("Couldn't post update. Check stack trace" , e);
+			}
+		}
 		return status;
 
 	}
@@ -343,8 +361,12 @@ public abstract class Command {
 			logger.info("The current status is: " + current_status);
 			return true;
 		} else {
-			logger.error("The job failed with status: " + current_status);
-			logger.error("Check your error logfile for more details! Exiting now!");
+			String statusString = "The job failed with status: " + current_status;
+			String checkString = "Check your error logfile for more details! Exiting now!";
+			
+			logger.error(statusString);
+			logger.error(checkString);
+					
 			return false;
 		}
 
@@ -429,5 +451,13 @@ public abstract class Command {
 	 */
 	public ConnectionManager getConnectionManager() {
 		return manager;
+	}
+	
+	/**
+	 * Setter for update handler, see {@link org.eclipse.ice.commands.Command#updater}
+	 * @param updater
+	 */
+	public void setUpdateHandler(ICommandUpdateHandler updater) {
+		this.updater = updater;
 	}
 }
