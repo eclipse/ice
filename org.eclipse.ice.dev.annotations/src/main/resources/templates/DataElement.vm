@@ -134,6 +134,7 @@ public class ${class} implements ${interface}, Serializable {
 					// by debuggers.
 					#foreach($field in ${fields.Match})
 
+					// Matching ${field.Name}
 					boolean ${field.Name}Match =
 					#if(${field.Nullable})
 						this.${field.Name} == null ?
@@ -144,8 +145,6 @@ public class ${class} implements ${interface}, Serializable {
 					#else
 						this.${field.Name}.equals(other.${field.Name});
 					#end## if nullable
-					#else
-					// Not checking ${field.Name}
 					#end## foreach
 
 					retval =
