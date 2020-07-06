@@ -20,6 +20,9 @@ package org.eclipse.ice.commands;
  */
 public class KeyPathConnectionAuthorizationHandler extends ConnectionAuthorizationHandler {
 
+	/**
+	 * A string that holds the path to the key used for a connection authorization
+	 */
 	private String keyPath = null;
 
 	/**
@@ -28,6 +31,11 @@ public class KeyPathConnectionAuthorizationHandler extends ConnectionAuthorizati
 	public KeyPathConnectionAuthorizationHandler() {
 	}
 
+	/**
+	 * Constructor with a given key path
+	 * 
+	 * @param keyPath - String corresponding to the path for the key
+	 */
 	public KeyPathConnectionAuthorizationHandler(String keyPath) {
 		this.keyPath = keyPath;
 	}
@@ -36,7 +44,7 @@ public class KeyPathConnectionAuthorizationHandler extends ConnectionAuthorizati
 	 * Setter for
 	 * {@link org.eclipse.ice.commands.KeyPathConnectionAuthorizationHandler#keyPath}
 	 * 
-	 * @param keyPath
+	 * @param keyPath - String corresponding to the path for the key
 	 */
 	@Override
 	public void setOption(String option) {
@@ -47,11 +55,12 @@ public class KeyPathConnectionAuthorizationHandler extends ConnectionAuthorizati
 	 * Getter for
 	 * {@link org.eclipse.ice.commands.KeyPathConnectionAuthorizationHandler#keyPath}
 	 * 
-	 * @return
+	 * @return - String corresponding to the path for the key
 	 */
 	public String getKeyPath() {
 		return keyPath;
 	}
+
 	/**
 	 * See
 	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#getPassword()}

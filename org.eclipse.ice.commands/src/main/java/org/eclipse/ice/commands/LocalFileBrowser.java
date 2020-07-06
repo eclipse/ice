@@ -49,7 +49,9 @@ public class LocalFileBrowser extends SimpleFileVisitor<Path> implements FileBro
 		
 	}
 
-	// Add the file path to fileList
+	/**
+	 * Add the file path to the array list fileList
+	 */
 	@Override
 	public FileVisitResult visitFile(Path file, BasicFileAttributes attr) {
 		// Add the file, depending on it's attribute
@@ -60,7 +62,9 @@ public class LocalFileBrowser extends SimpleFileVisitor<Path> implements FileBro
 		return FileVisitResult.CONTINUE;
 	}
 
-	// Add the directory path to the array list directoryList
+	/** 
+	 * Add the directory path to the array list directoryList
+	 */
 	@Override
 	public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
 		directoryList.add(dir.toString());
@@ -81,7 +85,7 @@ public class LocalFileBrowser extends SimpleFileVisitor<Path> implements FileBro
 	/**
 	 * See {@link org.eclipse.ice.commands.FileBrowser#getFileList()}
 	 * 
-	 * @return
+	 * @return = ArrayList<String> of files
 	 */
 	@Override
 	public ArrayList<String> getFileList() {
@@ -91,7 +95,7 @@ public class LocalFileBrowser extends SimpleFileVisitor<Path> implements FileBro
 	/**
 	 * See {@link org.eclipse.ice.commands.FileBrowser#getDirectoryList()}
 	 * 
-	 * @return
+	 * @return - ArrayList<String> of directories
 	 */
 	@Override
 	public ArrayList<String> getDirectoryList() {
@@ -102,6 +106,8 @@ public class LocalFileBrowser extends SimpleFileVisitor<Path> implements FileBro
 	 * This function performs the action of walking the file tree for the file
 	 * browsing capabilities of LocalFileHandler. It returns a LocalFileWalker so
 	 * that the files or directories could be obtained
+	 * 
+	 * @param topDirectory - top most directory to recursively walk through
 	 * 
 	 */
 	private void walkTree(final String topDirectory) {
@@ -115,7 +121,7 @@ public class LocalFileBrowser extends SimpleFileVisitor<Path> implements FileBro
 		try {
 			// Make a dummy path that just gets the return top directory from
 			// Files.walkFileTree
-			Path path = Files.walkFileTree(topPath, this);
+			Files.walkFileTree(topPath, this);
 		} catch (IOException e) {
 			logger.error("Unable to walk file tree at path " + topPath.toString(), e);
 		}

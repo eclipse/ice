@@ -11,12 +11,11 @@
  *******************************************************************************/
 package org.eclipse.ice.commands;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.SftpException;
+import org.apache.sshd.client.subsystem.sftp.SftpClient;
+import org.apache.sshd.client.subsystem.sftp.SftpClient.DirEntry;
 
 /**
  * This class allows for remote file and directory browsing on a remote host
@@ -25,30 +24,26 @@ import com.jcraft.jsch.SftpException;
  *
  */
 public class RemoteFileBrowser implements FileBrowser {
-
 	/**
-	 * A connection with which to browse files
-	 */
-	private Connection connection;
-
-	/**
-	 * Default  constructor
+	 * Default constructor
 	 */
 	public RemoteFileBrowser() {
+		// Clear the arrays to start fresh for every browser
 		fileList.clear();
 		directoryList.clear();
-		this.connection = null;
 	}
-	
+
 	/**
 	 * Default constructor with connection and top directory name
+	 * 
+	 * @param connection   - Connection over which to file browse
+	 * @param topDirectory - top most directory to recursively walk through
 	 */
 	public RemoteFileBrowser(Connection connection, final String topDirectory) {
 		// Make sure we start with a fresh list every time the browser is called
 		fileList.clear();
 		directoryList.clear();
-		this.connection = connection;
-		
+
 		// Fill the arrays with the relevant file information
 		fillArrays(topDirectory, connection.getSftpChannel());
 	}
@@ -58,28 +53,25 @@ public class RemoteFileBrowser implements FileBrowser {
 	 * remote host and fill the member variable arrays with the files and
 	 * directories
 	 * 
-	 * @param channel
-	 * @param topDirectory
+	 * @param channel      - sftp channel to walk the file tree with
+	 * @param topDirectory - top most directory under which to browse
 	 */
-	protected void fillArrays(String topDirectory, ChannelSftp channel) {
-
+	protected void fillArrays(String topDirectory, SftpClient channel) {
 		try {
 			// Make sure the top directory ends with the appropriate separator
 			String separator = "/";
-			// If the remote file system returns a home directory with \, then it
-			// must be windows
-			if (channel.getHome().contains("\\"))
+			// If the remote directory to search contains a \\, then it must be windows
+			// and thus we should set the separator as such
+			if (topDirectory.contains("\\"))
 				separator = "\\";
 
 			// Now check the path name
 			if (!topDirectory.endsWith(separator))
 				topDirectory += separator;
 
-			// Get the path's directory structure
-			Collection<ChannelSftp.LsEntry> directoryStructure = channel.ls(topDirectory);
 			// Iterate through the structure
-			for (ChannelSftp.LsEntry file : directoryStructure) {
-				if (!file.getAttrs().isDir()) {
+			for (DirEntry file : channel.readDir(topDirectory)) {
+				if (!file.getAttributes().isDirectory()) {
 					fileList.add(topDirectory + file.getFilename());
 					// Else if it is a subdirectory and not '.' or '..'
 				} else if (!(".".equals(file.getFilename()) || "..".equals(file.getFilename()))) {
@@ -91,7 +83,7 @@ public class RemoteFileBrowser implements FileBrowser {
 
 			}
 
-		} catch (SftpException e) {
+		} catch (IOException e) {
 			logger.error("Could not use channel to connect to browse directories!", e);
 		}
 
@@ -99,8 +91,6 @@ public class RemoteFileBrowser implements FileBrowser {
 
 	/**
 	 * See {@link org.eclipse.ice.commands.FileBrowser#getDirectoryList()}
-	 * 
-	 * @return
 	 */
 	@Override
 	public ArrayList<String> getDirectoryList() {
@@ -109,8 +99,6 @@ public class RemoteFileBrowser implements FileBrowser {
 
 	/**
 	 * See {@link org.eclipse.ice.commands.FileBrowser#getFileList()}
-	 * 
-	 * @return
 	 */
 	@Override
 	public ArrayList<String> getFileList() {

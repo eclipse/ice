@@ -11,8 +11,11 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
@@ -23,8 +26,6 @@ import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.junit.Test;
-
-import com.jcraft.jsch.JSchException;
 
 /**
  * This class tests
@@ -53,8 +54,8 @@ public class ConnectionAuthorizationHandlerFactoryTest {
 			e.printStackTrace();
 		}
 		// Assert that the username and hostname are that of the local computer
-		assert (local.getHostname() == addr.getHostName());
-		assert (local.getUsername() == System.getProperty("user.name"));
+		assertEquals(addr.getHostName(), local.getHostname());
+		assertEquals(local.getUsername(), System.getProperty("user.name"));
 
 	}
 
@@ -65,7 +66,7 @@ public class ConnectionAuthorizationHandlerFactoryTest {
 	 * @throws JSchException
 	 */
 	@Test
-	public void testTextAuthorization() throws JSchException {
+	public void testTextAuthorization() throws IOException {
 		String credFile = "/tmp/ice-remote-creds.txt";
 		if (System.getProperty("os.name").toLowerCase().contains("win"))
 			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
@@ -75,32 +76,28 @@ public class ConnectionAuthorizationHandlerFactoryTest {
 
 		// Assert that the hostname and username are whatever was put in
 		File file = new File(credFile);
-		Scanner scanner = null;
-		try {
-			scanner = new Scanner(file);
-		} catch (FileNotFoundException e){
-			e.printStackTrace();
+		try (Scanner scanner = new Scanner(file)) {
+			String username = scanner.next();
+			char[] pwd = scanner.next().toCharArray();
+			// delete the password since we don't need it here
+			Arrays.fill(pwd, Character.MIN_VALUE);
+			String hostname = scanner.next();
+			
+			assertEquals(username, text.getUsername());
+			assertEquals(hostname, text.getHostname());
+	
+			// Create a connection configuration to actually try and open the connection
+			ConnectionConfiguration config = new ConnectionConfiguration();
+			config.setName("Text");
+			config.setAuthorization(text);
+	
+			// Try to open the connection
+			ConnectionManagerFactory.getConnectionManager().openConnection(config);
+			// Assert that it was correctly opened
+			assertTrue(ConnectionManagerFactory.getConnectionManager().isConnectionOpen("Text"));
+			// Close it since we are done with it
+			ConnectionManagerFactory.getConnectionManager().removeAllConnections();
 		}
-		String username = scanner.next();
-		char[] pwd = scanner.next().toCharArray();
-		// delete the password since we don't need it here
-		Arrays.fill(pwd, Character.MIN_VALUE);
-		String hostname = scanner.next();
-		
-		assert(text.getUsername().equals(username));
-		assert(text.getHostname().equals(hostname));
-
-		// Create a connection configuration to actually try and open the connection
-		ConnectionConfiguration config = new ConnectionConfiguration();
-		config.setName("Text");
-		config.setAuthorization(text);
-
-		// Try to open the connection
-		ConnectionManagerFactory.getConnectionManager().openConnection(config);
-		// Assert that it was correctly opened
-		assert (ConnectionManagerFactory.getConnectionManager().isConnectionOpen("Text"));
-		// Close it since we are done with it
-		ConnectionManagerFactory.getConnectionManager().removeAllConnections();
 	}
 
 	/**
@@ -110,7 +107,7 @@ public class ConnectionAuthorizationHandlerFactoryTest {
 	 * @throws JSchException
 	 */
 	@Test
-	public void testKeyPathAuthorization() throws JSchException {
+	public void testKeyPathAuthorization() throws IOException {
 		// Filepath to the dummy host key
 		String keyPath = System.getProperty("user.home") + "/.ssh/dummyhostkey";
 		
@@ -136,7 +133,7 @@ public class ConnectionAuthorizationHandlerFactoryTest {
 		// Try to open the connection
 		ConnectionManagerFactory.getConnectionManager().openConnection(config);
 		// Assert that it was correctly opened
-		assert (ConnectionManagerFactory.getConnectionManager().isConnectionOpen("keyPath"));
+		assertTrue(ConnectionManagerFactory.getConnectionManager().isConnectionOpen("keyPath"));
 		// Close it since we are done with it
 		ConnectionManagerFactory.getConnectionManager().removeAllConnections();
 
