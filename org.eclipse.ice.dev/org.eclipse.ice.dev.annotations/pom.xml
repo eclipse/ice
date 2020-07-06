@@ -86,6 +86,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.google.testing.compile</groupId>
+			<artifactId>compile-testing</artifactId>
+			<version>0.18</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
 			<version>3.12.2</version>

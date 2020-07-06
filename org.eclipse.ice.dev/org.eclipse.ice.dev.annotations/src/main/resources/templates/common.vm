@@ -37,3 +37,4 @@ $shift$bodyContent.toString().replace("$tab", "").replace("$newline", "$newline$
 	 */
 	#end
 #end
+#macro(getterprefix)#if(${field.Type} == "boolean")is#{else}get#end#end
