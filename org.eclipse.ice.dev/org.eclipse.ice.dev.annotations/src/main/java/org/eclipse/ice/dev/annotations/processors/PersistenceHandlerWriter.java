@@ -25,12 +25,12 @@ public class PersistenceHandlerWriter implements SourceWriter {
 	private static final String IMPLEMENTATION = "implementation";
 	private static final String FIELDS = "fields";
 
-	private Object package_;
-	private Object elementInterface;
-	private Object class_;
-	private Object implementation;
-	private Object collection;
-	private Object fields;
+	private String package_;
+	private String elementInterface;
+	private String class_;
+	private String implementation;
+	private String collection;
+	private Fields fields;
 
 	@Override
 	public void write(Writer writer) {
