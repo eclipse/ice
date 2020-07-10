@@ -40,6 +40,8 @@ public class Field {
 	 * String representation of the field's type.
 	 */
 	String type;
+	
+	TypeMirror mirror;
 
 	/**
 	 * The default value of this field.
@@ -180,6 +182,7 @@ public class Field {
 		@JsonIgnore
 		public FieldBuilder type(TypeMirror type) {
 			this.type = type.toString();
+			this.mirror = type;
 			this.primitive = type.getKind().isPrimitive();
 			return this;
 		}

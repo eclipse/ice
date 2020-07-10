@@ -1,9 +1,10 @@
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.util.Arrays;
-
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.lang.model.element.Element;
@@ -11,6 +12,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
 import org.eclipse.ice.dev.annotations.DataElement;
+import org.eclipse.ice.dev.annotations.DataField;
 import org.eclipse.ice.dev.annotations.DataFieldJson;
 import org.eclipse.ice.dev.annotations.Persisted;
 
@@ -23,40 +25,6 @@ import lombok.Getter;
  * @author Daniel Bluhm
  */
 public class DataElementSpec extends AnnotatedElement {
-
-	/**
-	 * The value appended to DataElement implementation class names.
-	 */
-	private final static String IMPL_SUFFIX = "Implementation";
-
-	/**
-	 * The value appended to DataElement Persistence Handler class names.
-	 */
-	private final static String PERSISTENCE_SUFFIX = "PersistenceHandler";
-
-	/**
-	 * The fully qualified name of this element.
-	 */
-	@Getter
-	private String fullyQualifiedName;
-
-	/**
-	 * The name of the DataElement as extracted from the DataElement annotation.
-	 */
-	@Getter
-	private String name;
-
-	/**
-	 * The package of this element represented as a String.
-	 */
-	@Getter
-	private String packageName;
-
-	/**
-	 * The name of the collection as extracted from Persisted or null.
-	 */
-	@Getter
-	private String collectionName;
 
 	/**
 	 * The DataFields found in this DataElementSpec.
@@ -73,27 +41,22 @@ public class DataElementSpec extends AnnotatedElement {
 	 */
 	public DataElementSpec(Element element, Elements elementUtils) throws InvalidDataElementSpec {
 		super(element, elementUtils);
-		if (!element.getKind().isClass()) {
-			throw new InvalidDataElementSpec(
-				"DataElementSpec must be class, found " + element.toString()
-			);
-		}
-
-		// Names
-		this.name = this.extractName();
-		String elementFQN = ((TypeElement) element).getQualifiedName().toString();
-		this.packageName = null;
-		final int lastDot = elementFQN.lastIndexOf('.');
-		if (lastDot > 0) {
-			this.packageName = elementFQN.substring(0, lastDot);
-			this.fullyQualifiedName = this.packageName + "." + this.name;
-		} else {
-			this.fullyQualifiedName = this.name;
-		}
-		this.collectionName = this.extractCollectionName();
-
 		// Gather DataFields
 		this.dataFields = this.extractDataFields();
+	}
+	
+	@Override
+	public boolean isValidAnnotatedElement(Element element, Elements elementUtils){
+		return element.getKind().isClass() && (element instanceof TypeElement);	
+	}
+	
+	/**
+	 * Determine if the passed field is a DataElement.
+	 * @param element to check
+	 * @return whether element is a DataElement
+	 */
+	public static boolean isDataElement(Element element) {
+		return element.getAnnotation(DataElement.class) != null;
 	}
 
 	/**
@@ -103,71 +66,18 @@ public class DataElementSpec extends AnnotatedElement {
 	public List<DataFieldSpec> extractDataFields() {
 		return this.element.getEnclosedElements().stream()
 			.filter(DataFieldSpec::isDataField)
-			.map(enclosedElement -> new DataFieldSpec(enclosedElement, elementUtils))
+			.map(enclosedElement -> {
+				try {
+					return new DataFieldSpec(enclosedElement, elementUtils);
+				} catch(InvalidDataElementSpec e) {
+					//should never rach this point as the validation for DataField always returns true as of now
+					e.printStackTrace();
+				}
+				return null;
+			})
 			.collect(Collectors.toList());
 	}
 
-	/**
-	 * Return the element name as extracted from the DataElement annotation.
-	 * @return the extracted name
-	 */
-	public String extractName() {
-		return this.getAnnotation(DataElement.class)
-			.map(e -> e.name())
-			.orElse(null);
-	}
-
-	/**
-	 * Return the collection name as extracted from the Persisted annotation.
-	 * @return the extracted collection name
-	 */
-	public String extractCollectionName() {
-		return this.getAnnotation(Persisted.class)
-			.map(p -> p.collection())
-			.orElse(null);
-	}
-
-	/**
-	 * Get the name of the Implementation to be generated.
-	 * @return implementation name
-	 */
-	public String getImplName() {
-		return this.name + IMPL_SUFFIX;
-	}
-
-	/**
-	 * Get the fully qualified name of the Implementation to be generated.
-	 * @return fully qualified implementation name
-	 */
-	public String getQualifiedImplName() {
-		return this.fullyQualifiedName + IMPL_SUFFIX;
-	}
-
-	/**
-	 * Get the name of the Persistence Handler to be generated.
-	 * @return persistence handler name
-	 */
-	public String getPersistenceHandlerName() {
-		return this.name + PERSISTENCE_SUFFIX;
-	}
-
-	/**
-	 * Get the fully qualified name of the Persistence Handler to be generated.
-	 * @return fully qualified persistence handler name
-	 */
-	public String getQualifiedPersistenceHandlerName() {
-		return this.fullyQualifiedName + PERSISTENCE_SUFFIX;
-	}
-
-	/**
-	 * Collect Fields from DataField and DataFields Annotations.
-	 * @return discovered fields
-	 */
-	public List<Field> fieldsFromDataFields() {
-		return dataFields.stream()
-			.map(dataField -> dataField.toField())
-			.collect(Collectors.toList());
-	}
 
 	/**
 	 * Collect JSON File Strings from DataFieldJson Annotations.
@@ -177,5 +87,28 @@ public class DataElementSpec extends AnnotatedElement {
 		return this.getAnnotation(DataFieldJson.class)
 			.map(jsons -> Arrays.asList(jsons.value()))
 			.orElse(Collections.emptyList());
+	}
+
+	@Override
+	protected List<String> extractAnnotations() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected String extractDefaultValue() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static final List<String> ANNOTATION_CLASS_NAMES = Set.of(
+			DataField.class,
+			DataField.Default.class
+		).stream()
+			.map(cls -> cls.getCanonicalName())
+			.collect(Collectors.toList());
+	
+	public Collection<Field> fieldsFromDataFields() {
+		return ProcessorUtil.getAllFields(element, elementUtils, DataFieldSpec::isDataField, ANNOTATION_CLASS_NAMES);
 	}
 }

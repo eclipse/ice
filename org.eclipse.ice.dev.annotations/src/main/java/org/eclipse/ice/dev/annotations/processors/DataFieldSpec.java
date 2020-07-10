@@ -10,7 +10,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 
-import org.eclipse.ice.dev.annotations.DataField;
+import org.eclipse.ice.dev.annotations.DataField;	
 
 /**
  * An AnnotatedElement subclass representing a DataField.
@@ -37,10 +37,20 @@ public class DataFieldSpec extends AnnotatedElement {
 	 * Instantiate a DataFieldSpec.
 	 * @param element annotated with {@code @DataField}
 	 * @param elementUtils Elements helper class from processing environment
+	 * @throws InvalidDataElementSpec 
 	 */
-	public DataFieldSpec(Element element, Elements elementUtils) {
+	public DataFieldSpec(Element element, Elements elementUtils) throws InvalidDataElementSpec {
 		super(element, elementUtils);
 		this.fieldInfo = this.element.getAnnotation(DataField.class);
+	}
+	
+	@Override
+	public boolean isValidAnnotatedElement(Element element, Elements elementUtils){
+		return true;	
+	}
+	
+	public static boolean isValidAnnotatedElement(Element element) {
+		return true;
 	}
 
 	/**
@@ -57,7 +67,7 @@ public class DataFieldSpec extends AnnotatedElement {
 	 * @return extract field modifiers
 	 * @see Modifier
 	 */
-	private Set<Modifier> extractModifiers() {
+	protected Set<Modifier> extractModifiers() {
 		return this.element.getModifiers();
 	}
 
@@ -66,7 +76,7 @@ public class DataFieldSpec extends AnnotatedElement {
 	 * Annotation itself.
 	 * @return extracted annotations, excluding DataField related annotations
 	 */
-	private List<String> extractAnnotations() {
+	protected List<String> extractAnnotations() {
 		return this.element.getAnnotationMirrors().stream()
 			.filter(mirror -> !ANNOTATION_CLASS_NAMES.contains(
 				mirror.getAnnotationType().toString()
@@ -74,29 +84,23 @@ public class DataFieldSpec extends AnnotatedElement {
 			.map(mirror -> mirror.toString())
 			.collect(Collectors.toList());
 	}
-
+	
 	/**
-	 * Return the class of this Field.
-	 * @return extracted field type
+	 * Return the element name as extracted from the DataElement annotation.
+	 * @return the extracted name
 	 */
-	private TypeMirror extractFieldType() {
-		return this.element.asType();
+	@Override
+	public String extractName() {
+		return null;
 	}
 
 	/**
-	 * Return the name of this Field.
-	 * @return extracted field name
+	 * Return the collection name as extracted from the Persisted annotation.
+	 * @return the extracted collection name
 	 */
-	private String extractFieldName() {
-		return this.element.getSimpleName().toString();
-	}
-
-	/**
-	 * Return the DocString of this Field.
-	 * @return extracted doc comment
-	 */
-	private String extractDocString() {
-		return this.elementUtils.getDocComment(this.element);
+	@Override
+	public String extractCollectionName() {
+		return null;
 	}
 
 	/**
@@ -105,7 +109,7 @@ public class DataFieldSpec extends AnnotatedElement {
 	 * {@code final}.
 	 * @return extracted default value
 	 */
-	private String extractDefaultValue() {
+	protected String extractDefaultValue() {
 		String retval = null;
 		DataField.Default defaults = this.element.getAnnotation(DataField.Default.class);
 		if (defaults != null) {
