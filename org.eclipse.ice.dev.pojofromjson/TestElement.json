@@ -1,0 +1,46 @@
+{
+    "package": "testpackage",
+    "element": "TestElement",
+    "implementation": "TestElementImplementation",
+    "fields": [
+        {
+            "name": "test",
+            "type": "java.lang.String",
+            "defaultValue": null,
+            "docString": "Test docs.",
+            "nullable": true,
+            "primitive": true,
+            "match": false,
+            "getter": true,
+            "setter": true,
+            "defaultField": false,
+            "search": true,
+            "unique": false,
+            "aliases": [
+                {
+                    "name": "another",
+                    "type": null,
+                    "defaultValue": null,
+                    "docString": null,
+                    "nullable": false,
+                    "primitive": false,
+                    "match": true,
+                    "getter": true,
+                    "setter": true,
+                    "defaultField": false,
+                    "search": true,
+                    "unique": false,
+                    "aliases": [],
+                    "annotations": [],
+                    "modifiers": [
+                        "protected"
+                    ]
+                }
+            ],
+            "annotations": [],
+            "modifiers": [
+                "protected"
+            ]
+        }
+    ]
+}
