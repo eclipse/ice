@@ -8,7 +8,6 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -26,8 +25,6 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
 
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
 import org.eclipse.ice.dev.annotations.DataElement;
 import org.eclipse.ice.dev.annotations.Persisted;
 
@@ -50,31 +47,6 @@ import com.google.auto.service.AutoService;
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 @AutoService(Processor.class)
 public class DataElementProcessor extends AbstractProcessor {
-
-	/**
-	 * Location of DataElement template for use with velocity.
-	 *
-	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
-	 * to the src/main/resources folder.
-	 */
-	private static final String DATAELEMENT_TEMPLATE = "templates/DataElement.vm";
-
-	/**
-	 * Location of PersistenceHandler template for use with velocity.
-	 *
-	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
-	 * to the src/main/resources folder.
-	 */
-	private static final String PERSISTENCE_HANDLER_TEMPLATE = "templates/PersistenceHandler.vm";
-
-	/**
-	 * Location of Interface template for use with velocity.
-	 *
-	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
-	 * to the src/main/resources folder.
-	 */
-	private static final String INTERFACE_TEMPLATE = "templates/ElementInterface.vm";
-
 	/**
 	 * Return stack trace as string.
 	 * @param e subject exception
@@ -97,15 +69,6 @@ public class DataElementProcessor extends AbstractProcessor {
 		messager = env.getMessager();
 		elementUtils = env.getElementUtils();
 		mapper = new ObjectMapper();
-
-		// Set up Velocity using the Singleton approach; ClasspathResourceLoader allows
-		// us to load templates from src/main/resources
-		final Properties p = new Properties();
-		for (VelocityProperty vp : VelocityProperty.values()) {
-			p.setProperty(vp.key(), vp.value());
-		}
-		Velocity.init(p);
-
 		super.init(env);
 	}
 
@@ -127,7 +90,7 @@ public class DataElementProcessor extends AbstractProcessor {
 				writeInterface(dataElement, fields);
 
 				// Write the DataElement Implementation to file.
-				writeClass(dataElement, fields);
+				writeImpl(dataElement, fields);
 
 				// Check if Persistence should be generated.
 				if (dataElement.hasAnnotation(Persisted.class)) {
@@ -177,19 +140,16 @@ public class DataElementProcessor extends AbstractProcessor {
 	 * @param fields
 	 * @throws IOException
 	 */
-	private void writeClass(DataElementSpec element, final Fields fields) throws IOException {
-		// Prepare context of template
-		final VelocityContext context = new VelocityContext();
-		context.put(DataElementTemplateProperty.PACKAGE.getKey(), element.getPackageName());
-		context.put(DataElementTemplateProperty.INTERFACE.getKey(), element.getName());
-		context.put(DataElementTemplateProperty.CLASS.getKey(), element.getImplName());
-		context.put(DataElementTemplateProperty.FIELDS.getKey(), fields);
-
-		// Write to file
+	private void writeImpl(DataElementSpec element, final Fields fields) throws IOException {
 		final JavaFileObject generatedClassFile = processingEnv.getFiler()
 			.createSourceFile(element.getQualifiedImplName());
 		try (Writer writer = generatedClassFile.openWriter()) {
-			Velocity.mergeTemplate(DATAELEMENT_TEMPLATE, "UTF-8", context, writer);
+			new ImplementationWriter(
+				element.getPackageName(),
+				element.getName(),
+				element.getImplName(),
+				fields
+			).write(writer);
 		}
 	}
 
@@ -205,38 +165,18 @@ public class DataElementProcessor extends AbstractProcessor {
 		final String collectionName,
 		Fields fields
 	) throws IOException {
-		// Prepare context of template
-		final VelocityContext context = new VelocityContext();
-		context.put(
-			PersistenceHandlerTemplateProperty.PACKAGE.getKey(),
-			element.getPackageName()
-		);
-		context.put(
-			PersistenceHandlerTemplateProperty.ELEMENT_INTERFACE.getKey(),
-			element.getName()
-		);
-		context.put(
-			PersistenceHandlerTemplateProperty.CLASS.getKey(),
-			element.getPersistenceHandlerName()
-		);
-		context.put(
-			PersistenceHandlerTemplateProperty.COLLECTION.getKey(),
-			collectionName
-		);
-		context.put(
-			PersistenceHandlerTemplateProperty.IMPLEMENTATION.getKey(),
-			element.getImplName()
-		);
-		context.put(
-			PersistenceHandlerTemplateProperty.FIELDS.getKey(),
-			fields
-		);
-
 		// Write to file
 		final JavaFileObject generatedClassFile = processingEnv.getFiler()
 			.createSourceFile(element.getQualifiedPersistenceHandlerName());
 		try (Writer writer = generatedClassFile.openWriter()) {
-			Velocity.mergeTemplate(PERSISTENCE_HANDLER_TEMPLATE, "UTF-8", context, writer);
+			new PersistenceHandlerWriter(
+				element.getPackageName(),
+				element.getName(),
+				element.getPersistenceHandlerName(),
+				element.getImplName(),
+				collectionName,
+				fields
+			).write(writer);
 		}
 	}
 
@@ -250,26 +190,14 @@ public class DataElementProcessor extends AbstractProcessor {
 		DataElementSpec element,
 		Fields fields
 	) throws IOException {
-		// Prepare context of template
-		final VelocityContext context = new VelocityContext();
-		context.put(
-			InterfaceTemplateProperty.PACKAGE.getKey(),
-			element.getPackageName()
-		);
-		context.put(
-			InterfaceTemplateProperty.INTERFACE.getKey(),
-			element.getName()
-		);
-		context.put(
-			PersistenceHandlerTemplateProperty.FIELDS.getKey(),
-			fields
-		);
-
-		// Write to file
 		final JavaFileObject generatedClassFile = processingEnv.getFiler()
 			.createSourceFile(element.getFullyQualifiedName());
 		try (Writer writer = generatedClassFile.openWriter()) {
-			Velocity.mergeTemplate(INTERFACE_TEMPLATE, "UTF-8", context, writer);
+			new InterfaceWriter(
+				element.getPackageName(),
+				element.getName(),
+				fields
+			).write(writer);
 		}
 	}
 }
