@@ -158,6 +158,12 @@ public interface IDataElement<T> {
 	public Object clone();
 
 	/**
+	 * Copy the passed Element into this Element.
+	 * @param element the element to copy.
+	 */
+	public void copy(T element);
+
+	/**
 	 * This function checks deep equality of DataElements to see if all members are
 	 * equal ("match") with the exception of fields with match set to false (such
 	 * as an automatically generated UUID). This is important for checking if two
