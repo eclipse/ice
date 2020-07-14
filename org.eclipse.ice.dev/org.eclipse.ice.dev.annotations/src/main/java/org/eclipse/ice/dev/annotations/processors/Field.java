@@ -135,6 +135,50 @@ public class Field {
 	}
 
 	/**
+	 * Return the appropriate getter method name for this field.
+	 * @return getter method name
+	 */
+	@JsonIgnore
+	public String getGetterName() {
+		String prefix = null;
+		if (type != null && type.equals("boolean")) {
+			prefix = "is";
+		} else {
+			prefix = "get";
+		}
+		return prefix + getNameForMethod();
+	}
+
+	/**
+	 * Return whether this field has a getter, directly or via one of its aliases.
+	 * @return true if getter present, false otherwise
+	 */
+	@JsonIgnore
+	public boolean hasGetter() {
+		return getAnyGetter() != null;
+	}
+
+	/**
+	 * Return the name of any valid getter for this field.
+	 * @return getter name, null if none
+	 */
+	@JsonIgnore
+	public String getAnyGetter() {
+		String retval = null;
+		if (getter) {
+			retval = getGetterName();
+		} else {
+			for (Field alias : aliases) {
+				if (alias.isGetter()) {
+					retval = alias.getGetterName();
+					break;
+				}
+			}
+		}
+		return retval;
+	}
+
+	/**
 	 * Return if this field has a final modifier and is therefore a constant value.
 	 * @return field is constant
 	 */
