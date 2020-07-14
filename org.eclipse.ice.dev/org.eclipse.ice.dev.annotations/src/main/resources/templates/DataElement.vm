@@ -168,7 +168,8 @@ public class ${class} implements ${interface}, Serializable {
 	 *
 	 * @return a JSON string describing the element
 	 */
-	public String toJSON() {
+	@Override
+	public String toJson() {
 		String value = null;
 		// Convert to json using Jackson
 		ObjectMapper mapper = new ObjectMapper();
@@ -214,8 +215,8 @@ public class ${class} implements ${interface}, Serializable {
 	 *
 	 * @param jsonDataElement the contents of this data element as JSON
 	 */
-	public $interface fromJSON(final String jsonDataElement) {
-
+	@Override
+	public $interface fromJson(final String jsonDataElement) {
 		// Load the data from the string with Jackson.
 		ObjectMapper mapper = new ObjectMapper();
 		try {

@@ -174,7 +174,7 @@ public interface IDataElement<T> {
 	 *
 	 * @return a JSON string describing the element
 	 */
-	public String toJSON();
+	public String toJson();
 
 	/**
 	 * This operation deserializes a valid JSON string and tries to load it into the
@@ -183,7 +183,7 @@ public interface IDataElement<T> {
 	 * @param jsonDataElement the contents of this data element as JSON
 	 * @return the deserialized DataElement
 	 */
-	public T fromJSON(final String jsonDataElement);
+	public T fromJson(final String jsonDataElement);
 
 	/**
 	 * Load from a String-Object Map, skipping the String parsing step. Structures
