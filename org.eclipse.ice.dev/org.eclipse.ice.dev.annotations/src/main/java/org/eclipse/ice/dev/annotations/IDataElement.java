@@ -1,6 +1,5 @@
 package org.eclipse.ice.dev.annotations;
 
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -190,18 +189,6 @@ public interface IDataElement<T> {
 	 * @return the deserialized DataElement
 	 */
 	public T fromJson(final String jsonDataElement);
-
-	/**
-	 * Load from a String-Object Map, skipping the String parsing step. Structures
-	 * such as {@link org.bson.Document} implement {@code Map<String, Object>} and
-	 * therefore do not need to be processed from raw String form.
-	 *
-	 * @param <S> Object extending {@code Map<String, Object>}
-	 * @param jsonDataElement the contents of this data element as a
-	 *        {@code Map<String, Object>}
-	 * @return the deserialized DataElement
-	 */
-	public <S extends Map<String, Object>> T fromJSON(final S jsonDataElement);
 
 	/**
 	 * This operation returns the validator that has been configured for this

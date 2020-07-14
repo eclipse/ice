@@ -4,17 +4,15 @@ package $package;
 #end
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Map;
-import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.AccessLevel;
@@ -30,6 +28,12 @@ import lombok.Setter;
  */
 @Data
 @NoArgsConstructor
+@JsonAutoDetect(
+	fieldVisibility = Visibility.ANY,
+	getterVisibility = Visibility.NONE,
+	isGetterVisibility = Visibility.NONE,
+	setterVisibility = Visibility.NONE
+)
 public class ${class} implements ${interface}, Serializable {
 
 	/**
@@ -197,11 +201,6 @@ public class ${class} implements ${interface}, Serializable {
 		String value = null;
 		// Convert to json using Jackson
 		ObjectMapper mapper = new ObjectMapper();
-		// Set visibility so that only methods are serialized. This removes duplication
-		// otherwise produced due to the convenience methods.
-		mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-		mapper.setVisibility(PropertyAccessor.GETTER, Visibility.NONE);
-		mapper.setVisibility(PropertyAccessor.IS_GETTER, Visibility.NONE);
 		try {
 			value = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
 		} catch (JsonProcessingException e) {
@@ -209,28 +208,6 @@ public class ${class} implements ${interface}, Serializable {
 		}
 
 		return value;
-	}
-
-	/**
-	 * Load DataElement from JsonNode.
-	 * @param rootNode DataElement root as JsonNode
-	 * @param mapper ObjectMapper to convert values
-	 */
-	private void fromJsonNode(final JsonNode rootNode, final ObjectMapper mapper) throws JsonProcessingException {
-		#foreach($field in $fields)
-		// ${field.Name}
-		JsonNode ${field.Name}Node = rootNode.get("${field.Name}");
-		#if(${field.Nullable})
-		if (rootNode.hasNonNull("${field.Name}")) {
-			${field.Name} = mapper.treeToValue(${field.Name}Node, ${field.Name}.getClass());
-		} else {
-			${field.Name} = null;
-		}
-		#else
-		${field.Name} = mapper.treeToValue(${field.Name}Node, ${field.Type}.class);
-		#end
-
-		#end
 	}
 
 	/**
@@ -243,30 +220,9 @@ public class ${class} implements ${interface}, Serializable {
 	public $interface fromJson(final String jsonDataElement) {
 		// Load the data from the string with Jackson.
 		ObjectMapper mapper = new ObjectMapper();
+
 		try {
-			JsonNode rootNode = mapper.readTree(jsonDataElement);
-			fromJsonNode(rootNode, mapper);
-		} catch (JsonProcessingException e) {
-			logger.error("Unable to read DataElement from string!", e);
-		}
-
-		return this;
-	}
-
-	/**
-	 * Load from a String-Object Map, skipping the String parsing step. Structures
-	 * such as <code>org.bson.Document</code> implement Map<String, Object> and
-	 * therefore do not need to be processed from raw String form.
-	 *
-	 * @param jsonDataElement the contents of this data element as a Map<String, Object>
-	 */
-	public <T extends Map<String, Object>> $interface fromJSON(final T jsonDataElement) {
-
-		// Load the data from the string with Jackson.
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			JsonNode rootNode = mapper.valueToTree(jsonDataElement);
-			fromJsonNode(rootNode, mapper);
+			copy(mapper.readValue(jsonDataElement, ${class}.class));
 		} catch (JsonProcessingException e) {
 			logger.error("Unable to read DataElement from string!", e);
 		}
