@@ -1,6 +1,5 @@
 package org.eclipse.ice.dev.annotations;
 
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -158,6 +157,12 @@ public interface IDataElement<T> {
 	public Object clone();
 
 	/**
+	 * Copy the passed Element into this Element.
+	 * @param element the element to copy.
+	 */
+	public void copy(T element);
+
+	/**
 	 * This function checks deep equality of DataElements to see if all members are
 	 * equal ("match") with the exception of fields with match set to false (such
 	 * as an automatically generated UUID). This is important for checking if two
@@ -174,7 +179,7 @@ public interface IDataElement<T> {
 	 *
 	 * @return a JSON string describing the element
 	 */
-	public String toJSON();
+	public String toJson();
 
 	/**
 	 * This operation deserializes a valid JSON string and tries to load it into the
@@ -183,19 +188,7 @@ public interface IDataElement<T> {
 	 * @param jsonDataElement the contents of this data element as JSON
 	 * @return the deserialized DataElement
 	 */
-	public T fromJSON(final String jsonDataElement);
-
-	/**
-	 * Load from a String-Object Map, skipping the String parsing step. Structures
-	 * such as {@link org.bson.Document} implement {@code Map<String, Object>} and
-	 * therefore do not need to be processed from raw String form.
-	 *
-	 * @param <S> Object extending {@code Map<String, Object>}
-	 * @param jsonDataElement the contents of this data element as a
-	 *        {@code Map<String, Object>}
-	 * @return the deserialized DataElement
-	 */
-	public <S extends Map<String, Object>> T fromJSON(final S jsonDataElement);
+	public T fromJson(final String jsonDataElement);
 
 	/**
 	 * This operation returns the validator that has been configured for this

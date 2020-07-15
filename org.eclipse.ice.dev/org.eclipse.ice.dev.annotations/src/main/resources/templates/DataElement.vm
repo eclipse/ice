@@ -4,17 +4,15 @@ package $package;
 #end
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Map;
-import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.AccessLevel;
@@ -30,6 +28,12 @@ import lombok.Setter;
  */
 @Data
 @NoArgsConstructor
+@JsonAutoDetect(
+	fieldVisibility = Visibility.ANY,
+	getterVisibility = Visibility.NONE,
+	isGetterVisibility = Visibility.NONE,
+	setterVisibility = Visibility.NONE
+)
 public class ${class} implements ${interface}, Serializable {
 
 	/**
@@ -70,7 +74,7 @@ public class ${class} implements ${interface}, Serializable {
 	/**
 	 * Set ${field.Name} by alias ${alias.Name}.
 	 */
-	public void set${alias.NameForMethod}(#nonnull #fieldtype ${field.Name}) {
+	public void set${alias.NameForMethod}(#nonnull("", " ")#fieldtype ${field.Name}) {
 		this.${field.Name} = ${field.Name};
 	}
 			#end
@@ -78,20 +82,30 @@ public class ${class} implements ${interface}, Serializable {
 	#end
 
 	/**
+	 * All args constructor for $class.
+	 *
+	 * Used in JSON Deserialization.
+	#foreach($field in $fields)
+	 * @param ${field.Name} {@code #fieldtype} for field ${field.Name}
+	#end
+	 */
+	@JsonCreator
+	public $class(
+	#foreach($field in $fields)
+		@JsonProperty("${field.Name}") #nonnull("", " ")#fieldtype ${field.Name}#if($foreach.hasNext),#end
+	#end
+	) {
+		#foreach($field in $fields)
+		this.${field.Name} = ${field.Name};
+		#end
+	}
+
+	/**
 	 * Copy constructor for $class.
 	 * @param other Instance of $class to copy
-	 * @throws Exception if other is null or not of type $class or other errors.
 	 */
-	public $class($class other) throws Exception {
-		if (other == null) {
-			throw (new Exception("$class to copy cannot be null."));
-		}
-		if (!(other instanceof $class)) {
-			throw (new Exception("$class can copy only from other instances of $class."));
-		}
-		#foreach($field in $fields)
-		this.${field.Name} = other.${field.Name};
-		#end
+	public $class($interface other) {
+		copy(other);
 	}
 
 	/**
@@ -111,6 +125,19 @@ public class ${class} implements ${interface}, Serializable {
 	}
 
 	/**
+	 * Copy the contents of another element into this element.
+	 * @param element the element to copy
+	 */
+	@Override
+	public void copy(@NonNull $interface element) {
+		#foreach($field in $fields)
+			#if($field.hasGetter())
+		this.${field.Name} = element.${field.AnyGetter}();
+			#end
+		#end
+	}
+
+	/**
 	 * This function checks deep equality of DataElements to see if all members are
 	 * equal ("match") with the exception of fields with match set to false (such
 	 * as an automatically generated UUID). This is important for checking if two
@@ -120,6 +147,7 @@ public class ${class} implements ${interface}, Serializable {
 	 * @return true if all members of the element except excluded fields match
 	 *         this element.
 	 */
+	@Override
 	public boolean matches(Object o) {
 		boolean retval = false;
 
@@ -150,8 +178,8 @@ public class ${class} implements ${interface}, Serializable {
 					retval =
 					#@settab(6)
 						#foreach($field in ${fields.Match})#@nonewline
-						${field.Name}Match#if($foreach.hasNext) &&#if($foreach.count % 3 == 0)$newline#else #end#else;$newline#end
-						#end#end
+						${field.Name}Match#if($foreach.hasNext) &&#if($foreach.count % 3 == 0)$newline#else #end#end
+						#end#end;
 					#end
 				}
 			} else {
@@ -168,15 +196,11 @@ public class ${class} implements ${interface}, Serializable {
 	 *
 	 * @return a JSON string describing the element
 	 */
-	public String toJSON() {
+	@Override
+	public String toJson() {
 		String value = null;
 		// Convert to json using Jackson
 		ObjectMapper mapper = new ObjectMapper();
-		// Set visibility so that only methods are serialized. This removes duplication
-		// otherwise produced due to the convenience methods.
-		mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-		mapper.setVisibility(PropertyAccessor.GETTER, Visibility.NONE);
-		mapper.setVisibility(PropertyAccessor.IS_GETTER, Visibility.NONE);
 		try {
 			value = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
 		} catch (JsonProcessingException e) {
@@ -187,61 +211,18 @@ public class ${class} implements ${interface}, Serializable {
 	}
 
 	/**
-	 * Load DataElement from JsonNode.
-	 * @param rootNode DataElement root as JsonNode
-	 * @param mapper ObjectMapper to convert values
-	 */
-	private void fromJsonNode(final JsonNode rootNode, final ObjectMapper mapper) throws JsonProcessingException {
-		#foreach($field in $fields)
-		// ${field.Name}
-		JsonNode ${field.Name}Node = rootNode.get("${field.Name}");
-		#if(${field.Nullable})
-		if (rootNode.hasNonNull("${field.Name}")) {
-			${field.Name} = mapper.treeToValue(${field.Name}Node, ${field.Name}.getClass());
-		} else {
-			${field.Name} = null;
-		}
-		#else
-		${field.Name} = mapper.treeToValue(${field.Name}Node, ${field.Type}.class);
-		#end
-
-		#end
-	}
-
-	/**
 	 * This operation deserializes a valid JSON string and tries to load it into the
 	 * object.
 	 *
 	 * @param jsonDataElement the contents of this data element as JSON
 	 */
-	public $interface fromJSON(final String jsonDataElement) {
-
+	@Override
+	public $interface fromJson(final String jsonDataElement) {
 		// Load the data from the string with Jackson.
 		ObjectMapper mapper = new ObjectMapper();
+
 		try {
-			JsonNode rootNode = mapper.readTree(jsonDataElement);
-			fromJsonNode(rootNode, mapper);
-		} catch (JsonProcessingException e) {
-			logger.error("Unable to read DataElement from string!", e);
-		}
-
-		return this;
-	}
-
-	/**
-	 * Load from a String-Object Map, skipping the String parsing step. Structures
-	 * such as <code>org.bson.Document</code> implement Map<String, Object> and
-	 * therefore do not need to be processed from raw String form.
-	 *
-	 * @param jsonDataElement the contents of this data element as a Map<String, Object>
-	 */
-	public <T extends Map<String, Object>> $interface fromJSON(final T jsonDataElement) {
-
-		// Load the data from the string with Jackson.
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			JsonNode rootNode = mapper.valueToTree(jsonDataElement);
-			fromJsonNode(rootNode, mapper);
+			copy(mapper.readValue(jsonDataElement, ${class}.class));
 		} catch (JsonProcessingException e) {
 			logger.error("Unable to read DataElement from string!", e);
 		}
