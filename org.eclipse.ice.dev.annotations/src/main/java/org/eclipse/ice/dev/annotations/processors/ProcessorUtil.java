@@ -34,6 +34,7 @@ import org.eclipse.ice.dev.annotations.DataField;
 import org.eclipse.ice.dev.annotations.DataFieldJson;
 import org.eclipse.ice.dev.annotations.FieldInfo;
 import org.eclipse.ice.dev.annotations.IDataElement;
+import org.eclipse.ice.dev.annotations.Validator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -47,24 +48,6 @@ class ProcessorUtil {
 	 * @param template
 	 * @throws IOException
 	 */
-	public static void writeClass(AnnotatedElement element, final Fields fields, ProcessingEnvironment processingEnv, String template) throws IOException {
-		// Prepare context of template
-		final VelocityContext context = new VelocityContext();
-		context.put(DataElementTemplateProperty.PACKAGE.getKey(), element.getPackageName());
-		context.put(DataElementTemplateProperty.INTERFACE.getKey(), element.getName());
-		context.put(DataElementTemplateProperty.CLASS.getKey(), element.getImplName());
-		context.put(DataElementTemplateProperty.FIELDS.getKey(), fields);
-		context.put("DataElement", IDataElement.class);
-		context.put("VelocityUtils", new VelocityUtils(processingEnv));
-		
-		// Write to file
-		final JavaFileObject generatedClassFile = processingEnv.getFiler()
-			.createSourceFile(element.getQualifiedImplName());
-		try (Writer writer = generatedClassFile.openWriter()) {
-			Velocity.mergeTemplate(template, "UTF-8", context, writer);
-		}
-	}
-	
 	public static void writeClass(AnnotationExtractionResponse response, ProcessingEnvironment processingEnv, String template) throws IOException {
 		// Prepare context of template
 		final VelocityContext context = new VelocityContext();
@@ -142,35 +125,6 @@ class ProcessorUtil {
 	 * @throws IOException
 	 */
 	public static void writeInterface(
-		AnnotatedElement element,
-		Fields fields,
-		ProcessingEnvironment processingEnv,
-		String template
-	) throws IOException {
-		// Prepare context of template
-		final VelocityContext context = new VelocityContext();
-		context.put(
-			InterfaceTemplateProperty.PACKAGE.getKey(),
-			element.getPackageName()
-		);
-		context.put(
-			InterfaceTemplateProperty.INTERFACE.getKey(),
-			element.getName()
-		);
-		context.put(
-			PersistenceHandlerTemplateProperty.FIELDS.getKey(),
-			fields
-		);
-
-		// Write to file
-		final JavaFileObject generatedClassFile = processingEnv.getFiler()
-			.createSourceFile(element.getFullyQualifiedName());
-		try (Writer writer = generatedClassFile.openWriter()) {
-			Velocity.mergeTemplate(template, "UTF-8", context, writer);
-		}
-	}
-	
-	public static void writeInterface(
 			AnnotationExtractionResponse response,
 			ProcessingEnvironment processingEnv,
 			String template
@@ -198,42 +152,23 @@ class ProcessorUtil {
 	 * @throws IOException
 	 */
 	public static void writePersistence(
-		AnnotatedElement element,
-		final String collectionName,
-		Fields fields,
+		AnnotationExtractionResponse response,
 		ProcessingEnvironment processingEnv,
 		String template
 	) throws IOException {
 		// Prepare context of template
 		final VelocityContext context = new VelocityContext();
-		context.put(
-			PersistenceHandlerTemplateProperty.PACKAGE.getKey(),
-			element.getPackageName()
-		);
-		context.put(
-			PersistenceHandlerTemplateProperty.ELEMENT_INTERFACE.getKey(),
-			element.getName()
-		);
-		context.put(
-			PersistenceHandlerTemplateProperty.CLASS.getKey(),
-			element.getPersistenceHandlerName()
-		);
-		context.put(
-			PersistenceHandlerTemplateProperty.COLLECTION.getKey(),
-			collectionName
-		);
-		context.put(
-			PersistenceHandlerTemplateProperty.IMPLEMENTATION.getKey(),
-			element.getImplName()
-		);
-		context.put(
-			PersistenceHandlerTemplateProperty.FIELDS.getKey(),
-			fields
-		);
+		Map classMetadata = response.getClassMetadata();
+		context.put(ClassTemplateProperties.Meta.PACKAGE.getKey(), classMetadata.get(ClassTemplateProperties.Meta.PACKAGE.getKey()));
+		context.put(ClassTemplateProperties.Meta.CLASS.getKey(), classMetadata.get(ClassTemplateProperties.PersistenceHandler.CLASS.getKey()));
+		context.put(ClassTemplateProperties.Meta.FIELDS.getKey(), classMetadata.get(ClassTemplateProperties.Meta.FIELDS.getKey()));
+		context.put(ClassTemplateProperties.PersistenceHandler.ELEMENT_INTERFACE.getKey(), classMetadata.get(ClassTemplateProperties.PersistenceHandler.ELEMENT_INTERFACE.getKey()));
+		context.put(ClassTemplateProperties.PersistenceHandler.COLLECTION.getKey(), classMetadata.get(ClassTemplateProperties.PersistenceHandler.COLLECTION.getKey()));
+		context.put(ClassTemplateProperties.PersistenceHandler.IMPLEMENTATION.getKey(), classMetadata.get(ClassTemplateProperties.PersistenceHandler.IMPLEMENTATION.getKey()));
 
 		// Write to file
 		final JavaFileObject generatedClassFile = processingEnv.getFiler()
-			.createSourceFile(element.getQualifiedPersistenceHandlerName());
+			.createSourceFile((String)classMetadata.get(ClassTemplateProperties.PersistenceHandler.QUALIFIED.getKey()));
 		try (Writer writer = generatedClassFile.openWriter()) {
 			Velocity.mergeTemplate(template, "UTF-8", context, writer);
 		}
@@ -260,6 +195,7 @@ class ProcessorUtil {
 					.docString(extractDocString(element, elementUtils))
 					.annotations(extractAnnotations(element, handledAnnotations))
 					.modifiersToString(extractModifiers(element))
+					.validator(extractValidator(element))
 					.getter(fieldInfo.isGetter())
 					.setter(fieldInfo.isSetter())
 					.match(fieldInfo.isMatch())
@@ -267,6 +203,18 @@ class ProcessorUtil {
 					.search(fieldInfo.isSearch())
 					.nullable(fieldInfo.isNullable())
 					.build();
+		}
+		
+		public static boolean hasAnnotation(Element element, Class<? extends Annotation> annotation) {
+			return element.getAnnotation(annotation) != null;
+		}
+		
+		public static String extractValidator(Element element) {
+			if(hasAnnotation(element, Validator.class))
+			{
+				//add validator
+			}
+			return "";
 		}
 		
 		/**

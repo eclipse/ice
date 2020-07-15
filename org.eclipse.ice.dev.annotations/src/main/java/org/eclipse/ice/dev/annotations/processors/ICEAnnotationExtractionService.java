@@ -25,6 +25,11 @@ public class ICEAnnotationExtractionService {
 	 */
 	private final static String IMPL_SUFFIX = "Implementation";
 	
+	/**
+	 * The value appended to DataElement Persistence Handler class names.
+	 */
+	private final static String PERSISTENCE_SUFFIX = "PersistenceHandler";
+	
 	
 	ICEAnnotationExtractionService(Elements elementUtils, ObjectMapper mapper, ProcessingEnvironment processingEnv){
 		this.elementUtils = elementUtils;
@@ -45,7 +50,6 @@ public class ICEAnnotationExtractionService {
 		Element element = request.getElement();
 
 		if(request.isIncludeDefaults()) fields.collect(DefaultFields.get());
-		//fields.collect(dataElement.fieldsFromDataFields());	should be equal to get all fields with the right filter
 		fields.collect(ProcessorUtil.getAllFields(element, elementUtils, request.getFieldFilter(), request.getHandledAnnotations()));			//get all members with given filter
 		fields.collect(ProcessorUtil.collectFromDataFieldJson(element, processingEnv, mapper));
 		return fields;
@@ -79,6 +83,8 @@ public class ICEAnnotationExtractionService {
 		context.put(ClassTemplateProperties.PersistenceHandler.ELEMENT_INTERFACE.getKey(), name);
 		context.put(ClassTemplateProperties.PersistenceHandler.COLLECTION.getKey(), collectionName);
 		context.put(ClassTemplateProperties.PersistenceHandler.IMPLEMENTATION.getKey(), getImplName(name));	
+		context.put(ClassTemplateProperties.PersistenceHandler.QUALIFIED.getKey(), getQualifiedPersistenceHandlerName(fullyQualifiedName));
+		context.put(ClassTemplateProperties.PersistenceHandler.CLASS.getKey(), getPersistenceHandlerName(name));
 		
 		return context;
 	}
@@ -117,5 +123,17 @@ public class ICEAnnotationExtractionService {
 	 */
 	private String getQualifiedImplName(String fullyQualifiedName) {
 		return fullyQualifiedName + IMPL_SUFFIX;
+	}
+	
+	/**
+	 * Get the name of the Persistence Handler to be generated.
+	 * @return persistence handler name
+	 */
+	public String getPersistenceHandlerName(String name) {
+		return name + PERSISTENCE_SUFFIX;
+	}
+	
+	public String getQualifiedPersistenceHandlerName(String fullyQualifiedName) {
+		return fullyQualifiedName + PERSISTENCE_SUFFIX;
 	}
 }

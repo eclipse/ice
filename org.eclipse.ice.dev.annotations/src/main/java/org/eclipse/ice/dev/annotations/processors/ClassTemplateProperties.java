@@ -20,7 +20,9 @@ class ClassTemplateProperties {
 	public enum PersistenceHandler {
 		ELEMENT_INTERFACE("elementInterface"),
 		COLLECTION("collection"),
-		IMPLEMENTATION("implementation");
+		CLASS("persistenceClassName"),
+		IMPLEMENTATION("implementation"),
+		QUALIFIED("fullyQualifiedPersistenceHandler");;
 		
 		@Getter private String key;
 	}

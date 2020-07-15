@@ -22,6 +22,7 @@ import org.eclipse.ice.dev.annotations.DataElement;
 import org.eclipse.ice.dev.annotations.DataField;
 import org.eclipse.ice.dev.annotations.DataModel;
 import org.eclipse.ice.dev.annotations.Persisted;
+import org.eclipse.ice.dev.annotations.Validator;
 
 import javax.lang.model.element.Element;
 
@@ -88,12 +89,14 @@ public class DataModelProcessor extends AbstractProcessor {
 		// Iterate over all elements with DataModel Annotation
 				for (final Element elem : roundEnv.getElementsAnnotatedWith(DataModel.class)) {
 					try {
-						AnnotationExtractionResponse response = extractionService.extract(AnnotationExtractionRequest.builder()
+						AnnotationExtractionResponse response = extractionService.extract(
+								AnnotationExtractionRequest.builder()
 								.element(elem)
 								.handledAnnotations(Set.of(
 										DataField.class,
 										DataField.Default.class,
-										DataModel.class
+										DataModel.class,
+										Validator.class
 									).stream()
 										.map(cls -> cls.getCanonicalName())
 										.collect(Collectors.toList()))

@@ -113,6 +113,8 @@ public class Field {
 	 * Set of Modifiers (public, static, final, etc.) to apply to this field.
 	 */
 	@Builder.Default Set<String> modifiers = Set.of("protected");
+	
+	String validator;
 
 	/**
 	 * Get a class by name or return null if not found

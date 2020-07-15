@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
@@ -29,7 +30,10 @@ import javax.tools.StandardLocation;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.eclipse.ice.dev.annotations.DataElement;
+import org.eclipse.ice.dev.annotations.DataField;
+import org.eclipse.ice.dev.annotations.DataModel;
 import org.eclipse.ice.dev.annotations.Persisted;
+import org.eclipse.ice.dev.annotations.Validator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auto.service.AutoService;
@@ -79,12 +83,14 @@ public class DataElementProcessor extends AbstractProcessor {
 	protected Messager messager;
 	protected Elements elementUtils;
 	protected ObjectMapper mapper;
+	protected ICEAnnotationExtractionService extractionService;
 
 	@Override
 	public void init(final ProcessingEnvironment env) {
 		messager = env.getMessager();
 		elementUtils = env.getElementUtils();
 		mapper = new ObjectMapper();
+		extractionService = new ICEAnnotationExtractionService(elementUtils, mapper, env);
 
 		// Set up Velocity using the Singleton approach; ClasspathResourceLoader allows
 		// us to load templates from src/main/resources
@@ -107,27 +113,31 @@ public class DataElementProcessor extends AbstractProcessor {
 						"DataElementSpec must be class, found " + elem.toString()
 						);
 				
-				DataElementSpec dataElement = new DataElementSpec(elem, elementUtils);
-				Fields fields = new Fields();
-
-				// Collect fields from Defaults, DataField Annotations, and DataFieldJson
-				// Annotations.
-				fields.collect(DefaultFields.get());
-				fields.collect(dataElement.fieldsFromDataFields());
-				fields.collect(ProcessorUtil.collectFromDataFieldJson(elem, processingEnv, mapper));
+				AnnotationExtractionResponse response = extractionService.extract(
+						AnnotationExtractionRequest.builder()
+						.element(elem)
+						.handledAnnotations(Set.of(
+								DataField.class,
+								DataField.Default.class,
+								DataModel.class,
+								Validator.class
+							).stream()
+								.map(cls -> cls.getCanonicalName())
+								.collect(Collectors.toList()))
+						.fieldFilter(DataFieldSpec::isDataField)
+						.className(extractName(elem))
+						.build());
 
 				// Write the DataElement's interface to file.
-				ProcessorUtil.writeInterface(dataElement, fields, processingEnv, INTERFACE_TEMPLATE);
+				ProcessorUtil.writeInterface(response, processingEnv, INTERFACE_TEMPLATE);
 
 				// Write the DataElement Implementation to file.
-				ProcessorUtil.writeClass(dataElement, fields, processingEnv, DATAELEMENT_TEMPLATE);
+				ProcessorUtil.writeClass(response, processingEnv, DATAELEMENT_TEMPLATE);
 
 				// Check if Persistence should be generated.
-				if (dataElement.hasAnnotation(Persisted.class)) {
+				if (ProcessorUtil.hasAnnotation(elem, Persisted.class)) {
 					ProcessorUtil.writePersistence(
-							dataElement,
-							dataElement.getCollectionName(),
-							fields,
+							response,
 							processingEnv,
 							PERSISTENCE_HANDLER_TEMPLATE
 						);
