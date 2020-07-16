@@ -6,10 +6,12 @@ import org.eclipse.ice.dev.pojofromjson.PojoOutline;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
-public class PojoOutlineTest extends TestCase {
-	
+public class PojoOutlineTest {
+
+	@Test
 	public void testSerialization() throws JsonProcessingException {
 		PojoOutline pojo = PojoOutline.builder()
 			.packageName("testpackage")
@@ -25,14 +27,15 @@ public class PojoOutlineTest extends TestCase {
 					.alias(Field.builder().name("another").getter(true).build())
 					.build()
 			).build();
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		String pojoJson = mapper.writeValueAsString(pojo);
 		System.out.println(pojoJson);
 		PojoOutline rehydratedPojo = mapper.readValue(pojoJson, PojoOutline.class);
 		assertEquals(pojo, rehydratedPojo);
 	}
-	
+
+	@Test
 	public void testImplementation() {
 		PojoOutline pojo = PojoOutline.builder()
 			.packageName("testpackage")

@@ -1,33 +1,86 @@
 package org.eclipse.ice.tests.dev.pojofromjson;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import org.eclipse.ice.dev.pojofromjson.PojoFromJson;
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
 
 /**
- * Unit test for simple FromJson.
+ * Test PojoFromJson.
  */
-public class PojoFromJsonTest extends TestCase {
+class PojoFromJsonTest {
+
 	/**
-	 * Create the test case
+	 * Source JSON.
+	 */
+	private static final String TEST_ELEMENT_JSON = "TestElement.json";
+
+	/**
+	 * Interface destination file name.
+	 */
+	private static final String TEST_ELEMENT_INTERFACE = "TestElement.java";
+
+	/**
+	 * Implementation destination file name.
+	 */
+	private static final String TEST_ELEMENT_IMPLEMENTATION = "TestElementImplementation.java";
+
+	/**
+	 * @return InputStream for JSON
+	 * @throws FileNotFoundException
+	 */
+	public InputStream getTestElementJsonStream() throws FileNotFoundException {
+		return new FileInputStream(
+			getClass().getClassLoader().getResource(TEST_ELEMENT_JSON).getPath()
+		);
+	}
+
+	/**
+	 * @return Path to in-memory destination.
+	 * @throws IOException
+	 */
+	public Path inMemoryDestination() throws IOException {
+		FileSystem fs = Jimfs.newFileSystem(Configuration.unix());
+		Path dest = fs.getPath("/dest");
+		Files.createDirectory(dest);
+		return dest;
+	}
+
+	/**
+	 * Test that handleInputJson generates an interface and implementation as
+	 * expected.
 	 *
-	 * @param testName name of the test case
+	 * There is no need to test the contents of the generated files as that is
+	 * tested in
+	 * {@link org.eclipse.ice.tests.dev.annotations.processors.DataElementProcessorTest}.
+	 * @throws JsonParseException
+	 * @throws JsonMappingException
+	 * @throws FileNotFoundException
+	 * @throws IOException
 	 */
-	public PojoFromJsonTest(String testName) {
-		super(testName);
-	}
-
-	/**
-	 * @return the suite of tests being tested
-	 */
-	public static Test suite() {
-		return new TestSuite(PojoFromJsonTest.class);
-	}
-
-	/**
-	 * Rigourous Test :-)
-	 */
-	public void testApp() {
-		assertTrue(true);
+	@Test
+	public void testInterfaceAndImplementationGenerated()
+		throws JsonParseException, JsonMappingException, FileNotFoundException,
+		IOException
+	{
+		Path destination = inMemoryDestination();
+		PojoFromJson.handleInputJson(
+			getTestElementJsonStream(), destination
+		);
+		assertTrue(Files.exists(destination.resolve(TEST_ELEMENT_INTERFACE)));
+		assertTrue(Files.exists(destination.resolve(TEST_ELEMENT_IMPLEMENTATION)));
 	}
 }
