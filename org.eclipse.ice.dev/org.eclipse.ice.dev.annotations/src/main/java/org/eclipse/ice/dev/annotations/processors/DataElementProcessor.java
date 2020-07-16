@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
@@ -20,6 +21,7 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
@@ -29,7 +31,10 @@ import javax.tools.StandardLocation;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.eclipse.ice.dev.annotations.DataElement;
+import org.eclipse.ice.dev.annotations.DataField;
+import org.eclipse.ice.dev.annotations.DataModel;
 import org.eclipse.ice.dev.annotations.Persisted;
+import org.eclipse.ice.dev.annotations.Validator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auto.service.AutoService;
@@ -47,7 +52,7 @@ import com.google.auto.service.AutoService;
 	"org.eclipse.ice.dev.annotations.DataField.Default",
 	"org.eclipse.ice.dev.annotations.Persisted"
 })
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 @AutoService(Processor.class)
 public class DataElementProcessor extends AbstractProcessor {
 
@@ -75,28 +80,18 @@ public class DataElementProcessor extends AbstractProcessor {
 	 */
 	private static final String INTERFACE_TEMPLATE = "templates/ElementInterface.vm";
 
-	/**
-	 * Return stack trace as string.
-	 * @param e subject exception
-	 * @return stack trace as string
-	 */
-	private static String stackTraceToString(final Throwable e) {
-		final StringWriter sw = new StringWriter();
-		final PrintWriter pw = new PrintWriter(sw);
-		e.printStackTrace(pw);
-		return sw.toString();
-	}
-
 
 	protected Messager messager;
 	protected Elements elementUtils;
 	protected ObjectMapper mapper;
+	protected ICEAnnotationExtractionService extractionService;
 
 	@Override
 	public void init(final ProcessingEnvironment env) {
 		messager = env.getMessager();
 		elementUtils = env.getElementUtils();
 		mapper = new ObjectMapper();
+		extractionService = new ICEAnnotationExtractionService(elementUtils, mapper, env);
 
 		// Set up Velocity using the Singleton approach; ClasspathResourceLoader allows
 		// us to load templates from src/main/resources
@@ -114,162 +109,60 @@ public class DataElementProcessor extends AbstractProcessor {
 		// Iterate over all elements with DataElement Annotation
 		for (final Element elem : roundEnv.getElementsAnnotatedWith(DataElement.class)) {
 			try {
-				DataElementSpec dataElement = new DataElementSpec(elem, elementUtils);
-				Fields fields = new Fields();
-
-				// Collect fields from Defaults, DataField Annotations, and DataFieldJson
-				// Annotations.
-				fields.collect(DefaultFields.get());
-				fields.collect(dataElement.fieldsFromDataFields());
-				fields.collect(collectFromDataFieldJson(dataElement));
+				
+				if(!valid(elem)) throw new InvalidDataElementSpec(
+						"DataElementSpec must be class, found " + elem.toString()
+						);
+				
+				AnnotationExtractionResponse response = extractionService.extract(
+						AnnotationExtractionRequest.builder()
+						.element(elem)
+						.handledAnnotations(Set.of(
+								DataField.class,
+								DataField.Default.class,
+								DataModel.class,
+								Validator.class
+							).stream()
+								.map(cls -> cls.getCanonicalName())
+								.collect(Collectors.toList()))
+						.fieldFilter(DataFieldSpec::isDataField)
+						.className(extractName(elem))
+						.build());
 
 				// Write the DataElement's interface to file.
-				writeInterface(dataElement, fields);
+				ProcessorUtil.writeInterface(response, processingEnv, INTERFACE_TEMPLATE);
 
 				// Write the DataElement Implementation to file.
-				writeClass(dataElement, fields);
+				ProcessorUtil.writeClass(response, processingEnv, DATAELEMENT_TEMPLATE);
 
 				// Check if Persistence should be generated.
-				if (dataElement.hasAnnotation(Persisted.class)) {
-					writePersistence(
-						dataElement,
-						dataElement.getCollectionName(),
-						fields
-					);
+				if (ProcessorUtil.hasAnnotation(elem, Persisted.class)) {
+					ProcessorUtil.writePersistence(
+							response,
+							processingEnv,
+							PERSISTENCE_HANDLER_TEMPLATE
+						);
 				}
 			} catch (final IOException | InvalidDataElementSpec e) {
-				messager.printMessage(Diagnostic.Kind.ERROR, stackTraceToString(e));
+				messager.printMessage(Diagnostic.Kind.ERROR, ProcessorUtil.stackTraceToString(e));
 				return false;
 			}
 		}
 		return false;
 	}
-
+	
 	/**
-	 * Collect Fields from DataFieldJson Annotations.
-	 *
-	 * The JSON input files are searched for in the "CLASS_OUTPUT" location,
-	 * meaning the same folder to which compiled class files will be output.
-	 * JSON files placed in src/main/resources are moved to this location before
-	 * the annotation processing phase and are therefore available at this
-	 * location at the time of annotation processing.
-	 *
-	 * @param element potentially annotated with DataFieldJson
-	 * @return discovered fields
-	 * @throws IOException
+	 * Return the element name as extracted from the DataElement annotation.
+	 * @return the extracted name
 	 */
-	private List<Field> collectFromDataFieldJson(DataElementSpec element) throws IOException {
-		List<Field> fields = new ArrayList<>();
-		// Iterate through each JSON Data Field source and attempt to read
-		// fields from JSON file.
-		for (String source : element.getDataFieldJsonFileNames()) {
-			Reader reader = processingEnv.getFiler()
-				.getResource(StandardLocation.CLASS_OUTPUT, "", source)
-				.openReader(false);
-			fields.addAll(Arrays.asList(mapper.readValue(reader, Field[].class)));
-		}
-		return fields;
+	private String extractName(Element element) {
+		return ProcessorUtil.getAnnotation(element, DataElement.class)
+			.map(e -> e.name())
+			.orElse(null);
+	}
+	
+	private boolean valid(Element element) {
+		return element.getKind().isClass() && (element instanceof TypeElement) && element.getKind() != ElementKind.ENUM;
 	}
 
-	/**
-	 * Write the implementation of DataElement annotated class to file.
-	 * @param element
-	 * @param fields
-	 * @throws IOException
-	 */
-	private void writeClass(DataElementSpec element, final Fields fields) throws IOException {
-		// Prepare context of template
-		final VelocityContext context = new VelocityContext();
-		context.put(DataElementTemplateProperty.PACKAGE.getKey(), element.getPackageName());
-		context.put(DataElementTemplateProperty.INTERFACE.getKey(), element.getName());
-		context.put(DataElementTemplateProperty.CLASS.getKey(), element.getImplName());
-		context.put(DataElementTemplateProperty.FIELDS.getKey(), fields);
-
-		// Write to file
-		final JavaFileObject generatedClassFile = processingEnv.getFiler()
-			.createSourceFile(element.getQualifiedImplName());
-		try (Writer writer = generatedClassFile.openWriter()) {
-			Velocity.mergeTemplate(DATAELEMENT_TEMPLATE, "UTF-8", context, writer);
-		}
-	}
-
-	/**
-	 * Write the persistence handler of DataElement annotated class to file.
-	 * @param element
-	 * @param collectionName
-	 * @param fields
-	 * @throws IOException
-	 */
-	private void writePersistence(
-		DataElementSpec element,
-		final String collectionName,
-		Fields fields
-	) throws IOException {
-		// Prepare context of template
-		final VelocityContext context = new VelocityContext();
-		context.put(
-			PersistenceHandlerTemplateProperty.PACKAGE.getKey(),
-			element.getPackageName()
-		);
-		context.put(
-			PersistenceHandlerTemplateProperty.ELEMENT_INTERFACE.getKey(),
-			element.getName()
-		);
-		context.put(
-			PersistenceHandlerTemplateProperty.CLASS.getKey(),
-			element.getPersistenceHandlerName()
-		);
-		context.put(
-			PersistenceHandlerTemplateProperty.COLLECTION.getKey(),
-			collectionName
-		);
-		context.put(
-			PersistenceHandlerTemplateProperty.IMPLEMENTATION.getKey(),
-			element.getImplName()
-		);
-		context.put(
-			PersistenceHandlerTemplateProperty.FIELDS.getKey(),
-			fields
-		);
-
-		// Write to file
-		final JavaFileObject generatedClassFile = processingEnv.getFiler()
-			.createSourceFile(element.getQualifiedPersistenceHandlerName());
-		try (Writer writer = generatedClassFile.openWriter()) {
-			Velocity.mergeTemplate(PERSISTENCE_HANDLER_TEMPLATE, "UTF-8", context, writer);
-		}
-	}
-
-	/**
-	 * Write the interface of DataElement annotated class to file.
-	 * @param element
-	 * @param fields
-	 * @throws IOException
-	 */
-	private void writeInterface(
-		DataElementSpec element,
-		Fields fields
-	) throws IOException {
-		// Prepare context of template
-		final VelocityContext context = new VelocityContext();
-		context.put(
-			InterfaceTemplateProperty.PACKAGE.getKey(),
-			element.getPackageName()
-		);
-		context.put(
-			InterfaceTemplateProperty.INTERFACE.getKey(),
-			element.getName()
-		);
-		context.put(
-			PersistenceHandlerTemplateProperty.FIELDS.getKey(),
-			fields
-		);
-
-		// Write to file
-		final JavaFileObject generatedClassFile = processingEnv.getFiler()
-			.createSourceFile(element.getFullyQualifiedName());
-		try (Writer writer = generatedClassFile.openWriter()) {
-			Velocity.mergeTemplate(INTERFACE_TEMPLATE, "UTF-8", context, writer);
-		}
-	}
 }
