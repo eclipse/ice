@@ -1,14 +1,11 @@
 package org.eclipse.ice.dev.annotations.processors;
 
-import java.io.Writer;
-
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NonNull;
 
-@AllArgsConstructor
-public class InterfaceWriter implements SourceWriter {
+public class InterfaceWriter extends SourceWriter {
 
 	/**
 	 * Location of Interface template for use with velocity.
@@ -16,27 +13,21 @@ public class InterfaceWriter implements SourceWriter {
 	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
 	 * to the src/main/resources folder.
 	 */
-	private static final String INTERFACE_TEMPLATE = "templates/ElementInterface.vm";
+	private static final String TEMPLATE = "templates/ElementInterface.vm";
 
 	private static final String PACKAGE = "package";
 	private static final String INTERFACE = "interface";
 	private static final String FIELDS = "fields";
 
-	private String package_;
-	private String interface_;
-	private Fields fields;
-
-	@Override
-	public void write(Writer writer) {
-		// Make sure Velocity is initialized. Subsequent calls are harmless.
-		Velocity.init(VelocityProperties.get());
-
-		// Prepare context of template
-		final VelocityContext context = new VelocityContext();
-		context.put(PACKAGE, package_);
-		context.put(INTERFACE, interface_);
+	@Builder
+	public InterfaceWriter(
+		String packageName, String interfaceName, @NonNull Fields fields
+	) {
+		super();
+		this.template = TEMPLATE;
+		this.context = new VelocityContext();
+		context.put(PACKAGE, packageName);
+		context.put(INTERFACE, interfaceName);
 		context.put(FIELDS, fields);
-
-		Velocity.mergeTemplate(INTERFACE_TEMPLATE, "UTF-8", context, writer);
 	}
 }

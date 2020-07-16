@@ -144,12 +144,13 @@ public class DataElementProcessor extends AbstractProcessor {
 		final JavaFileObject generatedClassFile = processingEnv.getFiler()
 			.createSourceFile(element.getQualifiedImplName());
 		try (Writer writer = generatedClassFile.openWriter()) {
-			new ImplementationWriter(
-				element.getPackageName(),
-				element.getName(),
-				element.getImplName(),
-				fields
-			).write(writer);
+			ImplementationWriter.builder()
+				.packageName(element.getPackageName())
+				.className(element.getImplName())
+				.interfaceName(element.getName())
+				.fields(fields)
+				.build()
+				.write(writer);
 		}
 	}
 
@@ -169,14 +170,15 @@ public class DataElementProcessor extends AbstractProcessor {
 		final JavaFileObject generatedClassFile = processingEnv.getFiler()
 			.createSourceFile(element.getQualifiedPersistenceHandlerName());
 		try (Writer writer = generatedClassFile.openWriter()) {
-			new PersistenceHandlerWriter(
-				element.getPackageName(),
-				element.getName(),
-				element.getPersistenceHandlerName(),
-				element.getImplName(),
-				collectionName,
-				fields
-			).write(writer);
+			PersistenceHandlerWriter.builder()
+				.packageName(element.getPackageName())
+				.elementInterface(element.getName())
+				.className(element.getPersistenceHandlerName())
+				.implementation(element.getImplName())
+				.collection(collectionName)
+				.fields(fields)
+				.build()
+				.write(writer);
 		}
 	}
 
@@ -193,11 +195,12 @@ public class DataElementProcessor extends AbstractProcessor {
 		final JavaFileObject generatedClassFile = processingEnv.getFiler()
 			.createSourceFile(element.getFullyQualifiedName());
 		try (Writer writer = generatedClassFile.openWriter()) {
-			new InterfaceWriter(
-				element.getPackageName(),
-				element.getName(),
-				fields
-			).write(writer);
+			InterfaceWriter.builder()
+				.packageName(element.getPackageName())
+				.interfaceName(element.getName())
+				.fields(fields)
+				.build()
+				.write(writer);
 		}
 	}
 }

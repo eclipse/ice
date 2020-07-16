@@ -1,14 +1,11 @@
 package org.eclipse.ice.dev.annotations.processors;
 
-import java.io.Writer;
-
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NonNull;
 
-@AllArgsConstructor
-public class PersistenceHandlerWriter implements SourceWriter {
+public class PersistenceHandlerWriter extends SourceWriter {
 
 	/**
 	 * Location of PersistenceHandler template for use with velocity.
@@ -25,29 +22,19 @@ public class PersistenceHandlerWriter implements SourceWriter {
 	private static final String IMPLEMENTATION = "implementation";
 	private static final String FIELDS = "fields";
 
-	private String package_;
-	private String elementInterface;
-	private String class_;
-	private String implementation;
-	private String collection;
-	private Fields fields;
-
-	@Override
-	public void write(Writer writer) {
-		// Make sure Velocity is initialized. Subsequent calls are harmless.
-		Velocity.init(VelocityProperties.get());
-
-		// Prepare context of template
-		final VelocityContext context = new VelocityContext();
-		context.put(PACKAGE, package_);
-		context.put(ELEMENT_INTERFACE, elementInterface);
-		context.put(CLASS, class_);
-		context.put(COLLECTION, collection);
-		context.put(IMPLEMENTATION, implementation);
-		context.put(FIELDS, fields);
-
-		Velocity.mergeTemplate(PERSISTENCE_HANDLER_TEMPLATE, "UTF-8", context, writer);
-
+	@Builder
+	public PersistenceHandlerWriter(
+		String packageName, String elementInterface, String className,
+		String implementation, String collection, @NonNull Fields fields
+	) {
+		super();
+		this.template = PERSISTENCE_HANDLER_TEMPLATE;
+		this.context = new VelocityContext();
+		this.context.put(PACKAGE, packageName);
+		this.context.put(ELEMENT_INTERFACE, elementInterface);
+		this.context.put(CLASS, className);
+		this.context.put(COLLECTION, collection);
+		this.context.put(IMPLEMENTATION, implementation);
+		this.context.put(FIELDS, fields);
 	}
-
 }

@@ -1,14 +1,10 @@
 package org.eclipse.ice.dev.annotations.processors;
 
-import java.io.Writer;
-
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 
-@AllArgsConstructor
-public class ImplementationWriter implements SourceWriter {
+public class ImplementationWriter extends SourceWriter {
 
 	/**
 	 * Location of DataElement template for use with velocity.
@@ -23,25 +19,16 @@ public class ImplementationWriter implements SourceWriter {
 	private static final String FIELDS = "fields";
 	private static final String CLASS = "class";
 
-	private String package_;
-	private String interface_;
-	private String class_;
-	private Fields fields;
-
-	@Override
-	public void write(Writer writer) {
-		// Make sure Velocity is initialized. Subsequent calls are harmless.
-		Velocity.init(VelocityProperties.get());
-
-		// Prepare context of template
-		final VelocityContext context = new VelocityContext();
-		context.put(PACKAGE, package_);
-		context.put(INTERFACE, interface_);
-		context.put(CLASS, class_);
-		context.put(FIELDS, fields);
-
-		// Write file from template
-		Velocity.mergeTemplate(IMPL_TEMPLATE, "UTF-8", context, writer);
+	@Builder
+	public ImplementationWriter(
+		String packageName, String interfaceName, String className, Fields fields
+	) {
+		super();
+		this.template = IMPL_TEMPLATE;
+		this.context = new VelocityContext();
+		this.context.put(PACKAGE, packageName);
+		this.context.put(INTERFACE, interfaceName);
+		this.context.put(CLASS, className);
+		this.context.put(FIELDS, fields);
 	}
-
 }
