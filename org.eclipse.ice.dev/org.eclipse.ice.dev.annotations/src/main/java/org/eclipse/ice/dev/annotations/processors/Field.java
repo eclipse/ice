@@ -128,12 +128,64 @@ public class Field {
 	}
 
 	/**
-	 * Return this Fields name ready for use in a method.
+	 * Return this Fields name ready for use in a method name.
 	 * @return capitalized name
 	 */
 	@JsonIgnore
 	public String getNameForMethod() {
 		return StringUtils.capitalize(this.name);
+	}
+
+	/**
+	 * Return the appropriate getter method name for this field.
+	 *
+	 * Due to the use of the Lombok {@code @Data} annotatation on DataElements, by
+	 * Lombok convention, Getters for fields of type {@code boolean} use "is"
+	 * instead of "get".
+	 * @return getter method name
+	 */
+	@JsonIgnore
+	public String getGetterName() {
+		String prefix = null;
+		if (type != null && type.equals("boolean")) {
+			prefix = "is";
+		} else {
+			prefix = "get";
+		}
+		return prefix + getNameForMethod();
+	}
+
+	/**
+	 * Return whether this field has a getter, directly or via one of its aliases.
+	 *
+	 * This method is separate from {@code getAnyGetter()} despite being very
+	 * similar for ease of use in velocity templates.
+	 * @return true if getter present, false otherwise
+	 */
+	@JsonIgnore
+	public boolean hasGetter() {
+		return getAnyGetter() != null;
+	}
+
+	/**
+	 * Return the name of any valid getter for this field, either a direct getter
+	 * for the field or one of its aliases.
+	 * @return getter name, null if none present
+	 */
+	@JsonIgnore
+	public String getAnyGetter() {
+		String retval = null;
+		if (getter) {
+			retval = getGetterName();
+		} else {
+			for (Field alias : aliases) {
+				if (alias.isGetter()) {
+					retval = alias.getGetterName();
+					break;
+				}
+			}
+		}
+		return retval;
 	}
 
 	/**
@@ -187,8 +239,8 @@ public class Field {
 		}
 
 		/**
-		 * Take a raw string value and pass through without manipulating for use as
-		 * type.
+		 * Set type to string. Attempts to determine the type to mark whether it
+		 * is primitive or not.
 		 * @param type String representation of type of this Field
 		 * @return this
 		 */
