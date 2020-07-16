@@ -33,7 +33,7 @@ import com.google.auto.service.AutoService;
 	"org.eclipse.ice.dev.annotations.DataModel",
 	"org.eclipse.ice.dev.annotations.Validator"
 })
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_11)
 @AutoService(Processor.class)
 public class DataModelProcessor extends AbstractProcessor {
 	
