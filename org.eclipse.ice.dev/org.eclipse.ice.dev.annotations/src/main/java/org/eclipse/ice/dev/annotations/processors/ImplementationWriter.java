@@ -1,10 +1,10 @@
 package org.eclipse.ice.dev.annotations.processors;
 
-import org.apache.velocity.VelocityContext;
+import java.util.Map;
 
 import lombok.Builder;
 
-public class ImplementationWriter extends SourceWriter {
+public class ImplementationWriter extends VelocitySourceWriter {
 
 	/**
 	 * Location of DataElement template for use with velocity.
@@ -25,10 +25,11 @@ public class ImplementationWriter extends SourceWriter {
 	) {
 		super();
 		this.template = IMPL_TEMPLATE;
-		this.context = new VelocityContext();
-		this.context.put(PACKAGE, packageName);
-		this.context.put(INTERFACE, interfaceName);
-		this.context.put(CLASS, className);
-		this.context.put(FIELDS, fields);
+		this.context = Map.ofEntries(
+			Map.entry(PACKAGE, packageName),
+			Map.entry(INTERFACE, interfaceName),
+			Map.entry(CLASS, className),
+			Map.entry(FIELDS, fields)
+		);
 	}
 }

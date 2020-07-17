@@ -1,11 +1,11 @@
 package org.eclipse.ice.dev.annotations.processors;
 
-import org.apache.velocity.VelocityContext;
+import java.util.Map;
 
 import lombok.Builder;
 import lombok.NonNull;
 
-public class InterfaceWriter extends SourceWriter {
+public class InterfaceWriter extends VelocitySourceWriter {
 
 	/**
 	 * Location of Interface template for use with velocity.
@@ -25,9 +25,10 @@ public class InterfaceWriter extends SourceWriter {
 	) {
 		super();
 		this.template = TEMPLATE;
-		this.context = new VelocityContext();
-		context.put(PACKAGE, packageName);
-		context.put(INTERFACE, interfaceName);
-		context.put(FIELDS, fields);
+		this.context = Map.ofEntries(
+			Map.entry(PACKAGE, packageName),
+			Map.entry(INTERFACE, interfaceName),
+			Map.entry(FIELDS, fields)
+		);
 	}
 }

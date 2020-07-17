@@ -52,23 +52,25 @@ public class PojoFromJson {
 		try (Writer elementInterface = Files.newBufferedWriter(
 			destination.resolve(pojo.getElement() + ".java")
 		)) {
-			new InterfaceWriter(
-				pojo.getPackageName(),
-				pojo.getElement(),
-				fields
-			).write(elementInterface);
+			InterfaceWriter.builder()
+				.packageName(pojo.getPackageName())
+				.interfaceName(pojo.getElement())
+				.fields(fields)
+				.build()
+				.write(elementInterface);
 		}
 
 		// Write implementation
 		try (Writer elementImpl = Files.newBufferedWriter(
 			destination.resolve(pojo.getImplementation() + ".java")
 		)) {
-			new ImplementationWriter(
-				pojo.getPackageName(),
-				pojo.getElement(),
-				pojo.getImplementation(),
-				fields
-			).write(elementImpl);
+			ImplementationWriter.builder()
+				.packageName(pojo.getPackageName())
+				.interfaceName(pojo.getElement())
+				.className(pojo.getImplementation())
+				.fields(fields)
+				.build()
+				.write(elementImpl);
 		}
 	}
 
