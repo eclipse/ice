@@ -6,12 +6,16 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.ice.dev.annotations.processors.DefaultFields;
 import org.eclipse.ice.dev.annotations.processors.Fields;
 import org.eclipse.ice.dev.annotations.processors.ImplementationWriter;
 import org.eclipse.ice.dev.annotations.processors.InterfaceWriter;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,6 +31,24 @@ public class PojoFromJson {
 	 * Mapper used for deserializing POJO Outline JSON
 	 */
 	private static ObjectMapper mapper = new ObjectMapper();
+
+	/**
+	 * List of files to operate on.
+	 */
+	@Parameter(description = "FILE [FILE...]")
+	private List<String> jsonFiles = new ArrayList<>();
+
+	/**
+	 * Directory to output generated files into.
+	 */
+	@Parameter(names = {"-o", "--output"}, description = "Output directory")
+	private String output = ".";
+
+	/**
+	 * Display help text.
+	 */
+	@Parameter(names = "--help", description = "Display this usage text", help = true)
+	private boolean help;
 
 	/**
 	 * Read from Input and write interface and implementation to files in
@@ -75,22 +97,43 @@ public class PojoFromJson {
 	}
 
 	/**
-	 * Read JSON form Standard In or from arguments and generate DataElement
-	 * interfaces and implementations.
-	 * @param args command line arguments are unused
+	 * Execution entry point
+	 * @param args from command line
 	 */
 	public static void main(String[] args) {
+		PojoFromJson pfj = new PojoFromJson();
+		pfj.run(args);
+	}
+
+	/**
+	 * Read JSON form Standard In or from arguments and generate DataElement
+	 * interfaces and implementations.
+	 * @param args from command line
+	 */
+	public void run(String... args) {
+		JCommander jcomm = JCommander.newBuilder()
+			.addObject(this)
+			.build();
+		jcomm.setProgramName("POJOfromJSON");
+		jcomm.parse(args);
+
+		if (help) {
+			jcomm.usage();
+			return;
+		}
+
 		try {
-			if (args.length == 0) {
-				handleInputJson(System.in, Path.of("."));
+			if (jsonFiles.size() == 0) {
+				handleInputJson(System.in, Path.of(output));
 			}
-			for (String filePath : args) {
+			for (String filePath : jsonFiles) {
 				try (FileInputStream inputJson = new FileInputStream(filePath)) {
-					handleInputJson(inputJson, Path.of("."));
+					handleInputJson(inputJson, Path.of(output));
 				}
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			System.err.println(ex.getMessage());
+			System.exit(1);
 		}
 	}
 }
