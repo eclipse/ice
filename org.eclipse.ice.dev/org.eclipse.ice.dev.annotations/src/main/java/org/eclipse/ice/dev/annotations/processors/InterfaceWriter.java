@@ -1,6 +1,6 @@
 package org.eclipse.ice.dev.annotations.processors;
 
-import java.util.Map;
+import java.util.HashMap;
 
 import lombok.Builder;
 import lombok.NonNull;
@@ -25,10 +25,9 @@ public class InterfaceWriter extends VelocitySourceWriter {
 	) {
 		super();
 		this.template = TEMPLATE;
-		this.context = Map.ofEntries(
-			Map.entry(PACKAGE, packageName),
-			Map.entry(INTERFACE, interfaceName),
-			Map.entry(FIELDS, fields)
-		);
+		this.context = new HashMap<>();
+		context.put(PACKAGE, packageName);
+		context.put(INTERFACE, interfaceName);
+		context.put(FIELDS, fields);
 	}
 }

@@ -1,6 +1,6 @@
 package org.eclipse.ice.dev.annotations.processors;
 
-import java.util.Map;
+import java.util.HashMap;
 
 import lombok.Builder;
 import lombok.NonNull;
@@ -29,13 +29,12 @@ public class PersistenceHandlerWriter extends VelocitySourceWriter {
 	) {
 		super();
 		this.template = PERSISTENCE_HANDLER_TEMPLATE;
-		this.context = Map.ofEntries(
-			Map.entry(PACKAGE, packageName),
-			Map.entry(ELEMENT_INTERFACE, elementInterface),
-			Map.entry(CLASS, className),
-			Map.entry(COLLECTION, collection),
-			Map.entry(IMPLEMENTATION, implementation),
-			Map.entry(FIELDS, fields)
-		);
+		this.context = new HashMap<>();
+		this.context.put(PACKAGE, packageName);
+		this.context.put(ELEMENT_INTERFACE, elementInterface);
+		this.context.put(CLASS, className);
+		this.context.put(COLLECTION, collection);
+		this.context.put(IMPLEMENTATION, implementation);
+		this.context.put(FIELDS, fields);
 	}
 }
