@@ -14,7 +14,8 @@ import com.vaadin.flow.router.Route;
 public class MainView extends VerticalLayout {
 
     public MainView() {
-        Button button = new Button("Click me",
+    	Example ex = new ExampleImplementation();
+        Button button = new Button(ex.getExampleString(),
                 event -> Notification.show("Clicked!"));
         add(button);
     }
