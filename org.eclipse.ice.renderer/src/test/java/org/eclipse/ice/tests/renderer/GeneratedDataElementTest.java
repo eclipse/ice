@@ -171,7 +171,7 @@ class GeneratedDataElementTest {
 
 		// Because of the private id changing and being unique, this cannot be checked
 		// against a reference but can only be checked by inversion.
-		String output = element.toJSON();
+		String output = element.toJson();
 
 		// Change some values then read back in the original to make sure fromString()
 		// correctly overwrites them.
@@ -179,8 +179,8 @@ class GeneratedDataElementTest {
 		System.out.println(output);
 		GeneratedDataElement element2 = getStringElement("Emancipator");
 		element2.setValidator(new JavascriptValidator<GeneratedDataElement>());
-		element2.fromJSON(output);
-		element.fromJSON(output);
+		element2.fromJson(output);
+		element.fromJson(output);
 		assertEquals(element,element2);
 
 		return;
@@ -202,7 +202,7 @@ class GeneratedDataElementTest {
 
 		// Because of the private id changing and being unique, this cannot be checked
 		// against a reference but can only be checked by inversion.
-		String output = element.toJSON();
+		String output = element.toJson();
 
 		// Change some values then read back in the original to make sure fromString()
 		// correctly overwrites them.
@@ -211,7 +211,7 @@ class GeneratedDataElementTest {
 		pojo2.setDoubleValue(1.072);
 		element2.setValidator(new JavascriptValidator<GeneratedDataElementPOJO>());
 		element2.setTestPOJO(pojo2);
-		element2.fromJSON(output);
+		element2.fromJson(output);
 
 		assertEquals(element,element2);
 
