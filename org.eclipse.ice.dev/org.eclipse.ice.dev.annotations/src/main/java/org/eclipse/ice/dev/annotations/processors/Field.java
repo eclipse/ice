@@ -47,7 +47,7 @@ public class Field {
 	 * {@code getPrivateId()}. In that example, the variable name would be
 	 * {@code privateId} and the field name would be {@code UUID}.
 	 */
-	String var;
+	String varName;
 
 	/**
 	 * String representation of the field's type.
@@ -127,11 +127,11 @@ public class Field {
 	 * @return the name of the variable
 	 */
 	@JsonIgnore
-	public String getVar() {
-		if (this.var == null) {
+	public String getVarName() {
+		if (this.varName == null) {
 			return this.name;
 		}
-		return this.var;
+		return this.varName;
 	}
 
 	/**
@@ -139,8 +139,8 @@ public class Field {
 	 * @return whether the variable name differs from the field name
 	 */
 	@JsonIgnore
-	public boolean isVarDifferent() {
-		return this.var != null;
+	public boolean isVarNameDifferent() {
+		return this.varName != null;
 	}
 
 	/**

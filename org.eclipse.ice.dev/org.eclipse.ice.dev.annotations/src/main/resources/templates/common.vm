@@ -52,7 +52,7 @@
 	## Get field declaration
 	#macro(fielddecl)
 		#@settab(1)
-		#join(" ", ${field.Annotations})#join(" ", ${field.Modifiers})#fieldtype() ${field.Var}#if(${field.DefaultValue}) = #evaluate(${field.DefaultValue})#end;
+		#join(" ", ${field.Annotations})#join(" ", ${field.Modifiers})#fieldtype() ${field.VarName}#if(${field.DefaultValue}) = #evaluate(${field.DefaultValue})#end;
 		#end
 	#end
 

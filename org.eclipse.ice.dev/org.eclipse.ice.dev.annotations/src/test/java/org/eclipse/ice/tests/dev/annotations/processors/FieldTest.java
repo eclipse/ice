@@ -75,15 +75,15 @@ class FieldTest {
 		Field f = Field.builder()
 			.name("UUID")
 			.type(UUID.class)
-			.var("privateId")
+			.varName("privateId")
 			.build();
-		assertTrue(f.isVarDifferent());
-		assertEquals("privateId", f.getVar());
+		assertTrue(f.isVarNameDifferent());
+		assertEquals("privateId", f.getVarName());
 		f = Field.builder()
 			.name("test")
 			.getter(false)
 			.build();
-		assertEquals("test", f.getVar());
-		assertFalse(f.isVarDifferent());
+		assertEquals("test", f.getVarName());
+		assertFalse(f.isVarNameDifferent());
 	}
 }

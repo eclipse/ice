@@ -80,9 +80,9 @@ public class Fields implements Iterable<Field> {
 	 * @return iterator over the fields
 	 * @see Field#isVarDifferent()
 	 */
-	public Iterator<Field> getVarsDiffer() {
+	public Iterator<Field> getVarNamesDiffer() {
 		return fields.stream()
-			.filter(field -> field.isVarDifferent())
+			.filter(field -> field.isVarNameDifferent())
 			.iterator();
 	}
 

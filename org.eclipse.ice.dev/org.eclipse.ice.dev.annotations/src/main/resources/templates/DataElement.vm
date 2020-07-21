@@ -44,10 +44,10 @@ public class ${class} implements ${interface}, Serializable {
 
 		#fielddoc
 		#nonnull($tab, $newline)
-		#if(!${field.Getter} || ${field.VarDifferent})
+		#if(!${field.Getter} || ${field.VarNameDifferent})
 	@Getter(AccessLevel.NONE)
 		#end
-		#if(!${field.Setter} || ${field.VarDifferent})
+		#if(!${field.Setter} || ${field.VarNameDifferent})
 	@Setter(AccessLevel.NONE)
 		#end
 		#fielddecl
@@ -58,23 +58,23 @@ public class ${class} implements ${interface}, Serializable {
 		#fielddecl
 	#end
 
-	#foreach($field in ${fields.VarsDiffer})
+	#foreach($field in ${fields.VarNamesDiffer})
 		#if(${field.Getter})
 	/**
-	 * Get ${field.Var}.
+	 * Get ${field.VarName}.
 	 * @return ${field.Name}
 	 */
 	public #fieldtype ${field.GetterName}() {
-		return ${field.Var};
+		return ${field.VarName};
 	}
 		#end
 		#if(${field.Setter})
 	/**
-	 * Set ${field.Var}.
-	 * @param ${field.Var} new value for ${field.Name}.
+	 * Set ${field.VarName}.
+	 * @param ${field.VarName} new value for ${field.Name}.
 	 */
-	public void set${field.NameForMethod}(#fieldparametertype ${field.Var}) {
-		this.${field.Var} = ${field.Var};
+	public void set${field.NameForMethod}(#fieldparametertype ${field.VarName}) {
+		this.${field.VarName} = ${field.VarName};
 	}
 		#end
 	#end
@@ -84,17 +84,17 @@ public class ${class} implements ${interface}, Serializable {
 	 *
 	 * Used in JSON Deserialization.
 	#foreach($field in $fields)
-	 * @param ${field.Var} {@code #fieldtype} for field ${field.Var}
+	 * @param ${field.VarName} {@code #fieldtype} for field ${field.VarName}
 	#end
 	 */
 	@JsonCreator
 	public $class(
 	#foreach($field in $fields)
-		@JsonProperty("${field.Var}") #fieldparametertype ${field.Var}#if($foreach.hasNext),#end
+		@JsonProperty("${field.VarName}") #fieldparametertype ${field.VarName}#if($foreach.hasNext),#end
 	#end
 	) {
 		#foreach($field in $fields)
-		this.${field.Var} = ${field.Var};
+		this.${field.VarName} = ${field.VarName};
 		#end
 	}
 
@@ -130,7 +130,7 @@ public class ${class} implements ${interface}, Serializable {
 	public void copy(@NonNull $interface element) {
 		#foreach($field in $fields)
 			#if($field.Getter)
-		this.${field.Var} = element.${field.GetterName}();
+		this.${field.VarName} = element.${field.GetterName}();
 			#end
 		#end
 	}
@@ -160,23 +160,23 @@ public class ${class} implements ${interface}, Serializable {
 					// by debuggers.
 					#foreach($field in ${fields.Match})
 
-					// Matching ${field.Var}
-					boolean ${field.Var}Match =
+					// Matching ${field.VarName}
+					boolean ${field.VarName}Match =
 					#if(${field.Nullable})
-						this.${field.Var} == null ?
-							this.${field.Var} == other.${field.Var} :
-							this.${field.Var}.equals(other.${field.Var});
+						this.${field.VarName} == null ?
+							this.${field.VarName} == other.${field.VarName} :
+							this.${field.VarName}.equals(other.${field.VarName});
 					#elseif(${field.Primitive})
-						this.${field.Var} == other.${field.Var};
+						this.${field.VarName} == other.${field.VarName};
 					#else
-						this.${field.Var}.equals(other.${field.Var});
+						this.${field.VarName}.equals(other.${field.VarName});
 					#end## if nullable
 					#end## foreach
 
 					retval =
 					#@settab(6)
 						#foreach($field in ${fields.Match})#@nonewline
-						${field.Var}Match#if($foreach.hasNext) &&#if($foreach.count % 3 == 0)$newline#else #end#end
+						${field.VarName}Match#if($foreach.hasNext) &&#if($foreach.count % 3 == 0)$newline#else #end#end
 						#end#end;
 					#end
 				}

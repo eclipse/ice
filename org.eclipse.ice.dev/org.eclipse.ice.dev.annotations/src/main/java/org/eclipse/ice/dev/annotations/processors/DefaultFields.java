@@ -19,7 +19,7 @@ public class DefaultFields {
 	 */
 	private static Field privateId = Field.builder()
 		.name("UUID")
-		.var("privateId")
+		.varName("privateId")
 		.type(UUID.class)
 		.docString("The private UUID of this element. This field is left out of matches().")
 		.defaultValue(UUID.class.getCanonicalName() + ".randomUUID()")
