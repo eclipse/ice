@@ -25,7 +25,7 @@ public interface $interface extends IDataElement<${interface}> {
 	/**
 	 * Set ${field.Name}.
 	 */
-	public void set${field.NameForMethod}(#fieldtype ${field.Name});
+	public void set${field.NameForMethod}(#fieldtype ${field.Var});
 	#end## if Setter
 	#end## if DefaultField
 	#end## foreach field

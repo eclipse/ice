@@ -74,6 +74,19 @@ public class Fields implements Iterable<Field> {
 	}
 
 	/**
+	 * Return iterator over fields where the variable name differs from the
+	 * Field name.
+	 *
+	 * @return iterator over the fields
+	 * @see Field#isVarDifferent()
+	 */
+	public Iterator<Field> getVarsDiffer() {
+		return fields.stream()
+			.filter(field -> field.isVarDifferent())
+			.iterator();
+	}
+
+	/**
 	 * Returns an iterator over the mutable fields found in this collection. The
 	 * mutable fields are the default set iterated over because they are the most
 	 * used fields in the templates for DataElement generation.

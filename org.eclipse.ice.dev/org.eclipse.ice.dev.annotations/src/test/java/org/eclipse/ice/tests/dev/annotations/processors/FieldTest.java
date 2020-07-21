@@ -5,6 +5,8 @@ package org.eclipse.ice.tests.dev.annotations.processors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.UUID;
+
 import org.eclipse.ice.dev.annotations.processors.Field;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +37,6 @@ class FieldTest {
 			.nullable(true)
 			.getter(false)
 			.setter(false)
-			.alias(Field.builder().name("another").getter(true).build())
 			.build();
 
 		String fJson = mapper.writeValueAsString(f);
@@ -59,55 +60,30 @@ class FieldTest {
 			.type(boolean.class)
 			.build();
 		assertEquals("isTest", f.getGetterName());
+		f = Field.builder()
+			.name("TEST")
+			.type(String.class)
+			.build();
+		assertEquals("getTEST", f.getGetterName());
 	}
 
 	/**
-	 * Test hasGetter.
+	 * Test our handling of differences between the field name and the var name.
 	 */
 	@Test
-	void testHasGetter() {
+	void testNameAndVarDifferences() {
 		Field f = Field.builder()
-			.name("test")
-			.type(String.class)
-			.getter(true)
+			.name("UUID")
+			.type(UUID.class)
+			.var("privateId")
 			.build();
-		assertTrue(f.hasGetter());
-		f = Field.builder()
-			.name("test")
-			.type(String.class)
-			.getter(false)
-			.alias(Field.builder().name("another").getter(true).build())
-			.build();
-		assertTrue(f.hasGetter());
+		assertTrue(f.isVarDifferent());
+		assertEquals("privateId", f.getVar());
 		f = Field.builder()
 			.name("test")
 			.getter(false)
 			.build();
-		assertFalse(f.hasGetter());
-	}
-
-	/**
-	 * Test getAnyGetter.
-	 */
-	@Test
-	void testAnyGetter() {
-		Field f = Field.builder()
-			.name("test")
-			.type(String.class)
-			.getter(true)
-			.build();
-		assertEquals("getTest", f.getAnyGetter());
-		f = Field.builder()
-			.name("test")
-			.type(String.class)
-			.getter(false)
-			.alias(Field.builder().name("another").getter(true).build())
-			.build();
-		assertEquals("getAnother", f.getAnyGetter());
-		f = Field.builder()
-			.name("test")
-			.getter(false)
-			.build();
-		assertNull(f.getAnyGetter());
+		assertEquals("test", f.getVar());
+		assertFalse(f.isVarDifferent());
 	}
 }

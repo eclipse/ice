@@ -31,10 +31,23 @@ import lombok.Singular;
 @Builder
 @JsonDeserialize(builder = Field.FieldBuilder.class)
 public class Field {
+
 	/**
 	 * Name of the field.
 	 */
 	String name;
+
+	/**
+	 * Name of the variable representing this field. If the same as
+	 * {@link Field#name}, leave null.
+	 *
+	 * This handles cases like the default field {@link DefaultFields#privateId}
+	 * being accessible through the method
+	 * {@link org.eclipse.ice.dev.annotations.IDataElement#getUUID()} rather than
+	 * {@code getPrivateId()}. In that example, the variable name would be
+	 * {@code privateId} and the field name would be {@code UUID}.
+	 */
+	String var;
 
 	/**
 	 * String representation of the field's type.
@@ -98,11 +111,6 @@ public class Field {
 	boolean unique;
 
 	/**
-	 * A list of alternate names for this field.
-	 */
-	@Singular("alias") List<Field> aliases;
-
-	/**
 	 * A list of annotations to apply to this field.
 	 */
 	@Singular("annotation") List<String> annotations;
@@ -111,6 +119,29 @@ public class Field {
 	 * Set of Modifiers (public, static, final, etc.) to apply to this field.
 	 */
 	@Builder.Default Set<String> modifiers = Set.of("protected");
+
+	/**
+	 * Get the name of the variable representing this field.
+	 *
+	 * If no variable name has been specifically set, var == name.
+	 * @return the name of the variable
+	 */
+	@JsonIgnore
+	public String getVar() {
+		if (this.var == null) {
+			return this.name;
+		}
+		return this.var;
+	}
+
+	/**
+	 * Get whether this field has a variable name that differs from the field name.
+	 * @return whether the variable name differs from the field name
+	 */
+	@JsonIgnore
+	public boolean isVarDifferent() {
+		return this.var != null;
+	}
 
 	/**
 	 * Get a class by name or return null if not found
@@ -154,39 +185,6 @@ public class Field {
 	}
 
 	/**
-	 * Return whether this field has a getter, directly or via one of its aliases.
-	 *
-	 * This method is separate from {@code getAnyGetter()} despite being very
-	 * similar for ease of use in velocity templates.
-	 * @return true if getter present, false otherwise
-	 */
-	@JsonIgnore
-	public boolean hasGetter() {
-		return getAnyGetter() != null;
-	}
-
-	/**
-	 * Return the name of any valid getter for this field, either a direct getter
-	 * for the field or one of its aliases.
-	 * @return getter name, null if none present
-	 */
-	@JsonIgnore
-	public String getAnyGetter() {
-		String retval = null;
-		if (getter) {
-			retval = getGetterName();
-		} else {
-			for (Field alias : aliases) {
-				if (alias.isGetter()) {
-					retval = alias.getGetterName();
-					break;
-				}
-			}
-		}
-		return retval;
-	}
-
-	/**
 	 * Return if this field has a final modifier and is therefore a constant value.
 	 * @return field is constant
 	 */
@@ -199,7 +197,6 @@ public class Field {
 	 * Instruct Jackson how to deserialize fields.
 	 */
 	private interface FieldBuilderMeta {
-		@JsonDeserialize(contentAs = Field.class) FieldBuilder aliases(Collection<? extends Field> aliases);
 		@JsonDeserialize(contentAs = String.class) FieldBuilder annotations(Collection<? extends String> annotations);
 		@JsonDeserialize(contentAs = String.class) FieldBuilder modifiers(Set<String> modifiers);
 		@JsonAlias("fieldName") FieldBuilder name(String name);
