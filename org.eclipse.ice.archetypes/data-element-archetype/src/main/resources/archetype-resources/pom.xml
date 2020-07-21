@@ -6,8 +6,8 @@
 
 	<parent>
 		<groupId>org.eclipse.ice</groupId>
-		<artifactId>data-renderer-starter</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<artifactId>org.eclipse.ice.archetypes</artifactId>
+		<version>3.0-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
