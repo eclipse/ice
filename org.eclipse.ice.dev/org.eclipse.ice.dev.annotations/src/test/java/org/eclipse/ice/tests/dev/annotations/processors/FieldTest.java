@@ -44,4 +44,70 @@ class FieldTest {
 		assertEquals(f, f2);
 	}
 
+	/**
+	 * Test getGetterName.
+	 */
+	@Test
+	void testGetterName() {
+		Field f = Field.builder()
+			.name("test")
+			.type(String.class)
+			.build();
+		assertEquals("getTest", f.getGetterName());
+		f = Field.builder()
+			.name("test")
+			.type(boolean.class)
+			.build();
+		assertEquals("isTest", f.getGetterName());
+	}
+
+	/**
+	 * Test hasGetter.
+	 */
+	@Test
+	void testHasGetter() {
+		Field f = Field.builder()
+			.name("test")
+			.type(String.class)
+			.getter(true)
+			.build();
+		assertTrue(f.hasGetter());
+		f = Field.builder()
+			.name("test")
+			.type(String.class)
+			.getter(false)
+			.alias(Field.builder().name("another").getter(true).build())
+			.build();
+		assertTrue(f.hasGetter());
+		f = Field.builder()
+			.name("test")
+			.getter(false)
+			.build();
+		assertFalse(f.hasGetter());
+	}
+
+	/**
+	 * Test getAnyGetter.
+	 */
+	@Test
+	void testAnyGetter() {
+		Field f = Field.builder()
+			.name("test")
+			.type(String.class)
+			.getter(true)
+			.build();
+		assertEquals("getTest", f.getAnyGetter());
+		f = Field.builder()
+			.name("test")
+			.type(String.class)
+			.getter(false)
+			.alias(Field.builder().name("another").getter(true).build())
+			.build();
+		assertEquals("getAnother", f.getAnyGetter());
+		f = Field.builder()
+			.name("test")
+			.getter(false)
+			.build();
+		assertNull(f.getAnyGetter());
+	}
 }
