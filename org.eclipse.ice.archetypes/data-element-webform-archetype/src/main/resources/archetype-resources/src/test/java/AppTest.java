@@ -10,5 +10,6 @@ public class AppTest {
     public void shouldAnswerWithTrue() {
     	Example ex = new ExampleImplementation();
     	assertTrue(ex.getExampleString().equals("This is a string!"));
+    	fail();
     }
 }
