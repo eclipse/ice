@@ -261,7 +261,7 @@ public class DataElementProcessor extends AbstractProcessor {
 			element.getName()
 		);
 		context.put(
-			PersistenceHandlerTemplateProperty.FIELDS.getKey(),
+			InterfaceTemplateProperty.FIELDS.getKey(),
 			fields
 		);
 
