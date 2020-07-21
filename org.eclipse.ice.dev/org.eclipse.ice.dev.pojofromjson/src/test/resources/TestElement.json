@@ -1,0 +1,8 @@
+{
+	"package": "testpackage",
+	"element": "TestElement",
+	"fields": [{
+		"name": "test",
+		"type": "String"
+	}]
+}
