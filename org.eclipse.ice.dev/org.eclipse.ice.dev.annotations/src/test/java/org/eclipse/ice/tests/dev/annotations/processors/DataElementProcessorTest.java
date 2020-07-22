@@ -75,7 +75,7 @@ class DataElementProcessorTest {
 		/**
 		 * Parent directory of inputs. Prepended to all paths.
 		 */
-		private static final String PARENT = "input/";
+		private static final String PARENT = "input/DataElement/";
 
 		/**
 		 * Path to inputs.
@@ -116,7 +116,7 @@ class DataElementProcessorTest {
 		/**
 		 * Parent directory of inputs. Prepended to all paths.
 		 */
-		private static final String PARENT = "patterns/";
+		private static final String PARENT = "patterns/DataElement/";
 
 		/**
 		 * Path to inputs.
