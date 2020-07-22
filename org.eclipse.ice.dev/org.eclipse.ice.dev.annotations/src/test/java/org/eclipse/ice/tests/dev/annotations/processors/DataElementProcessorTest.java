@@ -61,7 +61,7 @@ class DataElementProcessorTest {
 	 * @author Daniel Bluhm
 	 */
 	@AllArgsConstructor
-	private static enum Inputs {
+	private static enum Inputs implements JavaFileObjectResource{
 		HELLO_WORLD("HelloWorld.java"),
 		NAME_MISSING("DataElementNameMissing.java"),
 		ON_ENUM("DataElementOnEnum.java"),
@@ -88,14 +88,11 @@ class DataElementProcessorTest {
 		/**
 		 * Path to inputs.
 		 */
-		private String path;
+		private String filename;
 
-		/**
-		 * Retrieve the JavaFileObject corresponding to this input.
-		 * @return input as a JavaFileObject
-		 */
-		public JavaFileObject get() {
-			return JavaFileObjects.forResource(PARENT + this.path);
+		@Override
+		public String getPath() {
+			return PARENT + this.filename;
 		}
 	}
 
@@ -104,7 +101,7 @@ class DataElementProcessorTest {
 	 * @author Daniel Bluhm
 	 */
 	@AllArgsConstructor
-	private static enum Patterns {
+	private static enum Patterns implements JavaFileObjectResource {
 		DEFAULTS_INT("Defaults.java"),
 		DEFAULTS_IMPL("DefaultsImplementation.java"),
 		SINGLE_INT("Single.java"),
