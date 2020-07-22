@@ -46,10 +46,13 @@
 	## Get evaluated field type
 	#macro(fieldtype)#evaluate(${field.Type})#end
 
+	## Get the type of this field for use in parameter list (includes nonnull)
+	#macro(fieldparametertype)#nonnull("", " ")#fieldtype#end
+
 	## Get field declaration
 	#macro(fielddecl)
 		#@settab(1)
-		#join(" ", ${field.Annotations})#join(" ", ${field.Modifiers})#fieldtype() ${field.Name}#if(${field.DefaultValue}) = #evaluate(${field.DefaultValue})#end;
+		#join(" ", ${field.Annotations})#join(" ", ${field.Modifiers})#fieldtype() ${field.VarName}#if(${field.DefaultValue}) = #evaluate(${field.DefaultValue})#end;
 		#end
 	#end
 
