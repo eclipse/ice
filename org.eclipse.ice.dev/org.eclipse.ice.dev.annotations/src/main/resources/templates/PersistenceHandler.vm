@@ -85,15 +85,15 @@ public class $class implements $interface<$elementInterface> {
 
 	/**
 	 * Find $elementInterface by ${var.Name}.
-	 * @param ${var.Name}
+	 * @param ${var.VarName}
 	 * @return found element or null
 	 */
 	#if(${var.DefaultField})
 	@Override
 	#end
-	public $elementInterface findBy${var.NameForMethod}($type ${var.Name}) throws Exception {
+	public $elementInterface findBy${var.NameForMethod}($type ${var.VarName}) throws Exception {
 		Document doc = this.collection
-			.find(PersistenceFilters.eq("${docName}", ${var.Name}))
+			.find(PersistenceFilters.eq("${docName}", ${var.VarName}))
 			.first();
 		if (doc == null) {
 			return null;
@@ -105,23 +105,20 @@ public class $class implements $interface<$elementInterface> {
 
 	/**
 	 * Find $elementInterface by ${var.Name}.
-	 * @param ${var.Name}
+	 * @param ${var.VarName}
 	 * @return Iterator of results
 	 */
 	#if(${var.DefaultField})
 	@Override
 	#end
-	public Iterable<$elementInterface> findBy${var.NameForMethod}(${var.Type} ${var.Name}) throws Exception {
-		return this.collection.find(PersistenceFilters.eq("${var.Name}", ${var.Name}))
+	public Iterable<$elementInterface> findBy${var.NameForMethod}(${var.Type} ${var.VarName}) throws Exception {
+		return this.collection.find(PersistenceFilters.eq("${var.VarName}", ${var.VarName}))
 			.map(doc -> mapper.convertValue(doc, ${implementation}.class));
 	}
 	#end## if unique
 	#end## if getter and search
 	#end## macro findmethod
 	#foreach($field in $fields)
-	#findmethod($field ${field.Type} ${field.Name})
-	#foreach($alias in $field.Aliases)
-	#findmethod($alias ${field.Type} ${field.Name})
-	#end
+	#findmethod($field ${field.Type} ${field.VarName})
 	#end
 }

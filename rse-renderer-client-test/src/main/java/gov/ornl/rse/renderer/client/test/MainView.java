@@ -16,8 +16,12 @@ import java.util.function.BiConsumer;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.eclipse.ice.dev.annotations.IDataElement;
 import org.eclipse.ice.renderer.DataElement;
+import org.eclipse.ice.renderer.JavascriptValidator;
 import org.eclipse.ice.renderer.Renderer;
+import org.eclipse.ice.renderer.Person;
+import org.eclipse.ice.renderer.PersonImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,8 +31,7 @@ import com.vaadin.flow.router.Route;
 @Route
 public class MainView extends VerticalLayout {
 
-	@Autowired
-	private Renderer<VaadinRendererClient<String>, String> renderer;
+	private Renderer<VaadinRendererClient<Person>, Person> renderer;
 
 	/**
 	 * Constructor
@@ -44,21 +47,23 @@ public class MainView extends VerticalLayout {
 	public void render() {
 
 		// Nothing to do here - just sample setup
-		DataElement<String> nameElem = new DataElement<String>();
+		Person ross = new PersonImplementation();
 		try {
-			nameElem.setName("Ross' name");
-			nameElem.setDescription("Ross' name described by a data element");
-			nameElem.setData("Ross Whitfield");
+			ross.setName("Ross Whitfield");
+			ross.setDescription("Ross' name described by a generated IDataElement");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		System.out.println(ross.toJson());
 
-		BiConsumer<VaadinRendererClient<String>, DataElement<String>> drawViewFunc = (v, w) -> {
+		renderer = new Renderer<VaadinRendererClient<Person>, Person>();
+		renderer.setViewer(new VaadinRendererClient<Person>());
+		BiConsumer<VaadinRendererClient<Person>, Person> drawViewFunc = (v, w) -> {
 			v.setData(w);
 			add(v);
 		};
-		renderer.setDataElement(nameElem);
+		renderer.setDataElement(ross);
 		renderer.setDrawMethod(drawViewFunc);
 
 		renderer.render();
