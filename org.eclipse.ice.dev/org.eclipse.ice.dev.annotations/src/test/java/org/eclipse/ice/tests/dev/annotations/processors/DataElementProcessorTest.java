@@ -1,21 +1,23 @@
+/*******************************************************************************
+ * Copyright (c) 2020- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Daniel Bluhm - Initial implementation
+ *******************************************************************************/
+
 package org.eclipse.ice.tests.dev.annotations.processors;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
-import static com.google.testing.compile.Compiler.*;
 import static com.google.testing.compile.CompilationSubject.*;
 
-import javax.annotation.processing.Processor;
 import javax.tools.JavaFileObject;
 
-import org.eclipse.ice.dev.annotations.processors.DataElementProcessor;
 import org.junit.jupiter.api.Test;
 
 import com.google.testing.compile.Compilation;
-import com.google.testing.compile.JavaFileObjects;
 
 import lombok.AllArgsConstructor;
 
@@ -37,6 +39,12 @@ import lombok.AllArgsConstructor;
  *
  */
 class DataElementProcessorTest {
+
+	/**
+	 * Helper for testing DataElement related annotations.
+	 */
+	private static DataElementAnnotationTestHelper helper =
+		new DataElementAnnotationTestHelper();
 
 	/**
 	 * Fully qualified name of the generated interface.
@@ -121,54 +129,12 @@ class DataElementProcessorTest {
 		/**
 		 * Path to inputs.
 		 */
-		private String path;
+		private String filename;
 
-		/**
-		 * Retrieve the JavaFileObject corresponding to this pattern.
-		 * @return input as a JavaFileObject
-		 */
-		public JavaFileObject get() {
-			return JavaFileObjects.forResource(PARENT + this.path);
+		@Override
+		public String getPath() {
+			return PARENT + this.filename;
 		}
-	}
-
-	/**
-	 * Retrieve an instance of Lombok's Annotation Processor.
-	 *
-	 * This is a nasty method that violates the accessibility of the Processor by
-	 * reflection but is necessary to correctly process and test the generated code.
-	 * @return lombok annotation processor
-	 */
-	private static Processor getLombokAnnotationProcessor() {
-		Processor p = null;
-		try {
-			Class<?> c = Class.forName("lombok.launch.AnnotationProcessorHider$AnnotationProcessor");
-			Constructor<?> constructor = c.getConstructor();
-			constructor.setAccessible(true);
-			p = (Processor) constructor.newInstance();
-		} catch (
-			ClassNotFoundException | InstantiationException |
-			IllegalAccessException | IllegalArgumentException |
-			InvocationTargetException | NoSuchMethodException |
-			SecurityException e
-		) {
-			System.err.println("Failed to get Lombok AnnotationProcessor!");
-			e.printStackTrace();
-		}
-		return p;
-	}
-
-	/**
-	 * Compile the sources with needed processors.
-	 * @param sources to compile
-	 * @return Compilation result
-	 */
-	private static Compilation compile(JavaFileObject... sources) {
-		return javac()
-			.withProcessors(
-				getLombokAnnotationProcessor(),
-				new DataElementProcessor()
-			).compile(sources);
 	}
 
 	/**
@@ -213,7 +179,7 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testNoAnnotationsToProcessSucceeds() {
-		Compilation compilation = compile(Inputs.HELLO_WORLD.get());
+		Compilation compilation = helper.compile(Inputs.HELLO_WORLD.get());
 		assertThat(compilation).succeeded();
 	}
 
@@ -223,7 +189,7 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testMissingNameFails() {
-		Compilation compilation = compile(Inputs.NAME_MISSING.get());
+		Compilation compilation = helper.compile(Inputs.NAME_MISSING.get());
 		assertThat(compilation)
 			.hadErrorContaining(
 				"missing a default value for the element 'name'"
@@ -235,7 +201,7 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testAnnotateInterfaceFails() {
-		Compilation compilation = compile(Inputs.ON_INTERFACE.get());
+		Compilation compilation = helper.compile(Inputs.ON_INTERFACE.get());
 		assertThat(compilation)
 			.hadErrorContaining("DataElementSpec must be class");
 	}
@@ -245,7 +211,7 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testAnnotateEnumFails() {
-		Compilation compilation = compile(Inputs.ON_ENUM.get());
+		Compilation compilation = helper.compile(Inputs.ON_ENUM.get());
 		assertThat(compilation)
 			.hadErrorContaining("DataElementSpec must be class");
 	}
@@ -256,7 +222,7 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testNoDataFieldsSucceeds() {
-		Compilation compilation = compile(Inputs.NO_DATAFIELDS.get());
+		Compilation compilation = helper.compile(Inputs.NO_DATAFIELDS.get());
 		assertDefaultsPresent(compilation);
 	}
 
@@ -265,7 +231,7 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testWithSingleDataFieldSucceeds() {
-		Compilation compilation = compile(Inputs.SINGLE.get());
+		Compilation compilation = helper.compile(Inputs.SINGLE.get());
 		assertDefaultsPresent(compilation);
 		assertInterfaceMatches(compilation, Patterns.SINGLE_INT.get());
 		assertImplementationMatches(compilation, Patterns.SINGLE_IMPL.get());
@@ -276,7 +242,7 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testWithManyDataFieldsSucceeds() {
-		Compilation compilation = compile(Inputs.MANY.get());
+		Compilation compilation = helper.compile(Inputs.MANY.get());
 		assertDefaultsPresent(compilation);
 		assertInterfaceMatches(compilation, Patterns.MANY_INT.get());
 		assertImplementationMatches(compilation, Patterns.MANY_IMPL.get());
@@ -287,7 +253,7 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testSingleNonPrimitiveDataFieldSucceeds() {
-		Compilation compilation = compile(Inputs.SINGLE_NON_PRIMITIVE.get());
+		Compilation compilation = helper.compile(Inputs.SINGLE_NON_PRIMITIVE.get());
 		assertDefaultsPresent(compilation);
 		assertInterfaceMatches(compilation, Patterns.SINGLE_NON_PRIMITIVE_INT.get());
 		assertImplementationMatches(compilation, Patterns.SINGLE_NON_PRIMITIVE_IMPL.get());
@@ -298,7 +264,7 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testManyNonPrimitiveDataFieldSucceeds() {
-		Compilation compilation = compile(Inputs.MANY_NON_PRIMITIVE.get());
+		Compilation compilation = helper.compile(Inputs.MANY_NON_PRIMITIVE.get());
 		assertDefaultsPresent(compilation);
 		assertInterfaceMatches(compilation, Patterns.MANY_NON_PRIMITIVE_INT.get());
 		assertImplementationMatches(compilation, Patterns.MANY_NON_PRIMITIVE_IMPL.get());
@@ -310,7 +276,7 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testDocStringsPreserved() {
-		Compilation compilation = compile(Inputs.SINGLE.get());
+		Compilation compilation = helper.compile(Inputs.SINGLE.get());
 		assertThat(compilation).generatedSourceFile(IMPLEMENTATION)
 			.contentsAsUtf8String()
 			.contains("* A UNIQUE STRING IN THE DOC STRING.");
@@ -325,7 +291,7 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testAccessibilityPreserved() {
-		Compilation compilation = compile(Inputs.ACCESSIBILITY_PRESERVED.get());
+		Compilation compilation = helper.compile(Inputs.ACCESSIBILITY_PRESERVED.get());
 		assertImplementationMatches(compilation, Patterns.ACCESSIBILITY_PRESERVED.get());
 	}
 
@@ -337,7 +303,7 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testDataFieldOnClassFails() {
-		Compilation compilation = compile(Inputs.DATAFIELD_ON_CLASS.get());
+		Compilation compilation = helper.compile(Inputs.DATAFIELD_ON_CLASS.get());
 		assertThat(compilation)
 			.hadErrorContaining("annotation type not applicable");
 	}
@@ -347,7 +313,7 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testDataFieldOnMethodFails() {
-		Compilation compilation = compile(Inputs.DATAFIELD_ON_METHOD.get());
+		Compilation compilation = helper.compile(Inputs.DATAFIELD_ON_METHOD.get());
 		assertThat(compilation)
 			.hadErrorContaining("annotation type not applicable");
 	}
@@ -357,7 +323,7 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testDataFieldGetterOption() {
-		Compilation compilation = compile(Inputs.DATAFIELD_GETTER.get());
+		Compilation compilation = helper.compile(Inputs.DATAFIELD_GETTER.get());
 		assertThat(compilation)
 			.generatedSourceFile(INTERFACE)
 			.hasSourceEquivalentTo(Patterns.DATAFIELD_GETTER_INT.get());
@@ -368,7 +334,7 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testDataFieldSetterOption() {
-		Compilation compilation = compile(Inputs.DATAFIELD_SETTER.get());
+		Compilation compilation = helper.compile(Inputs.DATAFIELD_SETTER.get());
 		assertThat(compilation)
 			.generatedSourceFile(INTERFACE)
 			.hasSourceEquivalentTo(Patterns.DATAFIELD_SETTER_INT.get());
@@ -379,7 +345,7 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testDataFieldMatchOption() {
-		Compilation compilation = compile(Inputs.DATAFIELD_MATCH.get());
+		Compilation compilation = helper.compile(Inputs.DATAFIELD_MATCH.get());
 		assertThat(compilation)
 			.generatedSourceFile(IMPLEMENTATION)
 			.contentsAsUtf8String()
@@ -395,7 +361,7 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testDataFieldDefaultNonString() {
-		Compilation compilation = compile(Inputs.DEFAULT_NON_STRING.get());
+		Compilation compilation = helper.compile(Inputs.DEFAULT_NON_STRING.get());
 		assertImplementationMatches(
 			compilation,
 			Patterns.DEFAULT_NON_STRING_IMPL.get()
@@ -407,7 +373,7 @@ class DataElementProcessorTest {
 	 */
 	@Test
 	void testDataFieldDefaultString() {
-		Compilation compilation = compile(Inputs.DEFAULT_STRING.get());
+		Compilation compilation = helper.compile(Inputs.DEFAULT_STRING.get());
 		assertImplementationMatches(
 			compilation,
 			Patterns.DEFAULT_STRING_IMPL.get()
