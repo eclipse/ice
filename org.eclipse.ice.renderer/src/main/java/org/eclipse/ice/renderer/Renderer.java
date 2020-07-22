@@ -15,6 +15,8 @@ import java.io.Serializable;
 import java.util.function.BiConsumer;
 import javax.inject.Inject;
 
+import org.eclipse.ice.dev.annotations.IDataElement;
+
 /**
  * This class is a basic controller that connects data and UI classes in a
  * simple, pre-determined way. Data can be provided through the DataElement<V>
@@ -35,7 +37,7 @@ import javax.inject.Inject;
  * @author Jay Jay Billings
  *
  */
-public class Renderer<T, V extends Serializable> implements Serializable {
+public class Renderer<T, V extends IDataElement> implements Serializable {
 
 	/**
 	 * Serial version id
@@ -43,9 +45,9 @@ public class Renderer<T, V extends Serializable> implements Serializable {
 	private static final long serialVersionUID = -8514680453430699108L;
 
 	private T viewer;
-	private DataElement<V> dataElement;
+	private V dataElement;
 
-	private BiConsumer<T, DataElement<V>> drawMethod;
+	private BiConsumer<T, V> drawMethod;
 
 	@Inject
 	public void setViewer(T view) {
@@ -53,11 +55,11 @@ public class Renderer<T, V extends Serializable> implements Serializable {
 	}
 	
 	@Inject
-	public void setDataElement(DataElement<V> data) {
+	public void setDataElement(V data) {
 		dataElement = data;
 	}
 
-	public void setDrawMethod(BiConsumer<T, DataElement<V>> drawFunction) {
+	public void setDrawMethod(BiConsumer<T, V> drawFunction) {
 		drawMethod = drawFunction;
 	}
 

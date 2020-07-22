@@ -12,9 +12,11 @@
 package gov.ornl.rse.renderer.client.test;
 
 import java.io.Serializable;
+
+import org.eclipse.ice.dev.annotations.IDataElement;
 import org.eclipse.ice.renderer.DataElement;
 
-public interface IRendererClient<T extends Serializable> {
+public interface IRendererClient<T extends IDataElement> {
 
 	/**
 	 * This operation sets the data that should be rendered.
@@ -22,7 +24,7 @@ public interface IRendererClient<T extends Serializable> {
 	 * @param otherData The data element that should be rendered. This function
 	 *                  overwrites the existing data on the client and server.
 	 */
-	public void setData(DataElement<T> otherData);
+	public void setData(T otherData);
 
 	/**
 	 * This function returns the present version of the DataElement
@@ -31,6 +33,6 @@ public interface IRendererClient<T extends Serializable> {
 	 *         there is a chance that the most recent updates from the client have
 	 *         not been committed due to latency.
 	 */
-	public DataElement<T> getData();
+	public T getData();
 
 }
