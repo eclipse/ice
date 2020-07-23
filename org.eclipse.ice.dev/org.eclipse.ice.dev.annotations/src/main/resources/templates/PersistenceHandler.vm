@@ -80,7 +80,7 @@ public class $class implements $interface<$elementInterface> {
 	}
 
 	#macro(findmethod $var $type $docName)
-	#if(${var.Getter} && ${var.Search})
+	#if(${var.Getter} && ${var.Searchable})
 	#if(${var.Unique})
 
 	/**

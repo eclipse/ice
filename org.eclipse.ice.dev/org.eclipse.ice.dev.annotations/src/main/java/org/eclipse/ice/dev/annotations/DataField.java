@@ -53,10 +53,10 @@ public @interface DataField {
 	 * Flag whether this field should be searchable in a collection.
 	 * This causes persistence retrieval methods to be generated for this
 	 * field.
-	 * @return search annotation value
-	 * @see org.eclipse.ice.dev.annotations.processors.Field#search
+	 * @return searchable annotation value
+	 * @see org.eclipse.ice.dev.annotations.processors.Field#searchable
 	 */
-	boolean search() default true;
+	boolean searchable() default true;
 
 	/**
 	 * Flag whether this field can have a value of null. This causes
