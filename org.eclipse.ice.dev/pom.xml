@@ -8,5 +8,6 @@
   <modules>
   	<module>org.eclipse.ice.dev.annotations</module>
   	<module>org.eclipse.ice.dev.annotations.proxytest</module>
+  	<module>org.eclipse.ice.dev.pojofromjson</module>
   </modules>
 </project>

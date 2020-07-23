@@ -64,7 +64,7 @@ public class $class implements $interface<$elementInterface> {
 	@Override
 	public Iterable<$elementInterface> findAll() throws Exception {
 		return this.collection.find()
-			.map(doc -> mapper.readValue(doc, ${implementation}.class));
+			.map(doc -> mapper.convertValue(doc, ${implementation}.class));
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class $class implements $interface<$elementInterface> {
 			return null;
 		}
 
-		return mapper.readValue(doc, ${implementation}.class);
+		return mapper.convertValue(doc, ${implementation}.class);
 	}
 	#else
 
@@ -113,7 +113,7 @@ public class $class implements $interface<$elementInterface> {
 	#end
 	public Iterable<$elementInterface> findBy${var.NameForMethod}(${var.Type} ${var.Name}) throws Exception {
 		return this.collection.find(PersistenceFilters.eq("${var.Name}", ${var.Name}))
-			.map(doc -> mapper.readValue(doc, ${implementation}.class));
+			.map(doc -> mapper.convertValue(doc, ${implementation}.class));
 	}
 	#end## if unique
 	#end## if getter and search

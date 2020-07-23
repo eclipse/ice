@@ -8,7 +8,6 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,8 +27,6 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
 
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
 import org.eclipse.ice.dev.annotations.DataElement;
 import org.eclipse.ice.dev.annotations.DataField;
 import org.eclipse.ice.dev.annotations.DataModel;
@@ -55,30 +52,17 @@ import com.google.auto.service.AutoService;
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 @AutoService(Processor.class)
 public class DataElementProcessor extends AbstractProcessor {
-
 	/**
-	 * Location of DataElement template for use with velocity.
-	 *
-	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
-	 * to the src/main/resources folder.
+	 * Return stack trace as string.
+	 * @param e subject exception
+	 * @return stack trace as string
 	 */
-	private static final String DATAELEMENT_TEMPLATE = "templates/DataElement.vm";
-
-	/**
-	 * Location of PersistenceHandler template for use with velocity.
-	 *
-	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
-	 * to the src/main/resources folder.
-	 */
-	private static final String PERSISTENCE_HANDLER_TEMPLATE = "templates/PersistenceHandler.vm";
-
-	/**
-	 * Location of Interface template for use with velocity.
-	 *
-	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
-	 * to the src/main/resources folder.
-	 */
-	private static final String INTERFACE_TEMPLATE = "templates/ElementInterface.vm";
+	private static String stackTraceToString(final Throwable e) {
+		final StringWriter sw = new StringWriter();
+		final PrintWriter pw = new PrintWriter(sw);
+		e.printStackTrace(pw);
+		return sw.toString();
+	}
 
 
 	protected Messager messager;
@@ -91,7 +75,7 @@ public class DataElementProcessor extends AbstractProcessor {
 		messager = env.getMessager();
 		elementUtils = env.getElementUtils();
 		mapper = new ObjectMapper();
-		extractionService = new ICEAnnotationExtractionService(elementUtils, mapper, env);
+==== BASE ====
 
 		// Set up Velocity using the Singleton approach; ClasspathResourceLoader allows
 		// us to load templates from src/main/resources
@@ -101,6 +85,7 @@ public class DataElementProcessor extends AbstractProcessor {
 		}
 		Velocity.init(p);
 
+==== BASE ====
 		super.init(env);
 	}
 
@@ -109,60 +94,130 @@ public class DataElementProcessor extends AbstractProcessor {
 		// Iterate over all elements with DataElement Annotation
 		for (final Element elem : roundEnv.getElementsAnnotatedWith(DataElement.class)) {
 			try {
-				
-				if(!valid(elem)) throw new InvalidDataElementSpec(
-						"DataElementSpec must be class, found " + elem.toString()
-						);
-				
-				AnnotationExtractionResponse response = extractionService.extract(
-						AnnotationExtractionRequest.builder()
-						.element(elem)
-						.handledAnnotations(Set.of(
-								DataField.class,
-								DataField.Default.class,
-								DataModel.class,
-								Validator.class
-							).stream()
-								.map(cls -> cls.getCanonicalName())
-								.collect(Collectors.toList()))
-						.fieldFilter(DataFieldSpec::isDataField)
-						.className(extractName(elem))
-						.build());
+				DataElementSpec dataElement = new DataElementSpec(elem, elementUtils);
+				Fields fields = new Fields();
+
+				// Collect fields from Defaults, DataField Annotations, and DataFieldJson
+				// Annotations.
+				fields.collect(DefaultFields.get());
+				fields.collect(dataElement.fieldsFromDataFields());
+				fields.collect(collectFromDataFieldJson(dataElement));
 
 				// Write the DataElement's interface to file.
-				ProcessorUtil.writeInterface(response, processingEnv, INTERFACE_TEMPLATE);
+				writeInterface(dataElement, fields);
 
 				// Write the DataElement Implementation to file.
-				ProcessorUtil.writeClass(response, processingEnv, DATAELEMENT_TEMPLATE);
+				writeImpl(dataElement, fields);
 
 				// Check if Persistence should be generated.
-				if (ProcessorUtil.hasAnnotation(elem, Persisted.class)) {
-					ProcessorUtil.writePersistence(
-							response,
-							processingEnv,
-							PERSISTENCE_HANDLER_TEMPLATE
-						);
+				if (dataElement.hasAnnotation(Persisted.class)) {
+					writePersistence(
+						dataElement,
+						dataElement.getCollectionName(),
+						fields
+					);
 				}
 			} catch (final IOException | InvalidDataElementSpec e) {
-				messager.printMessage(Diagnostic.Kind.ERROR, ProcessorUtil.stackTraceToString(e));
+				messager.printMessage(Diagnostic.Kind.ERROR, stackTraceToString(e));
 				return false;
 			}
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Return the element name as extracted from the DataElement annotation.
-	 * @return the extracted name
+	 * Collect Fields from DataFieldJson Annotations.
+	 *
+	 * The JSON input files are searched for in the "CLASS_OUTPUT" location,
+	 * meaning the same folder to which compiled class files will be output.
+	 * JSON files placed in src/main/resources are moved to this location before
+	 * the annotation processing phase and are therefore available at this
+	 * location at the time of annotation processing.
+	 *
+	 * @param element potentially annotated with DataFieldJson
+	 * @return discovered fields
+	 * @throws IOException
 	 */
-	private String extractName(Element element) {
-		return ProcessorUtil.getAnnotation(element, DataElement.class)
-			.map(e -> e.name())
-			.orElse(null);
-	}
-	
-	private boolean valid(Element element) {
-		return element.getKind().isClass() && (element instanceof TypeElement) && element.getKind() != ElementKind.ENUM;
+	private List<Field> collectFromDataFieldJson(DataElementSpec element) throws IOException {
+		List<Field> fields = new ArrayList<>();
+		// Iterate through each JSON Data Field source and attempt to read
+		// fields from JSON file.
+		for (String source : element.getDataFieldJsonFileNames()) {
+			Reader reader = processingEnv.getFiler()
+				.getResource(StandardLocation.CLASS_OUTPUT, "", source)
+				.openReader(false);
+			fields.addAll(Arrays.asList(mapper.readValue(reader, Field[].class)));
+		}
+		return fields;
 	}
 
+	/**
+	 * Write the implementation of DataElement annotated class to file.
+	 * @param element
+	 * @param fields
+	 * @throws IOException
+	 */
+	private void writeImpl(DataElementSpec element, final Fields fields) throws IOException {
+		final JavaFileObject generatedClassFile = processingEnv.getFiler()
+			.createSourceFile(element.getQualifiedImplName());
+		try (Writer writer = generatedClassFile.openWriter()) {
+			ImplementationWriter.builder()
+				.packageName(element.getPackageName())
+				.className(element.getImplName())
+				.interfaceName(element.getName())
+				.fields(fields)
+				.build()
+				.write(writer);
+		}
+	}
+
+	/**
+	 * Write the persistence handler of DataElement annotated class to file.
+	 * @param element
+	 * @param collectionName
+	 * @param fields
+	 * @throws IOException
+	 */
+	private void writePersistence(
+		DataElementSpec element,
+		final String collectionName,
+		Fields fields
+	) throws IOException {
+		// Write to file
+		final JavaFileObject generatedClassFile = processingEnv.getFiler()
+			.createSourceFile(element.getQualifiedPersistenceHandlerName());
+		try (Writer writer = generatedClassFile.openWriter()) {
+			PersistenceHandlerWriter.builder()
+				.packageName(element.getPackageName())
+				.elementInterface(element.getName())
+				.className(element.getPersistenceHandlerName())
+				.implementation(element.getImplName())
+				.collection(collectionName)
+				.fields(fields)
+				.build()
+				.write(writer);
+		}
+	}
+
+	/**
+	 * Write the interface of DataElement annotated class to file.
+	 * @param element
+	 * @param fields
+	 * @throws IOException
+	 */
+	private void writeInterface(
+		DataElementSpec element,
+		Fields fields
+	) throws IOException {
+		final JavaFileObject generatedClassFile = processingEnv.getFiler()
+			.createSourceFile(element.getFullyQualifiedName());
+		try (Writer writer = generatedClassFile.openWriter()) {
+			InterfaceWriter.builder()
+				.packageName(element.getPackageName())
+				.interfaceName(element.getName())
+				.fields(fields)
+				.build()
+				.write(writer);
+		}
+	}
 }
