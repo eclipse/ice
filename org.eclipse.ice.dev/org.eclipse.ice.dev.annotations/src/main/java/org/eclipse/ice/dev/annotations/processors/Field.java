@@ -113,6 +113,8 @@ public class Field {
 	@Builder.Default Set<String> modifiers = Set.of("protected");
 	
 	String validator;
+	
+	TypeMirror mirror;
 
 	/**
 	 * Get a class by name or return null if not found
@@ -234,6 +236,7 @@ public class Field {
 		@JsonIgnore
 		public FieldBuilder type(TypeMirror type) {
 			this.type = type.toString();
+			this.mirror = type;
 			this.primitive = type.getKind().isPrimitive();
 			return this;
 		}

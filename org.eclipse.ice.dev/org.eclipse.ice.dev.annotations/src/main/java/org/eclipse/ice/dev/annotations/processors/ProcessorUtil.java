@@ -212,9 +212,9 @@ class ProcessorUtil {
 		public static String extractValidator(Element element) {
 			if(hasAnnotation(element, Validator.class))
 			{
-				//add validator
+				return element.getAnnotation(Validator.class).name();
 			}
-			return "";
+			return null;
 		}
 		
 		/**

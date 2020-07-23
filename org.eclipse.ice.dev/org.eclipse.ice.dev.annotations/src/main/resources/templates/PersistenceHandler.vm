@@ -64,7 +64,7 @@ public class $class implements $interface<$elementInterface> {
 	@Override
 	public Iterable<$elementInterface> findAll() throws Exception {
 		return this.collection.find()
-			.map(doc -> mapper.readValue(doc, ${implementation}.class);
+			.map(doc -> mapper.readValue(doc, ${implementation}.class));
 	}
 
 	/**

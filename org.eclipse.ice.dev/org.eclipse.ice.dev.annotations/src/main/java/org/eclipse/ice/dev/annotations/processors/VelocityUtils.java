@@ -2,6 +2,8 @@ package org.eclipse.ice.dev.annotations.processors;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
@@ -34,6 +36,17 @@ public class VelocityUtils {
 			return ClassUtils.getClass(((DeclaredType)type).asElement().toString());
 		}
 		return null;
+	}
+	
+	public List<Field> collectAllDataElementFields(List<Field> fields) {
+		return fields.stream()
+				.filter(field -> field.getMirror() != null && isIDataElementOrCollectionOf(field.getMirror()))
+				.collect(Collectors.toList());	
+	}
+	
+	public boolean anyDataElementsExist(List<Field> fields) {
+		return fields.stream()
+				.anyMatch(field -> field.getMirror() != null && isIDataElementOrCollectionOf(field.getMirror()));
 	}
 	
 	public boolean isIDataElement(TypeMirror type) {

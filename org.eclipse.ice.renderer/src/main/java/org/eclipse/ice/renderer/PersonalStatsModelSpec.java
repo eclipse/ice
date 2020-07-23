@@ -9,7 +9,7 @@ import org.eclipse.ice.dev.annotations.Validator;
 @DataModel(name = "PersonalStats")
 public class PersonalStatsModelSpec {
 	
-	@Persisted(collection = "people")
+	//@Persisted(collection = "people")
     @Validator(name = "javascriptValidator")
     private List<Person> people;
 	
