@@ -8,6 +8,7 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,7 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
 
+import org.apache.velocity.app.Velocity;
 import org.eclipse.ice.dev.annotations.DataElement;
 import org.eclipse.ice.dev.annotations.DataField;
 import org.eclipse.ice.dev.annotations.DataModel;
@@ -75,17 +77,11 @@ public class DataElementProcessor extends AbstractProcessor {
 		messager = env.getMessager();
 		elementUtils = env.getElementUtils();
 		mapper = new ObjectMapper();
-==== BASE ====
 
 		// Set up Velocity using the Singleton approach; ClasspathResourceLoader allows
 		// us to load templates from src/main/resources
-		final Properties p = new Properties();
-		for (VelocityProperty vp : VelocityProperty.values()) {
-			p.setProperty(vp.key(), vp.value());
-		}
+		final Properties p = VelocityProperties.get();
 		Velocity.init(p);
-
-==== BASE ====
 		super.init(env);
 	}
 

@@ -75,10 +75,7 @@ public class DataModelProcessor extends AbstractProcessor {
 
 		// Set up Velocity using the Singleton approach; ClasspathResourceLoader allows
 		// us to load templates from src/main/resources
-		final Properties p = new Properties();
-		for (VelocityProperty vp : VelocityProperty.values()) {
-			p.setProperty(vp.key(), vp.value());
-		}
+		final Properties p = VelocityProperties.get();
 		Velocity.init(p);
 
 		super.init(env);
