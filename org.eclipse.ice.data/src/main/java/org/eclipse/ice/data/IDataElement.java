@@ -1,4 +1,4 @@
-package org.eclipse.ice.dev.annotations;
+package org.eclipse.ice.data;
 
 import java.util.UUID;
 

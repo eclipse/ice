@@ -11,10 +11,10 @@
  *****************************************************************************/
 package org.eclipse.ice.tests.data;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * This class is responsible for insuring that the ModelValidator can correctly
@@ -28,7 +28,7 @@ public class ModelValidatorTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@BeforeClass
+	@BeforeAll
 	public static void setUpBeforeClass() throws Exception {
 	}
 

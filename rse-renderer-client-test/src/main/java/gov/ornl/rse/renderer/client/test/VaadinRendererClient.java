@@ -16,7 +16,7 @@ package gov.ornl.rse.renderer.client.test;
 
 import java.io.Serializable;
 
-import org.eclipse.ice.dev.annotations.IDataElement;
+import org.eclipse.ice.data.IDataElement;
 import org.eclipse.ice.renderer.DataElement;
 
 import com.fasterxml.jackson.core.JsonProcessingException;

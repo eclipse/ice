@@ -15,7 +15,7 @@ import java.io.Serializable;
 import java.util.function.BiConsumer;
 import javax.inject.Inject;
 
-import org.eclipse.ice.dev.annotations.IDataElement;
+import org.eclipse.ice.data.IDataElement;
 
 /**
  * This class is a basic controller that connects data and UI classes in a

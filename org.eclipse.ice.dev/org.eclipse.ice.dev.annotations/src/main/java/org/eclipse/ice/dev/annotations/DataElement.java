@@ -38,7 +38,7 @@ import java.lang.annotation.RetentionPolicy;
  * {@code PersonImplementation}) that fulfills that interface.
  *
  *
- * @see org.eclipse.ice.dev.annotations.IDataElement
+ * @see org.eclipse.ice.data.IDataElement
  * @see org.eclipse.ice.dev.annotations.DataField
  * @author Daniel Bluhm
  */

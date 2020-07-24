@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.eclipse.ice.dev.annotations.JavascriptValidator;
+import org.eclipse.ice.data.JavascriptValidator;
 
 /**
  * Aggregation of fields generated and included in <code>@DataElement</code>

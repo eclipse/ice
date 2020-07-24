@@ -43,7 +43,7 @@ public class Field {
 	 *
 	 * This handles cases like the default field {@link DefaultFields#privateId}
 	 * being accessible through the method
-	 * {@link org.eclipse.ice.dev.annotations.IDataElement#getUUID()} rather than
+	 * {@link org.eclipse.ice.data.IDataElement#getUUID()} rather than
 	 * {@code getPrivateId()}. In that example, the variable name would be
 	 * {@code privateId} and the field name would be {@code UUID}.
 	 */

@@ -34,7 +34,7 @@ public @interface DataField {
 
 	/**
 	 * Flag whether this field should be included in
-	 * {@link org.eclipse.ice.dev.annotations.IDataElement#matches(Object)}.
+	 * {@link org.eclipse.ice.data.IDataElement#matches(Object)}.
 	 * @return match annotation value
 	 * @see org.eclipse.ice.dev.annotations.processors.Field#match
 	 */

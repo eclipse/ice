@@ -16,7 +16,7 @@ import java.util.function.BiConsumer;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.eclipse.ice.dev.annotations.IDataElement;
+import org.eclipse.ice.data.IDataElement;
 import org.eclipse.ice.renderer.DataElement;
 import org.eclipse.ice.renderer.JavascriptValidator;
 import org.eclipse.ice.renderer.Renderer;
