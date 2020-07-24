@@ -117,7 +117,7 @@ public class DefaultFields {
 		.docString("The validator used to check the correctness of the data.")
 		.nullable(true)
 		.defaultField(true)
-		.search(false)
+		.searchable(false)
 		.build();
 
 	/**

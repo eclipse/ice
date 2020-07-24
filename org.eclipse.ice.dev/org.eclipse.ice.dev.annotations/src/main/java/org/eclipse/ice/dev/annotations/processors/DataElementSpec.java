@@ -13,6 +13,7 @@ import javax.lang.model.util.Elements;
 
 import org.eclipse.ice.dev.annotations.DataElement;
 import org.eclipse.ice.dev.annotations.DataFieldJson;
+import org.eclipse.ice.dev.annotations.IPersistenceHandler;
 import org.eclipse.ice.dev.annotations.Persisted;
 
 import lombok.Getter;
@@ -178,5 +179,16 @@ public class DataElementSpec extends AnnotatedElement {
 		return this.getAnnotation(DataFieldJson.class)
 			.map(jsons -> Arrays.asList(jsons.value()))
 			.orElse(Collections.emptyList());
+	}
+
+	/**
+	 * Get the interface name of the persistence handler.
+	 *
+	 * Right now, this is simply the IPersistenceHandler interface. In the future
+	 * this will be a data element specific interface.
+	 * @return Interface name of the Persistence Handler
+	 */
+	public String getPersistenceHandlerInterfaceName() {
+		return IPersistenceHandler.class.getSimpleName();
 	}
 }
