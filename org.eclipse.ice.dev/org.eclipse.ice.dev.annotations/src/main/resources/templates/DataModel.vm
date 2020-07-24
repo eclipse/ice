@@ -313,7 +313,7 @@ public class ${class} implements ${interface}, Serializable {
 		#foreach($field in $fields)
 		#if($VelocityUtils.isIDataElementOrCollectionOf($field.Mirror))
 		#set($classname = $VelocityUtils.getCollectionParameterType($field.Mirror).toString())
-			case ${field.Name}Type:
+			case ${field.Name}Type :
 			return ${field.Name}.add((${classname})dataElement);	
 		#elseif($field.Mirror)
 		#set($generic = $VelocityUtils.getCollectionParameterType($field.Mirror))
