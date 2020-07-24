@@ -1,6 +1,3 @@
-## Declarations
-#set($interface = "IPersistenceHandler")
-##
 #if($package)
 package $package;
 #end
@@ -46,7 +43,6 @@ public class $class implements $interface<$elementInterface> {
 
 	/**
 	 * Save the $elementInterface.
-	 * @param <T> Object extending IDataElement
 	 * @param element
 	 * @throws Exception
 	 */
@@ -57,7 +53,6 @@ public class $class implements $interface<$elementInterface> {
 
 	/**
 	 * Find and retrieve all $elementInterface from the collection.
-	 * @param <T>
 	 * @return an iterable of the retrieved elements.
 	 * @throws Exception
 	 */

@@ -174,6 +174,7 @@ public class DataElementProcessor extends AbstractProcessor {
 				.packageName(element.getPackageName())
 				.elementInterface(element.getName())
 				.className(element.getPersistenceHandlerName())
+				.interfaceName(element.getPersistenceHandlerInterfaceName())
 				.implementation(element.getImplName())
 				.collection(collectionName)
 				.fields(fields)
