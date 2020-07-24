@@ -103,7 +103,7 @@ public class Field {
 	/**
 	 * Whether this field should be searchable with PersistenceHandler.
 	 */
-	@Builder.Default boolean search = true;
+	@Builder.Default boolean searchable = true;
 
 	/**
 	 * Whether this field should return only one from PersistenceHandler.

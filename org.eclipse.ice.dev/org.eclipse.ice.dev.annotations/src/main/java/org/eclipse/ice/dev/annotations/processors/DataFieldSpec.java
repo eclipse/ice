@@ -138,7 +138,7 @@ public class DataFieldSpec extends AnnotatedElement {
 			.setter(fieldInfo.setter())
 			.match(fieldInfo.match())
 			.unique(fieldInfo.unique())
-			.search(fieldInfo.search())
+			.searchable(fieldInfo.searchable())
 			.nullable(fieldInfo.nullable())
 			.build();
 	}
