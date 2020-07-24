@@ -2,15 +2,10 @@
 package $package;
 #end
 
-import java.util.Map;
-import java.util.UUID;
-
 import org.bson.Document;
-import org.eclipse.ice.dev.annotations.IDataElement;
 import org.eclipse.ice.dev.annotations.IPersistenceHandler;
 import org.eclipse.ice.dev.annotations.PersistenceFilters;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
