@@ -14,6 +14,7 @@ package org.eclipse.ice.tests.data;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.Test;
  * @author Jay Jay Billings
  *
  */
+@Disabled
 public class CompositeBuilderTest {
 
 	/**
