@@ -1,3 +1,14 @@
+/******************************************************************************
+ * Copyright (c) 2019- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Daniel Bluhm
+ *****************************************************************************/
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.util.Arrays;
@@ -11,9 +22,9 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
+import org.eclipse.ice.data.IPersistenceHandler;
 import org.eclipse.ice.dev.annotations.DataElement;
 import org.eclipse.ice.dev.annotations.DataFieldJson;
-import org.eclipse.ice.dev.annotations.IPersistenceHandler;
 import org.eclipse.ice.dev.annotations.Persisted;
 
 import lombok.Getter;
@@ -189,6 +200,6 @@ public class DataElementSpec extends AnnotatedElement {
 	 * @return Interface name of the Persistence Handler
 	 */
 	public String getPersistenceHandlerInterfaceName() {
-		return IPersistenceHandler.class.getSimpleName();
+		return org.eclipse.ice.data.IPersistenceHandler.class.getSimpleName();
 	}
 }
