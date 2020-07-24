@@ -18,5 +18,5 @@ public class TestImplementation implements Test, Serializable {
 	@NonNull protected java.lang.String context = "default";
 	protected boolean required = false;
 	protected boolean secret = false;
-	protected org.eclipse.ice.dev.annotations.JavascriptValidator<Test> validator;
+	protected org.eclipse.ice.data.JavascriptValidator<Test> validator;
 }

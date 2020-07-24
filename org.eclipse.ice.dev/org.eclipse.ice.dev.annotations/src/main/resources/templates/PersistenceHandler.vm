@@ -3,7 +3,7 @@ package $package;
 #end
 
 import org.bson.Document;
-import org.eclipse.ice.dev.annotations.IPersistenceHandler;
+import org.eclipse.ice.data.IPersistenceHandler;
 import org.eclipse.ice.dev.annotations.PersistenceFilters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
