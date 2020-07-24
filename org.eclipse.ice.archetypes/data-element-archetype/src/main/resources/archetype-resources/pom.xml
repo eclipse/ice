@@ -4,12 +4,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<parent>
-		<groupId>org.eclipse.ice</groupId>
-		<artifactId>org.eclipse.ice.archetypes</artifactId>
-		<version>3.0-SNAPSHOT</version>
-	</parent>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>${groupId}</groupId>
 	<artifactId>${artifactId}</artifactId>
@@ -21,7 +15,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.eclipse.ice</groupId>
+			<groupId>org.eclipse.ice.dev</groupId>
 			<artifactId>org.eclipse.ice.dev.annotations</artifactId>
 			<version>3.0.0-SNAPSHOT</version>
 		</dependency>
@@ -49,6 +43,21 @@
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.8.0</version>
+					<configuration>
+						<release>11</release>
+						<annotationProcessorPaths>
+							<path>
+								<groupId>com.google.dagger</groupId>
+								<artifactId>dagger-compiler</artifactId>
+								<version>2.16</version>
+							</path>
+							<path>
+								<groupId>org.eclipse.ice.dev</groupId>
+								<artifactId>org.eclipse.ice.dev.annotations</artifactId>
+								<version>3.0.0-SNAPSHOT</version>
+							</path>
+						</annotationProcessorPaths>
+					</configuration>
 				</plugin>
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
