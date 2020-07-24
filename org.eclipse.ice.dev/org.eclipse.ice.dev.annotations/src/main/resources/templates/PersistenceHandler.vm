@@ -64,7 +64,7 @@ public class $class implements $interface<$elementInterface> {
 	 */
 	@Override
 	public long clear() throws Exception {
-		long count = this.collection.count();
+		long count = this.collection.countDocuments();
 		this.collection.drop();
 		return count;
 	}
