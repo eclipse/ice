@@ -13,7 +13,7 @@ package org.eclipse.ice.dev.annotations.proxytest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.eclipse.ice.dev.annotations.JavascriptValidator;
+import org.eclipse.ice.data.JavascriptValidator;
 import org.junit.jupiter.api.Test;
 
 /**

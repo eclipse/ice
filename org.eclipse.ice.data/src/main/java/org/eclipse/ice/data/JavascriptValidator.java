@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings
  *******************************************************************************/
-package org.eclipse.ice.dev.annotations;
+package org.eclipse.ice.data;
 
 import java.io.Serializable;
 import javax.script.Invocable;

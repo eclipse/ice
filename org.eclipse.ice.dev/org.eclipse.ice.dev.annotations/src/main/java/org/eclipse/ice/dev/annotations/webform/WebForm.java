@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings, Daniel Bluhm
  *****************************************************************************/
-package org.eclipse.ice.dev.annotations;
+package org.eclipse.ice.dev.annotations.webform;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -17,46 +17,40 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Mark a class as a DataElement Specification.
+ * Mark a class as a WebForm Specification.
  *
- * Classes marked as {@code @DataElement} are expected to contain Fields marked
- * as {@code @DataField}. These specifications will then be expanded to an
- * interface and implementation of a DataElement derived class. For example:
+ * Classes marked as {@code @WebForm} are expected to ....
+ * * need to have required methods annotated
+ * * declare hooks
+ * 
+ * Discuss lifecycle when appropriate and injection of dependencies
+ * 
+ * 
+ * For example:
  *
  * <pre>
- * {@literal @DataElement}(name = "Person")
- * public class PersonSpec {
- *   {@literal @DataField} private int age;
- *   {@literal @DataField} private String firstName;
- *   {@literal @DataField} private String lastName;
+ * {@literal @WebForm}(name = "Talk Submission Page")
+ * public class TalkFormSpec {
+ *   ...
  * }
  * </pre>
  *
  * Will generate an interface like the following:
  *
  * <pre>
- * public interface Person extends IDataElement{@code<Person>} {
- *   public int getAge();
- *   public void setAge(int age);
- *   public String getFirstName();
- *   public void setFirstName(String firstName);
- *   public String getLastName();
- *   public void setLastName(String lastName);
+ * public interface TalkForm extends ... {
+*   .... FIXME
  * }
  * </pre>
  *
  * And an associated implementing class (in this case, the class would be called
- * {@code PersonImplementation}) that fulfills that interface.
+ * {@code TalkFormImplementation}) that implements that interface.
  *
- *
- * @see org.eclipse.ice.data.IDataElement
- * @see org.eclipse.ice.dev.annotations.DataField
- * @author Daniel Bluhm
- * @author Jay Jay Billings
+ * @author Jay Jay Billings and Daniel Bluhm
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.SOURCE)
-public @interface DataElement {
+public @interface WebForm {
 	/**
 	 * Name of the DataElement to generate
 	 * @return name annotation value

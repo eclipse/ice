@@ -3,7 +3,7 @@
 package $package;
 #end
 
-import org.eclipse.ice.dev.annotations.IDataElement;
+import org.eclipse.ice.data.IDataElement;
 
 /**
  * This interface satisfies the dependencies of the @DataElement Annotation and

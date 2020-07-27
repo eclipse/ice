@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.eclipse.ice.dev.annotations.JavascriptValidator;
+import org.eclipse.ice.data.JavascriptValidator;
 
 /**
  * Aggregation of fields generated and included in <code>@DataElement</code>
@@ -117,7 +117,7 @@ public class DefaultFields {
 		.docString("The validator used to check the correctness of the data.")
 		.nullable(true)
 		.defaultField(true)
-		.search(false)
+		.searchable(false)
 		.build();
 
 	/**

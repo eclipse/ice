@@ -1,3 +1,14 @@
+/******************************************************************************
+ * Copyright (c) 2020- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Jay Jay Billings, Daniel Bluhm
+ *****************************************************************************/
 package org.eclipse.ice.dev.annotations;
 
 import java.lang.annotation.ElementType;
@@ -11,6 +22,7 @@ import java.lang.annotation.Target;
  * @see org.eclipse.ice.dev.annotations.DataElement
  * @see org.eclipse.ice.dev.annotations.DataField.Default
  * @author Daniel Bluhm
+ * @author Jay Jay Billings
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.SOURCE)
@@ -34,7 +46,7 @@ public @interface DataField {
 
 	/**
 	 * Flag whether this field should be included in
-	 * {@link org.eclipse.ice.dev.annotations.IDataElement#matches(Object)}.
+	 * {@link org.eclipse.ice.data.IDataElement#matches(Object)}.
 	 * @return match annotation value
 	 * @see org.eclipse.ice.dev.annotations.processors.Field#match
 	 */
@@ -53,10 +65,10 @@ public @interface DataField {
 	 * Flag whether this field should be searchable in a collection.
 	 * This causes persistence retrieval methods to be generated for this
 	 * field.
-	 * @return search annotation value
-	 * @see org.eclipse.ice.dev.annotations.processors.Field#search
+	 * @return searchable annotation value
+	 * @see org.eclipse.ice.dev.annotations.processors.Field#searchable
 	 */
-	boolean search() default true;
+	boolean searchable() default true;
 
 	/**
 	 * Flag whether this field can have a value of null. This causes

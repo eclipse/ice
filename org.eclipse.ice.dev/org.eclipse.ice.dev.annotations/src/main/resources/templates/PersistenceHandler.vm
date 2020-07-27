@@ -1,19 +1,11 @@
-## Declarations
-#set($interface = "IPersistenceHandler")
-##
 #if($package)
 package $package;
 #end
 
-import java.util.Map;
-import java.util.UUID;
-
 import org.bson.Document;
-import org.eclipse.ice.dev.annotations.IDataElement;
-import org.eclipse.ice.dev.annotations.IPersistenceHandler;
+import org.eclipse.ice.data.IPersistenceHandler;
 import org.eclipse.ice.dev.annotations.PersistenceFilters;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -46,7 +38,6 @@ public class $class implements $interface<$elementInterface> {
 
 	/**
 	 * Save the $elementInterface.
-	 * @param <T> Object extending IDataElement
 	 * @param element
 	 * @throws Exception
 	 */
@@ -57,7 +48,6 @@ public class $class implements $interface<$elementInterface> {
 
 	/**
 	 * Find and retrieve all $elementInterface from the collection.
-	 * @param <T>
 	 * @return an iterable of the retrieved elements.
 	 * @throws Exception
 	 */
@@ -74,26 +64,26 @@ public class $class implements $interface<$elementInterface> {
 	 */
 	@Override
 	public long clear() throws Exception {
-		long count = this.collection.count();
+		long count = this.collection.countDocuments();
 		this.collection.drop();
 		return count;
 	}
 
-	#macro(findmethod $var $type $docName)
-	#if(${var.Getter} && ${var.Search})
-	#if(${var.Unique})
+	#foreach($field in $fields)
+	#if(${field.Getter} && ${field.Searchable})
+	#if(${field.Unique})
 
 	/**
-	 * Find $elementInterface by ${var.Name}.
-	 * @param ${var.VarName}
+	 * Find $elementInterface by ${field.Name}.
+	 * @param ${field.VarName}
 	 * @return found element or null
 	 */
-	#if(${var.DefaultField})
+	#if(${field.DefaultField})
 	@Override
 	#end
-	public $elementInterface findBy${var.NameForMethod}($type ${var.VarName}) throws Exception {
+	public $elementInterface findBy${field.NameForMethod}(#fieldtype ${field.VarName}) throws Exception {
 		Document doc = this.collection
-			.find(PersistenceFilters.eq("${docName}", ${var.VarName}))
+			.find(PersistenceFilters.eq("${field.VarName}", ${field.VarName}))
 			.first();
 		if (doc == null) {
 			return null;
@@ -104,21 +94,18 @@ public class $class implements $interface<$elementInterface> {
 	#else
 
 	/**
-	 * Find $elementInterface by ${var.Name}.
-	 * @param ${var.VarName}
+	 * Find $elementInterface by ${field.Name}.
+	 * @param ${field.VarName}
 	 * @return Iterator of results
 	 */
-	#if(${var.DefaultField})
+	#if(${field.DefaultField})
 	@Override
 	#end
-	public Iterable<$elementInterface> findBy${var.NameForMethod}(${var.Type} ${var.VarName}) throws Exception {
-		return this.collection.find(PersistenceFilters.eq("${var.VarName}", ${var.VarName}))
+	public Iterable<$elementInterface> findBy${field.NameForMethod}(#fieldtype ${field.VarName}) throws Exception {
+		return this.collection.find(PersistenceFilters.eq("${field.VarName}", ${field.VarName}))
 			.map(doc -> mapper.convertValue(doc, ${implementation}.class));
 	}
 	#end## if unique
 	#end## if getter and search
-	#end## macro findmethod
-	#foreach($field in $fields)
-	#findmethod($field ${field.Type} ${field.VarName})
-	#end
+	#end## foreach
 }
