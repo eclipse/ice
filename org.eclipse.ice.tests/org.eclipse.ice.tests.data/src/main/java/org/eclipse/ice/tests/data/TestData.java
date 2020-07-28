@@ -11,8 +11,11 @@
 
 package org.eclipse.ice.tests.data;
 
-import java.io.File;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 
 /**
  * Utility methods for retrieving data from the test data directory.
@@ -22,32 +25,64 @@ public class TestData {
 	/**
 	 * Path of the default test data directory.
 	 */
-	public static final Path DEFAULT_TEST_DATA_DIR =
+	static final Path DEFAULT_TEST_DATA_DIR =
 		Path.of(System.getProperty("user.home")).resolve("ICETests");
-	
+
 	/**
 	 * Environment variable for test data directory location.
 	 */
-	public static final String TEST_DATA_DIR_ENV_VAR = "TEST_DATA_DIR";
+	static final String TEST_DATA_DIR_ENV_VAR = "TEST_DATA_DIR";
+
+	/**
+	 * Default test data directory.
+	 */
+	private Path defaultTestDataDir = DEFAULT_TEST_DATA_DIR;
+
+	/**
+	 * FileSystem on which paths are retrieved.
+	 */
+	private FileSystem fs = FileSystems.getDefault();
+
+	/**
+	 * Environment from which an alternate test data dir will be potentially
+	 * pulled.
+	 */
+	private Map<String, String> env = System.getenv();
+
+	/**
+	 * No args constructor.
+	 */
+	public TestData() { }
+
+	/**
+	 * Constructor for use with a different FS and environment. Primarily for
+	 * testing.
+	 * @param fs alternate FileSystem
+	 * @param env alternate environment
+	 */
+	public TestData(FileSystem fs, Map<String, String> env) {
+		this.fs = fs;
+		this.env = env;
+		this.defaultTestDataDir = fs.getPath(DEFAULT_TEST_DATA_DIR.toString());
+	}
 
 	/**
 	 * Return a path to the specified test data file.
 	 * @param filename for which a path will be returned.
 	 * @return the path to the file within the ICE test data directory.
 	 */
-	public static Path path(String filename) {
+	public Path resolve(String filename) {
 		Path returnValue = null;
 		Path testDataDir = null;
 
-		String alternateTestDataDir = System.getenv(TEST_DATA_DIR_ENV_VAR);
+		String alternateTestDataDir = env.get(TEST_DATA_DIR_ENV_VAR);
 		if (alternateTestDataDir == null) {
-			testDataDir = DEFAULT_TEST_DATA_DIR;
+			testDataDir = defaultTestDataDir;
 		} else {
-			testDataDir = Path.of(alternateTestDataDir);
+			testDataDir = fs.getPath(alternateTestDataDir);
 		}
 
-		File testDataDirFile = testDataDir.toFile();
-		if (testDataDirFile.exists() && testDataDirFile.isDirectory()) {
+		if (Files.exists(testDataDir) && Files.isDirectory(testDataDir)) {
 			returnValue = testDataDir.resolve(filename);
 		}
 		return returnValue;
