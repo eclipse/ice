@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020- UT-Battelle, LLC.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2020- UT-Battelle, LLC. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse
+ * Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *    Daniel Bluhm - Initial implementation
+ * Contributors: Daniel Bluhm - Initial implementation
  *******************************************************************************/
 
 package org.eclipse.ice.tests.data;
@@ -16,6 +14,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Utility methods for retrieving data from the test data directory.
@@ -52,7 +51,8 @@ public class TestData {
 	/**
 	 * No args constructor.
 	 */
-	public TestData() { }
+	public TestData() {
+	}
 
 	/**
 	 * Constructor for use with a different FS and environment. Primarily for
@@ -69,10 +69,11 @@ public class TestData {
 	/**
 	 * Return a path to the specified test data file.
 	 * @param filename for which a path will be returned.
-	 * @return the path to the file within the ICE test data directory.
+	 * @return the path to the file within the ICE test data directory or null
+	 *         if the file does not exist.
 	 */
-	public Path resolve(String filename) {
-		Path returnValue = null;
+	public Optional<Path> resolve(String filename) {
+		Optional<Path> returnValue = Optional.empty();
 		Path testDataDir = null;
 
 		String alternateTestDataDir = env.get(TEST_DATA_DIR_ENV_VAR);
@@ -83,7 +84,7 @@ public class TestData {
 		}
 
 		if (Files.exists(testDataDir) && Files.isDirectory(testDataDir)) {
-			returnValue = testDataDir.resolve(filename);
+			returnValue = Optional.of(testDataDir.resolve(filename));
 		}
 		return returnValue;
 	}

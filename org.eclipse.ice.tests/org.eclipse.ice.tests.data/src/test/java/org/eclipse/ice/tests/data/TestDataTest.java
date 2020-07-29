@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
@@ -47,7 +48,7 @@ class TestDataTest {
 		), Collections.emptyMap());
 		assertEquals(
 			TestData.DEFAULT_TEST_DATA_DIR.resolve("test").toString(),
-			data.resolve("test").toString()
+			data.resolve("test").get().toString()
 		);
 	}
 
@@ -60,7 +61,7 @@ class TestDataTest {
 		), Map.of(TestData.TEST_DATA_DIR_ENV_VAR, alt));
 		assertEquals(
 			alt + "/test",
-			data.resolve("test").toString()
+			data.resolve("test").get().toString()
 		);
 	}
 
@@ -68,6 +69,6 @@ class TestDataTest {
 	void testNonExistentReturnsNull() throws IOException {
 		final String unlikelyFile = "a_file_that_could_not_possibly_exist";
 		TestData data = new TestData();
-		assertNull(data.resolve(unlikelyFile));
+		assertEquals(Optional.empty(), data.resolve(unlikelyFile));
 	}
 }
