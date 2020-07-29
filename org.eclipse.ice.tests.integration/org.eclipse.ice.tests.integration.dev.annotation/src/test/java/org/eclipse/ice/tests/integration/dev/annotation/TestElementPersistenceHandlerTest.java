@@ -49,6 +49,21 @@ class TestElementPersistenceHandlerTest {
 	public static final String CONFIG = "mongo.properties";
 
 	/**
+	 * Default hostname of MongoDB instance.
+	 */
+	public static final String DEFAULT_HOST = "localhost";
+
+	/**
+	 * Default port of MongoDB instance.
+	 */
+	public static final String DEFAULT_PORT = "27017";
+
+	/**
+	 * Default database to use in testing.
+	 */
+	public static final String DEFAULT_DB = "test";
+
+	/**
 	 * Connection to MongoDB.
 	 */
 	private MongoDatabase db;
@@ -60,15 +75,12 @@ class TestElementPersistenceHandlerTest {
 
 	/**
 	 * Set up our test environment.
-	 *
-	 * Mongo host, port, and database name are retrieved from environment or the
-	 * defaults of "localhost", "27017", and "test" are used, respectively.
 	 */
 	public TestElementPersistenceHandlerTest() {
 		TestConfig config = TestConfig.from(CONFIG);
-		String host = config.getProperty("host", "localhost");
-		String port = config.getProperty("port", "27017");
-		String database = config.getProperty("database", "test");
+		String host = config.getProperty("host", DEFAULT_HOST);
+		String port = config.getProperty("port", DEFAULT_PORT);
+		String database = config.getProperty("database", DEFAULT_DB);
 		this.db = MongoClients.create(
 			String.format("mongodb://%s:%s", host, port)
 		).getDatabase(database);

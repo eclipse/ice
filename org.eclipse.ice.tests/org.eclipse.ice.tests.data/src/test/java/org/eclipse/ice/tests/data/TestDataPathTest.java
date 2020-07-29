@@ -48,6 +48,15 @@ class TestDataPathTest {
 	}
 
 	@Test
+	void testPlatformIndependence() {
+		FileSystem fs = Jimfs.newFileSystem(Configuration.windows());
+		TestDataPath data = new TestDataPath(fs, Map.of(
+			TestDataPath.TEST_DATA_PATH_ENV_VAR, "test"
+		));
+		assertEquals("test\\test\\test.txt", data.resolve("test/test.txt").toString());
+	}
+
+	@Test
 	void testResolve() throws IOException {
 		TestDataPath data = inMemTestDataPath(null);
 		assertEquals(
@@ -60,7 +69,7 @@ class TestDataPathTest {
 	void testResolveWithOverridenDefault() throws IOException {
 		final Path alt = Path.of("/home/test/test_data");
 		TestDataPath data = inMemTestDataPath(
-			Map.of(TestDataPath.TEST_DATA_DIR_ENV_VAR, alt.toString())
+			Map.of(TestDataPath.TEST_DATA_PATH_ENV_VAR, alt.toString())
 		);
 		assertEquals(
 			alt.resolve("test").toString(),

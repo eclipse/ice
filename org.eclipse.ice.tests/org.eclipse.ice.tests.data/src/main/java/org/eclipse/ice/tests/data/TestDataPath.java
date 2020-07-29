@@ -42,7 +42,7 @@ public class TestDataPath {
 	/**
 	 * Environment variable for test data directory location.
 	 */
-	static final String TEST_DATA_DIR_ENV_VAR = "TEST_DATA_DIR";
+	static final String TEST_DATA_PATH_ENV_VAR = "TEST_DATA_PATH";
 
 	/**
 	 * Test data directory.
@@ -79,7 +79,7 @@ public class TestDataPath {
 	 *        loaded.
 	 */
 	private Path determineTestDataDirectory(Map<String, String> env) {
-		String alternateTestDataDir = env.get(TEST_DATA_DIR_ENV_VAR);
+		String alternateTestDataDir = env.get(TEST_DATA_PATH_ENV_VAR);
 		if (alternateTestDataDir == null) {
 			return fs.getPath(DEFAULT_TEST_DATA_DIR.toString());
 		} else {

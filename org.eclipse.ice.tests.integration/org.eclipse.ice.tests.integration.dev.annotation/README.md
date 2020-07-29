@@ -9,15 +9,19 @@ using the `@Persisted` annotation.
 - MongoDB instance running locally or accessible by host name and port to the
   test runner.
 
-**Environment Variables:**
+### Configuration
 
-- `MONGO_HOST` - Host name of MongoDB instance. Defaults to `localhost`.
-- `MONGO_PORT` - Port MongoDB is running on on host. Defaults to `27017`.
-- `MONGO_DB` - The database to use for testing. Defaults to `test`.
+**Property file location:** `$TEST_DATA_DIR/mongo.properties`
 
-### Running tests
+**Properties:**
 
-#### Running with local MongoDB
+- `host` - Host name of MongoDB instance. Defaults to `localhost` if unset.
+- `port` - Port MongoDB is running on on host. Defaults to `27017` if unset.
+- `database` - The database to use for testing. Defaults to `test` if unset.
+
+## Running tests
+
+### Running with local MongoDB
 
 To run these tests, you will need a running instance of MongoDB. A quick method
 to get a running instance is to launch a container using docker or podman (if
@@ -39,14 +43,21 @@ Then you can execute tests from this directory with the standard:
 $ mvn clean test
 ```
 
-#### Running with remote MongoDB
+### Running with remote MongoDB
 
-If there is an already running instance of MongoDB available, use environment
-variables to configure the tests to use that instance:
+If there is an already running instance of MongoDB available, place a property
+file like the following in your test data directory with your values filled in:
+
+```properties
+host=mymongoserver
+port=27017
+database=testing_db
+```
+
+If your test data directory is not `$HOME/ICETests`, you can set it using the
+`TEST_DATA_PATH` environment variable:
 
 ```sh
-$ MONGO_HOST=mymongoserver \
-  MONGO_PORT=27017 \
-  MONGO_DB=testing_db \
+$ TEST_DATA_PATH=/tmp/ICETests \
   mvn clean test
 ```
