@@ -14,11 +14,13 @@ package org.eclipse.ice.tests.integration.dev.annotation;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Iterator;
-import java.util.Map;
 
 import org.bson.Document;
+import org.eclipse.ice.tests.data.TestConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -29,11 +31,22 @@ import com.mongodb.client.MongoDatabase;
  * @author Daniel Bluhm
  */
 class TestElementPersistenceHandlerTest {
+	/**
+	 * Logger.
+	 */
+	public final Logger logger = LoggerFactory.getLogger(
+		TestElementPersistenceHandlerTest.class
+	);
 
 	/**
 	 * The name of the collection to use in testing.
 	 */
 	public static final String COLLECTION = "test";
+
+	/**
+	 * Config file name.
+	 */
+	public static final String CONFIG = "mongo.properties";
 
 	/**
 	 * Connection to MongoDB.
@@ -52,10 +65,10 @@ class TestElementPersistenceHandlerTest {
 	 * defaults of "localhost", "27017", and "test" are used, respectively.
 	 */
 	public TestElementPersistenceHandlerTest() {
-		Map<String, String> env = System.getenv();
-		String host = env.getOrDefault("MONGO_HOST", "localhost");
-		String port = env.getOrDefault("MONGO_PORT", "27017");
-		String database = env.getOrDefault("MONGO_DB", "test");
+		TestConfig config = TestConfig.from(CONFIG);
+		String host = config.getProperty("host", "localhost");
+		String port = config.getProperty("port", "27017");
+		String database = config.getProperty("database", "test");
 		this.db = MongoClients.create(
 			String.format("mongodb://%s:%s", host, port)
 		).getDatabase(database);

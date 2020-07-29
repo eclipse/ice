@@ -45,7 +45,11 @@ public class TestConfig extends Properties {
 
 	/**
 	 * Retrieve a test configuration from the test data directory and load the
-	 * properties contained therein.
+	 * properties contained therein. If the file was not found, an empty
+	 * TestConfig is returned. This is intended to enable usage of getProperty
+	 * with a default value to statically provide defaults from code. If file
+	 * non-existence is an error condition, verify the existence of the file
+	 * with {@link TestDataPath#exists(String)}.
 	 * @param propertyFilename name of the property file to load.
 	 * @return loaded Properties, empty if any errors occur.
 	 */
@@ -70,9 +74,11 @@ public class TestConfig extends Properties {
 	}
 
 	/**
-	 * Load a test config from the test data directory
-	 * @param propertyFilename
-	 * @return
+	 * Load a TestConfig from a property file in the default test data
+	 * directory. See {@link TestConfig#load(String)}.
+	 * @param propertyFilename filename of property file from which properties
+	 *        will be loaded.
+	 * @return new TestConfig
 	 */
 	public static TestConfig from(String propertyFilename) {
 		TestConfig config = new TestConfig(new TestDataPath());
