@@ -6,6 +6,7 @@
 	isGetterVisibility = Visibility.NONE,
 	setterVisibility = Visibility.NONE
 )
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TestImplementation implements Test, Serializable {
 	public byte testByte;
 	public short testShort;

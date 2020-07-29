@@ -6,6 +6,7 @@
 	isGetterVisibility = Visibility.NONE,
 	setterVisibility = Visibility.NONE
 )
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TestImplementation implements Test, Serializable {
 	@NonNull public java.util.UUID testUuid;
 	@NonNull public java.lang.String testString;
