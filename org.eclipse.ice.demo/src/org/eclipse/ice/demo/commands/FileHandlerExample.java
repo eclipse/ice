@@ -13,6 +13,7 @@ package org.eclipse.ice.demo.commands;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -189,7 +190,8 @@ public class FileHandlerExample {
 		ConnectionConfiguration configuration = makeConnectionConfiguration();
 
 		// Get the filename of the dummy file
-		String filename = localSource.substring(localSource.lastIndexOf("/"));
+		String separator = FileSystems.getDefault().getSeparator();
+		String filename = localSource.substring(localSource.lastIndexOf(separator));
 
 		// Get the file handler factory to create the transfer
 		FileHandlerFactory factory = new FileHandlerFactory();
@@ -284,8 +286,9 @@ public class FileHandlerExample {
 			if (status != CommandStatus.SUCCESS) {
 				System.out.println("Move file failed! Check console for error messages");
 			}
+			String separator = FileSystems.getDefault().getSeparator();
 			// Check that it exists
-			String filename = localSource.substring(localSource.lastIndexOf("/"));
+			String filename = localSource.substring(localSource.lastIndexOf(separator));
 			boolean exist = handler.exists(localDestination + filename);
 
 		} catch (IOException e) {
@@ -388,8 +391,11 @@ public class FileHandlerExample {
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
+		String credPath = "/tmp/ice-remote-creds.txt";
+		if(System.getProperty("os.name").toLowerCase().contains("win"))
+			credPath = "C:\\Users\\Administrator\\ice-remote-creds.txt";
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text",
-				"/tmp/ice-remote-creds.txt");
+				credPath);
 		// Set it
 		config.setAuthorization(auth);
 

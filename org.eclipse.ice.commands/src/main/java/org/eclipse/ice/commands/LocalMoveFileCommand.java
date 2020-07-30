@@ -49,7 +49,7 @@ public class LocalMoveFileCommand extends LocalCommand {
 	 * move command was completed successfully. It returns a CommandStatus
 	 * indicating whether or not the move was successful.
 	 * 
-	 * @return CommandStatus
+	 * See also {@link org.eclipse.ice.commands.LocalCommand#execute()}
 	 */
 	@Override
 	public CommandStatus execute() {
@@ -63,8 +63,7 @@ public class LocalMoveFileCommand extends LocalCommand {
 	 * CommandStatus indicating that the command is currently running and needs to
 	 * be checked that it completed correctly.
 	 * 
-	 * @return CommandStatus - indicates whether or not the move was successful or
-	 *         not
+	 * See also {@link org.eclipse.ice.commands.LocalCommand#run()}
 	 */
 	@Override
 	protected CommandStatus run() {
@@ -185,7 +184,7 @@ public class LocalMoveFileCommand extends LocalCommand {
 	/**
 	 * A function that returns the source path in string form
 	 * 
-	 * @return - String
+	 * @return - String of the source path
 	 */
 	public String getSource() {
 		return source.toString();
@@ -194,7 +193,7 @@ public class LocalMoveFileCommand extends LocalCommand {
 	/**
 	 * A function that returns the destination path in string form
 	 * 
-	 * @return - String
+	 * @return - String of the destination path
 	 */
 	public String getDestination() {
 		return destination.toString();

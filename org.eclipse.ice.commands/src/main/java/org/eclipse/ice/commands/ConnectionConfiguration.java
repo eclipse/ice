@@ -56,7 +56,7 @@ public class ConnectionConfiguration {
 	 * A getter to access
 	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#name}
 	 * 
-	 * @return - name
+	 * @return - name of the ConnectionConfiguration
 	 */
 	public String getName() {
 		return name;
@@ -66,7 +66,7 @@ public class ConnectionConfiguration {
 	 * A setter to access
 	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#name}
 	 * 
-	 * @return - name
+	 * @return - name of this ConnectionConfiguration
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -77,7 +77,8 @@ public class ConnectionConfiguration {
 	 * completion
 	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#deleteWorkingDirectory}
 	 * 
-	 * @return
+	 * @return - boolean indicating whether or not remote working direcctory should
+	 *           be deleted upon completion
 	 */
 	public boolean deleteWorkingDirectory() {
 		return deleteWorkingDirectory;
@@ -88,7 +89,8 @@ public class ConnectionConfiguration {
 	 * completion
 	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#deleteWorkingDirectory}
 	 * 
-	 * @param
+	 * @param deleteWorkingDirectory - boolean indicating whether or not remote working 
+	 *                                 directory should be deleted upon completion
 	 */
 	public void deleteWorkingDirectory(boolean deleteWorkingDirectory) {
 		this.deleteWorkingDirectory = deleteWorkingDirectory;
@@ -98,7 +100,7 @@ public class ConnectionConfiguration {
 	 * Setter for the authorization method, if desired. See
 	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#authorization}
 	 * 
-	 * @param authorization
+	 * @param authorization - authorization for this ConnectionConfiguration
 	 */
 	public void setAuthorization(ConnectionAuthorizationHandler authorization) {
 		this.authorization = new AtomicReference<ConnectionAuthorizationHandler>(authorization);
@@ -108,7 +110,7 @@ public class ConnectionConfiguration {
 	 * Getter for the authorization method, if desired. See
 	 * {@link org.eclipse.ice.commands.ConnectionConfiguration#authorization}
 	 * 
-	 * @param authorization
+	 * @param authorization - authorization for this ConnectionConfiguration
 	 */
 	public ConnectionAuthorizationHandler getAuthorization() {
 		return authorization.get();

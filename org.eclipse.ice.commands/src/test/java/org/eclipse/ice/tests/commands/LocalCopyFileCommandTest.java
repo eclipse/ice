@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileSystems;
@@ -160,7 +162,7 @@ public class LocalCopyFileCommandTest {
 		command.execute();
 		// Check if the path exists now
 		Path path = Paths.get(dest);
-		assert (Files.exists(path));
+		assertTrue(Files.exists(path));
 
 	}
 }

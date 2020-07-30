@@ -12,6 +12,9 @@
 
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryNotEmptyException;
@@ -23,10 +26,6 @@ import java.util.ArrayList;
 
 import org.eclipse.ice.commands.LocalFileBrowser;
 import org.eclipse.ice.commands.LocalFileHandler;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -70,17 +69,17 @@ public class LocalFileBrowserTest {
 		ArrayList<String> files = browser.getFileList();
 
 		// four files were created
-		assert (files.size() == 4);
+		assertEquals(4, files.size());
 
 		// Let's assert that each file we created is in the list
 		for (int i = 0; i < files.size(); i++) {
 			String file = files.get(i);
 			// assert that the file is actually there
-			assert (handler.exists(file));
+			assertTrue(handler.exists(file));
 			Path path = Paths.get(file);
 
 			// assert that it is a file
-			assert (Files.isRegularFile(path));
+			assertTrue(Files.isRegularFile(path));
 
 		}
 
@@ -98,17 +97,17 @@ public class LocalFileBrowserTest {
 			System.out.println(files.get(i));
 		}
 		// Four directories total, including the top directory
-		assert (files.size() == 4);
+		assertEquals(4, files.size());
 
 		// Let's assert that each directory we created is in the list
 		for (int i = 0; i < files.size(); i++) {
 			String file = files.get(i);
 			// assert that it exists
-			assert (handler.exists(file));
+			assertTrue(handler.exists(file));
 
 			// assert that it is a directory
 			Path path = Paths.get(file);
-			assert (Files.isDirectory(path));
+			assertTrue(Files.isDirectory(path));
 		}
 
 	}
