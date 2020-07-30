@@ -11,7 +11,9 @@
  *****************************************************************************/
 package org.eclipse.ice.tests.data;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
@@ -21,8 +23,6 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.util.FileManager;
 import org.eclipse.ice.data.ComponentBuilder;
 import org.eclipse.ice.data.ICEDataConstants;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * This class tests {@link ComponentBuilder}.
@@ -46,7 +46,7 @@ public class ComponentBuilderTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@BeforeClass
+	@BeforeAll
 	public static void setUpBeforeClass() throws Exception {
 		// Load the ontology
 		Model baseModel = FileManager.get().loadModel("data/org.eclipse.ice.data.owl.ttl", null, "TURTLE");

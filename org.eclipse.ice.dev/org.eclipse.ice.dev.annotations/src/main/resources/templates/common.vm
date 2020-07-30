@@ -1,0 +1,72 @@
+##
+## Macros and values useful across all templates and other readability helpers.
+##
+## Help make this file more readable.
+#macro(definitions)
+	#evaluate($bodyContent.toString().replaceAll("\n\p{Space}*\n", "").replaceAll("\p{Space}*##.*", ""))
+#end
+#@definitions
+
+	## Whitespace helpers ##
+
+	## Prepend a directive with this value if you don't want the directive to
+	## Gobble whitespace
+	#set($blank = "")
+
+	## Literal newline
+	#set($newline = "
+")
+
+	## Literal tab
+	#set($tab = "	")
+
+	## Gobbles whitespace
+	#macro(noop)#end
+
+	## Use as a block macro to set the tab index of all lines in body.
+	#macro(settab $num)
+		#set($shift = "#foreach($i in [1..$num])$tab#end")
+		#noop$shift$bodyContent.toString().replace("$tab", "").replace("$newline", "$newline$shift").trim()
+	#end
+
+	## Use as a block macro to remove the first newline in the body.
+	## Useful when having foreach and output on the same line is unreadable but
+	## output is intended to be all on one line.
+	#macro(nonewline)$bodyContent.toString().replaceFirst("\n", "")#end
+
+	## Join a list
+	#macro(join $sep $list)
+		#foreach($element in $list)#@nonewline
+			#noop$element$sep
+		#end#end
+	#end
+
+	## Field helpers ##
+
+	## Get evaluated field type
+	#macro(fieldtype)#evaluate(${field.Type})#end
+
+	## Get the type of this field for use in parameter list (includes nonnull)
+	#macro(fieldparametertype)#nonnull("", " ")#fieldtype#end
+
+	## Get field declaration
+	#macro(fielddecl)
+		#@settab(1)
+		#join(" ", ${field.Annotations})#join(" ", ${field.Modifiers})#fieldtype() ${field.VarName}#if(${field.DefaultValue}) = #evaluate(${field.DefaultValue})#end;
+		#end
+	#end
+
+	## Return @NonNull if field should have it, otherwise return empty string
+	#macro(nonnull $before $after)#if(!${field.Nullable} && !${field.Primitive})$!before@NonNull$!after#end#end
+
+	## Get field doc comment
+	#macro(fielddoc)
+		#if(${field.DocString})
+		#@settab(1)
+		/**
+		 * $field.DocString.trim().replace("$newline", "$newline$tab *")
+		 */
+		#end
+		#end
+	#end
+#end
