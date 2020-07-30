@@ -18,11 +18,12 @@ package org.eclipse.ice.commands;
  * localRemote - local source, remote destination 
  * remoteLocal - remote source, local destination
  * remoteRemote - remote source, remote destination
+ * remoteOtherRemote - remote source on host B, remote destination on host C
  * 
  * @author Joe Osborn
  *
  */
 
 public enum HandleType {
-	localRemote, remoteLocal, remoteRemote;
+	localRemote, remoteLocal, remoteRemote, remoteOtherRemote;
 }

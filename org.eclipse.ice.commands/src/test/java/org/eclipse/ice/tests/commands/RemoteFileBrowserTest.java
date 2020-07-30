@@ -12,11 +12,23 @@
 
 package org.eclipse.ice.tests.commands;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.util.ArrayList;
+
+import org.apache.sshd.client.subsystem.sftp.SftpClient;
+import org.apache.sshd.client.subsystem.sftp.SftpClient.DirEntry;
+import org.apache.sshd.client.subsystem.sftp.SftpClient.OpenMode;
+import org.apache.sshd.client.subsystem.sftp.SftpClientFactory;
+import org.apache.sshd.common.subsystem.sftp.SftpConstants;
+import org.apache.sshd.common.subsystem.sftp.SftpException;
 import org.eclipse.ice.commands.Connection;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
@@ -25,17 +37,9 @@ import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.RemoteFileBrowser;
 import org.eclipse.ice.commands.RemoteFileHandler;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.SftpATTRS;
-import com.jcraft.jsch.SftpException;
 
 /**
  * This class tests the RemoteFileBrowser and associated functionality
@@ -67,8 +71,7 @@ public class RemoteFileBrowserTest {
 
 		fileTransferConn = manager.openConnection(config);
 
-		fileTransferConn.setSftpChannel(fileTransferConn.getSession().openChannel("sftp"));
-		fileTransferConn.getSftpChannel().connect();
+		fileTransferConn.setSftpChannel(SftpClientFactory.instance().createSftpClient(fileTransferConn.getSession()));
 
 		// To set up the file creator information for use later
 		RemoteFileHandlerTest.setUpBeforeClass();
@@ -115,9 +118,8 @@ public class RemoteFileBrowserTest {
 	 * Test for file browsing on remote system
 	 * 
 	 * @throws IOException
-	 * @throws SftpException
 	 */
-	public void testRemoteFileBrowsing(String topDirectory) throws IOException, SftpException {
+	public void testRemoteFileBrowsing(String topDirectory) throws IOException {
 
 		RemoteFileHandler handler = new RemoteFileHandler();
 		RemoteFileBrowser browser = new RemoteFileBrowser(fileTransferConn, topDirectory);
@@ -128,19 +130,15 @@ public class RemoteFileBrowserTest {
 
 		// files should only be 4 entries since there are only 4 files in the tree
 		// structure we created
-		assert (files.size() == 4);
+		assertEquals(4, files.size());
 
+		SftpClient channel = fileTransferConn.getSftpChannel();
 		for (int i = 0; i < files.size(); i++) {
 			// Assert that the file exists
-			assert (handler.exists(files.get(i)));
+			assertTrue(handler.exists(files.get(i)));
 
-			ChannelSftp channel = fileTransferConn.getSftpChannel();
-			Collection<ChannelSftp.LsEntry> structure = channel.ls(files.get(i));
 			// This should just be a one file vector, since we are ls-ing the filename
-			for (ChannelSftp.LsEntry filename : structure) {
-				// Assert that the file is indeed a regular file
-				assert (filename.getAttrs().isReg());
-			}
+			assertTrue(channel.stat(files.get(i)).isRegularFile());
 		}
 	}
 
@@ -148,9 +146,8 @@ public class RemoteFileBrowserTest {
 	 * Test for directory browsing on remote system
 	 * 
 	 * @throws IOException
-	 * @throws SftpException
 	 */
-	public void testRemoteDirectoryBrowsing(String topDirectory) throws IOException, SftpException {
+	public void testRemoteDirectoryBrowsing(String topDirectory) throws IOException {
 
 		RemoteFileHandler handler = new RemoteFileHandler();
 		handler.setConnectionConfiguration(fileTransferConn.getConfiguration());
@@ -160,25 +157,23 @@ public class RemoteFileBrowserTest {
 
 		// directories should only be 3 entries since there are only 3 directories in
 		// the tree structure we created
-		assert (files.size() == 3);
+		assertEquals(3, files.size());
 
 		// Use the default separator of the remote dummy system
 		String separator = "/";
 
 		for (int i = 0; i < files.size(); i++) {
-			assert (handler.exists(files.get(i)));
-			ChannelSftp channel = fileTransferConn.getSftpChannel();
+			assertTrue(handler.exists(files.get(i)));
+			SftpClient channel = fileTransferConn.getSftpChannel();
 
 			// ls the previous directory so that we can look at the subdirectories
-			Collection<ChannelSftp.LsEntry> structure = channel
-					.ls(files.get(i).substring(0, files.get(i).lastIndexOf(separator)));
 			// Iterate through the ls
-			for (ChannelSftp.LsEntry filename : structure) {
+			for (DirEntry filename : channel.readDir(files.get(i).substring(0, files.get(i).lastIndexOf(separator)))) {
 				// Check that the ls filename is actually in the directory list (and thus is a
 				// directory)
 				if (files.get(i).contains(filename.getFilename())) {
 					// assert that it is a directory
-					assert (filename.getAttrs().isDir());
+					assertTrue(filename.getAttributes().isDirectory());
 				}
 			}
 		}
@@ -191,41 +186,62 @@ public class RemoteFileBrowserTest {
 	 * 
 	 * @param - topDirectory - refers to top directory whose contents will hold the
 	 *          dummy directories/files
-	 * @throws SftpException
+	 * @throws Exception
 	 */
-	protected void createRemoteFileStructure(String topDirectory) throws Exception, SftpException {
+	protected void createRemoteFileStructure(String topDirectory) throws Exception {
 
-		ChannelSftp sftpChannel = fileTransferConn.getSftpChannel();
+		SftpClient sftpChannel = fileTransferConn.getSftpChannel();
 
 		// Check if the directory already exists
-		SftpATTRS attrs = null;
 		try {
-			attrs = sftpChannel.lstat(topDirectory);
+			sftpChannel.lstat(topDirectory);
 		} catch (Exception e) {
 			System.out.println("Remote directory not found, trying to make it");
-		}
-		if (attrs == null) {
 			// Remote directory doesn't exist, so make it
 			// Create a remote source directory
 			sftpChannel.mkdir(topDirectory);
 		}
 
 		// make another directory in top directory
-		sftpChannel.cd(topDirectory);
-		sftpChannel.mkdir("dir1");
-		sftpChannel.mkdir("dir2");
-		sftpChannel.mkdir("dir3");
+		sftpChannel.mkdir(topDirectory + "/dir1");
+		sftpChannel.mkdir(topDirectory + "/dir2");
+		sftpChannel.mkdir(topDirectory + "/dir3");
 
 		// create a local file to put there
 		fileCreator.createLocalSource();
 		// Get the filename that was just created
 		String filename = fileCreator.getSource();
 		// put it in a few places in the directory structure
-		sftpChannel.put(filename, topDirectory);
-		sftpChannel.put(filename, topDirectory + "/dir1/");
-		sftpChannel.put(filename, topDirectory + "/dir3/");
-		sftpChannel.put(filename, topDirectory + "/dir3/newfile.txt");
+		putFile(sftpChannel, filename, topDirectory);
+		putFile(sftpChannel, filename, topDirectory + "/dir1/");
+		putFile(sftpChannel, filename, topDirectory + "/dir3/");
+		putFile(sftpChannel, filename, topDirectory + "/dir3/newfile.txt");
 
+	}
+	
+	private void putFile(SftpClient client, String src, String dest) throws IOException {
+		try {
+			if (client.stat(dest).isDirectory()) {
+				Path path = FileSystems.getDefault().getPath(src);
+				String sep = "";
+				if (!dest.endsWith("/")) {
+					sep = "/";
+				}
+				dest += sep + path.getFileName();
+			}	
+		} catch (SftpException e) {
+            if (!(e.getStatus() == SftpConstants.SSH_FX_NO_SUCH_FILE)) {
+                throw e;
+            }
+        }
+		try (OutputStream dstStream = client.write(dest, OpenMode.Create, OpenMode.Write, OpenMode.Truncate)) {
+			try (InputStream srcStream = new FileInputStream(src)) {
+				byte[] buf = new byte[32*1024];
+				while (srcStream.read(buf) > 0) {
+					dstStream.write(buf);
+				}
+			}
+		}
 	}
 
 	/**
@@ -234,12 +250,11 @@ public class RemoteFileBrowserTest {
 	 * 
 	 * @param - topDirectory - refers to top directory whose contents hold the dummy
 	 *          directories/files
-	 * @throws JSchException
-	 * @throws SftpException
+	 * @throws IOException
 	 */
-	protected void deleteRemoteFileStructure(String topDirectory) throws SftpException, JSchException {
+	protected void deleteRemoteFileStructure(String topDirectory) throws IOException {
 		// Connect the channel from the connection
-		ChannelSftp sftpChannel = fileTransferConn.getSftpChannel();
+		SftpClient sftpChannel = fileTransferConn.getSftpChannel();
 
 		System.out.println("Deleting remote destination at : " + topDirectory);
 		// Recursively delete the directory and its contents
@@ -252,20 +267,16 @@ public class RemoteFileBrowserTest {
 	 * 
 	 * @param sftpChannel
 	 * @param path
-	 * @throws SftpException
-	 * @throws JSchException
+	 * @throws IOException
 	 */
-	private void deleteRemoteDirectory(ChannelSftp sftpChannel, String path) throws SftpException, JSchException {
-
-		// Get the path's directory structure
-		Collection<ChannelSftp.LsEntry> fileList = sftpChannel.ls(path);
+	private void deleteRemoteDirectory(SftpClient sftpChannel, String path) throws IOException {
 
 		// Iterate through the list to get the file/directory names
-		for (ChannelSftp.LsEntry file : fileList) {
+		for (DirEntry file : sftpChannel.readDir(path)) {
 			// If it isn't a directory delete it
-			if (!file.getAttrs().isDir()) {
+			if (!file.getAttributes().isDirectory()) {
 				// Can use / here because we know the dummy directory is on linux, not windows
-				sftpChannel.rm(path + "/" + file.getFilename());
+				sftpChannel.remove(path + "/" + file.getFilename());
 			} else if (!(".".equals(file.getFilename()) || "..".equals(file.getFilename()))) { // If it is a subdir.
 				// Otherwise its a subdirectory, so try deleting it
 				try {
@@ -280,13 +291,10 @@ public class RemoteFileBrowserTest {
 		}
 		try {
 			sftpChannel.rmdir(path); // delete the parent directory after empty
-		} catch (SftpException e) {
+		} catch (IOException e) {
 			// If the sftp channel can't delete it, just manually rm it with a execution
 			// channel
-			ChannelExec execChannel = (ChannelExec) fileTransferConn.getSession().openChannel("exec");
-			execChannel.setCommand("rm -r " + path);
-			execChannel.connect();
-			execChannel.disconnect();
+			fileTransferConn.getSession().executeRemoteCommand("rm -r " + path);
 		}
 	}
 

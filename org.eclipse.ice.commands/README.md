@@ -1,6 +1,6 @@
 # Commands Package
 
-This README serves as an overview of the commands package, which is a standalone maven package that can be used within or outside of ICE. The package provides the necessary API to set up and run jobs on either one's local computer or a remote host. Additionally, the API includes file transfer and file system browsing capabilities, with the option to move or copy files on the local host or remote host. It is suggested that users encode their file processing logic into a bash/python/powershell script to be run locally/remotely.
+This README serves as an overview of the commands package, which is a standalone maven package that can be used within or outside of ICE. The package provides the necessary API to set up and run jobs on either one's local computer or a remote host. Additionally, the API includes file transfer and file system browsing capabilities, with the option to move or copy files on the local host or remote host. It is suggested that users encode their file processing logic into a bash/python/powershell script to be run locally/remotely. For example, a remote job on a remote host B could be run from commands on local host A which executes a remote job on remote host C, assuming the script contains the necessary logic to connect remote host B to remote host C.
 
 Examples can be found in either the `src/test/java/org/eclipse/ice/tests/commands` directory or in the standalone package within ICE `org/eclipse/ice/demo/commands/`. 
 
@@ -34,7 +34,9 @@ hostname
 
 Windows users need to put their ssh credentials into the file located at `C:\Users\Adminstrator\ice-remote-creds.txt` in order for the tests to properly function.
 
-The automated tests will then grab the necessary credentials from this file to run the tests. Any valid ssh connection will work. If you still find that the tests fail, ensure that the ssh connection you are using has been logged into before from your host computer such that there is a key fingerprint associated to that host in your `~/.ssh/known_hosts` file. The Commands package requires that this key exists in order for authentication to proceed, no matter what form of authentication you use. Alternatively, you can set `StrictHostKeyChecking` to false in the `ConnectionManager`, which is not advised as it is inherently unsecure. To do this for the static `ConnectionManager`, just write:
+The automated tests will then grab the necessary credentials from this file to run. Any valid ssh connection will work. If you still find that the tests fail, ensure that the ssh connection you are using has been logged into before from your host computer such that there is a key fingerprint associated to that host in your `~/.ssh/known_hosts` file. The Commands package requires that this key exists in order for authentication to proceed, no matter what form of authentication you use. In the event that tests fail on a host that already exists in `known_hosts` (e.g. with the error message `server key did not validate`, try deleting your `known_hosts` file (or the entries in your `known_hosts` that correspond to the host you are trying to run the tests on), logging in again to re-establish a fingerprint, and running the tests again. 
+
+Alternatively, you can set `StrictHostKeyChecking` to false in the `ConnectionManager`, which is in general not advised as it is inherently unsecure. To do this for the static `ConnectionManager`, just write:
 
 ```java
 ConnectionManagerFactory.getConnectionManager().setRequireStrictHostKeyChecking(false);
@@ -43,15 +45,27 @@ ConnectionManagerFactory.getConnectionManager().setRequireStrictHostKeyChecking(
 
 Note that this is also a way through which ssh validation can be performed in the package for running actual remote commands/file transfers.
 
+#### EmailHandler test
+To test the `EmailUpdateHandler` class, a similar file to the `/tmp/ice-remote-creds.txt` file must be created. Instead, a file in the location `/tmp/ice-email-creds.txt` must exist which contains the following information:
+
+```
+email@address
+password
+SmtpHost
+```
+
+The EmailHandler will send an email from your own address to the same address with updates on when the job finishes. In order for this to happen, the email address must be authenticated. In the case of the tests, and for CI purposes, these authentications are placed in the above text file. For developer use, one could simply enter this information as it is entered in EmailHandlerTest, or you could implement another method (e.g. through use of the text file).
 
 #### KeyGen Tests and Connections
 
-Connections may be established via a public/private key pair that is generated between the local and remote host. The JSch API only works with RSA keys - Commands can also function with ECDSA, but it is advised to use RSA. You should be sure to generate a key similarly to the following snip of shell code:
+Connections may be established via a public/private key pair that is generated between the local and remote host. Commands can function with ECDSA or RSA type keys. To generate an RSA key, for example, use:
 
 ```bash
 $ ssh-keygen -t rsa -m PEM
 $ ssh-copy-id -i ~/.ssh/keyname.pub username@hostname
 ```
+
+Then you should be able to remotely login via `ssh -i /path/to/key username@hostname` without a password requirement.
 
 For the keygen connection tests to pass, you should also create a key to a remote host that the tests expect to find. This can be done with any arbitrary remote server that you have credential access to; however, the key must be named dummyhostkey and must exist in your home `.ssh` directory. In other words, the key must be here:
 

@@ -21,9 +21,9 @@ filename2 = sys.argv[2]
 print("This is a hello world python script")
 
 f = open(filename1,'r')
+print (f.read())
+f.close()
 
 f2 = open(filename2,'r');
-
-print(f.read())
-
 print(f2.read())
+f2.close()
