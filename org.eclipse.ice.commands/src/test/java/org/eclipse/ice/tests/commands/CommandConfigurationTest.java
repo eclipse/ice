@@ -11,6 +11,10 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.util.ArrayList;
 
 import org.eclipse.ice.commands.CommandConfiguration;
@@ -42,18 +46,18 @@ public class CommandConfigurationTest {
 		config.setOutFileName("outFile.txt");
 
 		// Assert whether or not things are/aren't set
-		assert (config.getOutFileName() != null);
-		assert (config.getOS() != null);
+		assertNotNull(config.getOutFileName());
+		assertNotNull(config.getOS());
 
 		// Didn't set working directory
-		assert (config.getWorkingDirectory() == null);
+		assertNull(config.getWorkingDirectory());
 
 		// Assert that the default local OS is set
-		assert (config.getOS().equals(System.getProperty("os.name")));
+		assertEquals(System.getProperty("os.name"), config.getOS());
 
 		config.setOS("JoeOsbornOS");
 
-		assert (config.getOS().equals("JoeOsbornOS"));
+		assertEquals("JoeOsbornOS", config.getOS());
 
 	}
 
@@ -73,14 +77,14 @@ public class CommandConfigurationTest {
 		config.setAppendInput(true);
 		config.setOS(System.getProperty("os.name"));
 		String executable = config.getExecutableName();
-		assert (executable.equals("bash ./test_code_execution.sh someInputFile.txt"));
+		assertEquals("bash ./test_code_execution.sh someInputFile.txt", executable);
 
 		// Test that if num processes is more than 1, mpi options are added
 		config.setNumProcs("4"); // arbitrary number
 		// We can test append input as well when it is false
 		config.setAppendInput(false);
 		executable = config.getExecutableName();
-		assert (executable.equals("mpirun -np 4 bash ./test_code_execution.sh"));
+		assertEquals("mpirun -np 4 bash ./test_code_execution.sh", executable);
 
 	}
 
@@ -103,7 +107,7 @@ public class CommandConfigurationTest {
 
 		String executable = configuration.getExecutableName();
 
-		assert (executable.equals("python random_python_script.py some_arg some_other_arg someInputFile.txt"));
+		assertEquals("python random_python_script.py some_arg some_other_arg someInputFile.txt", executable);
 	}
 
 	/**
@@ -126,8 +130,9 @@ public class CommandConfigurationTest {
 		splitConfig.setInstallDirectory("~/install_dir");
 		splitConfig.setOS(System.getProperty("os.name"));
 		String executable = splitConfig.getExecutableName();
-		assert (executable.equals(
-				"./dummy.sh inputfile.txt; ./next_file.sh /some/dummy/path/to/an/inputfile.txt; ./other_file.sh ~/install_dir/"));
+		assertEquals(
+				"./dummy.sh inputfile.txt; ./next_file.sh /some/dummy/path/to/an/inputfile.txt; ./other_file.sh ~/install_dir/",
+				executable);
 
 		ArrayList<String> split = new ArrayList<String>();
 		split = splitConfig.getSplitCommand();
@@ -139,7 +144,7 @@ public class CommandConfigurationTest {
 		checkSplit.add("./other_file.sh ~/install_dir/");
 
 		for (int i = 0; i < split.size(); i++) {
-			assert (split.get(i).equals(checkSplit.get(i)));
+			assertEquals(checkSplit.get(i), split.get(i));
 		}
 
 	}

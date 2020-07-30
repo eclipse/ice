@@ -63,7 +63,7 @@ public class LocalConnectionAuthorizationHandler extends ConnectionAuthorization
 	}
 
 	/**
-	 * No options required for console authorization See
+	 * No options required for console authorization. See
 	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandler#setOption(String)}
 	 */
 	@Override

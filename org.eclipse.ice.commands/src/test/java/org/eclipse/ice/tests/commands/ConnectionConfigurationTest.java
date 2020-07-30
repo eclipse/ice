@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.junit.Test;
 
@@ -32,10 +35,10 @@ public class ConnectionConfigurationTest {
 		ConnectionConfiguration config = new ConnectionConfiguration();
 
 		// Check that things are set to blank by default
-		assert (config.getName().equals(""));
+		assertEquals("", config.getName());
 
 		// Check that this defaults to false
-		assert (config.deleteWorkingDirectory() == false);
+		assertFalse(config.deleteWorkingDirectory());
 
 	}
 }

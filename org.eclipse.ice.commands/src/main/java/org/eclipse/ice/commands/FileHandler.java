@@ -55,12 +55,17 @@ public abstract class FileHandler implements IFileHandler {
 	protected CommandStatus transferStatus;
 
 	/**
-	 * An enun to determine what the actual handle type is to set for the command.
+	 * An enum to determine what the actual handle type is to set for the command.
 	 * Default to null so that the RemoteFileHandler tries to determine it on its
 	 * own - however, user can set this explicitly.
 	 */
 	protected HandleType HANDLE_TYPE = null;
 
+	/**
+	 * The source file name
+	 */
+	protected String filename = "";
+	
 	/**
 	 * Have a connection manager for commands that defaults to the static object
 	 * from the factory method. Users can override this if they want to through a
@@ -81,7 +86,9 @@ public abstract class FileHandler implements IFileHandler {
 	public CommandStatus move(final String source, final String destination) {
 		// Set the transfer status to processing, to indicate the transfer is beginning
 		transferStatus = CommandStatus.PROCESSING;
-
+		
+		getFileName(source);
+		
 		// Check the file existence. If they don't exist, an exception is thrown
 		try {
 			checkExistence(source, destination);
@@ -100,7 +107,7 @@ public abstract class FileHandler implements IFileHandler {
 			logger.error("Destination file does not exist! File transfer failed!", e);
 			return CommandStatus.FAILED;
 		}
-
+	
 		// Return whether or not it succeeded
 		return transferStatus;
 	}
@@ -113,6 +120,8 @@ public abstract class FileHandler implements IFileHandler {
 		// Set the transfer status to processing, to indicate the transfer is beginning
 		transferStatus = CommandStatus.PROCESSING;
 
+		getFileName(source);
+		
 		// Check the file existence. If one or both don't exist, an exception is thrown
 		try {
 			checkExistence(source, destination);
@@ -131,7 +140,7 @@ public abstract class FileHandler implements IFileHandler {
 			logger.error("Destination file does not exist! File transfer failed!", e);
 			return CommandStatus.FAILED;
 		}
-
+		
 		// Return whether or not it succeeded
 		return transferStatus;
 	}
@@ -189,8 +198,8 @@ public abstract class FileHandler implements IFileHandler {
 	 * Function to determine whether or not a given string is located on the local
 	 * machine
 	 * 
-	 * @param file
-	 * @return
+	 * @return - boolean indicating whether or not the file exists locally (true) 
+	 *           or not (false)
 	 */
 	protected boolean isLocal(String file) {
 		// Get the path
@@ -204,8 +213,8 @@ public abstract class FileHandler implements IFileHandler {
 	 * This operation creates all the directories that are parents of the
 	 * destination.
 	 * 
-	 * @param dest the destination for which parent directories should be created
-	 * @return true if the directories were created
+	 * @param dest - the destination for which parent directories should be created
+	 * @return true if the directories were created, false otherwise
 	 * @throws IOException thrown if the dest cannot be created
 	 */
 	protected boolean createDirectories(String dest) throws IOException {
@@ -231,15 +240,24 @@ public abstract class FileHandler implements IFileHandler {
 	 * 
 	 * @param destination - destination for the file to go to
 	 * @return - CommandStatus indicating whether or not the transfer completed
-	 *         successfully
+	 *           successfully
 	 * @throws IOException
 	 */
 	protected CommandStatus executeTransfer(final String destination) throws IOException {
 		// Execute the file transfer
 		transferStatus = command.get().execute();
 
+		String separator = "/";
+		if(destination.contains("\\"))
+			separator = "\\";
+		
+		String totalDestination = destination;
+		// If the destination is just a path and not a path + filename, add the filename
+		if(destination.endsWith(separator))
+			totalDestination += filename;
+		
 		// Check that the move succeeded
-		if (!exists(destination))
+		if (!exists(totalDestination))
 			return CommandStatus.FAILED;
 
 		logger.info("File transfer successful!");
@@ -251,7 +269,7 @@ public abstract class FileHandler implements IFileHandler {
 	 * A setter to set the type of file handle this is. See
 	 * {@link org.eclipse.ice.commands.RemoteFileHandler#HANDLE_TYPE}
 	 * 
-	 * @param HANDLE_TYPE
+	 * @param HANDLE_TYPE - HandleType for a given transfer
 	 */
 	public void setHandleType(HandleType HANDLE_TYPE) {
 		this.HANDLE_TYPE = HANDLE_TYPE;
@@ -260,7 +278,7 @@ public abstract class FileHandler implements IFileHandler {
 	/**
 	 * Get the connection for this file handler
 	 * 
-	 * @return
+	 * @return - Connection corresponding to this file handler
 	 */
 	public Connection getConnection() {
 		return connection.get();
@@ -275,4 +293,12 @@ public abstract class FileHandler implements IFileHandler {
 		this.connection.set(connection);
 	}
 
+	
+	private void getFileName(String source) {
+		String separator = "/";
+		if(source.contains("\\"))
+			separator = "\\";
+		
+		filename = source.substring(source.lastIndexOf(separator) + 1);
+	}
 }

@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,8 +30,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.jcraft.jsch.JSchException;
 
 /**
  * Test for class {@link org.eclipse.ice.commands.RemoteCommand}.
@@ -167,7 +167,7 @@ public class RemoteCommandTest {
 		CommandStatus status = command.getStatus();
 
 		// Check that the return is processing, i.e. we are ready to execute
-		assert (status == CommandStatus.PROCESSING);
+		assertEquals(CommandStatus.PROCESSING, status);
 
 		System.out.println("Finished remote command configuration test.");
 	}
@@ -177,7 +177,7 @@ public class RemoteCommandTest {
 	 * established. Expect an exception since the connection will not be able to be
 	 * established.
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testFailedConnectionRemoteCommand() {
 		System.out.println("Testing remote command with a bad connection");
 
@@ -196,7 +196,7 @@ public class RemoteCommandTest {
 		RemoteCommand command = new RemoteCommand(commandConfig, cfg, null);
 
 		// Check that the command gives an error in its status due to poor connection
-		assert (command.getStatus() == CommandStatus.INFOERROR);
+		assertEquals(CommandStatus.INFOERROR, command.getStatus());
 	}
 
 	/**
@@ -208,7 +208,7 @@ public class RemoteCommandTest {
 	 * @throws JSchException
 	 */
 	@Test(expected = NullPointerException.class)
-	public void testBadExecute() throws JSchException {
+	public void testBadExecute() throws IOException {
 		CommandConfiguration badConfig = new CommandConfiguration();
 
 		badConfig.setCommandId(24);
@@ -238,7 +238,7 @@ public class RemoteCommandTest {
 
 		RemoteCommand testCommand = new RemoteCommand(badConfig, cfg, null);
 
-		CommandStatus testStatus = testCommand.execute();
+		testCommand.execute();
 
 	}
 
@@ -255,7 +255,7 @@ public class RemoteCommandTest {
 		CommandStatus status = command.execute();
 
 		// Check that the command was successfully completed
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 		System.out.println("Finished testing remote command execute");
 	}
@@ -284,7 +284,7 @@ public class RemoteCommandTest {
 
 		RemoteCommand testCommand = new RemoteCommand(longConfig, connectConfig, null);
 
-		CommandStatus testStatus = testCommand.execute();
+		testCommand.execute();
 
 	}
 

@@ -70,6 +70,12 @@ public abstract class Command {
 	 */
 	protected ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 
+	
+	/**
+	 * An optional update handler that can provide status updates for the command
+	 */
+	ICommandUpdateHandler updater = null;
+	
 	/**
 	 * Default constructor
 	 */
@@ -104,6 +110,18 @@ public abstract class Command {
 
 		// Confirm the job finished with some status
 		logger.info("The job finished with status: " + status);
+		if(updater != null) {
+			String message = "Job number " + commandConfig.getCommandId() 
+			+ " finished with status " + status +"\n "
+			+ "Check your log/out/error files for more details";
+			updater.setMessage(message);
+			try {
+				updater.postUpdate();
+			} catch (IOException e) {
+				// Just warn since it is not indicative of a job failing
+				logger.warn("Couldn't post update. Check stack trace" , e);
+			}
+		}
 		return status;
 
 	}
@@ -161,7 +179,7 @@ public abstract class Command {
 	 * This function is intended to clean up any (possible) remaining loose ends
 	 * after the job is finished processing.
 	 * 
-	 * @return
+	 * @return CommandStatus - indicating that the configuration completed clean up
 	 */
 	protected CommandStatus cleanUp() {
 
@@ -182,7 +200,7 @@ public abstract class Command {
 	 * log/error information.
 	 * 
 	 * @return - CommandStatus indicating that configuration completed and job can
-	 *         start running
+	 *           start running
 	 */
 	protected CommandStatus setConfiguration() {
 
@@ -201,33 +219,36 @@ public abstract class Command {
 		String separator = "/";
 		if (commandConfig.getOS().toLowerCase().contains("win"))
 			separator = "\\";
-
+		
 		// Check if the working directory exists
 		String workingDir = commandConfig.getWorkingDirectory();
+		boolean exists = false, execExists = false;
+		if(workingDir != null) {
 		if (!workingDir.endsWith(separator))
 			workingDir += separator;
 
 		// Check that the directory exists
 		// Get the file handler factory
 		FileHandlerFactory factory = new FileHandlerFactory();
-		boolean exists = false, execExists = false;
+		
 		try {
 			// Get the handler for this particular connection, whether local or remote
 			FileHandler handler = factory.getFileHandler(connectionConfig);
 
 			// If the working directory was set, check that it exists. If it wasn't set,
 			// then the paths should have been explicitly identified
-			if (workingDir != null)
+		
 				exists = handler.exists(workingDir);
 
-			// Check if the executable exists in the working directory
-			execExists = handler.exists(workingDir + exec);
-
+				// Check if the executable exists in the working directory
+				execExists = handler.exists(workingDir + exec);
+			
 		} catch (IOException e) {
 			// If we can't get the file handler, then there was an error in the connection
 			// configuration
 			logger.error("Unable to connect to filehandler and check file existence. Exiting.", e);
 			return CommandStatus.INFOERROR;
+		}
 		}
 		// If the working directory doesn't exist, we won't be able to continue the job
 		// processing unless the full paths were specified. Warn the user
@@ -330,7 +351,7 @@ public abstract class Command {
 	 * This function is a simple helper function to check and make sure that the
 	 * command status is not set to a flagged error, e.g. failed.
 	 * 
-	 * @param current_status
+	 * @param current_status to be checked
 	 * @return boolean indicating whether or not status is good to continue (true)
 	 *         or whether or not job has failed (returns false)
 	 */
@@ -340,8 +361,12 @@ public abstract class Command {
 			logger.info("The current status is: " + current_status);
 			return true;
 		} else {
-			logger.error("The job failed with status: " + current_status);
-			logger.error("Check your error logfile for more details! Exiting now!");
+			String statusString = "The job failed with status: " + current_status;
+			String checkString = "Check your error logfile for more details! Exiting now!";
+			
+			logger.error(statusString);
+			logger.error(checkString);
+					
 			return false;
 		}
 
@@ -371,7 +396,7 @@ public abstract class Command {
 	 * This function returns to the user the configuration that was used to create a
 	 * particular command.
 	 * 
-	 * @return - the particular configuration for this command
+	 * @return - the particular CommandConfiguration for this command
 	 */
 	public CommandConfiguration getCommandConfiguration() {
 		return commandConfig;
@@ -380,7 +405,7 @@ public abstract class Command {
 	/**
 	 * This function sets the command configuration for a particular command
 	 * 
-	 * @param config
+	 * @param commandConfig - CommandConfiguration to be set
 	 */
 	public void setCommandConfiguration(CommandConfiguration commandConfig) {
 		this.commandConfig = commandConfig;
@@ -400,7 +425,7 @@ public abstract class Command {
 	 * This function sets the configuration that is to be used to set up a
 	 * particular connection.
 	 * 
-	 * @param connect
+	 * @param connectionConfig - ConnectionConfiguration to be set
 	 */
 	public void setConnectionConfiguration(ConnectionConfiguration connectionConfig) {
 		this.connectionConfig = connectionConfig;
@@ -426,5 +451,13 @@ public abstract class Command {
 	 */
 	public ConnectionManager getConnectionManager() {
 		return manager;
+	}
+	
+	/**
+	 * Setter for update handler, see {@link org.eclipse.ice.commands.Command#updater}
+	 * @param updater
+	 */
+	public void setUpdateHandler(ICommandUpdateHandler updater) {
+		this.updater = updater;
 	}
 }

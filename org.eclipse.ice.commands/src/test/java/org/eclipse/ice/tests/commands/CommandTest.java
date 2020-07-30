@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,8 +33,6 @@ import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.jcraft.jsch.JSchException;
 
 /**
  * Test for class {@link org.eclipse.ice.commands.Command}.
@@ -142,7 +143,7 @@ public class CommandTest {
 		CommandStatus status = remoteCommand.execute();
 
 		// Assert that it finished correctly
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 		// You can get the output in string form if desired
 		String output = remoteCommand.getCommandConfiguration().getStdOutputString();
@@ -182,8 +183,7 @@ public class CommandTest {
 
 		// Use the function already defined in the command factory to get the
 		// local host name
-		CommandFactoryTest factory = new CommandFactoryTest();
-		String hostname = factory.getLocalHostname();
+		String hostname = CommandFactoryTest.getLocalHostname();
 
 		// Create a connectionConfiguration to indicate a local command
 		ConnectionConfiguration connection = new ConnectionConfiguration();
@@ -197,7 +197,7 @@ public class CommandTest {
 
 		// Check that it completed correctly
 		System.out.println("Command finished with: " + status);
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 	}
 
@@ -215,7 +215,7 @@ public class CommandTest {
 
 		// Check to make sure that an exception is thrown for a bad status when the
 		// status is checked
-		assert (!command.checkStatus(status));
+		assertFalse(command.checkStatus(status));
 	}
 
 	/**
@@ -243,7 +243,7 @@ public class CommandTest {
 		// Open the connection
 		try {
 			ConnectionManagerFactory.getConnectionManager().openConnection(connectConfig);
-		} catch (JSchException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
@@ -266,7 +266,7 @@ public class CommandTest {
 		CommandStatus status = remoteCommand.execute();
 
 		// Assert that it finished correctly
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 		// Try a second command with the same instance of command configuration and
 		// remote command
@@ -280,7 +280,7 @@ public class CommandTest {
 		status = remoteCommand.execute();
 
 		// Assert successful completion
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 	}
 
@@ -309,7 +309,7 @@ public class CommandTest {
 		// Open the connection
 		try {
 			ConnectionManagerFactory.getConnectionManager().openConnection(connectConfig);
-		} catch (JSchException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
@@ -334,7 +334,7 @@ public class CommandTest {
 		CommandStatus status = remoteCommand.execute();
 
 		// Assert that it finished correctly
-		assert (status == CommandStatus.SUCCESS);
+		assertEquals(CommandStatus.SUCCESS, status);
 
 	}
 
