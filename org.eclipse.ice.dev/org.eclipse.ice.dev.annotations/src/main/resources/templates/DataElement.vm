@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,6 +22,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+
+import org.eclipse.ice.data.JavascriptValidator;
 
 /**
  * This is an implementation of $interface that satisfies the dependencies of
@@ -34,6 +37,7 @@ import lombok.Setter;
 	isGetterVisibility = Visibility.NONE,
 	setterVisibility = Visibility.NONE
 )
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ${class} implements ${interface}, Serializable {
 
 	/**
@@ -44,10 +48,10 @@ public class ${class} implements ${interface}, Serializable {
 
 		#fielddoc
 		#nonnull($tab, $newline)
-		#if(!${field.Getter})
+		#if(!${field.Getter} || ${field.VarNameDifferent})
 	@Getter(AccessLevel.NONE)
 		#end
-		#if(!${field.Setter})
+		#if(!${field.Setter} || ${field.VarNameDifferent})
 	@Setter(AccessLevel.NONE)
 		#end
 		#fielddecl
@@ -57,27 +61,25 @@ public class ${class} implements ${interface}, Serializable {
 		#fielddoc
 		#fielddecl
 	#end
-	#foreach($field in $fields)
-		#foreach($alias in ${field.aliases})
-			#if(${alias.Getter})
 
+	#foreach($field in ${fields.VarNamesDiffer})
+		#if(${field.Getter})
 	/**
-	 * Get ${field.Name} by alias ${alias.Name}.
+	 * Get ${field.VarName}.
 	 * @return ${field.Name}
 	 */
-	public #fieldtype get${alias.NameForMethod}() {
-		return ${field.Name};
+	public #fieldtype ${field.GetterName}() {
+		return ${field.VarName};
 	}
-			#end
-			#if(${alias.Setter})
-
+		#end
+		#if(${field.Setter})
 	/**
-	 * Set ${field.Name} by alias ${alias.Name}.
+	 * Set ${field.VarName}.
+	 * @param ${field.VarName} new value for ${field.Name}.
 	 */
-	public void set${alias.NameForMethod}(#nonnull("", " ")#fieldtype ${field.Name}) {
-		this.${field.Name} = ${field.Name};
+	public void set${field.NameForMethod}(#fieldparametertype ${field.VarName}) {
+		this.${field.VarName} = ${field.VarName};
 	}
-			#end
 		#end
 	#end
 
@@ -86,17 +88,17 @@ public class ${class} implements ${interface}, Serializable {
 	 *
 	 * Used in JSON Deserialization.
 	#foreach($field in $fields)
-	 * @param ${field.Name} {@code #fieldtype} for field ${field.Name}
+	 * @param ${field.VarName} {@code #fieldtype} for field ${field.VarName}
 	#end
 	 */
 	@JsonCreator
 	public $class(
 	#foreach($field in $fields)
-		@JsonProperty("${field.Name}") #nonnull("", " ")#fieldtype ${field.Name}#if($foreach.hasNext),#end
+		@JsonProperty("${field.VarName}") #fieldparametertype ${field.VarName}#if($foreach.hasNext),#end
 	#end
 	) {
 		#foreach($field in $fields)
-		this.${field.Name} = ${field.Name};
+		this.${field.VarName} = ${field.VarName};
 		#end
 	}
 
@@ -131,8 +133,8 @@ public class ${class} implements ${interface}, Serializable {
 	@Override
 	public void copy(@NonNull $interface element) {
 		#foreach($field in $fields)
-			#if($field.hasGetter())
-		this.${field.Name} = element.${field.AnyGetter}();
+			#if($field.Getter)
+		this.${field.VarName} = element.${field.GetterName}();
 			#end
 		#end
 	}
@@ -162,23 +164,23 @@ public class ${class} implements ${interface}, Serializable {
 					// by debuggers.
 					#foreach($field in ${fields.Match})
 
-					// Matching ${field.Name}
-					boolean ${field.Name}Match =
+					// Matching ${field.VarName}
+					boolean ${field.VarName}Match =
 					#if(${field.Nullable})
-						this.${field.Name} == null ?
-							this.${field.Name} == other.${field.Name} :
-							this.${field.Name}.equals(other.${field.Name});
+						this.${field.VarName} == null ?
+							this.${field.VarName} == other.${field.VarName} :
+							this.${field.VarName}.equals(other.${field.VarName});
 					#elseif(${field.Primitive})
-						this.${field.Name} == other.${field.Name};
+						this.${field.VarName} == other.${field.VarName};
 					#else
-						this.${field.Name}.equals(other.${field.Name});
+						this.${field.VarName}.equals(other.${field.VarName});
 					#end## if nullable
 					#end## foreach
 
 					retval =
 					#@settab(6)
 						#foreach($field in ${fields.Match})#@nonewline
-						${field.Name}Match#if($foreach.hasNext) &&#if($foreach.count % 3 == 0)$newline#else #end#end
+						${field.VarName}Match#if($foreach.hasNext) &&#if($foreach.count % 3 == 0)$newline#else #end#end
 						#end#end;
 					#end
 				}

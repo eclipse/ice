@@ -84,6 +84,7 @@ public class DataElementAnnotationExtractionService extends ICEAnnotationExtract
 		return (writer) -> DataElementPersistenceHandlerWriter.builder()
 				.packageName((String)classMetadata.get(ClassTemplateProperties.Meta.PACKAGE.getKey()))
 				.className((String)classMetadata.get(ClassTemplateProperties.PersistenceHandler.CLASS.getKey()))
+				.interfaceName((String)classMetadata.get(ClassTemplateProperties.PersistenceHandler.INTERFACE.getKey()))
 				.fields((Fields)classMetadata.get(ClassTemplateProperties.Meta.FIELDS.getKey()))
 				.elementInterface((String)classMetadata.get(ClassTemplateProperties.PersistenceHandler.ELEMENT_INTERFACE.getKey()))
 				.collection((String)classMetadata.get(ClassTemplateProperties.PersistenceHandler.COLLECTION.getKey()))

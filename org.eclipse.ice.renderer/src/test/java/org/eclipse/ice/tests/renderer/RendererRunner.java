@@ -36,11 +36,11 @@ public class RendererRunner {
 	//@Inject
 	//DataElement<Offset> sampleOffset;
 
-	@Inject
-	Renderer<HTMLView, Boolean> renderer;
-
-	@Inject
-	Renderer<HTMLView, String> stringRenderer;
+//	@Inject
+//	Renderer<HTMLView, Boolean> renderer;
+//
+//	@Inject
+//	Renderer<HTMLView, String> stringRenderer;
 
 	//@Inject
 	//Renderer<HTMLView, Offset> osRenderer;
@@ -65,18 +65,18 @@ public class RendererRunner {
 		testSomeStuff();
 
 		// Setup the renderer
-		renderer.setDataElement(data);
-		renderer.setDrawMethod(drawViewFunc);
+	//	renderer.setDataElement(data);
+//		renderer.setDrawMethod(drawViewFunc);
 
 		// Draw the render
-		renderer.render();
+//		renderer.render();
 
 		// Configure another basic data element with a string value that is the same as
 		// the last
 		dataString.setData("true");
-		stringRenderer.setDataElement(dataString);
-		stringRenderer.setDrawMethod(stringViewFunc);
-		stringRenderer.render();
+//		stringRenderer.setDataElement(dataString);
+//		stringRenderer.setDrawMethod(stringViewFunc);
+//		stringRenderer.render();
 
 		// Configure one with Pojo data
 		//osRenderer.setDrawMethod(offsetViewFunc);

@@ -18,9 +18,9 @@ public class DataElementPersistenceHandlerWriter extends PersistenceHandlerWrite
 	private static final String PERSISTENCE_HANDLER_TEMPLATE = "templates/PersistenceHandler.vm";
 
 	@Builder
-	public DataElementPersistenceHandlerWriter(String packageName, String elementInterface, String className,
+	public DataElementPersistenceHandlerWriter(String packageName, String elementInterface, String className, String interfaceName,
 			String implementation, String collection, @NonNull Fields fields, Writer writer) {
-		super(packageName, elementInterface, className, implementation, collection, fields, writer);
+		super(packageName, elementInterface, className, interfaceName, implementation, collection, fields, writer);
 		this.template = PERSISTENCE_HANDLER_TEMPLATE;
 	}
 

@@ -22,7 +22,8 @@ class ClassTemplateProperties {
 		COLLECTION("collection"),
 		CLASS("persistenceClassName"),
 		IMPLEMENTATION("implementation"),
-		QUALIFIED("fullyQualifiedPersistenceHandler");;
+		QUALIFIED("fullyQualifiedPersistenceHandler"),
+		INTERFACE("persistenceInterfaceName");
 		
 		@Getter private String key;
 	}

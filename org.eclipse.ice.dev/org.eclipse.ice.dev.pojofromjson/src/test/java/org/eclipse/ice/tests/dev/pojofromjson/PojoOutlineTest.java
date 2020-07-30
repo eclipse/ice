@@ -35,7 +35,6 @@ public class PojoOutlineTest {
 					.match(false)
 					.primitive(true)
 					.nullable(true)
-					.alias(Field.builder().name("another").getter(true).build())
 					.build()
 			).build();
 
@@ -61,7 +60,6 @@ public class PojoOutlineTest {
 					.nullable(true)
 					.getter(false)
 					.setter(false)
-					.alias(Field.builder().name("another").getter(true).build())
 					.build()
 			).build();
 
@@ -81,7 +79,6 @@ public class PojoOutlineTest {
 					.nullable(true)
 					.getter(false)
 					.setter(false)
-					.alias(Field.builder().name("another").getter(true).build())
 					.build()
 			).build();
 		assertEquals("TestElementImpl", pojo.getImplementation());

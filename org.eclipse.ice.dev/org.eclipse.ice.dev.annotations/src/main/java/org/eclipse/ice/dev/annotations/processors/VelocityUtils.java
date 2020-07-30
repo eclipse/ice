@@ -12,7 +12,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 
 import org.apache.commons.lang3.ClassUtils;
-import org.eclipse.ice.dev.annotations.IDataElement;
+import org.eclipse.ice.data.IDataElement;
 
 public class VelocityUtils {
 	

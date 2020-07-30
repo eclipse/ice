@@ -33,7 +33,7 @@ import org.apache.velocity.app.Velocity;
 import org.eclipse.ice.dev.annotations.DataField;
 import org.eclipse.ice.dev.annotations.DataFieldJson;
 import org.eclipse.ice.dev.annotations.processors.Field;
-import org.eclipse.ice.dev.annotations.IDataElement;
+import org.eclipse.ice.data.IDataElement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -203,7 +203,7 @@ class ProcessorUtil {
 					.setter(fieldInfo.isSetter())
 					.match(fieldInfo.isMatch())
 					.unique(fieldInfo.isUnique())
-					.search(fieldInfo.isSearch())
+					.searchable(fieldInfo.isSearchable())
 					.nullable(fieldInfo.isNullable())
 					.build();
 		}
@@ -293,7 +293,7 @@ class ProcessorUtil {
 							.setter(dataField.setter())
 							.match(dataField.match())
 							.unique(dataField.unique())
-							.search(dataField.search())
+							.searchable(dataField.searchable())
 							.nullable(dataField.nullable())
 							.build();
 					

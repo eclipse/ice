@@ -65,11 +65,24 @@ public class Fields implements Iterable<Field> {
 	 * Return iterator over fields that are set to be used in matches.
 	 *
 	 * @return iterator over the fields
-	 * @see org.eclipse.ice.dev.annotations.IDataElement#matches(Object)
+	 * @see org.eclipse.ice.data.IDataElement#matches(Object)
 	 */
 	public Iterator<Field> getMatch() {
 		return fields.stream()
 			.filter(field -> field.isMatch())
+			.iterator();
+	}
+
+	/**
+	 * Return iterator over fields where the variable name differs from the
+	 * Field name.
+	 *
+	 * @return iterator over the fields
+	 * @see Field#isVarDifferent()
+	 */
+	public Iterator<Field> getVarNamesDiffer() {
+		return fields.stream()
+			.filter(field -> field.isVarNameDifferent())
 			.iterator();
 	}
 

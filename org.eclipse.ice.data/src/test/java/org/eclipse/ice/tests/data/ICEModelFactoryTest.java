@@ -11,13 +11,13 @@
  *****************************************************************************/
 package org.eclipse.ice.tests.data;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.jena.rdf.model.Model;
 import org.eclipse.ice.data.ComponentBuilder;
 import org.eclipse.ice.data.ICEModelFactory;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * This class tests the ModelFactory used to build ICE's data structures.
@@ -30,7 +30,7 @@ public class ICEModelFactoryTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@BeforeClass
+	@BeforeAll
 	public static void setUpBeforeClass() throws Exception {
 	}
 

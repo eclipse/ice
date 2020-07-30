@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.renderer;
 
-import org.eclipse.ice.renderer.DaggerRendererComponent;
 import org.eclipse.ice.renderer.DataElement;
 import org.eclipse.ice.renderer.RendererComponent;
 
@@ -19,16 +18,16 @@ public class Launcher {
 	
 	public static void main(String[] args) throws Exception {
 		
-		RendererComponent rendererComponent = DaggerRendererComponent.create();
-		DataElement<String> element = (DataElement<String>) rendererComponent.buildDataElement();
-		element.setName("Enemy");
-		System.out.println(element.getName());
-		
-		DataElementTestComponent component = DaggerDataElementTestComponent.create();
-	    RendererRunner runner = component.buildRendererRunner();
+//		RendererComponent rendererComponent = DaggerRendererComponent.create();
+//		DataElement<String> element = (DataElement<String>) rendererComponent.buildDataElement();
+//		element.setName("Enemy");
+//		System.out.println(element.getName());
+//		
+//		DataElementTestComponent component = DaggerDataElementTestComponent.create();
+//	    RendererRunner runner = component.buildRendererRunner();
 		
 		try {
-			runner.run();
+//			runner.run();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

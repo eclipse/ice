@@ -70,4 +70,16 @@ public class DefaultNameGenerator implements NameGenerator {
 	public String getQualifiedPersistenceHandlerName(String fullyQualifiedName) {
 		return fullyQualifiedName + PERSISTENCE_SUFFIX;
 	}
+	
+	/**
+	 * Get the interface name of the persistence handler.
+	 *
+	 * Right now, this is simply the IPersistenceHandler interface. In the future
+	 * this will be a data element specific interface.
+	 * @return Interface name of the Persistence Handler
+	 */
+	@Override
+	public String getPersistenceHandlerInterfaceName() {
+		return org.eclipse.ice.data.IPersistenceHandler.class.getSimpleName();
+	}
 }

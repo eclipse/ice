@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.eclipse.ice.dev.annotations.JavascriptValidator;
+import org.eclipse.ice.data.JavascriptValidator;
 
 /**
  * Aggregation of fields generated and included in <code>@DataElement</code>
@@ -18,22 +18,16 @@ public class DefaultFields {
 	 * This field is left out of the <code>DataElement.matches</code> checks.
 	 */
 	private static Field privateId = Field.builder()
-		.name("privateId")
+		.name("UUID")
+		.varName("privateId")
 		.type(UUID.class)
 		.docString("The private UUID of this element. This field is left out of matches().")
 		.defaultValue(UUID.class.getCanonicalName() + ".randomUUID()")
 		.match(false)
-		.getter(false)
+		.getter(true)
 		.setter(false)
-		.alias(
-			Field.builder()
-				.name("UUID")
-				.unique(true)
-				.getter(true)
-				.setter(false)
-				.defaultField(true)
-				.build()
-		)
+		.defaultField(true)
+		.unique(true)
 		.build();
 
 	/**
@@ -123,7 +117,7 @@ public class DefaultFields {
 		.docString("The validator used to check the correctness of the data.")
 		.nullable(true)
 		.defaultField(true)
-		.search(false)
+		.searchable(false)
 		.build();
 
 	/**

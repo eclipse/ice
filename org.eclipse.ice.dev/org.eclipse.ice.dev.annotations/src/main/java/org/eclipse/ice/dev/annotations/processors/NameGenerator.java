@@ -15,5 +15,7 @@ public interface NameGenerator {
 	String extractName(Element element);
 
 	String extractCollectionName(Element element);
+	
+	String getPersistenceHandlerInterfaceName();
 
 }

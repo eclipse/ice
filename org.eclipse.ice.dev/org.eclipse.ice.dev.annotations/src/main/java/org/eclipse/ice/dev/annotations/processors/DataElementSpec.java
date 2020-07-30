@@ -1,7 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2019- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Daniel Bluhm
+ *****************************************************************************/
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.util.Arrays;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,6 +21,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
+import org.eclipse.ice.data.IPersistenceHandler;
 import org.eclipse.ice.dev.annotations.DataElement;
 import org.eclipse.ice.dev.annotations.DataFieldJson;
 import org.eclipse.ice.dev.annotations.Persisted;
@@ -178,5 +189,16 @@ public class DataElementSpec extends AnnotatedElement {
 		return this.getAnnotation(DataFieldJson.class)
 			.map(jsons -> Arrays.asList(jsons.value()))
 			.orElse(Collections.emptyList());
+	}
+
+	/**
+	 * Get the interface name of the persistence handler.
+	 *
+	 * Right now, this is simply the IPersistenceHandler interface. In the future
+	 * this will be a data element specific interface.
+	 * @return Interface name of the Persistence Handler
+	 */
+	public String getPersistenceHandlerInterfaceName() {
+		return org.eclipse.ice.data.IPersistenceHandler.class.getSimpleName();
 	}
 }

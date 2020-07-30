@@ -98,6 +98,7 @@ public abstract class ICEAnnotationExtractionService {
 		context.put(ClassTemplateProperties.PersistenceHandler.IMPLEMENTATION.getKey(), nameGenerator.getImplName(name));	
 		context.put(ClassTemplateProperties.PersistenceHandler.QUALIFIED.getKey(), nameGenerator.getQualifiedPersistenceHandlerName(fullyQualifiedName));
 		context.put(ClassTemplateProperties.PersistenceHandler.CLASS.getKey(), nameGenerator.getPersistenceHandlerName(name));
+		context.put(ClassTemplateProperties.PersistenceHandler.INTERFACE.getKey(), nameGenerator.getPersistenceHandlerInterfaceName());
 		
 		return context;
 	}
