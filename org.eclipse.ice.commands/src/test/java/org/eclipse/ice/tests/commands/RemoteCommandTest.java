@@ -25,6 +25,7 @@ import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.RemoteCommand;
+import org.eclipse.ice.tests.data.TestDataPath;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -93,12 +94,12 @@ public class RemoteCommandTest {
 		// Make the connection configuration
 		// Get a factory which determines the type of authorization
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		String credFile = "/tmp/ice-remote-creds.txt";
-		if (System.getProperty("os.name").toLowerCase().contains("win")) {
-			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
-		}
+		TestDataPath dataPath = new TestDataPath();
+		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
+		
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
 		// Set it
 		connectConfig.setAuthorization(auth);
@@ -159,7 +160,7 @@ public class RemoteCommandTest {
 	@Test
 	public void testRemoteCommand() {
 		System.out.println("Testing remote command configuration");
-
+		
 		// Get a command which just sets everything up
 		RemoteCommand command = new RemoteCommand(commandConfig, connectConfig, null);
 
@@ -223,10 +224,9 @@ public class RemoteCommandTest {
 		badConfig.setOS(System.getProperty("os.name"));
 
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
-		String credFile = "/tmp/ice-remote-creds.txt";
-		if (System.getProperty("os.name").toLowerCase().contains("win")) {
-			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
-		}
+		TestDataPath dataPath = new TestDataPath();
+		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
+
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
 		// Set it
 		ConnectionConfiguration cfg = new ConnectionConfiguration();
