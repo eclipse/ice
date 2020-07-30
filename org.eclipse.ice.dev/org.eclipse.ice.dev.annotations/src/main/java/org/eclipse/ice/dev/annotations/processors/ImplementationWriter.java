@@ -11,6 +11,8 @@
 
 package org.eclipse.ice.dev.annotations.processors;
 
+import java.io.Writer;
+
 import lombok.Builder;
 
 /**
@@ -18,14 +20,6 @@ import lombok.Builder;
  * @author Daniel Bluhm
  */
 public class ImplementationWriter extends VelocitySourceWriter {
-
-	/**
-	 * Location of DataElement template for use with velocity.
-	 *
-	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
-	 * to the src/main/resources folder.
-	 */
-	private static final String IMPL_TEMPLATE = "templates/DataElement.vm";
 
 	/**
 	 * Context key for package.
@@ -47,15 +41,15 @@ public class ImplementationWriter extends VelocitySourceWriter {
 	 */
 	private static final String CLASS = "class";
 
-	@Builder
 	public ImplementationWriter(
-		String packageName, String interfaceName, String className, Fields fields
+		String packageName, String interfaceName, String className, Fields fields, Writer writer
 	) {
 		super();
-		this.template = IMPL_TEMPLATE;
 		this.context.put(PACKAGE, packageName);
 		this.context.put(INTERFACE, interfaceName);
 		this.context.put(CLASS, className);
 		this.context.put(FIELDS, fields);
+		this.writer = writer;
 	}
+
 }

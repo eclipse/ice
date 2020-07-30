@@ -164,11 +164,16 @@ class DataElementProcessorTest {
 	 * @return Compilation result
 	 */
 	private static Compilation compile(JavaFileObject... sources) {
+		try {
 		return javac()
 			.withProcessors(
 				getLombokAnnotationProcessor(),
 				new DataElementProcessor()
 			).compile(sources);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**

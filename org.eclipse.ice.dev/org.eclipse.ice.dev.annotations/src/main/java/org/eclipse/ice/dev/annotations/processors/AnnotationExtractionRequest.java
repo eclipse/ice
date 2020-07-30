@@ -13,10 +13,7 @@ import lombok.Data;
 @Builder
 public class AnnotationExtractionRequest {
 	private Element element;
-	private List<String> handledAnnotations;
 	@Builder.Default
 	private boolean includeDefaults = true;
-	@Builder.Default
-	private Predicate<Element> fieldFilter = p -> true;
 	private String className;
 }

@@ -28,11 +28,12 @@ public abstract class VelocitySourceWriter {
 
 	protected String template;
 	protected Map<String, Object> context;
+	protected Writer writer;
 	
 	public VelocitySourceWriter() {
 		this.context = new HashMap<>();
 	}
-
+	
 	/**
 	 * Write the Java Source file to the open writer.
 	 * @param writer to which the java source will be written
@@ -47,4 +48,10 @@ public abstract class VelocitySourceWriter {
 		// Write template from context.
 		Velocity.mergeTemplate(template, "UTF-8", velocityContext, writer);
 	}
+	
+	
+	public void write() {
+		write(this.writer);
+	}
+	
 }

@@ -32,9 +32,8 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.eclipse.ice.dev.annotations.DataField;
 import org.eclipse.ice.dev.annotations.DataFieldJson;
-import org.eclipse.ice.dev.annotations.FieldInfo;
+import org.eclipse.ice.dev.annotations.processors.Field;
 import org.eclipse.ice.dev.annotations.IDataElement;
-import org.eclipse.ice.dev.annotations.Validator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -186,8 +185,12 @@ class ProcessorUtil {
 		return sw.toString();
 	}
 	
+	public static String extractValidator(Element element) {
+		return null;
+	}
+	
 	//issue is here these methods should be using the element sent to them
-		public static Field convertElementToField(Element element, Elements elementUtils, FieldInfo fieldInfo, List<String> handledAnnotations) {
+		public static Field convertElementToField(Element element, Elements elementUtils, Field fieldInfo, List<String> handledAnnotations) {
 				return Field.builder()
 					.name(extractFieldName(element))
 					.type(extractFieldType(element))
@@ -207,14 +210,6 @@ class ProcessorUtil {
 		
 		public static boolean hasAnnotation(Element element, Class<? extends Annotation> annotation) {
 			return element.getAnnotation(annotation) != null;
-		}
-		
-		public static String extractValidator(Element element) {
-			if(hasAnnotation(element, Validator.class))
-			{
-				return element.getAnnotation(Validator.class).name();
-			}
-			return null;
 		}
 		
 		/**
@@ -291,9 +286,9 @@ class ProcessorUtil {
 				.map(el -> {
 					
 					DataField dataField = el.getAnnotation(DataField.class);
-					FieldInfo fieldInfo;
-					if(dataField == null) fieldInfo = FieldInfo.builder().getter(true).build();
-					else fieldInfo = FieldInfo.builder()
+					Field fieldInfo;
+					if(dataField == null) fieldInfo = Field.builder().build();
+					else fieldInfo = Field.builder()
 							.getter(dataField.getter())
 							.setter(dataField.setter())
 							.match(dataField.match())

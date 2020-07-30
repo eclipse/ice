@@ -16,4 +16,5 @@ import lombok.Data;
 public class AnnotationExtractionResponse {
 	private Fields fields;
 	private Map classMetadata;
+	List<VelocitySourceWriter> writers;
 }

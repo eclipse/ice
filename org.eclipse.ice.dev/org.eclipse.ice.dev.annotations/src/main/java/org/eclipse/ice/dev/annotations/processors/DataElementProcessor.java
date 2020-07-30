@@ -31,9 +31,7 @@ import javax.tools.StandardLocation;
 import org.apache.velocity.app.Velocity;
 import org.eclipse.ice.dev.annotations.DataElement;
 import org.eclipse.ice.dev.annotations.DataField;
-import org.eclipse.ice.dev.annotations.DataModel;
 import org.eclipse.ice.dev.annotations.Persisted;
-import org.eclipse.ice.dev.annotations.Validator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auto.service.AutoService;
@@ -77,7 +75,7 @@ public class DataElementProcessor extends AbstractProcessor {
 		messager = env.getMessager();
 		elementUtils = env.getElementUtils();
 		mapper = new ObjectMapper();
-
+		extractionService = new DataElementAnnotationExtractionService(elementUtils, mapper, env, new DefaultNameGenerator()); 
 		// Set up Velocity using the Singleton approach; ClasspathResourceLoader allows
 		// us to load templates from src/main/resources
 		final Properties p = VelocityProperties.get();
@@ -90,29 +88,20 @@ public class DataElementProcessor extends AbstractProcessor {
 		// Iterate over all elements with DataElement Annotation
 		for (final Element elem : roundEnv.getElementsAnnotatedWith(DataElement.class)) {
 			try {
-				DataElementSpec dataElement = new DataElementSpec(elem, elementUtils);
-				Fields fields = new Fields();
+				
+				if(!valid(elem)) throw new InvalidDataElementSpec(
+						"DataElementSpec must be class, found " + elem.toString()
+						);
+				
+				AnnotationExtractionRequest request = AnnotationExtractionRequest.builder()
+						.element(elem)
+						.className(extractName(elem))
+						.build();
+				
+				List<VelocitySourceWriter> writers = extractionService.generateWriters(request);
 
-				// Collect fields from Defaults, DataField Annotations, and DataFieldJson
-				// Annotations.
-				fields.collect(DefaultFields.get());
-				fields.collect(dataElement.fieldsFromDataFields());
-				fields.collect(collectFromDataFieldJson(dataElement));
-
-				// Write the DataElement's interface to file.
-				writeInterface(dataElement, fields);
-
-				// Write the DataElement Implementation to file.
-				writeImpl(dataElement, fields);
-
-				// Check if Persistence should be generated.
-				if (dataElement.hasAnnotation(Persisted.class)) {
-					writePersistence(
-						dataElement,
-						dataElement.getCollectionName(),
-						fields
-					);
-				}
+				writers.forEach(writer -> writer.write());
+				
 			} catch (final IOException | InvalidDataElementSpec e) {
 				messager.printMessage(Diagnostic.Kind.ERROR, stackTraceToString(e));
 				return false;
@@ -122,98 +111,16 @@ public class DataElementProcessor extends AbstractProcessor {
 	}
 
 	/**
-	 * Collect Fields from DataFieldJson Annotations.
-	 *
-	 * The JSON input files are searched for in the "CLASS_OUTPUT" location,
-	 * meaning the same folder to which compiled class files will be output.
-	 * JSON files placed in src/main/resources are moved to this location before
-	 * the annotation processing phase and are therefore available at this
-	 * location at the time of annotation processing.
-	 *
-	 * @param element potentially annotated with DataFieldJson
-	 * @return discovered fields
-	 * @throws IOException
+	 * Return the element name as extracted from the DataElement annotation.
+	 * @return the extracted name
 	 */
-	private List<Field> collectFromDataFieldJson(DataElementSpec element) throws IOException {
-		List<Field> fields = new ArrayList<>();
-		// Iterate through each JSON Data Field source and attempt to read
-		// fields from JSON file.
-		for (String source : element.getDataFieldJsonFileNames()) {
-			Reader reader = processingEnv.getFiler()
-				.getResource(StandardLocation.CLASS_OUTPUT, "", source)
-				.openReader(false);
-			fields.addAll(Arrays.asList(mapper.readValue(reader, Field[].class)));
-		}
-		return fields;
+	private String extractName(Element element) {
+		return ProcessorUtil.getAnnotation(element, DataElement.class)
+			.map(e -> e.name())
+			.orElse(null);
 	}
-
-	/**
-	 * Write the implementation of DataElement annotated class to file.
-	 * @param element
-	 * @param fields
-	 * @throws IOException
-	 */
-	private void writeImpl(DataElementSpec element, final Fields fields) throws IOException {
-		final JavaFileObject generatedClassFile = processingEnv.getFiler()
-			.createSourceFile(element.getQualifiedImplName());
-		try (Writer writer = generatedClassFile.openWriter()) {
-			ImplementationWriter.builder()
-				.packageName(element.getPackageName())
-				.className(element.getImplName())
-				.interfaceName(element.getName())
-				.fields(fields)
-				.build()
-				.write(writer);
-		}
-	}
-
-	/**
-	 * Write the persistence handler of DataElement annotated class to file.
-	 * @param element
-	 * @param collectionName
-	 * @param fields
-	 * @throws IOException
-	 */
-	private void writePersistence(
-		DataElementSpec element,
-		final String collectionName,
-		Fields fields
-	) throws IOException {
-		// Write to file
-		final JavaFileObject generatedClassFile = processingEnv.getFiler()
-			.createSourceFile(element.getQualifiedPersistenceHandlerName());
-		try (Writer writer = generatedClassFile.openWriter()) {
-			PersistenceHandlerWriter.builder()
-				.packageName(element.getPackageName())
-				.elementInterface(element.getName())
-				.className(element.getPersistenceHandlerName())
-				.implementation(element.getImplName())
-				.collection(collectionName)
-				.fields(fields)
-				.build()
-				.write(writer);
-		}
-	}
-
-	/**
-	 * Write the interface of DataElement annotated class to file.
-	 * @param element
-	 * @param fields
-	 * @throws IOException
-	 */
-	private void writeInterface(
-		DataElementSpec element,
-		Fields fields
-	) throws IOException {
-		final JavaFileObject generatedClassFile = processingEnv.getFiler()
-			.createSourceFile(element.getFullyQualifiedName());
-		try (Writer writer = generatedClassFile.openWriter()) {
-			InterfaceWriter.builder()
-				.packageName(element.getPackageName())
-				.interfaceName(element.getName())
-				.fields(fields)
-				.build()
-				.write(writer);
-		}
+	
+	private boolean valid(Element element) {
+		return element.getKind() == ElementKind.CLASS;
 	}
 }

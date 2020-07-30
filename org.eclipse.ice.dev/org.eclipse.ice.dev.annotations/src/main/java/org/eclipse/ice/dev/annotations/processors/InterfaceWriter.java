@@ -11,6 +11,8 @@
 
 package org.eclipse.ice.dev.annotations.processors;
 
+import java.io.Writer;
+
 import lombok.Builder;
 import lombok.NonNull;
 
@@ -19,14 +21,6 @@ import lombok.NonNull;
  * @author Daniel Bluhm
  */
 public class InterfaceWriter extends VelocitySourceWriter {
-
-	/**
-	 * Location of Interface template for use with velocity.
-	 *
-	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
-	 * to the src/main/resources folder.
-	 */
-	private static final String TEMPLATE = "templates/ElementInterface.vm";
 
 	/**
 	 * Context key for package.
@@ -43,14 +37,14 @@ public class InterfaceWriter extends VelocitySourceWriter {
 	 */
 	private static final String FIELDS = "fields";
 
-	@Builder
 	public InterfaceWriter(
-		String packageName, String interfaceName, @NonNull Fields fields
+		String packageName, String interfaceName, @NonNull Fields fields, Writer writer
 	) {
 		super();
-		this.template = TEMPLATE;
 		context.put(PACKAGE, packageName);
 		context.put(INTERFACE, interfaceName);
 		context.put(FIELDS, fields);
+		this.writer = writer;
 	}
+
 }
