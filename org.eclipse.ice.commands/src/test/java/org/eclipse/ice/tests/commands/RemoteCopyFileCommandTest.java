@@ -63,7 +63,6 @@ public class RemoteCopyFileCommandTest {
 		// Set up the connection using the code already established in
 		// RemoteFileHandlerTest
 		RemoteFileHandlerTest.setUpBeforeClass();
-
 	}
 
 	/**
