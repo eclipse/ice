@@ -25,6 +25,7 @@ import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
+import org.eclipse.ice.tests.data.TestDataPath;
 import org.junit.Test;
 
 /**
@@ -67,9 +68,8 @@ public class ConnectionAuthorizationHandlerFactoryTest {
 	 */
 	@Test
 	public void testTextAuthorization() throws IOException {
-		String credFile = "/tmp/ice-remote-creds.txt";
-		if (System.getProperty("os.name").toLowerCase().contains("win"))
-			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		TestDataPath dataPath = new TestDataPath();
+		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
 
 		// Get a text file authorization handler
 		ConnectionAuthorizationHandler text = factory.getConnectionAuthorizationHandler("text", credFile);
@@ -114,9 +114,8 @@ public class ConnectionAuthorizationHandlerFactoryTest {
 		// Create a text file credential path to get the same username/hostname
 		// as the key, in the event someone is using a host that is not the dummy
 		// server
-		String credFile = "/tmp/ice-remote-creds.txt";
-		if (System.getProperty("os.name").toLowerCase().contains("win"))
-			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		TestDataPath dataPath = new TestDataPath();
+		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
 
 		// Get a text file authorization handler
 		ConnectionAuthorizationHandler text = factory.getConnectionAuthorizationHandler("text", credFile);

@@ -30,6 +30,7 @@ import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.LocalCommand;
 import org.eclipse.ice.commands.RemoteCommand;
 import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
+import org.eclipse.ice.tests.data.TestDataPath;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -118,21 +119,25 @@ public class CommandTest {
 		commandConfig.setAppendInput(true); // append the input file name to the script executable command
 		commandConfig.setNumProcs("1"); // number of processes is 1
 		commandConfig.setOS(System.getProperty("os.name"));
+		
 		// Set the remote working directory, where the command will be processed
 		commandConfig.setRemoteWorkingDirectory("/tmp/remoteCommandTestDirectory");
 		// Set the connection configuration to a dummy remote connection
 
 		// Make the ConnectionConfiguration and set it up
 		ConnectionConfiguration connectConfig = new ConnectionConfiguration();
+		
 		// Make the connection configuration
 		// Get a factory which determines the type of authorization
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		String credFile = "/tmp/ice-remote-creds.txt";
-		if (System.getProperty("os.name").toLowerCase().contains("win"))
-			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		TestDataPath dataPath = new TestDataPath();
+		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
+
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
+		
 		// Set it
 		connectConfig.setAuthorization(auth);
 		connectConfig.setName("dummyConnection");
@@ -160,18 +165,21 @@ public class CommandTest {
 	public void testLocalCommand() {
 		System.out.println("\n\n\n\nTest a local command!");
 		String os = System.getProperty("os.name");
+		
 		// Set the CommandConfiguration class
 		// See {@link org.eclipse.ice.commands.CommandConfiguration} for detailed info
 		// on each
 		CommandConfiguration commandConfig = new CommandConfiguration();
 		commandConfig.setCommandId(1);
 		commandConfig.setExecutable("./test_code_execution.sh");
+		
 		// If the os is windows, set the executable appropriately
 		if (os.toLowerCase().contains("win")) {
 			// two slashes so that java doesn't read it as a tab
 			commandConfig.setExecutable(".\\test_code_execution.ps1");
 			commandConfig.setInterpreter("powershell.exe");
 		}
+		
 		commandConfig.addInputFile("someInputFile", "someInputFile.txt");
 		commandConfig.setErrFileName("someLocalErrFile.txt");
 		commandConfig.setOutFileName("someLocalOutFile.txt");
@@ -226,14 +234,16 @@ public class CommandTest {
 
 		// Make the ConnectionConfiguration and set it up
 		ConnectionConfiguration connectConfig = new ConnectionConfiguration();
+		
 		// Make the connection configuration
 		// Get a factory which determines the type of authorization
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		String credFile = "/tmp/ice-remote-creds.txt";
-		if (System.getProperty("os.name").toLowerCase().contains("win"))
-			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		TestDataPath dataPath = new TestDataPath();
+		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
+
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
 		// Set it
 		connectConfig.setAuthorization(auth);
@@ -292,14 +302,16 @@ public class CommandTest {
 	public void testArgumentCommand() {
 		// Make the ConnectionConfiguration and set it up
 		ConnectionConfiguration connectConfig = new ConnectionConfiguration();
+		
 		// Make the connection configuration
 		// Get a factory which determines the type of authorization
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		String credFile = "/tmp/ice-remote-creds.txt";
-		if (System.getProperty("os.name").toLowerCase().contains("win"))
-			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		TestDataPath dataPath = new TestDataPath();
+		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
+
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
 		// Set it
 		connectConfig.setAuthorization(auth);

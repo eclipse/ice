@@ -25,6 +25,7 @@ import org.eclipse.ice.commands.EmailUpdateHandler;
 import org.eclipse.ice.commands.HTTPCommandUpdateHandler;
 import org.eclipse.ice.commands.ICommandUpdateHandler;
 import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
+import org.eclipse.ice.tests.data.TestDataPath;
 import org.junit.Test;
 
 /**
@@ -147,15 +148,14 @@ public class CommandFactoryUpdaterTest {
 	 */
 	private EmailUpdateHandler setupEmailUpdateHandler() {
 		// Get a text file with credentials
-		String credFile = "/tmp/email-creds.txt";
-		if (System.getProperty("os.name").toLowerCase().contains("win"))
-			credFile = "C:\\Users\\Administrator\\email-creds.txt";
+		TestDataPath dataPath = new TestDataPath();
+		String credFile = dataPath.resolve("commands/ice-email-creds.txt").toString();
 
 		TxtFileConnectionAuthorizationHandler auth = new TxtFileConnectionAuthorizationHandler();
 		auth.setOption(credFile);
 		EmailUpdateHandler handler = new EmailUpdateHandler();
 		handler.setCredHandler(auth);
-
+		handler.setMailPort("587");
 		return handler;
 	}
 }
