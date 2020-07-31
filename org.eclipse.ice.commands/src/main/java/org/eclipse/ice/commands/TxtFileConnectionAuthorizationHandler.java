@@ -63,6 +63,7 @@ public class TxtFileConnectionAuthorizationHandler extends ConnectionAuthorizati
 		try (Scanner scanner = new Scanner(credFile)) {
 			// Skip the username since it has already been set
 			username = scanner.next();
+			
 			// Get the password
 			char[] pwd = scanner.next().toCharArray();
 			return pwd;

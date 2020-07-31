@@ -39,6 +39,7 @@ import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.RemoteFileHandler;
+import org.eclipse.ice.tests.data.TestDataPath;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -295,13 +296,15 @@ public class RemoteFileHandlerTest {
 	private static ConnectionConfiguration makeConnectionConfiguration() {
 		// Set the connection configuration to a dummy remote connection
 		ConnectionConfiguration config = new ConnectionConfiguration();
-		// Get a factory which determines the type of authorization
+
+		// Get a factory which determines the type of authorization		
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		String credFile = "/tmp/ice-remote-creds.txt";
-		if (System.getProperty("os.name").toLowerCase().contains("win"))
-			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		TestDataPath dataPath = new TestDataPath();
+		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
+
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
 		// Set it
 		config.setAuthorization(auth);

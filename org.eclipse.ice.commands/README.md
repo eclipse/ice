@@ -20,11 +20,16 @@ $ mvn clean verify
 
 In both cases one can skip the tests by including `-DskipTests` in your build. 
 
-#### Dependencies
-All dependencies are noted in the `pom` file, and are within Maven central. Thus, there should be no external dependencies that are necessary when running the Commands API.
+### Dependencies
+All dependencies are noted in the `pom` file, and all but one are within maven central. The only non-centralized dependency is the ICE package `org.eclipse.ice.tests.data`. To install it, perform the following commands (after cloning the ICE repositiory) so that the Commands package can build successfully:
 
-#### Note about tests
-The automated testing is performed with a dummy remote host, which has private credentials. Thus, if the tests are built with the package, a significant portion of the tests will fail due to the fact that the dummy remote host credentials are not distributed publicly. To solve this, one may enter any generic remote host credentials into the file `/tmp/ice-remote-creds.txt` in the following order
+```shell
+$ cd org.eclipse.ice.tests
+$ mvn clean install
+```
+
+### Notes about tests
+The automated testing is performed with a dummy remote host, which has private credentials. Thus, if the tests are built with the package, a significant portion of the tests will fail due to the fact that the dummy remote host credentials are not distributed publicly. To solve this, one may enter any generic remote host credentials into the file `$TEST_DATA_PATH/commands/ice-remote-creds.txt` in the following order
 
 ```
 username 
@@ -32,7 +37,7 @@ password
 hostname
 ```
 
-Windows users need to put their ssh credentials into the file located at `C:\Users\Adminstrator\ice-remote-creds.txt` in order for the tests to properly function.
+See the README in `org.eclipse.ice.tests/org.eclipse.ice.tests.data` for information regarding the `$TEST_DATA_PATH` environment variable; [this link](https://github.com/dbluhm/ice/blob/next/org.eclipse.ice.tests/org.eclipse.ice.tests.data/README.md) takes you to the README on the `next` branch.
 
 The automated tests will then grab the necessary credentials from this file to run. Any valid ssh connection will work. If you still find that the tests fail, ensure that the ssh connection you are using has been logged into before from your host computer such that there is a key fingerprint associated to that host in your `~/.ssh/known_hosts` file. The Commands package requires that this key exists in order for authentication to proceed, no matter what form of authentication you use. In the event that tests fail on a host that already exists in `known_hosts` (e.g. with the error message `server key did not validate`, try deleting your `known_hosts` file (or the entries in your `known_hosts` that correspond to the host you are trying to run the tests on), logging in again to re-establish a fingerprint, and running the tests again. 
 
@@ -46,7 +51,7 @@ ConnectionManagerFactory.getConnectionManager().setRequireStrictHostKeyChecking(
 Note that this is also a way through which ssh validation can be performed in the package for running actual remote commands/file transfers.
 
 #### EmailHandler test
-To test the `EmailUpdateHandler` class, a similar file to the `/tmp/ice-remote-creds.txt` file must be created. Instead, a file in the location `/tmp/ice-email-creds.txt` must exist which contains the following information:
+To test the `EmailUpdateHandler` class, a similar file to the ssh credential file must be created. Instead, a file in the location `$TEST_DATA_PATH/commands/ice-email-creds.txt` must exist which contains the following information:
 
 ```
 email@address
@@ -70,9 +75,10 @@ Then you should be able to remotely login via `ssh -i /path/to/key username@host
 For the keygen connection tests to pass, you should also create a key to a remote host that the tests expect to find. This can be done with any arbitrary remote server that you have credential access to; however, the key must be named dummyhostkey and must exist in your home `.ssh` directory. In other words, the key must be here:
 
 ```
-~/.ssh/dummyhostkey
+$HOME/.ssh/dummyhostkey
 ```
 
+where `$HOME` is the result returned from `System.getProperty("user.home")`.
 
 
 

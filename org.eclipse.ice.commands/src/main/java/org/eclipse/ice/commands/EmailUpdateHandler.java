@@ -40,6 +40,9 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 
 	// Text file credential handler for sender's email creds
 	TxtFileConnectionAuthorizationHandler credHandler;
+	
+	/// Mail port to email over, depends on client
+	private String mailPort = "25";
 
 	/**
 	 * Default constructor
@@ -55,7 +58,7 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 		// Create some properties and setup the default 
 		// server properties
 		Properties properties = System.getProperties();
-		properties.put("mail.smtp.port", "25");
+		properties.put("mail.smtp.port", mailPort);
 		properties.put("mail.smtp.auth", "true");
 		properties.put("mail.smtp.starttls.enable", "true"); // TLS
 		// Setup mail server
@@ -69,6 +72,7 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 						                          String.valueOf(credHandler.getPassword()));
 			}
 		});
+		
 		// Set session to debug just to be explicit
 		session.setDebug(true);
 
@@ -119,6 +123,14 @@ public class EmailUpdateHandler implements ICommandUpdateHandler {
 	@Override
 	public void setMessage(String message) {
 		this.emailText = message;
+	}
+	
+	/**
+	 * Setter for mail port that depends on email client used
+	 * @param mailPort
+	 */
+	public void setMailPort(String mailPort) {
+		this.mailPort = mailPort;
 	}
 
 }

@@ -12,7 +12,6 @@
 package org.eclipse.ice.tests.commands;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +36,7 @@ import org.eclipse.ice.commands.LocalFileHandler;
 import org.eclipse.ice.commands.RemoteCommand;
 import org.eclipse.ice.commands.RemoteFileHandler;
 import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
+import org.eclipse.ice.tests.data.TestDataPath;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -179,13 +179,17 @@ public class CommandFactoryTest {
 		// This is the connection where the job will be executed
 		// Get a factory which determines the type of authorization
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		String keyPath = System.getProperty("user.home") + "/.ssh/somekey";
+		TestDataPath keyDataPath = new  TestDataPath();
+		String keyPath = keyDataPath.resolve("commands/somekey").toString();
+
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("keypath",
 				keyPath);
 		auth.setHostname("hostname");
 		auth.setUsername("password");
+		
 		// Set it
 		ConnectionConfiguration firstConn = new ConnectionConfiguration();
 		firstConn.setAuthorization(auth);
@@ -196,9 +200,9 @@ public class CommandFactoryTest {
 		firstConn.deleteWorkingDirectory(false);
 
 		ConnectionConfiguration secondConn = new ConnectionConfiguration();
-		String credFile = "/tmp/ice-remote-creds.txt";
-		if(System.getProperty("os.name").toLowerCase().contains("win"))
-			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		
+		TestDataPath dataPath = new TestDataPath();
+		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();		
 		
 		ConnectionAuthorizationHandler intermAuth = authFactory.getConnectionAuthorizationHandler("text",credFile);
 		secondConn.setAuthorization(intermAuth);
@@ -692,9 +696,9 @@ public class CommandFactoryTest {
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		String credFile = "/tmp/ice-remote-creds.txt";
-		if (System.getProperty("os.name").toLowerCase().contains("win"))
-			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		TestDataPath dataPath = new TestDataPath();
+		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
+
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
 		// Set it
 		cfg.setAuthorization(auth);
