@@ -68,6 +68,12 @@ public class RemoteFileHandlerTest {
 	static Connection fileTransferConn = new Connection();
 
 	/**
+	 * A TDP for collecting config files
+	 */
+	static TestDataPath dataPath = new TestDataPath();
+	
+	
+	/**
 	 * Setup the dummy connection so that the file transfer tests can access an ssh
 	 * connection
 	 * 
@@ -302,7 +308,6 @@ public class RemoteFileHandlerTest {
 		
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		TestDataPath dataPath = new TestDataPath();
 		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
 
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
