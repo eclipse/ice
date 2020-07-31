@@ -12,7 +12,6 @@
 package org.eclipse.ice.tests.commands;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +36,7 @@ import org.eclipse.ice.commands.LocalFileHandler;
 import org.eclipse.ice.commands.RemoteCommand;
 import org.eclipse.ice.commands.RemoteFileHandler;
 import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
+import org.eclipse.ice.tests.data.TestDataPath;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -55,28 +55,28 @@ public class CommandFactoryTest {
 	 * The hostname for which the job should run on. Default to local host name for
 	 * now
 	 */
-	String hostname = getLocalHostname();
+	private String hostname = getLocalHostname();
 
 	/**
 	 * Create a command factory to use for getting the commands.
 	 */
-	CommandFactory factory = new CommandFactory();
-
-	/**
-	 * A string containing the working directory for the executable to run in
-	 */
-	String workingDirectory;
+	private CommandFactory factory = new CommandFactory();
 
 	/**
 	 * Get the present working directory to run things in
 	 */
-	String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
+	private String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
 
 	/**
 	 * A connection configuration with which to test
 	 */
-	ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
+	private ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
 
+	/**
+	 * A TDP for collecting configuration files to run tests
+	 */
+	private TestDataPath dataPath = new TestDataPath();
+	
 	/**
 	 * Default constructor
 	 */
@@ -179,13 +179,16 @@ public class CommandFactoryTest {
 		// This is the connection where the job will be executed
 		// Get a factory which determines the type of authorization
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		String keyPath = System.getProperty("user.home") + "/.ssh/somekey";
+		String keyPath = dataPath.resolve("commands/somekey").toString();
+
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("keypath",
 				keyPath);
 		auth.setHostname("hostname");
 		auth.setUsername("password");
+		
 		// Set it
 		ConnectionConfiguration firstConn = new ConnectionConfiguration();
 		firstConn.setAuthorization(auth);
@@ -196,10 +199,9 @@ public class CommandFactoryTest {
 		firstConn.deleteWorkingDirectory(false);
 
 		ConnectionConfiguration secondConn = new ConnectionConfiguration();
-		String credFile = "/tmp/ice-remote-creds.txt";
-		if(System.getProperty("os.name").toLowerCase().contains("win"))
-			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
 		
+		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();		
+			
 		ConnectionAuthorizationHandler intermAuth = authFactory.getConnectionAuthorizationHandler("text",credFile);
 		secondConn.setAuthorization(intermAuth);
 		secondConn.setName("executeConnection");
@@ -689,12 +691,12 @@ public class CommandFactoryTest {
 		ConnectionConfiguration cfg = new ConnectionConfiguration();
 		// Make the connection configuration
 		// Get a factory which determines the type of authorization
+		
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		String credFile = "/tmp/ice-remote-creds.txt";
-		if (System.getProperty("os.name").toLowerCase().contains("win"))
-			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
+
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
 		// Set it
 		cfg.setAuthorization(auth);

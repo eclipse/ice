@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import org.eclipse.ice.commands.EmailUpdateHandler;
 import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
+import org.eclipse.ice.tests.data.TestDataPath;
 import org.junit.Test;
 
 /**
@@ -39,10 +40,9 @@ public class EmailHandlerTest {
 	public void testEmailNotificationPostUpdate() {
 
 		// Get a text file with credentials
-		String credFile = "/tmp/email-creds.txt";
-		if (System.getProperty("os.name").toLowerCase().contains("win"))
-			credFile = "C:\\Users\\Administrator\\email-creds.txt";
-
+		TestDataPath dataPath = new TestDataPath();
+		String credFile = dataPath.resolve("commands/ice-email-creds.txt").toString();
+		
 		TxtFileConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
 		handler.setOption(credFile);
 
@@ -51,6 +51,7 @@ public class EmailHandlerTest {
 		updater.setCredHandler(handler);
 		updater.setMessage("This is a test updater");
 		updater.setSubject("This is a test subject");
+		updater.setMailPort("587"); // gmail mail port
 		try {
 			updater.postUpdate();
 		} catch (IOException e) {
@@ -66,6 +67,7 @@ public class EmailHandlerTest {
 	 */
 	@Test
 	public void testEmailNotificationPostUpdateBadCreds()  {
+		// Just make up some dummy file that doesn't actually exist
 		String  credFile = "/tmp/dumFile.txt";
 		if (System.getProperty("os.name").toLowerCase().contains("win"))
 			credFile = "C:\\Users\\Administrator\\dumFile.txt";

@@ -27,6 +27,7 @@ import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.KeyPathConnectionAuthorizationHandler;
+import org.eclipse.ice.tests.data.TestDataPath;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -60,6 +61,11 @@ public class ConnectionManagerTest {
 	static ConnectionConfiguration configuration = new ConnectionConfiguration();
 
 	/**
+	 * A TDP for collecting config files
+	 */
+	static TestDataPath dataPath = new TestDataPath();
+	
+	/**
 	 * This function makes a test connection with which to play with
 	 * 
 	 * @throws java.lang.Exception
@@ -70,12 +76,11 @@ public class ConnectionManagerTest {
 		// Set up the configuration with the necessary credentials
 		// Get a factory which determines the type of authorization
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
+		
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
 		ConnectionAuthorizationHandler auth = null;
-		String credFile = "/tmp/ice-remote-creds.txt";
-		if (System.getProperty("os.name").toLowerCase().contains("win"))
-			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
 
 		auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
 
@@ -218,9 +223,7 @@ public class ConnectionManagerTest {
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 
 		// Read in a dummy configuration file that contains credentials
-		String credFile = "/tmp/ice-remote-creds.txt";
-		if (System.getProperty("os.name").toLowerCase().contains("win"))
-			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
 
 		// Set the credentials since they were deleted after closing the previous
 		// connection
@@ -322,9 +325,7 @@ public class ConnectionManagerTest {
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 
 		// Read in a dummy configuration file that contains credentials
-		String credFile = "/tmp/ice-remote-creds.txt";
-		if (System.getProperty("os.name").toLowerCase().contains("win"))
-			credFile = "C:\\Users\\Administrator\\ice-remote-creds.txt";
+		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
 
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
