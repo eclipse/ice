@@ -55,28 +55,28 @@ public class CommandFactoryTest {
 	 * The hostname for which the job should run on. Default to local host name for
 	 * now
 	 */
-	String hostname = getLocalHostname();
+	private String hostname = getLocalHostname();
 
 	/**
 	 * Create a command factory to use for getting the commands.
 	 */
-	CommandFactory factory = new CommandFactory();
-
-	/**
-	 * A string containing the working directory for the executable to run in
-	 */
-	String workingDirectory;
+	private CommandFactory factory = new CommandFactory();
 
 	/**
 	 * Get the present working directory to run things in
 	 */
-	String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
+	private String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
 
 	/**
 	 * A connection configuration with which to test
 	 */
-	ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
+	private ConnectionConfiguration connectionConfig = new ConnectionConfiguration();
 
+	/**
+	 * A TDP for collecting configuration files to run tests
+	 */
+	private TestDataPath dataPath = new TestDataPath();
+	
 	/**
 	 * Default constructor
 	 */
@@ -182,8 +182,7 @@ public class CommandFactoryTest {
 		
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		TestDataPath keyDataPath = new  TestDataPath();
-		String keyPath = keyDataPath.resolve("commands/somekey").toString();
+		String keyPath = dataPath.resolve("commands/somekey").toString();
 
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("keypath",
 				keyPath);
@@ -201,9 +200,8 @@ public class CommandFactoryTest {
 
 		ConnectionConfiguration secondConn = new ConnectionConfiguration();
 		
-		TestDataPath dataPath = new TestDataPath();
 		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();		
-		
+			
 		ConnectionAuthorizationHandler intermAuth = authFactory.getConnectionAuthorizationHandler("text",credFile);
 		secondConn.setAuthorization(intermAuth);
 		secondConn.setName("executeConnection");
@@ -693,10 +691,10 @@ public class CommandFactoryTest {
 		ConnectionConfiguration cfg = new ConnectionConfiguration();
 		// Make the connection configuration
 		// Get a factory which determines the type of authorization
+		
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		TestDataPath dataPath = new TestDataPath();
 		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
 
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);

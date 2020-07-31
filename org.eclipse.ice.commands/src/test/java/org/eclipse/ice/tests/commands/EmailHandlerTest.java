@@ -67,6 +67,7 @@ public class EmailHandlerTest {
 	 */
 	@Test
 	public void testEmailNotificationPostUpdateBadCreds()  {
+		// Just make up some dummy file that doesn't actually exist
 		String  credFile = "/tmp/dumFile.txt";
 		if (System.getProperty("os.name").toLowerCase().contains("win"))
 			credFile = "C:\\Users\\Administrator\\dumFile.txt";

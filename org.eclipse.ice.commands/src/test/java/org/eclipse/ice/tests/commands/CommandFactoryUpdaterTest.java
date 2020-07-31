@@ -39,6 +39,11 @@ import org.junit.Test;
 public class CommandFactoryUpdaterTest {
 
 	/**
+	 * A TDP for collecting config files
+	 */
+	private TestDataPath dataPath = new TestDataPath();
+	
+	/**
 	 * This function tests a command with an HTTPUpdater
 	 */
 	@Test
@@ -148,7 +153,7 @@ public class CommandFactoryUpdaterTest {
 	 */
 	private EmailUpdateHandler setupEmailUpdateHandler() {
 		// Get a text file with credentials
-		TestDataPath dataPath = new TestDataPath();
+		
 		String credFile = dataPath.resolve("commands/ice-email-creds.txt").toString();
 
 		TxtFileConnectionAuthorizationHandler auth = new TxtFileConnectionAuthorizationHandler();

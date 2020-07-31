@@ -50,10 +50,17 @@ public class RemoteCommandTest {
 	 */
 	static ConnectionConfiguration connectConfig = new ConnectionConfiguration();
 
-	// Get the present working directory and add the extra directories to get the
-	// directory where the executable lives
+	/**
+	 * Get the present working directory and add the extra directories to get the
+	 * directory where the executable lives
+	 */
 	static String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
 
+	/**
+	 * A TDP for collecting config files
+	 */
+	static TestDataPath dataPath = new TestDataPath();
+	
 	@After
 	public void tearDown() throws Exception {
 		ConnectionManagerFactory.getConnectionManager().listAllConnections();
@@ -97,7 +104,6 @@ public class RemoteCommandTest {
 		
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		TestDataPath dataPath = new TestDataPath();
 		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
 		
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
@@ -224,7 +230,7 @@ public class RemoteCommandTest {
 		badConfig.setOS(System.getProperty("os.name"));
 
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
-		TestDataPath dataPath = new TestDataPath();
+		
 		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
 
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);

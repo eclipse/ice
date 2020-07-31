@@ -47,8 +47,13 @@ public class CommandTest {
 	 * Get the present working directory Add the following directories where the
 	 * tests live
 	 */
-	String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
+	private String pwd = System.getProperty("user.dir") + "/src/test/java/org/eclipse/ice/tests/commands/";
 
+	/**
+	 * A TDP for collecting config files 
+	 */	
+	private TestDataPath dataPath = new TestDataPath();
+	
 	/**
 	 * Remove output files after tests finish running
 	 * 
@@ -133,7 +138,6 @@ public class CommandTest {
 		
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		TestDataPath dataPath = new TestDataPath();
 		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
 
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
@@ -241,7 +245,6 @@ public class CommandTest {
 		
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		TestDataPath dataPath = new TestDataPath();
 		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
 
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
@@ -309,7 +312,6 @@ public class CommandTest {
 		
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		TestDataPath dataPath = new TestDataPath();
 		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
 
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);

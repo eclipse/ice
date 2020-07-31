@@ -59,8 +59,13 @@ public class RemoteFileBrowserTest {
 	 * A remote file handler test to take advantage of the file creation/deletion
 	 * code and remote connection establishment code already developed there.
 	 */
-	RemoteFileHandlerTest fileCreator = new RemoteFileHandlerTest();
+	private RemoteFileHandlerTest fileCreator = new RemoteFileHandlerTest();
 
+	/**
+	 * A TDP for collecting config files
+	 */
+	static TestDataPath dataPath = new TestDataPath();
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -315,7 +320,6 @@ public class RemoteFileBrowserTest {
 		
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
-		TestDataPath dataPath = new TestDataPath();
 		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
 
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
