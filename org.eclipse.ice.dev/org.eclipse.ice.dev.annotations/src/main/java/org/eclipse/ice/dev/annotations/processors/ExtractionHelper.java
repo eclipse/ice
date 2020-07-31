@@ -10,26 +10,29 @@
  *******************************************************************************/
 package org.eclipse.ice.dev.annotations.processors;
 
+import java.lang.annotation.Annotation;
+import java.util.Optional;
+
 import javax.lang.model.element.Element;
 
 /**
- * Interface for helper classes that generate the various names and metadata for class generation
+ * Base interface for the flavors of extraction helpers for pulling data from Spec classes
  *
  */
-public interface NameGenerator {
-
-	String getImplName(String name);
-
-	String getQualifiedImplName(String fullyQualifiedName);
-
-	String getQualifiedPersistenceHandlerName(String fullyQualifiedName);
-
-	String getPersistenceHandlerName(String name);
-
-	String extractName(Element element);
-
-	String extractCollectionName(Element element);
+public interface ExtractionHelper {
+	/**
+	 * Get the AnnotationMirror of a given type if present on the element.
+	 * @param <T>
+	 * @param element
+	 * @param cls
+	 * @return
+	 */
+	public default <T extends Annotation> Optional<T> getAnnotation(Element element, Class<T> cls) {
+		T value = element.getAnnotation(cls);
+		if (value == null) {
+			return Optional.empty();
+		}
+		return Optional.of(value);
+	}
 	
-	String getPersistenceHandlerInterfaceName();
-
 }

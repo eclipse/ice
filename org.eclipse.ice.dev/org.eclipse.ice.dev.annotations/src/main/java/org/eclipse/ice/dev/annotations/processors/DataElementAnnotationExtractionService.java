@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2020- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Michael Walsh - Initial implementation
+ *******************************************************************************/
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.io.IOException;
@@ -10,7 +20,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.Element;
 import javax.lang.model.util.Elements;
+import javax.tools.JavaFileObject;
 
 import org.eclipse.ice.dev.annotations.DataElement;
 import org.eclipse.ice.dev.annotations.DataField;
@@ -19,8 +31,16 @@ import org.eclipse.ice.dev.annotations.Persisted;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 
+/**
+ * Flavor of ICEAnnotationExtractionService that specializes in extracting data from Spec classes with 
+ * the class level annotation of DataElement
+ *
+ */
 public class DataElementAnnotationExtractionService extends ICEAnnotationExtractionService{
 	
+	/**
+	 * Annotations to not be transfered from member variables of Spec classes to final generated classes
+	 */
 	private static final List<String> nonTransferableAnnotations = Set.of(
 			DataField.class,
 			DataField.Default.class
@@ -30,9 +50,12 @@ public class DataElementAnnotationExtractionService extends ICEAnnotationExtract
 	
 	DataElementAnnotationExtractionService(Elements elementUtils, ObjectMapper mapper,
 			ProcessingEnvironment processingEnv, NameGenerator nameGenerator) {
-		super(elementUtils, mapper, processingEnv, nameGenerator, nonTransferableAnnotations, DataFieldSpec::isDataField);
+		super(elementUtils, mapper, processingEnv, nameGenerator, nonTransferableAnnotations, DataElementAnnotationExtractionService::isDataField);
 	}
 
+	/**
+	 * DataElement specific method of class generation. Includes interfaces, implementation, and possibly a persistence handler
+	 */
 	@Override
 	public List<VelocitySourceWriter> generateWriters(AnnotationExtractionRequest request) throws IOException {
 		AnnotationExtractionResponse response = extract(request);
@@ -49,8 +72,7 @@ public class DataElementAnnotationExtractionService extends ICEAnnotationExtract
 				generateWriter((String)classMetadata.get(ClassTemplateProperties.Meta.QUALIFIEDIMPL.getKey()),
 						getImplementationInitializer(classMetadata))
 				);
-		
-		if(ProcessorUtil.hasAnnotation(request.getElement(), Persisted.class)) {
+		if(specExtractionHelper.hasAnnotation(request.getElement(), Persisted.class)) {
 			//persistence
 			writers.add(
 					generateWriter((String)classMetadata.get(ClassTemplateProperties.PersistenceHandler.QUALIFIED.getKey()),
@@ -61,27 +83,42 @@ public class DataElementAnnotationExtractionService extends ICEAnnotationExtract
 		return writers;
 	}
 	
-	private Function<Writer, VelocitySourceWriter>  getInterfaceInitializer(Map classMetadata) {
-		return (writer) -> DataElementInterfaceWriter.builder()
+	/**
+	 * Lambda that handles the initialization of a DataElementInterfaceWriter
+	 * @param classMetadata
+	 * @return
+	 */
+	private Function<JavaFileObject, VelocitySourceWriter>  getInterfaceInitializer(Map classMetadata) {
+		return (obj) -> DataElementInterfaceWriter.builder()
 				.packageName((String)classMetadata.get(ClassTemplateProperties.Meta.PACKAGE.getKey()))
 				.interfaceName((String)classMetadata.get(ClassTemplateProperties.Meta.INTERFACE.getKey()))
 				.fields((Fields)classMetadata.get(ClassTemplateProperties.Meta.FIELDS.getKey()))
-				.writer(writer)
+				.generatedFile(obj)
 				.build();
 	}
 	
-	private Function<Writer, VelocitySourceWriter>  getImplementationInitializer(Map classMetadata) {
-		return (writer) -> DataElementImplementationWriter.builder()
+	/**
+	 * Lambda that handles the initialization of a DataElementImplementationWriter
+	 * @param classMetadata
+	 * @return
+	 */
+	private Function<JavaFileObject, VelocitySourceWriter>  getImplementationInitializer(Map classMetadata) {
+		return (obj) -> DataElementImplementationWriter.builder()
 				.packageName((String)classMetadata.get(ClassTemplateProperties.Meta.PACKAGE.getKey()))
 				.interfaceName((String)classMetadata.get(ClassTemplateProperties.Meta.INTERFACE.getKey()))
 				.className((String)classMetadata.get(ClassTemplateProperties.Meta.CLASS.getKey()))
 				.fields((Fields)classMetadata.get(ClassTemplateProperties.Meta.FIELDS.getKey()))
-				.writer(writer)
+				.generatedFile(obj)
 				.build();
 	}
 	
-	private Function<Writer, VelocitySourceWriter>  getPersistenceInitializer(Map classMetadata) {
-		return (writer) -> DataElementPersistenceHandlerWriter.builder()
+	/**
+	 * Lambda that handles the initialization of a DataElementPersistenceHandlerWriter
+	 * @param classMetadata
+	 * @return
+	 */
+	private Function<JavaFileObject, VelocitySourceWriter>  getPersistenceInitializer(Map classMetadata) {
+		return (obj) -> DataElementPersistenceHandlerWriter.builder()
 				.packageName((String)classMetadata.get(ClassTemplateProperties.Meta.PACKAGE.getKey()))
 				.className((String)classMetadata.get(ClassTemplateProperties.PersistenceHandler.CLASS.getKey()))
 				.interfaceName((String)classMetadata.get(ClassTemplateProperties.PersistenceHandler.INTERFACE.getKey()))
@@ -89,8 +126,17 @@ public class DataElementAnnotationExtractionService extends ICEAnnotationExtract
 				.elementInterface((String)classMetadata.get(ClassTemplateProperties.PersistenceHandler.ELEMENT_INTERFACE.getKey()))
 				.collection((String)classMetadata.get(ClassTemplateProperties.PersistenceHandler.COLLECTION.getKey()))
 				.implementation((String)classMetadata.get(ClassTemplateProperties.PersistenceHandler.IMPLEMENTATION.getKey()))
-				.writer(writer)
+				.generatedFile(obj)
 				.build();
+	}
+	
+	/**
+	 * Determine if the passed field is a DataField.
+	 * @param element to check
+	 * @return whether element is a DataField
+	 */
+	public static boolean isDataField(Element element) {
+		return element.getAnnotation(DataField.class) != null;
 	}
 	
 }

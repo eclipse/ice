@@ -15,6 +15,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.annotation.processing.Processor;
+import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
 
 import org.eclipse.ice.dev.annotations.processors.DataElementProcessor;
@@ -61,10 +62,16 @@ public class DataElementAnnotationTestHelper {
 	 * @return Compilation result
 	 */
 	public Compilation compile(JavaFileObject... sources) {
-		return javac()
+		try {
+		Compilation c = javac()
 			.withProcessors(
 				getLombokAnnotationProcessor(),
 				new DataElementProcessor()
-			).compile(sources);
+			).compile(sources);		
+		return c;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

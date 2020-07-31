@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2020- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Michael Walsh - Initial implementation
+ *******************************************************************************/
 package org.eclipse.ice.dev.annotations.processors;
 
 import javax.lang.model.element.Element;
@@ -16,6 +26,8 @@ public class DefaultNameGenerator implements NameGenerator {
 	 * The value appended to DataElement Persistence Handler class names.
 	 */
 	private final static String PERSISTENCE_SUFFIX = "PersistenceHandler";
+	
+	private SpecExtractionHelper specExtractionHelper = new SpecExtractionHelper();
 
 	/**
 	 * Return the element name as extracted from the DataElement annotation.
@@ -23,7 +35,7 @@ public class DefaultNameGenerator implements NameGenerator {
 	 */
 	@Override
 	public String extractName(Element element) {
-		return ProcessorUtil.getAnnotation(element, DataElement.class)
+		return specExtractionHelper.getAnnotation(element, DataElement.class)
 			.map(e -> e.name())
 			.orElse(null);
 	}
@@ -34,7 +46,7 @@ public class DefaultNameGenerator implements NameGenerator {
 	 */
 	@Override
 	public String extractCollectionName(Element element) {
-		return ProcessorUtil.getAnnotation(element, Persisted.class)
+		return specExtractionHelper.getAnnotation(element, Persisted.class)
 			.map(p -> p.collection())
 			.orElse(null);
 	}
@@ -66,6 +78,11 @@ public class DefaultNameGenerator implements NameGenerator {
 		return name + PERSISTENCE_SUFFIX;
 	}
 	
+	/**
+	 * 	Generate the fully qualified name for a persistence handler
+	 *	@param fullyQualifiedName
+	 *	@return fullyQualifiedName for a persistence handler
+	 */
 	@Override
 	public String getQualifiedPersistenceHandlerName(String fullyQualifiedName) {
 		return fullyQualifiedName + PERSISTENCE_SUFFIX;

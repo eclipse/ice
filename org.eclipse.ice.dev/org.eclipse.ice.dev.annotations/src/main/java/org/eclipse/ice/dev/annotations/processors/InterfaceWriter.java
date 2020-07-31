@@ -7,11 +7,14 @@
  *
  * Contributors:
  *    Daniel Bluhm - Initial implementation
+ *    Michael Walsh
  *******************************************************************************/
 
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.io.Writer;
+
+import javax.tools.JavaFileObject;
 
 import lombok.Builder;
 import lombok.NonNull;
@@ -38,13 +41,13 @@ public class InterfaceWriter extends VelocitySourceWriter {
 	private static final String FIELDS = "fields";
 
 	public InterfaceWriter(
-		String packageName, String interfaceName, @NonNull Fields fields, Writer writer
+		String packageName, String interfaceName, @NonNull Fields fields, JavaFileObject generatedFile
 	) {
 		super();
 		context.put(PACKAGE, packageName);
 		context.put(INTERFACE, interfaceName);
 		context.put(FIELDS, fields);
-		this.writer = writer;
+		this.generatedFile = generatedFile;
 	}
 
 }

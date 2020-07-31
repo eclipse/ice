@@ -11,9 +11,12 @@
 
 package org.eclipse.ice.dev.annotations.processors;
 
+import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.tools.JavaFileObject;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -28,30 +31,42 @@ public abstract class VelocitySourceWriter {
 
 	protected String template;
 	protected Map<String, Object> context;
-	protected Writer writer;
+	protected JavaFileObject generatedFile;
 	
 	public VelocitySourceWriter() {
 		this.context = new HashMap<>();
 	}
 	
 	/**
+	 * Opens a writer and then proceed to write a source file
+	 * @param generatedFile
+	 * @throws IOException
+	 */
+	public void write(JavaFileObject generatedFile) throws IOException {
+		try (Writer writer = generatedFile.openWriter()) {
+			write(writer);
+		}
+	}
+	
+	/**
 	 * Write the Java Source file to the open writer.
 	 * @param writer to which the java source will be written
+	 * @throws IOException 
 	 */
-	public void write(Writer writer) {
+	public void write(Writer writer) throws IOException {
 		// Make sure Velocity is initialized. Subsequent calls are harmless.
 		Velocity.init(VelocityProperties.get());
 
 		// Make velocity context from generic map context.
 		Context velocityContext = new VelocityContext(context);
-
+		
 		// Write template from context.
 		Velocity.mergeTemplate(template, "UTF-8", velocityContext, writer);
 	}
 	
 	
-	public void write() {
-		write(this.writer);
+	public void write() throws IOException {
+		write(this.generatedFile);
 	}
 	
 }

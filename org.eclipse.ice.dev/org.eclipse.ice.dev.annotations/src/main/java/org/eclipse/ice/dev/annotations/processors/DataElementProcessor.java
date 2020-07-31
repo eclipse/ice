@@ -69,6 +69,8 @@ public class DataElementProcessor extends AbstractProcessor {
 	protected Elements elementUtils;
 	protected ObjectMapper mapper;
 	protected ICEAnnotationExtractionService extractionService;
+	private SpecExtractionHelper specExtractionHelper = new SpecExtractionHelper();
+	
 
 	@Override
 	public void init(final ProcessingEnvironment env) {
@@ -100,7 +102,13 @@ public class DataElementProcessor extends AbstractProcessor {
 				
 				List<VelocitySourceWriter> writers = extractionService.generateWriters(request);
 
-				writers.forEach(writer -> writer.write());
+				writers.forEach(writer -> {
+					try {
+						writer.write();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				});
 				
 			} catch (final IOException | InvalidDataElementSpec e) {
 				messager.printMessage(Diagnostic.Kind.ERROR, stackTraceToString(e));
@@ -115,11 +123,16 @@ public class DataElementProcessor extends AbstractProcessor {
 	 * @return the extracted name
 	 */
 	private String extractName(Element element) {
-		return ProcessorUtil.getAnnotation(element, DataElement.class)
+		return specExtractionHelper.getAnnotation(element, DataElement.class)
 			.map(e -> e.name())
 			.orElse(null);
 	}
 	
+	/**
+	 * Determine if a given annotated element is a valid class for transformation
+	 * @param element
+	 * @return
+	 */
 	private boolean valid(Element element) {
 		return element.getKind() == ElementKind.CLASS;
 	}

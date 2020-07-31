@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2020- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Michael Walsh - Initial implementation
+ *******************************************************************************/
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.io.IOException;
@@ -21,6 +31,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Builder;
 
+/**
+ * Base service for the extraction of class data from Spec classes
+ *
+ */
 public abstract class ICEAnnotationExtractionService {
 	
 	private Elements elementUtils;
@@ -29,6 +43,8 @@ public abstract class ICEAnnotationExtractionService {
 	private NameGenerator nameGenerator;
 	private List<String> nonTransferableAnnotations;
 	private Predicate<Element> fieldFilter;
+	protected SpecExtractionHelper specExtractionHelper = new SpecExtractionHelper();
+	protected JsonExtractionHelper jsonExtractionHelper = new JsonExtractionHelper();
 	
 	
 	ICEAnnotationExtractionService(Elements elementUtils, ObjectMapper mapper, ProcessingEnvironment processingEnv, NameGenerator nameGenerator, List<String> nonTransferableAnnotations, Predicate<Element> fieldFilter){
@@ -40,16 +56,33 @@ public abstract class ICEAnnotationExtractionService {
 		this.fieldFilter = fieldFilter;
 	}
 	
+	/**
+	 * Abstract method to be implemented in a specialized manner per annotation to be extracted and class to be generated
+	 * @param request
+	 * @return generated writers used to spawn classes through Velocity
+	 * @throws IOException
+	 */
 	public abstract List<VelocitySourceWriter> generateWriters(AnnotationExtractionRequest request) throws IOException;
 	
-	public VelocitySourceWriter generateWriter(String name, Function<Writer, VelocitySourceWriter> writerInitializer) throws IOException {
+	/**
+	 * Initializes and returns a VelocitySourceWriter
+	 * @param name
+	 * @param writerInitializer
+	 * @return VelocitySourceWriter
+	 * @throws IOException
+	 */
+	public VelocitySourceWriter generateWriter(String name, Function<JavaFileObject, VelocitySourceWriter> writerInitializer) throws IOException {
 		final JavaFileObject generatedClassFile = processingEnv.getFiler()
 				.createSourceFile(name);
-			try (Writer writer = generatedClassFile.openWriter()) {
-				return writerInitializer.apply(writer);
-			}
+		return writerInitializer.apply(generatedClassFile);
 	}
 	
+	/**
+	 * Main entry point into the metadata extraction flow
+	 * @param request
+	 * @return Extracted metadata
+	 * @throws IOException
+	 */
 	public AnnotationExtractionResponse extract(AnnotationExtractionRequest request) throws IOException {
 		Fields fields = extractFields(request);
 		return AnnotationExtractionResponse.builder()
@@ -58,16 +91,28 @@ public abstract class ICEAnnotationExtractionService {
 				.build();
 	}
 	
+	/**
+	 * Collect fields from Spec class, static default field collection, and json if applicable
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
 	public Fields extractFields(AnnotationExtractionRequest request) throws IOException {
 		Fields fields = new Fields();
 		Element element = request.getElement();
 
 		if(request.isIncludeDefaults()) fields.collect(DefaultFields.get());
-		fields.collect(ProcessorUtil.getAllFields(element, elementUtils, fieldFilter, nonTransferableAnnotations));			//get all members with given filter
-		fields.collect(ProcessorUtil.collectFromDataFieldJson(element, processingEnv, mapper));
+		fields.collect(specExtractionHelper.getAllFields(element, elementUtils, fieldFilter, nonTransferableAnnotations));			//get all members with given filter
+		fields.collect(jsonExtractionHelper.collectFromDataFieldJson(element, processingEnv, mapper));
 		return fields;
 	}
 	
+	/**
+	 * Parse, generate, and store class metadata in a map.
+	 * @param request
+	 * @param fields
+	 * @return metadata map
+	 */
 	public Map extractClassMetadata(AnnotationExtractionRequest request, Fields fields) {
 		Map context = new HashMap<String, Object>();
 		Element element = request.getElement();
