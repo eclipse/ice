@@ -43,19 +43,22 @@ import org.eclipse.ice.data.IDataElement;
  * 
  * Tasks store state data externally and do not control their own storage. Thus
  * the must be configured when built to store state to the proper location. If
- * no state controller is provided, tasks will attempt to store state locally
- * by default. State storage is separate from data storage, which is tracked by
- * individual data models.
+ * no state controller is provided, tasks will attempt to store state in 
+ * memory. State data storage is separate from client data storage, which is 
+ * tracked by individual data models. State data refers specifically to data 
+ * that tracks the status of the Task, not data that is used as input or 
+ * gathered as output from the action which is generally referred to as action 
+ * or client data.
  * 
  * Tasks can be observed by listeners (see {@link ITaskListener}). Events are
  * dispatched asynchronously and listeners are not consulted for command and
  * control.
  * 
- * Data is injected into tasks using a setter instead of including it directly
- * in the run() operation. This supports option-operand separation and a
- * specific case of its use is in the execution of multiple tasks
- * simultaneously without the caller knowing anything about the data
- * configuration.
+ * Client data is injected into tasks using a setter instead of including it 
+ * directly in the run() operation. This supports option-operand separation and
+ * a specific case of its use is in the execution of multiple tasks
+ * simultaneously without the caller knowing anything about the client data
+ * configuration and types.
  * 
  * Thoughts on provenance tracking? ICE 2.0 used a log file.
  * 
@@ -71,16 +74,18 @@ import org.eclipse.ice.data.IDataElement;
 public interface ITask<T extends IDataElement<T>> {
 	
 	/**
-	 * This operation sets the data on which the task should execute.
+	 * This operation sets the action or client data on which the task should 
+	 * execute.
 	 * @param taskData The data for the task
 	 */
-	public void setData(T taskData);
+	public void setActionData(T actionData);
 	
 	/**
-	 * This operation gets the data on which the task is working.
-	 * @return the data
+	 * This operation gets the action or client data on which the task is 
+	 * working.
+	 * @return the data used with the action
 	 */
-	public T getData();
+	public T getActionData();
 	
 	/**
 	 * This function sets the Action that the task executes.
@@ -115,5 +120,13 @@ public interface ITask<T extends IDataElement<T>> {
 	 * @return the state
 	 */
 	public TaskState getState();
+	
+	/**
+	 * This operation returns the full set of state data for the Task. This
+	 * includes all data available for a standard identifiable data element.
+	 * @return the full set of state data for the task.
+	 */
+	public TaskStateData getTaskStateData();
+
 
 }
