@@ -37,8 +37,16 @@ import org.junit.Test;
  */
 public class ConnectionAuthorizationHandlerFactoryTest {
 
+	/**
+	 * A factory for generating the authorizations
+	 */
 	private ConnectionAuthorizationHandlerFactory factory = new ConnectionAuthorizationHandlerFactory();
 
+	/**
+	 * A TDP for collecting config files
+	 */
+	private TestDataPath dataPath = new TestDataPath();
+	
 	/**
 	 * Tests local authorization of
 	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory#getConnectionAuthorizationHandler(String)}
@@ -68,7 +76,7 @@ public class ConnectionAuthorizationHandlerFactoryTest {
 	 */
 	@Test
 	public void testTextAuthorization() throws IOException {
-		TestDataPath dataPath = new TestDataPath();
+		
 		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
 
 		// Get a text file authorization handler
@@ -114,7 +122,6 @@ public class ConnectionAuthorizationHandlerFactoryTest {
 		// Create a text file credential path to get the same username/hostname
 		// as the key, in the event someone is using a host that is not the dummy
 		// server
-		TestDataPath dataPath = new TestDataPath();
 		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
 
 		// Get a text file authorization handler
