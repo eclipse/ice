@@ -26,7 +26,9 @@ import org.eclipse.ice.data.IDataElement;
  * 
  * In addition to actions, tasks use Hooks, a special type of Action that 
  * executes either before or after another Action to support the execution of 
- * that main Action. The list of supported hook types is provided below.
+ * that main Action. The list of supported hook types is provided below. Using
+ * hooks is optional, but has the benefit of reducing complexity and clarifying
+ * the execution instructions.
  * 
  * When directed to execute, tasks will execute all hooks and the action 
  * according to the execution order provided in the hook type table (see 
@@ -96,9 +98,17 @@ public interface ITask<T extends IDataElement<T>> {
 	
 	/**
 	 * This operation executes the action.
-	 * @return the state of the task after exection.
+	 * @return the state of the task after execution.
 	 */
 	public TaskState execute();
+	
+	/**
+	 * This operation cancels the execution of the action if it is running.
+	 * @return the state once execution is cancelled. The task will generally
+	 * revert to the ready state, but in some cases canceling may cause 
+	 * failure.
+	 */
+	public TaskState cancel();
 	
 	/**
 	 * This operation returns the current state of the Task
