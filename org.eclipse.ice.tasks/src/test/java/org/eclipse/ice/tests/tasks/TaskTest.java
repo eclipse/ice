@@ -29,28 +29,42 @@ import org.junit.jupiter.api.Test;
 class TaskTest {
 
 	/**
-	 * This function tests basic initialization and state assignment up to the point
-	 * of execution, but it does not execute the task.
+	 * This function tests basic initialization and state assignment up to the 
+	 * point of execution, but it does not execute the task.
 	 */
 	@Test
 	void testConstruction() {
+		
+		// Test incorrect construction without state data
+		try {
+			Task<TestData> errorTask = new Task<TestData>(null);
+			// Fail if no exception is caught.
+			fail("Expected runtime error for null task state data was not "
+					+ "caught.");
+		} catch (RuntimeException e) {
+			// Nothing do to. The exception was caught as expected.
+		}
 
-		// Create the task and initialize it with test hooks and an action
+		// Create the task
 		Task<TestData> testTask = new Task<TestData>(new TaskStateDataImplementation());
-		TestHook hook1 = new TestHook();
-		TestHook hook2 = new TestHook();
-		testTask.addHook(hook1);
-		testTask.addHook(hook2);
-		TestAction action = new TestAction();
-		testTask.setAction(action);
-
 		// Check the initial state
 		assertEquals(TaskState.INITIALIZED,testTask.getState());
-
+		
 		// Check the initial task state data
 		TaskStateData stateData = testTask.getTaskStateData();
 		assertNotNull(stateData);
 		// FIXME! - Check some more stuff!
+		
+		// Initialize it with test hooks and an action
+		TestHook<TestData> hook1 = new TestHook<TestData>();
+		TestHook<TestData> hook2 = new TestHook<TestData>();
+		testTask.addHook(hook1);
+		testTask.addHook(hook2);
+		TestAction<TestData> action = new TestAction<TestData>();
+		testTask.setAction(action);
+
+		// At this point, it should be in the waiting state
+		assertEquals(TaskState.WAITING,testTask.getState());
 		
 		// Set some test data
 		TestData data = new TestDataImplementation();
@@ -68,82 +82,3 @@ class TaskTest {
 	}
 
 }
-
-
-//package org.eclipse.ice.workflow;
-//
-//import java.io.File;
-//import java.io.IOException;
-//import java.util.EnumSet;
-//
-//import org.eclipse.ice.commands.FileHandlerFactory;
-//import org.eclipse.ice.commands.IFileHandler;
-//import org.springframework.statemachine.StateContext;
-//import org.springframework.statemachine.StateMachine;
-//import org.springframework.statemachine.action.Action;
-//import org.springframework.statemachine.config.StateMachineBuilder;
-//import org.springframework.statemachine.config.StateMachineBuilder.Builder;
-//
-//public class TaskTest {
-//
-//	static String name = "ICEIII/ice/org.eclipse.ice.workflow/src/main/resources/test1.txt";
-//	static String newName = "ICEIII/ice/org.eclipse.ice.workflow/src/main/resources/test2.txt";
-//
-//	static public StateMachine<WorkflowEngine.States, WorkflowEngine.Events> buildMachine()
-//			throws Exception {
-//		Builder<WorkflowEngine.States, WorkflowEngine.Events> builder = new StateMachineBuilder.Builder<>();
-//
-//		builder.configureStates().withStates()
-//				.initial(WorkflowEngine.States.INITIALIZED)
-//				.states(EnumSet.allOf(WorkflowEngine.States.class));
-//
-//		builder.configureTransitions().withExternal()
-//				.source(WorkflowEngine.States.INITIALIZED)
-//				.target(WorkflowEngine.States.EXECUTING)
-//				.event(WorkflowEngine.Events.PARAMETERS_RECEIVED).and()
-//				.withExternal().source(WorkflowEngine.States.EXECUTING)
-//				.target(WorkflowEngine.States.FINISHED)
-//				.action(new Action<WorkflowEngine.States, WorkflowEngine.Events>() {
-//
-//					@Override
-//					public void execute(
-//							StateContext<WorkflowEngine.States, WorkflowEngine.Events> context) {
-//						try {
-//							moveFile(name, newName);
-//						} catch (IOException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-//					}
-//				}).event(WorkflowEngine.Events.EXECUTION_COMPLETE);
-//
-//		return builder.build();
-//	}
-//
-//	public static void moveFile(final String filePath, final String newFilePath)
-//			throws IOException {
-//
-//		String home = System.getProperty("user.home");
-//		String separator = String.valueOf(File.separatorChar);
-//		String homePath = home + separator;
-//
-//		FileHandlerFactory factory = new FileHandlerFactory();
-//		IFileHandler fileHandler = factory.getFileHandler();
-//		fileHandler.move(homePath + filePath, homePath + newFilePath);
-//		return;
-//	}
-//
-//	public static void main(String[] args) throws Exception {
-//
-//		StateMachine<WorkflowEngine.States, WorkflowEngine.Events> taskProcessor = buildMachine();
-//		taskProcessor.start();
-//		taskProcessor.sendEvent(WorkflowEngine.Events.PARAMETERS_RECEIVED);
-//		taskProcessor.sendEvent(WorkflowEngine.Events.EXECUTION_COMPLETE);
-//		System.out.println(taskProcessor.getState());
-//
-//		return;
-//	}
-//
-//}
-//
-//

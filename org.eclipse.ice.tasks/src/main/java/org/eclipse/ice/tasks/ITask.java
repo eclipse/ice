@@ -42,13 +42,14 @@ import org.eclipse.ice.data.IDataElement;
  * postprocessing hooks.
  * 
  * Tasks store state data externally and do not control their own storage. Thus
- * the must be configured when built to store state to the proper location. If
- * no state controller is provided, tasks will attempt to store state in 
- * memory. State data storage is separate from client data storage, which is 
- * tracked by individual data models. State data refers specifically to data 
- * that tracks the status of the Task, not data that is used as input or 
- * gathered as output from the action which is generally referred to as action 
- * or client data.
+ * the must be configured when built to store state to the proper location. 
+ * State data storage is separate from client data storage, which is tracked by
+ * individual data models. State data refers specifically to data that tracks 
+ * the status of the Task, not data that is used as input or gathered as output 
+ * from the action which is generally referred to as action or client data. The
+ * TaskDataState object must be provided on construction by the caller of the
+ * constructor, which in most cases should be a builder or dependency injection
+ * engine.
  * 
  * Tasks can be observed by listeners (see {@link ITaskListener}). Events are
  * dispatched asynchronously and listeners are not consulted for command and
@@ -124,6 +125,16 @@ public interface ITask<T extends IDataElement<T>> {
 	/**
 	 * This operation returns the full set of state data for the Task. This
 	 * includes all data available for a standard identifiable data element.
+	 * This data is provided primarily for diagnostic and planning purposes.
+	 * 
+	 * Note that the task state data returned is a copy of the state data
+	 * since clients should not be able to directly influence the state of
+	 * the task through its data.
+	 * 
+	 * Clients using this simply to gather the state of the task should call
+	 * getState() instead since it does not include a costly copy and
+	 * extensive metadata.
+	 * 
 	 * @return the full set of state data for the task.
 	 */
 	public TaskStateData getTaskStateData();
