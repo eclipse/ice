@@ -25,7 +25,7 @@
   	<module>../org.eclipse.ice.parent</module>
   	<module>../org.eclipse.ice.dev</module>
   	<module>../org.eclipse.ice.archetypes</module>
-  <!--	<module>../org.eclipse.ice.commands</module> -->
+    <module>../org.eclipse.ice.commands</module>
   
   </modules>
 </project>
