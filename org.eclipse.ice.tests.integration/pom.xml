@@ -8,7 +8,7 @@
   <name>Eclipse ICE Integration Tests</name>
   <modules>
     <module>org.eclipse.ice.tests.integration.dev.annotation</module>
-    <module>org.eclipse.ice.tests.integration.commands</module>
+    <module>org.eclipse.ice.tests.commands</module>
   </modules>
   <dependencies>
     <dependency>
