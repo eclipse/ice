@@ -1,8 +1,14 @@
 package org.eclipse.ice.dev.annotations.processors;
 
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.lang.model.element.Modifier;
@@ -31,6 +37,25 @@ import lombok.Singular;
 @Builder
 @JsonDeserialize(builder = Field.FieldBuilder.class)
 public class Field {
+
+	/**
+	 * Import matcher regex.
+	 *
+	 * Consider the following string:
+	 *
+	 * <pre>
+	 * 	{@code java.util.Map$Entry<java.lang.String, java.lang.Object>}
+	 * </pre>
+	 *
+	 * {@code $Entry} will match separately with this regex, allowing us to test
+	 * for strings beginning with {@code $} and dropping it from the imports. We
+	 * do this because inner classes are accessed through their parent class so
+	 * it is the parent class that must be imported. This will also drop values
+	 * to be interpolated by Velocity (as in the case of the
+	 * {@link DefaultFields}' JavascriptValidator) which happens to use the same
+	 * {@code $} character for variable interpolation.
+	 */
+	private static final Pattern IMPORT_RE = Pattern.compile("(\\$?[a-zA-Z0-9.]+)");
 
 	/**
 	 * Name of the field.
@@ -144,19 +169,6 @@ public class Field {
 	}
 
 	/**
-	 * Get a class by name or return null if not found
-	 * @param cls
-	 * @return found class or null
-	 */
-	private static Class<?> getClassOrNull(String cls) {
-		try {
-			return ClassUtils.getClass(cls);
-		} catch (ClassNotFoundException e) {
-			return null;
-		}
-	}
-
-	/**
 	 * Return this Fields name ready for use in a method name.
 	 * @return capitalized name
 	 */
@@ -191,6 +203,57 @@ public class Field {
 	@JsonIgnore
 	public boolean isConstant() {
 		return this.modifiers.contains("final");
+	}
+
+	/**
+	 * Return if this field requires an import.
+	 * @return true if field type requires an import.
+	 */
+	@JsonIgnore
+	public boolean requiresImports() {
+		return type.contains(".") && !ClassUtils.getPackageName(type).equals("java.lang");
+	}
+
+	/**
+	 * Return set of strings representing the required imports of this field.
+	 * @return set of strings to import
+	 */
+	@JsonIgnore
+	public Set<String> getImports() {
+		Set<String> imports = new HashSet<>();
+		Matcher matcher = IMPORT_RE.matcher(type);
+		while (matcher.find()) {
+			String match = matcher.group();
+			// Inner classes and Velocity interpolated variables not included
+			// in imports. No need to import java.lang package (i.e. String is
+			// already available without import).
+			if (!match.startsWith("$") && !match.startsWith("java.lang")) {
+				imports.add(match);
+			}
+		}
+		return imports;
+	}
+
+	/**
+	 * Return the short name of this field's type.
+	 * @return the short name of this field's type.
+	 */
+	@JsonIgnore
+	public String getShortType() {
+		return ClassUtils.getShortCanonicalName(type);
+	}
+
+	/**
+	 * Get a class by name or return null if not found
+	 * @param cls
+	 * @return found class or null
+	 */
+	private static Class<?> getClassOrNull(String cls) {
+		try {
+			return ClassUtils.getClass(cls);
+		} catch (ClassNotFoundException e) {
+			return null;
+		}
 	}
 
 	/**
