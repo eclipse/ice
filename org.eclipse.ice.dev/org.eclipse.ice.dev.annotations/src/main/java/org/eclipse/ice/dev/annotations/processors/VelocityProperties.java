@@ -20,6 +20,7 @@ enum VelocityProperties {
 
 	// Set up Velocity using the Singleton approach; ClasspathResourceLoader allows
 	// us to load templates from src/main/resources
+	LIBRARY_PATH("velocimacro.library.path", "templates/common.vm"),
 	RESOURCE_LOADER("resource.loader", "class"),
 	CLASS_RESOURCE_LOADER(
 		"class.resource.loader.class",
