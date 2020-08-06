@@ -46,7 +46,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author Jay Jay Billings
  *
  */
-public class JavascriptValidator<T> implements Serializable {
+public class JavascriptValidator implements Serializable {
 
 	/**
 	 * Logging tool
@@ -88,7 +88,7 @@ public class JavascriptValidator<T> implements Serializable {
 	 * Copy constructor
 	 * @param otherValidator to copy
 	 */
-	public JavascriptValidator(JavascriptValidator<T> otherValidator) {
+	public JavascriptValidator(JavascriptValidator otherValidator) {
 		if (otherValidator != null) {
 			function = otherValidator.function;
 		}
@@ -136,9 +136,9 @@ public class JavascriptValidator<T> implements Serializable {
 		// Check shallow identify and type first
 		if (this == otherObject) {
 			retValue = true;
-		} else if (otherObject instanceof JavascriptValidator<?>) {
+		} else if (otherObject instanceof JavascriptValidator) {
 			@SuppressWarnings("unchecked")
-			JavascriptValidator<T> otherValidator = (JavascriptValidator<T>) otherObject;
+			JavascriptValidator otherValidator = (JavascriptValidator) otherObject;
 			retValue = this.function.equals(otherValidator.function);
 		}
 
@@ -153,7 +153,7 @@ public class JavascriptValidator<T> implements Serializable {
 	 * @throws NoSuchMethodException This exception is thrown if the Javascript
 	 *                               validation function cannot be found.
 	 */
-	public boolean validate(final T data) throws NoSuchMethodException {
+	public boolean validate(final IDataElement data) throws NoSuchMethodException {
 
 		boolean retValue = false;
 		Object result = null;
@@ -196,7 +196,7 @@ public class JavascriptValidator<T> implements Serializable {
 	public Object clone() {
 		try {
 			// Call the copy constructor to create the clone.
-			return new JavascriptValidator<T>(this);
+			return new JavascriptValidator(this);
 		} catch (Exception e) {
 			logger.error("Unable to clone DataElement!", e);
 			return null;
