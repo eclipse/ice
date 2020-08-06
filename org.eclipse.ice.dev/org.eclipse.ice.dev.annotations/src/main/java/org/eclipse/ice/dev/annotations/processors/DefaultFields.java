@@ -22,7 +22,7 @@ public class DefaultFields {
 		.varName("privateId")
 		.type(UUID.class)
 		.docString("The private UUID of this element. This field is left out of matches().")
-		.defaultValue(UUID.class.getCanonicalName() + ".randomUUID()")
+		.defaultValue("UUID.randomUUID()")
 		.match(false)
 		.getter(true)
 		.setter(false)
@@ -113,7 +113,7 @@ public class DefaultFields {
 	 */
 	private static Field validator = Field.builder()
 		.name("validator")
-		.type(JavascriptValidator.class.getCanonicalName() + "<$interface>")
+		.type(JavascriptValidator.class)
 		.docString("The validator used to check the correctness of the data.")
 		.nullable(true)
 		.defaultField(true)
