@@ -149,6 +149,7 @@ public class DataElementProcessor extends AbstractProcessor {
 				.className(element.getImplName())
 				.interfaceName(element.getName())
 				.fields(fields)
+				.types(fields.getTypes())
 				.build()
 				.write(writer);
 		}
@@ -178,6 +179,7 @@ public class DataElementProcessor extends AbstractProcessor {
 				.implementation(element.getImplName())
 				.collection(collectionName)
 				.fields(fields)
+				.types(fields.getTypes())
 				.build()
 				.write(writer);
 		}
@@ -200,6 +202,7 @@ public class DataElementProcessor extends AbstractProcessor {
 				.packageName(element.getPackageName())
 				.interfaceName(element.getName())
 				.fields(fields)
+				.types(new Types(fields.getInterfaceFields()))
 				.build()
 				.write(writer);
 		}
