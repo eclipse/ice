@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2020- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Daniel Bluhm - Initial implementation
+ *******************************************************************************/
+
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.util.HashMap;
@@ -8,6 +19,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * Class for holding and retrieving type information for a collection of Fields.
+ * Stores context needed to prevent name collision.
+ * @author Daniel Bluhm
+ */
 public class Types {
 
 	/**
@@ -22,6 +38,8 @@ public class Types {
 	 * This is used to record collisions by mapping fully qualified types to
 	 * themselves when another type would have conflicted with the shortened
 	 * version.
+	 *
+	 * This map combined with the shortToFull map create a Bidirectional mapping.
 	 */
 	private Map<String, String> fullToShort;
 
@@ -29,6 +47,8 @@ public class Types {
 	 * Lookup table for shortened types to their fully qualified types.
 	 *
 	 * This is used to determine what types must be imported.
+	 *
+	 * This map combined with the fullToShort map create a Bidirectional mapping.
 	 */
 	private Map<String, String> shortToFull;
 
@@ -38,6 +58,12 @@ public class Types {
 	 */
 	private Set<String> allTypes;
 
+	/**
+	 * Instantiate Types.
+	 *
+	 * Constructs bidirectional mapping between full and short type names.
+	 * @param fields for which this Types instance is accountable.
+	 */
 	public Types(Iterable<Field> fields) {
 		this.fullToShort = new HashMap<>();
 		this.shortToFull = new HashMap<>();
@@ -57,15 +83,23 @@ public class Types {
 		for (String type : allTypes) {
 			String shortened = getShortenedType(type);
 			if (collisions.contains(shortened)) {
+				// Collision detected; first instance of collision already
+				// corrected, storeing only this instance.
 				fullToShort.put(type, type);
+				shortToFull.put(type, type);
 			} else if (shortToFull.containsKey(shortened)) {
+				// Collision detected; correct first instance as well as storing
+				// this instance.
 				fullToShort.put(type, type);
 				shortToFull.put(type, type);
 				String previous = shortToFull.remove(shortened);
 				shortToFull.put(previous, previous);
 				fullToShort.put(previous, previous);
+				// Mark this collision as already having its first instance
+				// corrected.
 				collisions.add(shortened);
 			} else {
+				// No collision detected, save to bidirectional mapping
 				fullToShort.put(type, shortened);
 				shortToFull.put(shortened, type);
 			}
@@ -73,8 +107,9 @@ public class Types {
 	}
 
 	/**
-	 * Return the short name of this field's type.
-	 * @return the short name of this field's type.
+	 * Return the shortened type for the given type.
+	 * @param type to shorten
+	 * @return shortened type
 	 */
 	public static String getShortenedType(String type) {
 		StringBuffer shortenedType = new StringBuffer();
@@ -87,8 +122,8 @@ public class Types {
 	}
 
 	/**
-	 * Return set of strings representing the required imports of this field.
-	 * @return set of strings to import
+	 * Get set of imports needed for the fields this types instance handles.
+	 * @return set of imports
 	 */
 	public Set<String> getImports() {
 		return shortToFull.entrySet().stream()
