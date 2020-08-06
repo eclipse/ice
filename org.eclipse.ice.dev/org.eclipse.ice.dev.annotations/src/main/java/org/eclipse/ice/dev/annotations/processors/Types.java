@@ -11,23 +11,8 @@ import java.util.stream.Collectors;
 public class Types {
 
 	/**
-	 * Import matcher regex.
-	 *
-	 * Consider the following string:
-	 *
-	 * <pre>
-	 * 	{@code java.util.Map$Entry<java.lang.String, java.lang.Object>}
-	 * </pre>
-	 *
-	 * {@code $Entry} will match separately with this regex, allowing us to test
-	 * for strings beginning with {@code $} and dropping it from the imports. We
-	 * do this because inner classes are accessed through their parent class so
-	 * it is the parent class that must be imported.
-	 */
-	private static final Pattern IMPORT_RE = Pattern.compile("(\\$?[a-zA-Z0-9.]+)");
-
-	/**
-	 * Type shortener regex.
+	 * Type matching regex used in shortening types. Can also be used for getting
+	 * the last element of a type hierarchy (through capturing group 1).
 	 */
 	private static final Pattern TYPE_SHORTENER = Pattern.compile("(?:\\w+\\.)*([\\w\\$]+)\\b");
 
