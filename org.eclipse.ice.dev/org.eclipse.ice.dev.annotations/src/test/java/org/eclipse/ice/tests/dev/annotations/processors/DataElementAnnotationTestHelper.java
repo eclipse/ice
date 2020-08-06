@@ -13,8 +13,10 @@ package org.eclipse.ice.tests.dev.annotations.processors;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Locale;
 
 import javax.annotation.processing.Processor;
+import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
 import org.eclipse.ice.dev.annotations.processors.DataElementProcessor;
@@ -22,12 +24,22 @@ import org.eclipse.ice.dev.annotations.processors.DataElementProcessor;
 import com.google.testing.compile.Compilation;
 
 import static com.google.testing.compile.Compiler.*;
+import static com.google.testing.compile.CompilationSubject.*;
 
 /**
  * Helper class for testing DataElement related annotations.
  * @author Daniel Bluhm
  */
 public class DataElementAnnotationTestHelper {
+
+	private boolean showDiagnostics = false;
+
+	public DataElementAnnotationTestHelper() {
+		String show = System.getenv("SHOW_DIAGNOSTICS");
+		if (show != null && show.equals("true")) {
+			this.showDiagnostics = true;
+		}
+	}
 
 	/**
 	 * Retrieve an instance of Lombok's Annotation Processor.
@@ -55,16 +67,32 @@ public class DataElementAnnotationTestHelper {
 		return p;
 	}
 
+	private void printDiagnostics(Compilation compilation) {
+		for (Diagnostic<? extends JavaFileObject> diag :
+			compilation.diagnostics()
+		) {
+			System.err.println(String.format(
+				"[%s]: %s",
+				diag.getKind().toString(),
+				diag.getMessage(Locale.ENGLISH)
+			));
+		}
+	}
+
 	/**
 	 * Compile the sources with needed processors.
 	 * @param sources to compile
 	 * @return Compilation result
 	 */
 	public Compilation compile(JavaFileObject... sources) {
-		return javac()
+		Compilation compilation = javac()
 			.withProcessors(
 				getLombokAnnotationProcessor(),
 				new DataElementProcessor()
 			).compile(sources);
+		if (showDiagnostics) {
+			printDiagnostics(compilation);
+		}
+		return compilation;
 	}
 }
