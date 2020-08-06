@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
@@ -28,6 +27,7 @@ import javax.tools.StandardLocation;
 import org.eclipse.ice.dev.annotations.DataElement;
 import org.eclipse.ice.dev.annotations.Persisted;
 
+import com.cosium.logging.annotation_processor.AbstractLoggingProcessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auto.service.AutoService;
 
@@ -46,7 +46,7 @@ import com.google.auto.service.AutoService;
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 @AutoService(Processor.class)
-public class DataElementProcessor extends AbstractProcessor {
+public class DataElementProcessor extends AbstractLoggingProcessor {
 	/**
 	 * Return stack trace as string.
 	 * @param e subject exception
@@ -73,7 +73,7 @@ public class DataElementProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
+	public boolean doProcess(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
 		// Iterate over all elements with DataElement Annotation
 		for (final Element elem : roundEnv.getElementsAnnotatedWith(DataElement.class)) {
 			try {

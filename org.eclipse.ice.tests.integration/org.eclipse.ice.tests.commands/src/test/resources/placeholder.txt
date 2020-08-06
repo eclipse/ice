@@ -1,0 +1,1 @@
+This is a file to hold the directory so that git clients will not delete it. This prevents the Maven build process from failing if the directory is not available.
