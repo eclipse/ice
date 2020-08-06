@@ -64,7 +64,6 @@ public class ImplementationWriter extends VelocitySourceWriter {
 		this.context.put(INTERFACE, interfaceName);
 		this.context.put(CLASS, className);
 		this.context.put(FIELDS, fields);
-		this.context.put(FIELDS, fields);
 		this.context.put(TYPES, types);
 	}
 }
