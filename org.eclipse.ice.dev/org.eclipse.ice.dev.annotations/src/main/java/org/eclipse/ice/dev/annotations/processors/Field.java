@@ -39,25 +39,6 @@ import lombok.Singular;
 public class Field {
 
 	/**
-	 * Import matcher regex.
-	 *
-	 * Consider the following string:
-	 *
-	 * <pre>
-	 * 	{@code java.util.Map$Entry<java.lang.String, java.lang.Object>}
-	 * </pre>
-	 *
-	 * {@code $Entry} will match separately with this regex, allowing us to test
-	 * for strings beginning with {@code $} and dropping it from the imports. We
-	 * do this because inner classes are accessed through their parent class so
-	 * it is the parent class that must be imported. This will also drop values
-	 * to be interpolated by Velocity (as in the case of the
-	 * {@link DefaultFields}' JavascriptValidator) which happens to use the same
-	 * {@code $} character for variable interpolation.
-	 */
-	private static final Pattern IMPORT_RE = Pattern.compile("(\\$?[a-zA-Z0-9.]+)");
-
-	/**
 	 * Name of the field.
 	 */
 	String name;
@@ -206,44 +187,6 @@ public class Field {
 	}
 
 	/**
-	 * Return if this field requires an import.
-	 * @return true if field type requires an import.
-	 */
-	@JsonIgnore
-	public boolean requiresImports() {
-		return type.contains(".") && !ClassUtils.getPackageName(type).equals("java.lang");
-	}
-
-	/**
-	 * Return set of strings representing the required imports of this field.
-	 * @return set of strings to import
-	 */
-	@JsonIgnore
-	public Set<String> getImports() {
-		Set<String> imports = new HashSet<>();
-		Matcher matcher = IMPORT_RE.matcher(type);
-		while (matcher.find()) {
-			String match = matcher.group();
-			// Inner classes and Velocity interpolated variables not included
-			// in imports. No need to import java.lang package (i.e. String is
-			// already available without import).
-			if (!match.startsWith("$") && !match.startsWith("java.lang")) {
-				imports.add(match);
-			}
-		}
-		return imports;
-	}
-
-	/**
-	 * Return the short name of this field's type.
-	 * @return the short name of this field's type.
-	 */
-	@JsonIgnore
-	public String getShortType() {
-		return ClassUtils.getShortCanonicalName(type);
-	}
-
-	/**
 	 * Get a class by name or return null if not found
 	 * @param cls
 	 * @return found class or null
@@ -279,7 +222,7 @@ public class Field {
 		 */
 		@JsonIgnore
 		public FieldBuilder type(Class<?> type) {
-			this.type = type.getName().toString();
+			this.type = type.getCanonicalName();
 			this.primitive = type.isPrimitive();
 			return this;
 		}
