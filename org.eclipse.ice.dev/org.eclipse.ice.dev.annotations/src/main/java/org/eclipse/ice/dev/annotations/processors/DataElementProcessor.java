@@ -68,7 +68,7 @@ public class DataElementProcessor extends AbstractProcessor {
 	protected Messager messager;
 	protected Elements elementUtils;
 	protected ObjectMapper mapper;
-	protected ICEAnnotationExtractionService extractionService;
+	protected DataElementAnnotationExtractor extractor;
 	private SpecExtractionHelper specExtractionHelper = new SpecExtractionHelper();
 	
 
@@ -77,7 +77,11 @@ public class DataElementProcessor extends AbstractProcessor {
 		messager = env.getMessager();
 		elementUtils = env.getElementUtils();
 		mapper = new ObjectMapper();
-		extractionService = new DataElementAnnotationExtractionService(elementUtils, mapper, env, new DefaultNameGenerator()); 
+		
+		ICEAnnotationExtractionService extractionService = new ICEAnnotationExtractionService(elementUtils, mapper, env, new DefaultNameGenerator());
+		WriterGenerator writerGenerator = new DataElementWriterGenerator(env);
+		this.extractor = new DataElementAnnotationExtractor(extractionService, writerGenerator);
+		
 		// Set up Velocity using the Singleton approach; ClasspathResourceLoader allows
 		// us to load templates from src/main/resources
 		final Properties p = VelocityProperties.get();
@@ -100,15 +104,7 @@ public class DataElementProcessor extends AbstractProcessor {
 						.className(extractName(elem))
 						.build();
 				
-				List<VelocitySourceWriter> writers = extractionService.generateWriters(request);
-
-				writers.forEach(writer -> {
-					try {
-						writer.write();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				});
+				extractor.generateAndWrite(request);
 				
 			} catch (final IOException | InvalidDataElementSpec e) {
 				messager.printMessage(Diagnostic.Kind.ERROR, stackTraceToString(e));

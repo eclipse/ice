@@ -30,12 +30,13 @@ import org.eclipse.ice.dev.annotations.Persisted;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Builder;
+import lombok.Data;
 
 /**
  * Base service for the extraction of class data from Spec classes
  *
  */
-public abstract class ICEAnnotationExtractionService {
+public class ICEAnnotationExtractionService {
 	
 	private Elements elementUtils;
 	private ObjectMapper mapper;
@@ -47,34 +48,19 @@ public abstract class ICEAnnotationExtractionService {
 	protected JsonExtractionHelper jsonExtractionHelper = new JsonExtractionHelper();
 	
 	
-	ICEAnnotationExtractionService(Elements elementUtils, ObjectMapper mapper, ProcessingEnvironment processingEnv, NameGenerator nameGenerator, List<String> nonTransferableAnnotations, Predicate<Element> fieldFilter){
+	ICEAnnotationExtractionService(Elements elementUtils, ObjectMapper mapper, ProcessingEnvironment processingEnv, NameGenerator nameGenerator){
 		this.elementUtils = elementUtils;
 		this.mapper = mapper;
 		this.processingEnv = processingEnv;
 		this.nameGenerator = nameGenerator;
-		this.nonTransferableAnnotations = nonTransferableAnnotations;
-		this.fieldFilter = fieldFilter;
 	}
 	
-	/**
-	 * Abstract method to be implemented in a specialized manner per annotation to be extracted and class to be generated
-	 * @param request
-	 * @return generated writers used to spawn classes through Velocity
-	 * @throws IOException
-	 */
-	public abstract List<VelocitySourceWriter> generateWriters(AnnotationExtractionRequest request) throws IOException;
+	public void setNonTransferableAnnotations (List<String> nonTransferableAnnotations) {
+		this.nonTransferableAnnotations = nonTransferableAnnotations;
+	}
 	
-	/**
-	 * Initializes and returns a VelocitySourceWriter
-	 * @param name
-	 * @param writerInitializer
-	 * @return VelocitySourceWriter
-	 * @throws IOException
-	 */
-	public VelocitySourceWriter generateWriter(String name, Function<JavaFileObject, VelocitySourceWriter> writerInitializer) throws IOException {
-		final JavaFileObject generatedClassFile = processingEnv.getFiler()
-				.createSourceFile(name);
-		return writerInitializer.apply(generatedClassFile);
+	public void setFieldFilter(Predicate<Element> fieldFilter) {
+		this.fieldFilter = fieldFilter;
 	}
 	
 	/**
@@ -85,9 +71,10 @@ public abstract class ICEAnnotationExtractionService {
 	 */
 	public AnnotationExtractionResponse extract(AnnotationExtractionRequest request) throws IOException {
 		Fields fields = extractFields(request);
+		Map<TemplateProperty, Object> metaData = extractClassMetadata(request, fields);
 		return AnnotationExtractionResponse.builder()
 				.fields(fields)
-				.classMetadata(extractClassMetadata(request, fields))
+				.classMetadata(metaData)
 				.build();
 	}
 	
@@ -113,8 +100,40 @@ public abstract class ICEAnnotationExtractionService {
 	 * @param fields
 	 * @return metadata map
 	 */
-	public Map extractClassMetadata(AnnotationExtractionRequest request, Fields fields) {
-		Map context = new HashMap<String, Object>();
+	public Map<TemplateProperty, Object> extractClassMetadata(AnnotationExtractionRequest request, Fields fields) {
+		ClassSeedData seedData = extractSeedData(request, fields);
+		Map<TemplateProperty, Object> context = generateClassMetadata(seedData);	
+		return context;
+	}
+	
+	protected Map<TemplateProperty, Object> generateClassMetadata(ClassSeedData seedData) {
+		Map<TemplateProperty, Object> context = new HashMap<TemplateProperty, Object>();
+		
+		generateMetaTemplateData(seedData, context);
+		generatePersistenceHandlerTemplateData(seedData, context);
+	
+		return context;
+	}
+	
+	protected void generateMetaTemplateData(ClassSeedData seedData, Map<TemplateProperty, Object> context) {
+		context.put(MetaTemplateProperty.PACKAGE, seedData.getPackageName());
+		context.put(MetaTemplateProperty.INTERFACE, seedData.getName());
+		context.put(MetaTemplateProperty.CLASS, nameGenerator.getImplName(seedData.getName()));
+		context.put(MetaTemplateProperty.FIELDS, seedData.getFields());
+		context.put(MetaTemplateProperty.QUALIFIED, seedData.getFullyQualifiedName());
+		context.put(MetaTemplateProperty.QUALIFIEDIMPL, nameGenerator.getQualifiedImplName(seedData.getFullyQualifiedName()));
+	}
+	
+	protected void generatePersistenceHandlerTemplateData(ClassSeedData seedData, Map<TemplateProperty, Object> context) {
+		context.put(PersistenceHandlerTemplateProperty.ELEMENT_INTERFACE, seedData.getName());
+		context.put(PersistenceHandlerTemplateProperty.COLLECTION, seedData.getCollectionName());
+		context.put(PersistenceHandlerTemplateProperty.IMPLEMENTATION, nameGenerator.getImplName(seedData.getName()));	
+		context.put(PersistenceHandlerTemplateProperty.QUALIFIED, nameGenerator.getQualifiedPersistenceHandlerName(seedData.getFullyQualifiedName()));
+		context.put(PersistenceHandlerTemplateProperty.CLASS, nameGenerator.getPersistenceHandlerName(seedData.getName()));
+		context.put(PersistenceHandlerTemplateProperty.INTERFACE, nameGenerator.getPersistenceHandlerInterfaceName());
+	}
+	
+	protected ClassSeedData extractSeedData(AnnotationExtractionRequest request, Fields fields) {
 		Element element = request.getElement();
 		String packageName = null;
 		String fullyQualifiedName;
@@ -132,20 +151,13 @@ public abstract class ICEAnnotationExtractionService {
 		}
 		collectionName = nameGenerator.extractCollectionName(element);
 		
-		context.put(ClassTemplateProperties.Meta.PACKAGE.getKey(), packageName);
-		context.put(ClassTemplateProperties.Meta.INTERFACE.getKey(), name);
-		context.put(ClassTemplateProperties.Meta.CLASS.getKey(), nameGenerator.getImplName(name));
-		context.put(ClassTemplateProperties.Meta.FIELDS.getKey(), fields);
-		context.put(ClassTemplateProperties.Meta.QUALIFIED.getKey(), fullyQualifiedName);
-		context.put(ClassTemplateProperties.Meta.QUALIFIEDIMPL.getKey(), nameGenerator.getQualifiedImplName(fullyQualifiedName));
-		context.put(ClassTemplateProperties.PersistenceHandler.ELEMENT_INTERFACE.getKey(), name);
-		context.put(ClassTemplateProperties.PersistenceHandler.COLLECTION.getKey(), collectionName);
-		context.put(ClassTemplateProperties.PersistenceHandler.IMPLEMENTATION.getKey(), nameGenerator.getImplName(name));	
-		context.put(ClassTemplateProperties.PersistenceHandler.QUALIFIED.getKey(), nameGenerator.getQualifiedPersistenceHandlerName(fullyQualifiedName));
-		context.put(ClassTemplateProperties.PersistenceHandler.CLASS.getKey(), nameGenerator.getPersistenceHandlerName(name));
-		context.put(ClassTemplateProperties.PersistenceHandler.INTERFACE.getKey(), nameGenerator.getPersistenceHandlerInterfaceName());
-		
-		return context;
+		return ClassSeedData.builder()
+				.name(name)
+				.packageName(packageName)
+				.fullyQualifiedName(fullyQualifiedName)
+				.collectionName(collectionName)
+				.fields(fields)
+				.build();
 	}
 	
 }

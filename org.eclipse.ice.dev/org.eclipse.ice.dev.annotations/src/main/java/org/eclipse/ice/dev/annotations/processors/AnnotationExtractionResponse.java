@@ -31,5 +31,5 @@ public class AnnotationExtractionResponse {
 	/**
 	 * Map containing metadata surrounding the class types to be generated, e.g. package name
 	 */
-	private Map classMetadata;
+	private Map<TemplateProperty, Object> classMetadata;
 }
