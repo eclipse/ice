@@ -8,7 +8,7 @@
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TestImplementation implements Test, Serializable {
-	@NonNull public java.util.UUID testUuid;
-	@NonNull public java.lang.String testString;
-	@NonNull public java.util.Date testDate;
+	@NonNull public UUID testUuid;
+	@NonNull public String testString;
+	@NonNull public Date testDate;
 }
