@@ -106,6 +106,7 @@
 			<groupId>com.cosium.logging</groupId>
 			<artifactId>annotation-processor-logger</artifactId>
 			<version>1.0</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
