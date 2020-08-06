@@ -5,8 +5,6 @@ package org.eclipse.ice.tests.dev.annotations.processors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.eclipse.ice.dev.annotations.processors.Field;
