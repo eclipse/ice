@@ -23,7 +23,7 @@ import lombok.NonNull;
  * Writer for DataElement Persistence classes.
  * @author Daniel Bluhm
  */
-public class PersistenceHandlerWriter extends VelocitySourceWriter {
+public abstract class PersistenceHandlerWriter extends VelocitySourceWriter {
 
 	/**
 	 * Context key for package.
@@ -73,6 +73,10 @@ public class PersistenceHandlerWriter extends VelocitySourceWriter {
 		this.context.put(IMPLEMENTATION, implementation);
 		this.context.put(FIELDS, fields);
 		this.generatedFile = generatedFile;
+	}
+	
+	protected PersistenceHandlerWriter() {
+		
 	}
 
 }

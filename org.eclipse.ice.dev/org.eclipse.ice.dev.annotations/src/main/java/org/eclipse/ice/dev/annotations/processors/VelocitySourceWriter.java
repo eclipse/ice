@@ -14,7 +14,9 @@ package org.eclipse.ice.dev.annotations.processors;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 import javax.tools.JavaFileObject;
 
@@ -68,5 +70,7 @@ public abstract class VelocitySourceWriter {
 	public void write() throws IOException {
 		write(this.generatedFile);
 	}
+	
+	public abstract BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getInitializer();
 	
 }

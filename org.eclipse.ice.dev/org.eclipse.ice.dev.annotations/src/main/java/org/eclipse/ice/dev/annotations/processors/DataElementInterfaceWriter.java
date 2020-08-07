@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.ice.dev.annotations.processors;
 
-import java.io.Writer;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiFunction;
 
 import javax.tools.JavaFileObject;
 
@@ -31,6 +34,27 @@ public class DataElementInterfaceWriter extends InterfaceWriter {
 	public DataElementInterfaceWriter(String packageName, String interfaceName, @NonNull Fields fields, JavaFileObject generatedFile) {
 		super(packageName, interfaceName, fields, generatedFile);
 		this.template = TEMPLATE;
+	}
+	
+	private DataElementInterfaceWriter() {
+		super();
+	}
+
+	@Override
+	public BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getInitializer() {
+		return (fileObject, context) -> {
+			String name = (String)context.get(MetaTemplateProperty.QUALIFIED);
+			return Arrays.asList(DataElementInterfaceWriter.builder()
+					.packageName((String)context.get(MetaTemplateProperty.PACKAGE))
+					.interfaceName((String)context.get(MetaTemplateProperty.INTERFACE))
+					.fields((Fields)context.get(MetaTemplateProperty.FIELDS))
+					.generatedFile(fileObject)
+					.build());
+		};
+	}
+	
+	public static BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getContextInitializer() {
+		return new DataElementInterfaceWriter().getInitializer();
 	}
 
 }
