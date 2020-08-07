@@ -78,7 +78,9 @@ class DataElementProcessorTest {
 		DATAFIELD_SETTER("Setter.java"),
 		DATAFIELD_MATCH("Match.java"),
 		DEFAULT_NON_STRING("DefaultNonString.java"),
-		DEFAULT_STRING("DefaultString.java");
+		DEFAULT_STRING("DefaultString.java"),
+		BOXED_TYPES("BoxedTypes.java"),
+		INNER_CLASS_TYPES("InnerClassTypes.java");
 
 		/**
 		 * Parent directory of inputs. Prepended to all paths.
@@ -116,7 +118,9 @@ class DataElementProcessorTest {
 		DATAFIELD_GETTER_INT("Getter.java"),
 		DATAFIELD_SETTER_INT("Setter.java"),
 		DEFAULT_NON_STRING_IMPL("DefaultNonStringImplementation.java"),
-		DEFAULT_STRING_IMPL("DefaultStringImplementation.java");
+		DEFAULT_STRING_IMPL("DefaultStringImplementation.java"),
+		BOXED_TYPES_INT("BoxedTypesInterface.java"),
+		INNER_CLASS_TYPES_INT("InnerClassTypesInterface.java");
 
 		/**
 		 * Parent directory of inputs. Prepended to all paths.
@@ -270,6 +274,26 @@ class DataElementProcessorTest {
 		assertDefaultsPresent(compilation);
 		assertInterfaceMatches(compilation, Patterns.MANY_NON_PRIMITIVE_INT.get());
 		assertImplementationMatches(compilation, Patterns.MANY_NON_PRIMITIVE_IMPL.get());
+	}
+
+	/**
+	 * Test that boxed types' type parameters are preserved.
+	 */
+	@Test
+	void testBoxedTypeParametersPreserved() {
+		Compilation compilation = helper.compile(Inputs.BOXED_TYPES.get());
+		assertDefaultsPresent(compilation);
+		assertInterfaceMatches(compilation, Patterns.BOXED_TYPES_INT.get());
+	}
+
+	/**
+	 * Test that inner class types and their type parameters are preserved.
+	 */
+	@Test
+	void testInnerClassTypes() {
+		Compilation compilation = helper.compile(Inputs.INNER_CLASS_TYPES.get());
+		assertDefaultsPresent(compilation);
+		assertInterfaceMatches(compilation, Patterns.INNER_CLASS_TYPES_INT.get());
 	}
 
 	/**
