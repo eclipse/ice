@@ -213,6 +213,8 @@ public class DataElementProcessor extends AbstractProcessor {
 				.packageName(element.getPackageName())
 				.interfaceName(element.getName())
 				.fields(fields)
+				// Only subset of fields used in interface. More specific scope
+				// needed to correctly determine imports.
 				.types(new Types(fields.getInterfaceFields()))
 				.build()
 				.write(writer);

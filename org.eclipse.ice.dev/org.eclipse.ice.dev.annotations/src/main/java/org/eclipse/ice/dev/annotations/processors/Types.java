@@ -39,7 +39,7 @@ public class Types {
 	 * themselves when another type would have conflicted with the shortened
 	 * version.
 	 *
-	 * This map combined with the shortToFull map create a Bidirectional mapping.
+	 * This map combined with the shortToFull map create a bidirectional mapping.
 	 */
 	private Map<String, String> fullToShort;
 
@@ -48,7 +48,7 @@ public class Types {
 	 *
 	 * This is used to determine what types must be imported.
 	 *
-	 * This map combined with the fullToShort map create a Bidirectional mapping.
+	 * This map combined with the fullToShort map create a bidirectional mapping.
 	 */
 	private Map<String, String> shortToFull;
 
@@ -78,13 +78,15 @@ public class Types {
 		}
 
 		// Determine shortened names, populating the look up tables while
-		// detecting collisions
+		// detecting collisions.
+		// Types that would collide are left in fully qualified form and map to
+		// themselves in the bidirectional map.
 		Set<String> collisions = new HashSet<>();
 		for (String type : allTypes) {
 			String shortened = getShortenedType(type);
 			if (collisions.contains(shortened)) {
 				// Collision detected; first instance of collision already
-				// corrected, storeing only this instance.
+				// corrected, storing only this instance.
 				fullToShort.put(type, type);
 				shortToFull.put(type, type);
 			} else if (shortToFull.containsKey(shortened)) {
@@ -127,8 +129,11 @@ public class Types {
 	 */
 	public Set<String> getImports() {
 		return shortToFull.entrySet().stream()
+			// Filter out collisions (fully qualified maps to itself)
+			// Also filters out primitives (boolean shortened is still boolean)
 			.filter(entry -> !entry.getKey().equals(entry.getValue()))
 			.map(entry -> entry.getValue())
+			// No need to import java.lang package
 			.filter(type -> !type.startsWith("java.lang"))
 			.collect(Collectors.toSet());
 	}
