@@ -11,7 +11,6 @@
 
 package org.eclipse.ice.dev.annotations.processors;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,8 +45,7 @@ class VelocityProperties extends Properties {
 	 * Construct VelocityProperties, loading from resource file.
 	 */
 	private VelocityProperties() {
-		String propertyFile = getClass().getClassLoader().getResource(FILENAME).getPath();
-		try (InputStream propertyStream = new FileInputStream(propertyFile)) {
+		try (InputStream propertyStream = getClass().getClassLoader().getResourceAsStream(FILENAME)) {
 			super.load(propertyStream);
 		} catch (FileNotFoundException e) {
 			logger.error("velocity.properties could not be found");

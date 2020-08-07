@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2020- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Daniel Bluhm - Initial implementation
+ *******************************************************************************/
+
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.io.IOException;
@@ -10,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
@@ -27,7 +39,6 @@ import javax.tools.StandardLocation;
 import org.eclipse.ice.dev.annotations.DataElement;
 import org.eclipse.ice.dev.annotations.Persisted;
 
-import com.cosium.logging.annotation_processor.AbstractLoggingProcessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auto.service.AutoService;
 
@@ -46,7 +57,7 @@ import com.google.auto.service.AutoService;
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 @AutoService(Processor.class)
-public class DataElementProcessor extends AbstractLoggingProcessor {
+public class DataElementProcessor extends AbstractProcessor {
 	/**
 	 * Return stack trace as string.
 	 * @param e subject exception
@@ -73,7 +84,7 @@ public class DataElementProcessor extends AbstractLoggingProcessor {
 	}
 
 	@Override
-	public boolean doProcess(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
+	public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
 		// Iterate over all elements with DataElement Annotation
 		for (final Element elem : roundEnv.getElementsAnnotatedWith(DataElement.class)) {
 			try {
