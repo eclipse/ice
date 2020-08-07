@@ -1,4 +1,4 @@
-package org.eclipse.ice;
+package org.eclipse.ice.data.neutrons;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;

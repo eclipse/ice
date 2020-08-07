@@ -1,4 +1,4 @@
-package org.eclipse.ice;
+package org.eclipse.ice.data.neutrons;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;

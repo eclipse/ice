@@ -1,4 +1,4 @@
-package org.eclipse.ice;
+package org.eclipse.ice.data.neutrons;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
