@@ -120,7 +120,7 @@ public class Types {
 			matcher.appendReplacement(shortenedType, "$1");
 		}
 		matcher.appendTail(shortenedType);
-		return shortenedType.toString().replace("$", ".");
+		return shortenedType.toString();
 	}
 
 	/**
@@ -135,6 +135,7 @@ public class Types {
 			.map(entry -> entry.getValue())
 			// No need to import java.lang package
 			.filter(type -> !type.startsWith("java.lang"))
+			.filter(type -> !type.startsWith("$"))
 			.collect(Collectors.toSet());
 	}
 
@@ -148,9 +149,13 @@ public class Types {
 		StringBuffer resolved = new StringBuffer();
 		Matcher matcher = TYPE_SHORTENER.matcher(type);
 		while (matcher.find()) {
+			String found = fullToShort.get(matcher.group());
+			if (found == null) {
+				found = matcher.group();
+			}
 			matcher.appendReplacement(
 				resolved,
-				fullToShort.get(matcher.group())
+				found
 			);
 		}
 		matcher.appendTail(resolved);

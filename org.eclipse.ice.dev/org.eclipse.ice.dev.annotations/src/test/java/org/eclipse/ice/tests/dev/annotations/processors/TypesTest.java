@@ -30,8 +30,8 @@ class TypesTest {
 		assertEquals("UUID", Types.getShortenedType("java.util.UUID"));
 		assertEquals("Entry", Types.getShortenedType("java.util.Map.Entry"));
 		assertEquals(
-			"Map.Entry<String, Object>",
-			Types.getShortenedType("java.util.Map$Entry<String, Object>")
+			"Entry<String, Object>",
+			Types.getShortenedType("java.util.Map.Entry<String, Object>")
 		);
 		assertEquals(
 			"List<String>",

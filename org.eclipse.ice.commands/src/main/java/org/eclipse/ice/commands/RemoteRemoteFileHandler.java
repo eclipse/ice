@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
  *   Joe Osborn
  *******************************************************************************/
-package org.eclipse.ice.tests.commands;
+package org.eclipse.ice.commands;
 
 import java.io.File;
 import java.io.IOException;
