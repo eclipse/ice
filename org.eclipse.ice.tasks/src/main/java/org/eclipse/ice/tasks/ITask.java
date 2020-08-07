@@ -34,12 +34,20 @@ import org.eclipse.ice.data.IDataElement;
  * according to the execution order provided in the hook type table (see 
  * {@link TaskHookType}). Tasks support multiple hooks of each type since many 
  * different things may be required to support the execution of the main 
- * action. Hooks of the same type are executed as a queue (first-in-first-out). 
+ * action. Hooks of the same type are executed as a queue (first in, first 
+ * out). 
  * 
  * Tasks execute in one of several Task States (see {@link TaskState}) that are 
  * roughly correlated to hooks and action. Tasks start their life cycle with 
  * initialization and end with the execution of the action and any 
- * postprocessing hooks.
+ * postprocessing hooks. Tasks hold in the READY state once their data is
+ * configured to indicate that they are ready to be executed.
+ * 
+ * Tasks cannot execute without both action data and an action. Executing
+ * without an action is impossible by definition. Executing without action data
+ * is a design choice to encourage the development of actions with data
+ * separated from the implementation. This makes it possible to have well-
+ * scoped actions with minimal hardwiring or blob type code.
  * 
  * Tasks store state data externally and do not control their own storage. Thus
  * the must be configured when built to store state to the proper location. 
@@ -61,6 +69,8 @@ import org.eclipse.ice.data.IDataElement;
  * simultaneously without the caller knowing anything about the client data
  * configuration and types.
  * 
+ * ----- WIP implementation notes (to be deleted on PR close) -----
+ * 
  * Thoughts on provenance tracking? ICE 2.0 used a log file.
  * 
  * They are modeled as the combination of an 
@@ -78,12 +88,14 @@ public interface ITask<T extends IDataElement<T>> {
 	 * This operation sets the action or client data on which the task should 
 	 * execute.
 	 * @param taskData The data for the task
+	 * @exception an exception is thrown is the data is null
 	 */
-	public void setActionData(T actionData);
+	public void setActionData(T actionData) throws Exception;
 	
 	/**
 	 * This operation gets the action or client data on which the task is 
-	 * working.
+	 * working. It returns a reference to the same data that was passed to
+	 * setActionData(). 
 	 * @return the data used with the action
 	 */
 	public T getActionData();
@@ -91,8 +103,9 @@ public interface ITask<T extends IDataElement<T>> {
 	/**
 	 * This function sets the Action that the task executes.
 	 * @param taskAction the task's action.
+	 * @exception an exception is thrown if the task action is null
 	 */
-	public void setAction(final Action<T> taskAction);
+	public void setAction(final Action<T> taskAction) throws Exception;
 	
 	/**
 	 * This operation adds a hook to the task that will be executed in support

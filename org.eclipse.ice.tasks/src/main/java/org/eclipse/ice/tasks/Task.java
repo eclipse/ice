@@ -11,55 +11,22 @@
  *****************************************************************************/
 package org.eclipse.ice.tasks;
 
+import java.util.EnumSet;
+
 import org.eclipse.ice.data.IDataElement;
+import org.eclipse.ice.tasks.spring.statemachine.ExecutingEventAction;
+import org.eclipse.ice.tasks.spring.statemachine.ExecutingStateAction;
+import org.eclipse.ice.tasks.spring.statemachine.FinishedEventAction;
+import org.eclipse.ice.tasks.spring.statemachine.InitializedStateAction;
+import org.eclipse.ice.tasks.spring.statemachine.ReadyEventAction;
+import org.eclipse.ice.tasks.spring.statemachine.WaitingEventAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-//import java.io.File;
-//import java.io.IOException;
-//import java.util.EnumSet;
-//
-//import org.eclipse.ice.commands.FileHandlerFactory;
-//import org.eclipse.ice.commands.IFileHandler;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.StateMachine;
+import org.springframework.statemachine.action.Action;
 import org.springframework.statemachine.config.StateMachineBuilder;
 import org.springframework.statemachine.config.StateMachineBuilder.Builder;
-////
-//public class TaskTest {
-//
-//	static String name = "ICEIII/ice/org.eclipse.ice.workflow/src/main/resources/test1.txt";
-//	static String newName = "ICEIII/ice/org.eclipse.ice.workflow/src/main/resources/test2.txt";
-//
-//	static 
-//
-//	public static void moveFile(final String filePath, final String newFilePath)
-//			throws IOException {
-//
-//		String home = System.getProperty("user.home");
-//		String separator = String.valueOf(File.separatorChar);
-//		String homePath = home + separator;
-//
-//		FileHandlerFactory factory = new FileHandlerFactory();
-//		IFileHandler fileHandler = factory.getFileHandler();
-//		fileHandler.move(homePath + filePath, homePath + newFilePath);
-//		return;
-//	}
-//
-//	public static void main(String[] args) throws Exception {
-//
-//		StateMachine<WorkflowEngine.States, WorkflowEngine.Events> taskProcessor = buildMachine();
-//		taskProcessor.start();
-//		taskProcessor.sendEvent(WorkflowEngine.Events.PARAMETERS_RECEIVED);
-//		taskProcessor.sendEvent(WorkflowEngine.Events.EXECUTION_COMPLETE);
-//		System.out.println(taskProcessor.getState());
-//
-//		return;
-//	}
-//
-//}
-//
-//
 
 /**
  * The basic implementation of ITask.
@@ -68,6 +35,21 @@ import org.springframework.statemachine.config.StateMachineBuilder.Builder;
  *
  */
 public class Task<T extends IDataElement<T>> implements ITask<T> {
+
+	/**
+	 * Error message for erroneous construction
+	 */
+	public static final String CONSTRUCTION_ERR = "Task state data cannot be null";
+
+	/**
+	 * Error message for erroneous action data set
+	 */
+	public static final String ACTION_DATA_SET_ERR = "Action data cannot be null.";
+
+	/**
+	 * Error message for erroneous action set
+	 */
+	public static final String ACTION_SET_ERR = "The action cannot be null.";
 
 	/**
 	 * The state machine used to manage the task's state and transitions.
@@ -85,42 +67,110 @@ public class Task<T extends IDataElement<T>> implements ITask<T> {
 	protected TaskStateData stateData;
 
 	/**
+	 * Data used by the action
+	 */
+	protected T actionData;
+
+	/**
+	 * The action
+	 */
+	protected org.eclipse.ice.tasks.Action<T> action;
+
+	/**
+	 * Utility function for throwing exceptions
+	 * 
+	 * @param msg error message to go with the exception and in the log
+	 * @throws TaskException
+	 * @throws Exception     the exception
+	 */
+	private void throwErrorException(String msg) throws TaskException {
+		TaskException exception = new TaskException(msg);
+		logger.error(msg, exception);
+		throw (exception);
+	}
+
+	/**
 	 * Constructor
 	 * 
 	 * @param stateData the task state data must be provided on initialization
 	 *                  because tasks do not manage any data. See
 	 *                  {@link org.eclipse.ice.tasks.ITask}. Construction will fail
 	 *                  without a valid state data structure.
+	 * @throws TaskException
 	 */
-	public Task(TaskStateData taskStateData) throws RuntimeException {
+	public Task(TaskStateData taskStateData) throws TaskException {
 
+		// Check state data
 		if (taskStateData != null) {
 			stateData = taskStateData;
 		} else {
-			String errMsg = "Cannot create task without state data!";
-			RuntimeException exception = new RuntimeException(errMsg);
-			logger.error(errMsg, exception);
-			throw (exception);
+			throwErrorException(CONSTRUCTION_ERR);
+		}
+
+		// Initialize the state machine
+		buildStateMachine();
+		stateMachine.start();
+
+		logger.info("State data set and state machine initialized. " + "Ready to rock and roll.");
+
+	}
+
+	@Override
+	public void setActionData(T taskActionData) throws TaskException {
+
+		if (taskActionData != null) {
+
+			// Store the data
+			actionData = taskActionData;
+
+			// The state machine can only get into the waiting state if the action or the
+			// action data are set, so check for that and if so move on to the ready state.
+			TaskTransitionEvents event;
+			if (getState().equals(TaskState.WAITING)) {
+				event = TaskTransitionEvents.ALL_INFO_SET;
+			} else {
+				// Otherwise wait. Note that event here is different than in setAction().
+				event = TaskTransitionEvents.ACTION_DATA_SET;
+			}
+
+			// Once the action data is set, the task should wait
+			stateMachine.sendEvent(event);
+		} else {
+			throwErrorException(ACTION_DATA_SET_ERR);
 		}
 
 	}
 
 	@Override
-	public void setActionData(T actionData) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public T getActionData() {
-		// TODO Auto-generated method stub
-		return null;
+		return actionData;
 	}
 
 	@Override
-	public void setAction(org.eclipse.ice.tasks.Action<T> taskAction) {
-		// TODO Auto-generated method stub
-		org.springframework.statemachine.action.Action smAction;
+	public void setAction(org.eclipse.ice.tasks.Action<T> taskAction) throws TaskException {
+
+		// Make sure the error is not null before updating the states
+		if (taskAction != null) {
+
+			// Store the action
+			action = taskAction;
+			TaskTransitionEvents event;
+			// The state machine can only get into the waiting state if the action or the
+			// action data are set, so check for that and if so move on to the ready state.
+			if (getState().equals(TaskState.WAITING)) {
+				event = TaskTransitionEvents.ALL_INFO_SET;
+			} else {
+				// Otherwise wait. Note that the event here is different than in
+				// setActionData().
+				event = TaskTransitionEvents.ACTION_SET;
+			}
+
+			// Throw the event to wait or get ready.
+			stateMachine.sendEvent(event);
+		} else {
+			throwErrorException(ACTION_SET_ERR);
+		}
+
 	}
 
 	@Override
@@ -131,8 +181,11 @@ public class Task<T extends IDataElement<T>> implements ITask<T> {
 
 	@Override
 	public TaskState execute() {
-		// TODO Auto-generated method stub
-		return null;
+		// Execute the action. Note that there is a transition event tied to the state
+		// event for execution. The transition event changes the state to EXECUTING
+		// while the state event makes some more informed decisions.
+		stateMachine.sendEvent(TaskTransitionEvents.EXECUTION_TRIGGERED);
+		return getState();
 	}
 
 	@Override
@@ -155,33 +208,50 @@ public class Task<T extends IDataElement<T>> implements ITask<T> {
 	 * This operation builds the state machine used to manage states and transitions
 	 * for Tasks.
 	 * 
-	 * @throws Exception thrown in the state machine can not be correctly assembled.
+	 * @throws TaskException
+	 * 
+	 * @throws Exception     thrown in the state machine can not be correctly
+	 *                       assembled.
 	 */
-	private void buildStateMachine() throws Exception {
-		Builder<TaskState, TaskTransitionEvents> builder = new StateMachineBuilder.Builder<>();
+	private void buildStateMachine() throws TaskException {
 
-//		builder.configureStates().withStates().initial(WorkflowEngine.States.INITIALIZED)
-//				.states(EnumSet.allOf(WorkflowEngine.States.class));
-//
-//		builder.configureTransitions().withExternal().source(WorkflowEngine.States.INITIALIZED)
-//				.target(WorkflowEngine.States.EXECUTING).event(WorkflowEngine.Events.PARAMETERS_RECEIVED).and()
-//				.withExternal().source(WorkflowEngine.States.EXECUTING).target(WorkflowEngine.States.FINISHED)
-//				.action(new Action<WorkflowEngine.States, WorkflowEngine.Events>() {
-//
-//					@Override
-//					public void execute(StateContext<WorkflowEngine.States, WorkflowEngine.Events> context) {
-//						try {
-//							moveFile(name, newName);
-//						} catch (IOException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-//					}
-//				}).event(WorkflowEngine.Events.EXECUTION_COMPLETE);
-//
-//		stateMachine = builder.build();
+		try {
+			// Setup the state machine builder
+			Builder<TaskState, TaskTransitionEvents> builder = new StateMachineBuilder.Builder<>();
 
-		return;
+			// Go into the intial state and add the others states to the set
+			builder.configureStates().withStates().initial(TaskState.INITIALIZED, new InitializedStateAction(stateData))
+					.states(EnumSet.allOf(TaskState.class));
+
+			// Configure the transitions for action data and actions.
+			builder.configureTransitions().withExternal().source(TaskState.INITIALIZED).target(TaskState.WAITING)
+					.event(TaskTransitionEvents.ACTION_DATA_SET).action(new WaitingEventAction(stateData));
+			builder.configureTransitions().withExternal().source(TaskState.INITIALIZED).target(TaskState.WAITING)
+					.event(TaskTransitionEvents.ACTION_SET).action(new WaitingEventAction(stateData));
+
+			// Once all the info is set, the state machine can transition to READY
+			builder.configureTransitions().withExternal().source(TaskState.WAITING).target(TaskState.READY)
+					.event(TaskTransitionEvents.ALL_INFO_SET).action(new ReadyEventAction(stateData));
+
+			// A call to execute() triggers execution. This requires a transition action...
+			builder.configureTransitions().withExternal().source(TaskState.READY).target(TaskState.EXECUTING)
+					.event(TaskTransitionEvents.EXECUTION_TRIGGERED).action(new ExecutingEventAction(stateData));
+			// ...and a state action
+			builder.configureStates().withStates().state(TaskState.EXECUTING, new ExecutingStateAction(stateData));
+
+			// FIXME! CONFIRM THAT THIS IS WORKING!---^
+			
+			// If the execution finished as expected, there is a transition event for that
+			// to finalize the state.
+			builder.configureTransitions().withExternal().source(TaskState.EXECUTING).target(TaskState.FINISHED)
+					.event(TaskTransitionEvents.EXECUTION_FINISHED).action(new FinishedEventAction(stateData));
+
+			// Pack it up and go on home
+			stateMachine = builder.build();
+
+		} catch (Exception e) {
+			throwErrorException("Unable to build state machine!");
+		}
 	}
 
 }

@@ -6,7 +6,8 @@
 	<artifactId>org.eclipse.ice.tasks</artifactId>
 	<version>3.0.0-SNAPSHOT</version>
 	<name>Eclipse ICE Tasks</name>
-	<description>This package defines the interfaces and associated artifacts for tasks in Eclipse ICE</description>
+	<description>This package defines the interfaces and associated
+		artifacts for tasks in Eclipse ICE</description>
 
 
 	<properties>
@@ -78,6 +79,12 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${org.springframework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<version>4.0.3</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

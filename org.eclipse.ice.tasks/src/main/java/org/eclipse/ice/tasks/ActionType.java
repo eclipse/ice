@@ -40,7 +40,12 @@ public interface ActionType {
 		/**
 		 * Actions of this type move files
 		 */
-		MOVE_FILE
+		MOVE_FILE,
+		
+		/**
+		 * Actions of this type are used for diagnostics or testing
+		 */
+		DIAGNOSTIC
 		
 	}
 	

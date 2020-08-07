@@ -9,35 +9,26 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings
  *****************************************************************************/
-package org.eclipse.ice.tests.tasks;
-
-import org.eclipse.ice.tasks.Action;
-import org.eclipse.ice.tasks.ActionType;
+package org.eclipse.ice.tasks;
 
 /**
- * This is a test action used to test the Task class.
+ * A dedicated exception for Tasks.
  * @author Jay Jay Billings
  *
  */
-public class TestAction<T> implements Action<T> {
+public class TaskException extends Exception {
 
 	/**
-	 * @return a diagnostic action type since this is a test
+	 * Constructor
+	 * @param msg error message from the task
 	 */
-	@Override
-	public ActionType getType() {
-		return ActionType.BASIC.DIAGNOSTIC;
+	public TaskException(String msg) {
+		super(msg);
 	}
-
-	@Override
-	public boolean run(T data) {
-		try {
-			wait(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return true;
-	}
+	
+	/**
+	 * Exception id
+	 */
+	private static final long serialVersionUID = -7680227861625984735L;
 
 }
