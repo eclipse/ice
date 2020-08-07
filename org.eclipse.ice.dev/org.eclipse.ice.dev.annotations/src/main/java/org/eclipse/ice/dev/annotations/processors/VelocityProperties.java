@@ -11,61 +11,53 @@
 
 package org.eclipse.ice.dev.annotations.processors;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Properties used to initialize Velocity.
  */
-enum VelocityProperties {
-
-	// Set up Velocity using the Singleton approach; ClasspathResourceLoader allows
-	// us to load templates from src/main/resources
-	RESOURCE_LOADER("resource.loader", "class"),
-	CLASS_RESOURCE_LOADER(
-		"class.resource.loader.class",
-		"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"
-	);
+class VelocityProperties extends Properties {
 
 	/**
-	 * Property key.
+	 * Serial Version ID.
 	 */
-	private String key;
+	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Property value.
+	 * Logger.
 	 */
-	private String value;
-
-	VelocityProperties(String key, String value) {
-		this.key = key;
-		this.value = value;
-	}
+	private static final Logger logger = LoggerFactory.getLogger(VelocityProperties.class);
 
 	/**
-	 * Get key from enum.
-	 * @return key
+	 * Velocity property filename.
 	 */
-	String key() {
-		return this.key;
-	}
+	private static final String FILENAME = "velocity.properties";
+
+	private static VelocityProperties instance = null;
 
 	/**
-	 * Get value from enum.
-	 * @return value
+	 * Construct VelocityProperties, loading from resource file.
 	 */
-	String value() {
-		return this.value;
-	}
-
-	/**
-	 * Generate and return Properties from enum.
-	 * @return Properties
-	 */
-	public static Properties get() {
-		Properties p = new Properties();
-		for (VelocityProperties vp : VelocityProperties.values()) {
-			p.setProperty(vp.key(), vp.value());
+	private VelocityProperties() {
+		try (InputStream propertyStream = getClass().getClassLoader().getResourceAsStream(FILENAME)) {
+			super.load(propertyStream);
+		} catch (FileNotFoundException e) {
+			logger.error("velocity.properties could not be found");
+		} catch (IOException e) {
+			logger.error("velocity.properties could not be read");
 		}
-		return p;
+	}
+
+	public static VelocityProperties get() {
+		if (instance == null) {
+			instance = new VelocityProperties();
+		}
+		return instance;
 	}
 }
