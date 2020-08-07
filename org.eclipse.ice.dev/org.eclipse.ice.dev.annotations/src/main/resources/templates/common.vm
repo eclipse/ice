@@ -44,7 +44,7 @@
 #end
 
 ## Get evaluated field type
-#macro(fieldtype)$types.resolve(${field.Type})#end
+#macro(fieldtype)$types.resolve("#evaluate(${field.Type})")#end
 
 ## Get the type of this field for use in parameter list (includes nonnull)
 #macro(fieldparametertype)#nonnull("", " ")#fieldtype#end

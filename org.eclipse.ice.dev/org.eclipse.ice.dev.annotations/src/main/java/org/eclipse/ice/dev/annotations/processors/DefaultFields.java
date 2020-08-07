@@ -113,7 +113,7 @@ public class DefaultFields {
 	 */
 	private static Field validator = Field.builder()
 		.name("validator")
-		.type(JavascriptValidator.class)
+		.type(JavascriptValidator.class.getCanonicalName() + "<$interface>")
 		.docString("The validator used to check the correctness of the data.")
 		.nullable(true)
 		.defaultField(true)

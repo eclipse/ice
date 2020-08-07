@@ -19,5 +19,5 @@ public class TestImplementation implements Test, Serializable {
 	@NonNull protected String context = "default";
 	protected boolean required = false;
 	protected boolean secret = false;
-	protected JavascriptValidator validator;
+	protected JavascriptValidator<Test> validator;
 }
