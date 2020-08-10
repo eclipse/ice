@@ -151,11 +151,24 @@ class TaskTest {
 			// timer runs down and the task enters its FINISHED state. It will hold in
 			// EXECUTING, not WAITING, until the thread dies.
 			await().atMost(10, TimeUnit.SECONDS).until(() -> (testTask.getState() == TaskState.FINISHED));
-
-			// When execution is complete, it will be in FINISHED in this scenario.
-			assertEquals(TaskState.FINISHED, testTask.getState());
 			// And the test action should have been called
 			assert(action.wasCalled());
+			
+			// Test with a bad action
+			testInputData = new TaskStateDataImplementation();
+			Task<TestData> badTestTask = new Task<>(testInputData);
+			data = new TestDataImplementation();
+			badTestTask.setActionData(data);
+			BadTestAction<TestData> badAction = new BadTestAction<>();
+			badTestTask.setAction(badAction);
+			badTestTask.execute();
+			
+			// The test action is on a thread, so this test needs to wait a bit until the
+			// timer runs down and the task enters its FINISHED state. It will hold in
+			// EXECUTING, not WAITING, until the thread dies.
+			await().atMost(10, TimeUnit.SECONDS).until(() -> (badTestTask.getState() == TaskState.FAILED));
+			// And the test action should have been called
+			assert(badAction.wasCalled());
 
 		} catch (TaskException e1) {
 			// In this case, it should fail if an exception is caught.

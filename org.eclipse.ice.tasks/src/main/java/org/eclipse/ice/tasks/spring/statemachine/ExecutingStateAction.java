@@ -55,9 +55,17 @@ public class ExecutingStateAction<T> extends StateMachineBaseAction<T> implement
 	public void execute(StateContext<TaskState, TaskTransitionEvents> context) {
 		// Update the state context
 		stateContext.set(context);
-		// Create and launch the thread
-		Thread thread = new Thread(this);
-		thread.start();
+		// Only execute if the information is available
+		boolean dataGood = context != null && actionData.get() != null && taskAction.get() != null
+				&& stateData.get() != null;
+		if (dataGood) {
+			// Create and launch the thread
+			Thread thread = new Thread(this);
+			thread.start();
+		} else {
+			// Otherwise fail hard
+			fail();
+		}
 	}
 
 	/**
@@ -70,23 +78,42 @@ public class ExecutingStateAction<T> extends StateMachineBaseAction<T> implement
 	@Override
 	public void run() {
 
-		// Default to failure
-		TaskState state = TaskState.FAILED;
-		TaskTransitionEvents event = TaskTransitionEvents.ERROR_CAUGHT;
-
 		logger.get().info("Executing action of type {}", taskAction.get().getType());
 
 		// Try to execute the action
 		T data = actionData.get();
 		if (taskAction.get().run(data)) {
-			state = TaskState.FINISHED;
-			event = TaskTransitionEvents.EXECUTION_FINISHED;
+			finish();
+		} else {
+			// Fail if there's an error
+			fail();
 		}
 
-		// Trigger the state transition and update the state and log
-		stateContext.get().getStateMachine().sendEvent(event);
-		stateData.get().setTaskState(state);
-		logger.get().info("Task executed. State = {}", state);
+		logger.get().info("Task executed. State = {}", stateData.get().getTaskState());
+	}
+
+	/**
+	 * Finish successfully
+	 */
+	private void finish() {
+		// Trigger the state transition
+		stateData.get().setTaskState(TaskState.FINISHED);
+		stateContext.get().getStateMachine().sendEvent(TaskTransitionEvents.EXECUTION_FINISHED);
+	}
+
+	/**
+	 * Fail miserably. Okay, gracefully...
+	 */
+	private void fail() {
+		// Failure may mean that there is a problem with state data
+		if (stateData.get() != null) {
+			stateData.get().setTaskState(TaskState.FAILED);
+		}
+		// Or the state context
+		if (stateContext.get() != null) {
+			stateContext.get().getStateMachine().sendEvent(TaskTransitionEvents.ERROR_CAUGHT);
+		}
+
 	}
 
 }
