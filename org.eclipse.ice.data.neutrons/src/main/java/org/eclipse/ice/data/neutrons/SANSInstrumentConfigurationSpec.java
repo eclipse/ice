@@ -11,38 +11,38 @@ public class SANSInstrumentConfigurationSpec {
 	@DataField private String iptsSharedDir; //Base directory, IPTS shared
 	@DataField private String outputDir; //Output directory, should be iptsSharedDir+userOutputDir
 	
-	@DataField private String sampeApertureSize;
-	@DataField private String maskFileName;
-	@DataField.Default(value = "false") @DataField private boolean useMaskFileName;
-	@DataField.Default(value = "false") @DataField private boolean useDefaultMask;
-	@DataField private String beamFluxFileName;
-	@DataField.Default(value = "false") @DataField private boolean useBeamFluxFileName;
-	@DataField.Default(value = "false") @DataField private boolean useDarkFileBlockedBeam;
-	@DataField.Default(value = "false") @DataField private boolean useBlockedBeam;
-	@DataField private String darkFileName;
-	@DataField.Default(value = "false") @DataField private boolean useDarkFileName;
-	@DataField private String sensitivityFileName;
-	@DataField.Default(value = "false") @DataField private boolean useSensitivityFileName;
-	@DataField private String absoluteScale;
-	@DataField private String normalization;
-	@DataField private String fluxMonitorRatioFile;
-	@DataField private String sampleOffset;
-	@DataField.Default(value = "false") @DataField private boolean useSampleOffset;
-	@DataField private String detectorOffset;
-	@DataField.Default(value = "false") @DataField private boolean useDetectorOffset;
-	@DataField.Default(value = "false") @DataField private boolean useSolidAngleCorrection;
-	@DataField.Default(value = "false") @DataField private boolean useDetectorTubeType;
-	@DataField.Default(value = "false") @DataField private boolean useFlightPathCorrection;
-	@DataField.Default(value = "false") @DataField private boolean useThetaDepTransCorrection;
-	@DataField private float mmRadiusForTransmission;
-	@DataField.Default(value = "100") @DataField private int numQxQyBins;
-	@DataField private String QbinType;
-	@DataField.Default(value = "100") @DataField private int numQBins;
-	@DataField.Default(value = "false") @DataField private boolean useErrorWeighting;
-	@DataField.Default(value = "false") @DataField private boolean useTOFcuts;
-	@DataField private String TOFmin;
-	@DataField private String TOFmax;
-	@DataField.Default(value = "false") @DataField private boolean useMaskBackTubes;
-	@DataField private String wavelenStepType;
-	@DataField private double wavelenStep;
+	@DataField private String sampeApertureSize; //sample aperture size(mm)
+	@DataField private String maskFileName; //mask file that is set to be used
+	@DataField.Default(value = "false") @DataField private boolean useMaskFileName; //option to use a mask file
+	@DataField.Default(value = "false") @DataField private boolean useDefaultMask; //option to use default mask
+	@DataField private String beamFluxFileName; //beam flux file that is set to be used
+	@DataField.Default(value = "false") @DataField private boolean useBeamFluxFileName; //option to use beam flux file
+	@DataField.Default(value = "false") @DataField private boolean useDarkFileBlockedBeam; //option to use either dark file or blocked beam
+	@DataField.Default(value = "false") @DataField private boolean useBlockedBeam; //option to use blocked beam
+	@DataField private String darkFileName; //dark file that is set to be used
+	@DataField.Default(value = "false") @DataField private boolean useDarkFileName; //option to use dark file
+	@DataField private String sensitivityFileName; //sensitivity file that is set to be used
+	@DataField.Default(value = "false") @DataField private boolean useSensitivityFileName; //option to use sensitivity file
+	@DataField private String absoluteScale; //the absolute scale used
+	@DataField private String normalization; //normalization method used. Total charge, Monitor, Time, or None
+	@DataField private String fluxMonitorRatioFile; //File used for normalization by monitor. Only used if normalization is "Monitor"
+	@DataField private String sampleOffset; //sample offset (mm) to be used
+	@DataField.Default(value = "false") @DataField private boolean useSampleOffset; //option to apply sample offset
+	@DataField private String detectorOffset; //detector offset (mm) to be used
+	@DataField.Default(value = "false") @DataField private boolean useDetectorOffset; //option to use detector offset
+	@DataField.Default(value = "false") @DataField private boolean useSolidAngleCorrection; //option to use Solid Angle Correction
+	@DataField.Default(value = "false") @DataField private boolean useDetectorTubeType; //option to use Detector Tube type
+	@DataField.Default(value = "false") @DataField private boolean useFlightPathCorrection; //option to use Flight Path Correction
+	@DataField.Default(value = "false") @DataField private boolean useThetaDepTransCorrection; //option to use Theta Dependent Transmission Correction
+	@DataField private float mmRadiusForTransmission; //transmission radius (pixels)
+	@DataField.Default(value = "100") @DataField private int numQxQyBins; //I(Qx, Qy) number of bins
+	@DataField private String QbinType; //I(Q) binning type; linear or log
+	@DataField.Default(value = "100") @DataField private int numQBins; //number of bins for 1D, I(Q)
+	@DataField.Default(value = "false") @DataField private boolean useErrorWeighting; //option to bin with error weighting
+	@DataField.Default(value = "false") @DataField private boolean useTOFcuts; //option to use TOF cutoffs
+	@DataField private String TOFmin; //TOF minimum cutoff
+	@DataField private String TOFmax; //TOF maximum cutoff
+	@DataField.Default(value = "false") @DataField private boolean useMaskBackTubes; //option to mask back tubes
+	@DataField private String wavelenStepType; //wavelength step type; constant lambda or constant delta-lambda/lambda 
+	@DataField private double wavelenStep; //wavelength step size (Å)
 }
