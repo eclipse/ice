@@ -12,6 +12,7 @@
 package org.eclipse.ice.tasks;
 
 import java.util.EnumSet;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.data.IDataElement;
 import org.eclipse.ice.tasks.spring.statemachine.ExecutingEventAction;
@@ -64,18 +65,18 @@ public class Task<T extends IDataElement<T>> implements ITask<T> {
 	/**
 	 * State data stored about this task
 	 */
-	protected TaskStateData stateData;
+	protected AtomicReference<TaskStateData> stateData;
 
 	/**
 	 * Data used by the action
 	 */
-	protected T actionData;
+	protected AtomicReference<T> actionData;
 
 	/**
 	 * The action
 	 */
-	protected org.eclipse.ice.tasks.Action<T> action;
-	
+	protected AtomicReference<org.eclipse.ice.tasks.Action<T>> action;
+
 	/**
 	 * The state machine action used to execute the action
 	 */
@@ -107,8 +108,10 @@ public class Task<T extends IDataElement<T>> implements ITask<T> {
 
 		// Check state data
 		if (taskStateData != null) {
-			stateData = taskStateData;
-			 smExecutingAction = new ExecutingStateAction<>(stateData);
+			stateData = new AtomicReference<>(taskStateData);
+			smExecutingAction = new ExecutingStateAction<>(stateData.get());
+			action = new AtomicReference<>();
+			actionData = new AtomicReference<>();
 		} else {
 			throwErrorException(CONSTRUCTION_ERR);
 		}
@@ -127,7 +130,7 @@ public class Task<T extends IDataElement<T>> implements ITask<T> {
 		if (taskActionData != null) {
 
 			// Store the data
-			actionData = taskActionData;
+			actionData.set(taskActionData);
 
 			// The state machine can only get into the waiting state if the action or the
 			// action data are set, so check for that and if so move on to the ready state.
@@ -149,7 +152,7 @@ public class Task<T extends IDataElement<T>> implements ITask<T> {
 
 	@Override
 	public T getActionData() {
-		return actionData;
+		return actionData.get();
 	}
 
 	@Override
@@ -159,7 +162,7 @@ public class Task<T extends IDataElement<T>> implements ITask<T> {
 		if (taskAction != null) {
 
 			// Store the action
-			action = taskAction;
+			action.set(taskAction);
 			TaskTransitionEvents event;
 			// The state machine can only get into the waiting state if the action or the
 			// action data are set, so check for that and if so move on to the ready state.
@@ -188,12 +191,13 @@ public class Task<T extends IDataElement<T>> implements ITask<T> {
 	@Override
 	public TaskState execute() {
 		// Set the action and data references for the execution action
-		smExecutingAction.setActionData(actionData);
-		smExecutingAction.setTaskAction(action);
+		smExecutingAction.setActionData(actionData.get());
+		smExecutingAction.setTaskAction(action.get());
 		// Execute the action. Note that there is a transition event tied to the state
 		// event for execution. The transition event changes the state to EXECUTING
 		// while the state event makes some more informed decisions.
 		stateMachine.sendEvent(TaskTransitionEvents.EXECUTION_TRIGGERED);
+		logger.info("Task execution initiated.");
 		return getState();
 	}
 
@@ -205,12 +209,12 @@ public class Task<T extends IDataElement<T>> implements ITask<T> {
 
 	@Override
 	public TaskState getState() {
-		return stateData.getTaskState();
+		return stateData.get().getTaskState();
 	}
 
 	@Override
 	public TaskStateData getTaskStateData() {
-		return (TaskStateData) stateData.clone();
+		return (TaskStateData) stateData.get().clone();
 	}
 
 	/**
@@ -229,31 +233,31 @@ public class Task<T extends IDataElement<T>> implements ITask<T> {
 			Builder<TaskState, TaskTransitionEvents> builder = new StateMachineBuilder.Builder<>();
 
 			// Go into the intial state and add the others states to the set
-			builder.configureStates().withStates().initial(TaskState.INITIALIZED, new InitializedStateAction(stateData))
+			builder.configureStates().withStates()
+					.initial(TaskState.INITIALIZED, new InitializedStateAction<>(stateData.get()))
 					.states(EnumSet.allOf(TaskState.class));
 
 			// Configure the transitions for action data and actions.
 			builder.configureTransitions().withExternal().source(TaskState.INITIALIZED).target(TaskState.WAITING)
-					.event(TaskTransitionEvents.ACTION_DATA_SET).action(new WaitingEventAction(stateData));
+					.event(TaskTransitionEvents.ACTION_DATA_SET).action(new WaitingEventAction<>(stateData.get()));
 			builder.configureTransitions().withExternal().source(TaskState.INITIALIZED).target(TaskState.WAITING)
-					.event(TaskTransitionEvents.ACTION_SET).action(new WaitingEventAction(stateData));
+					.event(TaskTransitionEvents.ACTION_SET).action(new WaitingEventAction<>(stateData.get()));
 
 			// Once all the info is set, the state machine can transition to READY
 			builder.configureTransitions().withExternal().source(TaskState.WAITING).target(TaskState.READY)
-					.event(TaskTransitionEvents.ALL_INFO_SET).action(new ReadyEventAction(stateData));
+					.event(TaskTransitionEvents.ALL_INFO_SET).action(new ReadyEventAction<>(stateData.get()));
 
 			// A call to execute() triggers execution. This requires a transition action...
 			builder.configureTransitions().withExternal().source(TaskState.READY).target(TaskState.EXECUTING)
-					.event(TaskTransitionEvents.EXECUTION_TRIGGERED).action(new ExecutingEventAction(stateData));
+					.event(TaskTransitionEvents.EXECUTION_TRIGGERED)
+					.action(new ExecutingEventAction<>(stateData.get()));
 			// ...and a state action. This action requires all of the data.
 			builder.configureStates().withStates().state(TaskState.EXECUTING, smExecutingAction);
 
-			// FIXME! CONFIRM THAT THIS IS WORKING!---^
-			
 			// If the execution finished as expected, there is a transition event for that
 			// to finalize the state.
 			builder.configureTransitions().withExternal().source(TaskState.EXECUTING).target(TaskState.FINISHED)
-					.event(TaskTransitionEvents.EXECUTION_FINISHED).action(new FinishedEventAction(stateData));
+					.event(TaskTransitionEvents.EXECUTION_FINISHED).action(new FinishedEventAction<>(stateData.get()));
 
 			// Pack it up and go on home
 			stateMachine = builder.build();

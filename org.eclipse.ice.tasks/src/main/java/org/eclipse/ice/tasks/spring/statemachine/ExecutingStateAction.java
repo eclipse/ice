@@ -69,18 +69,20 @@ public class ExecutingStateAction<T> extends StateMachineBaseAction<T> implement
 	 */
 	@Override
 	public void run() {
-		
+
 		// Default to failure
 		TaskState state = TaskState.FAILED;
 		TaskTransitionEvents event = TaskTransitionEvents.ERROR_CAUGHT;
-		
+
+		logger.get().info("Executing action of type {}", taskAction.get().getType());
+
 		// Try to execute the action
 		T data = actionData.get();
 		if (taskAction.get().run(data)) {
 			state = TaskState.FINISHED;
 			event = TaskTransitionEvents.EXECUTION_FINISHED;
 		}
-		
+
 		// Trigger the state transition and update the state and log
 		stateContext.get().getStateMachine().sendEvent(event);
 		stateData.get().setTaskState(state);

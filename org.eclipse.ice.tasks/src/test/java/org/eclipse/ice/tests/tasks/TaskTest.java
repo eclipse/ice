@@ -156,24 +156,12 @@ class TaskTest {
 			assertEquals(TaskState.FINISHED, testTask.getState());
 			// And the test action should have been called
 			assert(action.wasCalled());
-			
-			/**
-			 * So the SM action needs to do at least three things: 1) Fire an event to go to
-			 * the finished state if all does well 2) Fire an error event if it fails 3)
-			 * Execute the Task Action.
-			 * 
-			 * Should the SM action be threaded?
-			 * 
-			 * The SM action should take the SM as an argument so that it can fire events.
-			 */
 
 		} catch (TaskException e1) {
 			// In this case, it should fail if an exception is caught.
 			e1.printStackTrace();
 			fail();
 		}
-
-		fail("Not yet implemented");
 	}
 
 	/**
