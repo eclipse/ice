@@ -23,7 +23,7 @@ import org.springframework.statemachine.StateContext;
  * 
  * @author Jay Jay Billings
  */
-public class FinishedEventAction extends StateMachineBaseAction {
+public class FinishedEventAction<T> extends StateMachineBaseAction<T> {
 
 	/**
 	 * Constructor
@@ -37,8 +37,8 @@ public class FinishedEventAction extends StateMachineBaseAction {
 	@Override
 	public void execute(StateContext<TaskState, TaskTransitionEvents> context) {
 		TaskState state = TaskState.FINISHED;
-		stateData.setTaskState(state);
-		logger.info("Execution finished. Action executing. State = {}",state);
+		stateData.get().setTaskState(state);
+		logger.get().info("Execution finished. Action executing. State = {}",state);
 	}
 
 }

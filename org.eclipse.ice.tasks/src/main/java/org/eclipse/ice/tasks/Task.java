@@ -75,6 +75,11 @@ public class Task<T extends IDataElement<T>> implements ITask<T> {
 	 * The action
 	 */
 	protected org.eclipse.ice.tasks.Action<T> action;
+	
+	/**
+	 * The state machine action used to execute the action
+	 */
+	private ExecutingStateAction<T> smExecutingAction;
 
 	/**
 	 * Utility function for throwing exceptions
@@ -103,6 +108,7 @@ public class Task<T extends IDataElement<T>> implements ITask<T> {
 		// Check state data
 		if (taskStateData != null) {
 			stateData = taskStateData;
+			 smExecutingAction = new ExecutingStateAction<>(stateData);
 		} else {
 			throwErrorException(CONSTRUCTION_ERR);
 		}
@@ -181,6 +187,9 @@ public class Task<T extends IDataElement<T>> implements ITask<T> {
 
 	@Override
 	public TaskState execute() {
+		// Set the action and data references for the execution action
+		smExecutingAction.setActionData(actionData);
+		smExecutingAction.setTaskAction(action);
 		// Execute the action. Note that there is a transition event tied to the state
 		// event for execution. The transition event changes the state to EXECUTING
 		// while the state event makes some more informed decisions.
@@ -236,8 +245,8 @@ public class Task<T extends IDataElement<T>> implements ITask<T> {
 			// A call to execute() triggers execution. This requires a transition action...
 			builder.configureTransitions().withExternal().source(TaskState.READY).target(TaskState.EXECUTING)
 					.event(TaskTransitionEvents.EXECUTION_TRIGGERED).action(new ExecutingEventAction(stateData));
-			// ...and a state action
-			builder.configureStates().withStates().state(TaskState.EXECUTING, new ExecutingStateAction(stateData));
+			// ...and a state action. This action requires all of the data.
+			builder.configureStates().withStates().state(TaskState.EXECUTING, smExecutingAction);
 
 			// FIXME! CONFIRM THAT THIS IS WORKING!---^
 			

@@ -69,6 +69,12 @@ import org.eclipse.ice.data.IDataElement;
  * simultaneously without the caller knowing anything about the client data
  * configuration and types.
  * 
+ * Note that there is a difference between state machine actions and Task
+ * Actions. The former is a construct used by the Spring State Machine library
+ * and describes events attached to events or states in a state machine. The
+ * latter specifically refers to Actions executed as part of Tasks in the
+ * workflow model of Billings, 2019.
+ * 
  * ----- WIP implementation notes (to be deleted on PR close) -----
  * 
  * Thoughts on provenance tracking? ICE 2.0 used a log file.

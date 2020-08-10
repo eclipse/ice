@@ -22,7 +22,7 @@ import org.springframework.statemachine.StateContext;
  * 
  * @author Jay Jay Billings
  */
-public class ExecutingEventAction extends StateMachineBaseAction {
+public class ExecutingEventAction<T> extends StateMachineBaseAction<T> {
 
 	/**
 	 * Constructor
@@ -36,8 +36,8 @@ public class ExecutingEventAction extends StateMachineBaseAction {
 	@Override
 	public void execute(StateContext<TaskState, TaskTransitionEvents> context) {
 		TaskState state = TaskState.EXECUTING;
-		stateData.setTaskState(state);
-		logger.info("Execution triggered. Action executing. State = {}",state);
+		stateData.get().setTaskState(state);
+		logger.get().info("Execution triggered. Action executing. State = {}",state);
 	}
 
 }

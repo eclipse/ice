@@ -23,7 +23,7 @@ import org.springframework.statemachine.StateContext;
  * @author Jay Jay Billings
  *
  */
-public class InitializedStateAction extends StateMachineBaseAction {
+public class InitializedStateAction<T> extends StateMachineBaseAction<T> {
 
 	/**
 	 * Constructor
@@ -37,8 +37,8 @@ public class InitializedStateAction extends StateMachineBaseAction {
 	@Override
 	public void execute(StateContext<TaskState, TaskTransitionEvents> context) {
 		TaskState state = TaskState.INITIALIZED;
-		stateData.setTaskState(state);
-		logger.info("Task initialized. State = {}",state);
+		stateData.get().setTaskState(state);
+		logger.get().info("Task initialized. State = {}",state);
 	}
 
 }

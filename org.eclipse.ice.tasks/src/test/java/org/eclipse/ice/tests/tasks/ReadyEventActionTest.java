@@ -34,7 +34,7 @@ class ReadyEventActionTest {
 	@Test
 	void testStateSet() {
 		TaskStateData data = new TaskStateDataImplementation();
-		ReadyEventAction action = new ReadyEventAction(data);
+		ReadyEventAction<TestData> action = new ReadyEventAction<>(data);
 		action.execute(null);
 		assertEquals(TaskState.READY, data.getTaskState());
 

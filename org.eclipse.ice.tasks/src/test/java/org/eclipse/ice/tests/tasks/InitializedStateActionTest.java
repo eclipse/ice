@@ -35,7 +35,7 @@ class InitializedStateActionTest {
 	@Test
 	void testStateSet() {
 		TaskStateData data = new TaskStateDataImplementation();
-		InitializedStateAction action = new InitializedStateAction(data);
+		InitializedStateAction<TestData> action = new InitializedStateAction<>(data);
 		action.execute(null);
 		assertEquals(TaskState.INITIALIZED, data.getTaskState());
 

@@ -53,7 +53,7 @@ class TaskTest {
 	void testSetActionDataException() {
 		assertThrows(Exception.class, () -> {
 			TaskStateData testInputData = new TaskStateDataImplementation();
-			Task<TestData> task = new Task<TestData>(testInputData);
+			Task<TestData> task = new Task<>(testInputData);
 			task.setActionData(null);
 		});
 	}
@@ -66,7 +66,7 @@ class TaskTest {
 	void testSetActionException() {
 		assertThrows(Exception.class, () -> {
 			TaskStateData testInputData = new TaskStateDataImplementation();
-			Task<TestData> task = new Task<TestData>(testInputData);
+			Task<TestData> task = new Task<>(testInputData);
 			task.setAction(null);
 		});
 	}
@@ -85,7 +85,7 @@ class TaskTest {
 			testInputData.setTaskState(TaskState.FINISHED);
 
 			// Create the task.
-			Task<TestData> testTask = new Task<TestData>(testInputData);
+			Task<TestData> testTask = new Task<>(testInputData);
 
 			// Check the initial state
 			assertEquals(TaskState.INITIALIZED, testTask.getState());
@@ -100,7 +100,7 @@ class TaskTest {
 			assert (testInputData.equals(stateData));
 
 			// Initialize it with an action
-			TestAction<TestData> action = new TestAction<TestData>();
+			TestAction<TestData> action = new TestAction<>();
 			testTask.setAction(action);
 
 			// At this point, it should be in the waiting state
@@ -136,13 +136,11 @@ class TaskTest {
 		try {
 			// Create the task. Initialized to null to remove compiler warnings.
 			TaskStateData testInputData = new TaskStateDataImplementation();
-			Task<TestData> testTask = new Task<TestData>(testInputData);
+			Task<TestData> testTask = new Task<>(testInputData);
 			TestData data = new TestDataImplementation();
 			testTask.setActionData(data);
-			TestAction<TestData> action = new TestAction<TestData>();
+			TestAction<TestData> action = new TestAction<>();
 			testTask.setAction(action);
-
-			action.getType();
 
 			// Execute the task and check the return state. If there was some sort of
 			// problem, then it will not be in the EXECUTING state.
@@ -156,7 +154,9 @@ class TaskTest {
 
 			// When execution is complete, it will be in FINISHED in this scenario.
 			assertEquals(TaskState.FINISHED, testTask.getState());
-
+			// And the test action should have been called
+			assert(action.wasCalled());
+			
 			/**
 			 * So the SM action needs to do at least three things: 1) Fire an event to go to
 			 * the finished state if all does well 2) Fire an error event if it fails 3)

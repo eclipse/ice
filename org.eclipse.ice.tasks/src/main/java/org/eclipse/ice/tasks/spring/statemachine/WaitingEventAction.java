@@ -22,7 +22,7 @@ import org.springframework.statemachine.StateContext;
  * 
  * @author Jay Jay Billings
  */
-public class WaitingEventAction extends StateMachineBaseAction {
+public class WaitingEventAction<T> extends StateMachineBaseAction<T> {
 
 	/**
 	 * Constructor
@@ -36,8 +36,8 @@ public class WaitingEventAction extends StateMachineBaseAction {
 	@Override
 	public void execute(StateContext<TaskState, TaskTransitionEvents> context) {
 		TaskState state = TaskState.WAITING;
-		stateData.setTaskState(state);
-		logger.info("Waiting event received. State = {}",state);
+		stateData.get().setTaskState(state);
+		logger.get().info("Waiting event received. State = {}",state);
 	}
 
 }

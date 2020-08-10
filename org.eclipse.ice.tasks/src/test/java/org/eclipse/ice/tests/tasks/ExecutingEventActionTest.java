@@ -34,7 +34,7 @@ class ExecutingEventActionTest {
 	@Test
 	void testStateSet() {
 		TaskStateData data = new TaskStateDataImplementation();
-		ExecutingEventAction action = new ExecutingEventAction(data);
+		ExecutingEventAction<TestData> action = new ExecutingEventAction<>(data);
 		action.execute(null);
 		assertEquals(TaskState.EXECUTING, data.getTaskState());
 

@@ -11,6 +11,9 @@
  *****************************************************************************/
 package org.eclipse.ice.tasks.spring.statemachine;
 
+import java.util.concurrent.atomic.AtomicReference;
+
+import org.eclipse.ice.tasks.Action;
 import org.eclipse.ice.tasks.TaskState;
 import org.eclipse.ice.tasks.TaskStateData;
 import org.eclipse.ice.tasks.TaskTransitionEvents;
@@ -21,10 +24,18 @@ import org.springframework.statemachine.StateContext;
  * EXECUTING state. The task executes this action *AFTER* the task enters the
  * state.
  * 
+ * This class requires that the state data, action data, and action be set
+ * before the execute() operation is called.
+ * 
  * @author Jay Jay Billings
  *
  */
-public class ExecutingStateAction extends StateMachineBaseAction {
+public class ExecutingStateAction<T> extends StateMachineBaseAction<T> implements Runnable {
+
+	/**
+	 * Spring state machine context used during execution
+	 */
+	protected AtomicReference<StateContext<TaskState, TaskTransitionEvents>> stateContext;
 
 	/**
 	 * Constructor
@@ -33,23 +44,47 @@ public class ExecutingStateAction extends StateMachineBaseAction {
 	 */
 	public ExecutingStateAction(TaskStateData taskStateData) {
 		super(taskStateData);
+		stateContext = new AtomicReference<>(null);
 	}
 
+	/**
+	 * This operation executes the ICE action for the parent task. The action is
+	 * launched on it's own thread.
+	 */
 	@Override
 	public void execute(StateContext<TaskState, TaskTransitionEvents> context) {
-		Thread thread = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				TaskState state = TaskState.FINISHED;
-				context.getStateMachine().sendEvent(TaskTransitionEvents.EXECUTION_FINISHED);
-				stateData.setTaskState(state);
-				logger.info("Task executed. State = {}", state);
-
-			}
-		});
+		// Update the state context
+		stateContext.set(context);
+		// Create and launch the thread
+		Thread thread = new Thread(this);
 		thread.start();
+	}
 
+	/**
+	 * This is the main operation for executing the Task's Action and is a Runnable
+	 * meant to be called on a thread. In principle, this can be called directly by
+	 * a client using a Thread, but that misses additional activities preformed by
+	 * execute() and that operation is the preferred entry point for the execution
+	 * of this work.
+	 */
+	@Override
+	public void run() {
+		
+		// Default to failure
+		TaskState state = TaskState.FAILED;
+		TaskTransitionEvents event = TaskTransitionEvents.ERROR_CAUGHT;
+		
+		// Try to execute the action
+		T data = actionData.get();
+		if (taskAction.get().run(data)) {
+			state = TaskState.FINISHED;
+			event = TaskTransitionEvents.EXECUTION_FINISHED;
+		}
+		
+		// Trigger the state transition and update the state and log
+		stateContext.get().getStateMachine().sendEvent(event);
+		stateData.get().setTaskState(state);
+		logger.get().info("Task executed. State = {}", state);
 	}
 
 }

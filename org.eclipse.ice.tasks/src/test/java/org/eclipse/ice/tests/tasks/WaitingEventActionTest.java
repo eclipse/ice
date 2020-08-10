@@ -34,7 +34,7 @@ class WaitingEventActionTest {
 	@Test
 	void testStateSet() {
 		TaskStateData data = new TaskStateDataImplementation();
-		WaitingEventAction action = new WaitingEventAction(data);
+		WaitingEventAction<TestData> action = new WaitingEventAction<>(data);
 		action.execute(null);
 		assertEquals(TaskState.WAITING, data.getTaskState());
 

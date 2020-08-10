@@ -34,7 +34,7 @@ class FinishedEventActionTest {
 	@Test
 	void testStateSet() {
 		TaskStateData data = new TaskStateDataImplementation();
-		FinishedEventAction action = new FinishedEventAction(data);
+		FinishedEventAction<TestData> action = new FinishedEventAction<>(data);
 		action.execute(null);
 		assertEquals(TaskState.FINISHED, data.getTaskState());
 

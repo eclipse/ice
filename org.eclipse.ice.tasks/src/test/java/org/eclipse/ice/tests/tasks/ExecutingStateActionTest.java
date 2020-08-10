@@ -16,8 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.eclipse.ice.tasks.TaskState;
 import org.eclipse.ice.tasks.TaskStateData;
 import org.eclipse.ice.tasks.TaskStateDataImplementation;
-import org.eclipse.ice.tasks.spring.statemachine.InitializedStateAction;
-import org.eclipse.ice.tasks.spring.statemachine.WaitingEventAction;
+import org.eclipse.ice.tasks.spring.statemachine.ExecutingStateAction;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -35,10 +34,11 @@ class ExecutingStateActionTest {
 	@Test
 	void testStateSet() {
 		TaskStateData data = new TaskStateDataImplementation();
-		InitializedStateAction action = new InitializedStateAction(data);
+		ExecutingStateAction<TestData> action = new ExecutingStateAction<>(data);
 		action.execute(null);
 		assertEquals(TaskState.INITIALIZED, data.getTaskState());
-
+		fail("Not yet implemented!");
+		
 		return;
 	}
 
