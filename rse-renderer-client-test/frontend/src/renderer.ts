@@ -1,6 +1,6 @@
 import {css, customElement, html, LitElement, property} from 'lit-element';
 import '@vaadin/vaadin-text-field';
-import { DataElement } from './data-element'
+import { Person } from './Person';
 
 /**
  * Tasks: 
@@ -15,14 +15,14 @@ class Renderer extends LitElement {
   /**
    * This is the default data value. It is the empty string and indicates that the JSON has not yet been received from the server.
    */
-  dataElement = new DataElement<string>();
+  person = new Person();
 
   @property({type: String})
   dataElementJSON = '';
 
   static styles = css`
     h1 {
-      color: hotpink;
+      color: blue;
       text-transform: uppercase;
     }
   `;
@@ -32,33 +32,33 @@ class Renderer extends LitElement {
     console.log("Constructed");
   }
 
-  /**
-   * This operation updates the content of the template from the contents of the data element.
-   */
-  updateDataElement(e: {target: HTMLInputElement}) {
-
-    console.log("dataElementJSON on update call = " + this.dataElementJSON);
-    console.log("dataElement on update call = " + this.dataElement);
-  
+  updateFirstName(e: {target: HTMLInputElement}) {
     // First, the event data needs to be read into the local structure
-    this.dataElement.data = e.target.value;
+    this.person.firstName = e.target.value;
     // Second, dump into the JSON property
-    this.dataElementJSON = JSON.stringify(this.dataElement);
-    console.log("dataElementJSON = " + this.dataElementJSON);
-
+    this.dataElementJSON = JSON.stringify(this.person);
     // Notify the listeners of the change.
-    this.dispatchEvent(new CustomEvent('data-changed', {bubbles: true, composed: true, detail: e.target.value}))
-
-    return;
+    this.dispatchEvent(new CustomEvent(
+      'data-changed',
+      {bubbles: true, composed: true, detail: e.target.value}
+    ));
+  }
+  updateLastName(e: {target: HTMLInputElement}) {
+    this.person.lastName = e.target.value;
+    this.dataElementJSON = JSON.stringify(this.person);
+    this.dispatchEvent(new CustomEvent(
+      'data-changed',
+      {bubbles: true, composed: true, detail: e.target.value}
+    ));
   }
 
   loadData() {
-    this.dataElement = <DataElement<string>> JSON.parse(this.dataElementJSON);
+    this.person = <Person> JSON.parse(this.dataElementJSON);
     console.log("dEJ-ld = ");
     console.log(this.dataElementJSON);
     console.log("dataElement-ld = ")
-    console.log(this.dataElement);
-    console.log(this.dataElement.data);
+    console.log(this.person);
+    console.log(this.person.firstName, this.person.lastName);
   }
 
   render() {
@@ -66,20 +66,25 @@ class Renderer extends LitElement {
 
     return html`
       <script>${this.loadData()}</script>
-      <h1>Greetings ${this.dataElement.name}!</h1>
+      <h1>Greetings ${this.person.firstName}!</h1>
       
       <div>
         <vaadin-text-field 
-          label="Name" 
-          .value=${this.dataElement.data}
-          @input=${this.updateDataElement}
+          label="First Name" 
+          .value=${this.person.firstName}
+          @input=${this.updateFirstName}
+          ></vaadin-text-field>
+        <vaadin-text-field 
+          label="Last Name" 
+          .value=${this.person.lastName}
+          @input=${this.updateLastName}
           ></vaadin-text-field>
       </div>
 
-      <h2>${this.dataElementJSON}</h2>
+      <pre>${JSON.stringify(this.person, null, 2)}</pre>
       
-      <h2>${this.dataElement.description}</h2>
-      <h2>${this.dataElement.name}</h2>
+      <h2>${this.person.description}</h2>
+      <h2>${this.person.name}</h2>
     `;
   }
 

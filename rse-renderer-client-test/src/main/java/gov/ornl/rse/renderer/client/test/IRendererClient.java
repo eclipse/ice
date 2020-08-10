@@ -11,12 +11,9 @@
  *******************************************************************************/
 package gov.ornl.rse.renderer.client.test;
 
-import java.io.Serializable;
-
 import org.eclipse.ice.data.IDataElement;
-import org.eclipse.ice.renderer.DataElement;
 
-public interface IRendererClient<T extends IDataElement> {
+public interface IRendererClient<T extends IDataElement<T>> {
 
 	/**
 	 * This operation sets the data that should be rendered.
