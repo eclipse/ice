@@ -8,5 +8,5 @@
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TestImplementation implements Test, Serializable {
-	@NonNull public java.lang.String test = "A String Value";
+	@NonNull public String test = "A String Value";
 }

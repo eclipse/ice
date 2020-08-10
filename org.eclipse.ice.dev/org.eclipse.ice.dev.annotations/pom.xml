@@ -102,6 +102,12 @@
 			<version>3.0.0-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.cosium.logging</groupId>
+			<artifactId>annotation-processor-logger</artifactId>
+			<version>1.0</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<parent>

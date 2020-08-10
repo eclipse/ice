@@ -12,6 +12,7 @@
 package org.eclipse.ice.dev.annotations.processors;
 
 import lombok.Builder;
+import lombok.NonNull;
 
 /**
  * Writer for DataElement Implementation classes.
@@ -43,13 +44,19 @@ public class ImplementationWriter extends VelocitySourceWriter {
 	private static final String FIELDS = "fields";
 
 	/**
+	 * Context key for types.
+	 */
+	private static final String TYPES = "types";
+
+	/**
 	 * Context key for class.
 	 */
 	private static final String CLASS = "class";
 
 	@Builder
 	public ImplementationWriter(
-		String packageName, String interfaceName, String className, Fields fields
+		String packageName, String interfaceName, String className,
+		@NonNull Fields fields, @NonNull Types types
 	) {
 		super();
 		this.template = IMPL_TEMPLATE;
@@ -57,5 +64,6 @@ public class ImplementationWriter extends VelocitySourceWriter {
 		this.context.put(INTERFACE, interfaceName);
 		this.context.put(CLASS, className);
 		this.context.put(FIELDS, fields);
+		this.context.put(TYPES, types);
 	}
 }

@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2020- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Daniel Bluhm - Initial implementation
+ *******************************************************************************/
+
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.io.IOException;
@@ -149,6 +160,7 @@ public class DataElementProcessor extends AbstractProcessor {
 				.className(element.getImplName())
 				.interfaceName(element.getName())
 				.fields(fields)
+				.types(fields.getTypes())
 				.build()
 				.write(writer);
 		}
@@ -178,6 +190,7 @@ public class DataElementProcessor extends AbstractProcessor {
 				.implementation(element.getImplName())
 				.collection(collectionName)
 				.fields(fields)
+				.types(fields.getTypes())
 				.build()
 				.write(writer);
 		}
@@ -200,6 +213,9 @@ public class DataElementProcessor extends AbstractProcessor {
 				.packageName(element.getPackageName())
 				.interfaceName(element.getName())
 				.fields(fields)
+				// Only subset of fields used in interface. More specific scope
+				// needed to correctly determine imports.
+				.types(new Types(fields.getInterfaceFields()))
 				.build()
 				.write(writer);
 		}

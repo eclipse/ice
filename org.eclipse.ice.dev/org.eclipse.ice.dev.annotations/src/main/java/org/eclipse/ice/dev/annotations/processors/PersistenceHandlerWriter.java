@@ -63,11 +63,16 @@ public class PersistenceHandlerWriter extends VelocitySourceWriter {
 	 */
 	private static final String FIELDS = "fields";
 
+	/**
+	 * Context key for types.
+	 */
+	private static final String TYPES = "types";
+
 	@Builder
 	public PersistenceHandlerWriter(
 		String packageName, String elementInterface, String interfaceName,
 		String className, String implementation, String collection,
-		@NonNull Fields fields
+		@NonNull Fields fields, @NonNull Types types
 	) {
 		super();
 		this.template = PERSISTENCE_HANDLER_TEMPLATE;
@@ -78,5 +83,6 @@ public class PersistenceHandlerWriter extends VelocitySourceWriter {
 		this.context.put(COLLECTION, collection);
 		this.context.put(IMPLEMENTATION, implementation);
 		this.context.put(FIELDS, fields);
+		this.context.put(TYPES, types);
 	}
 }
