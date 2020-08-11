@@ -1,5 +1,7 @@
 /**
- * Person DataElement
+ * Person DataElement.
+ * In the future, we hope to be able to generate data structures like this
+ * directly from DataElement Spec classes.
  */
 
 import { DataElement } from "./data-element";
