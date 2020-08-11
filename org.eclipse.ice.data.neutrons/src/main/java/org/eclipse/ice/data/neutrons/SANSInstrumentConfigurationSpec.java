@@ -8,16 +8,6 @@ public class SANSInstrumentConfigurationSpec {
 	
 	
 	/**
-	 * user defined subdirectory within the IPTS shared
-	 */
-	@DataField private String userOutputDir; 
-	
-	/**
-	 *  base directory, IPTS shared
-	 */
-	@DataField private String iptsSharedDir;
-	
-	/**
 	 * output directory, should be iptsSharedDir+userOutputDir
 	 */
 	@DataField private String outputDir; 
