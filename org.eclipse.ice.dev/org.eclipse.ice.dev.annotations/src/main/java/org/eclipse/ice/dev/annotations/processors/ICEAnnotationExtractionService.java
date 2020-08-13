@@ -48,7 +48,7 @@ public class ICEAnnotationExtractionService {
 	protected JsonExtractionHelper jsonExtractionHelper = new JsonExtractionHelper();
 	
 	
-	ICEAnnotationExtractionService(Elements elementUtils, ObjectMapper mapper, ProcessingEnvironment processingEnv, NameGenerator nameGenerator){
+	public ICEAnnotationExtractionService(Elements elementUtils, ObjectMapper mapper, ProcessingEnvironment processingEnv, NameGenerator nameGenerator){
 		this.elementUtils = elementUtils;
 		this.mapper = mapper;
 		this.processingEnv = processingEnv;
