@@ -33,6 +33,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
+import javax.tools.FileObject;
+import javax.tools.JavaFileManager.Location;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
 
@@ -102,6 +104,9 @@ public class DataElementProcessor extends AbstractProcessor {
 
 				// Write the DataElement Implementation to file.
 				writeImpl(dataElement, fields);
+
+				// Write a TypeScript DataElement to file.
+				writeTypeScript(dataElement, fields);
 
 				// Check if Persistence should be generated.
 				if (dataElement.hasAnnotation(Persisted.class)) {
@@ -218,6 +223,36 @@ public class DataElementProcessor extends AbstractProcessor {
 				.types(new Types(fields.getInterfaceFields()))
 				.build()
 				.write(writer);
+		}
+	}
+
+	/**
+	 * Write the typescript of DataElement annotated class to file.
+	 * @param element
+	 * @param fields
+	 * @throws IOException
+	 */
+	private void writeTypeScript(
+		DataElementSpec element,
+		Fields fields
+	) throws IOException {
+		final FileObject generatedFile = processingEnv.getFiler()
+			.createResource(
+				StandardLocation.SOURCE_OUTPUT,
+				"",
+				"frontend/" + element.getName() + ".ts"
+			);
+		try (Writer writer = generatedFile.openWriter()) {
+			Fields trimmed = fields.getNonDefaultFields();
+			TypeScriptWriter.builder()
+				.name(element.getName())
+				.fields(trimmed)
+				.types(trimmed.getTypes())
+				.build()
+				.write(writer);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }
