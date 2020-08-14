@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
@@ -41,12 +42,11 @@ public class DataElementAnnotationExtractor {
 	/**
 	 * Annotations to not be transfered from member variables of Spec classes to final generated classes
 	 */
-	private static final List<String> nonTransferableAnnotations = Set.of(
+	private static final List<String> nonTransferableAnnotations = Stream.of(
 			DataField.class,
 			DataField.Default.class
-		).stream()
-			.map(cls -> cls.getCanonicalName())
-			.collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+		).map(cls -> cls.getCanonicalName())
+		.collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
 	
 	private ICEAnnotationExtractionService annotationExtractionService;
 	private WriterGenerator writerGenerator;
