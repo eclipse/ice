@@ -29,54 +29,63 @@ import org.eclipse.ice.data.IDataElement;
  * logic to be executed through Java rather than templating syntax
  */
 public class VelocityUtils {
-	
+
 	private ProcessingEnvironment processingEnvironment;
-	
-	public VelocityUtils(ProcessingEnvironment processingEnvironment){
+
+	public VelocityUtils(ProcessingEnvironment processingEnvironment) {
 		this.processingEnvironment = processingEnvironment;
 	}
-	
+
 	/**
-	 * Util method that attempts to determine the parameterized type of a given TypeMirror 
-	 * @param type A TypeMirror that has a Parameterized Type e.g. List<ParameterizedType>
-	 * @return TypeMirror The ParamterizedType's TypeMirror or null if it doesn not exist
+	 * Util method that attempts to determine the parameterized type of a given
+	 * TypeMirror
+	 * 
+	 * @param type A TypeMirror that has a Parameterized Type e.g.
+	 *             List<ParameterizedType>
+	 * @return TypeMirror The ParamterizedType's TypeMirror or null if it doesn not
+	 *         exist
 	 */
 	public static TypeMirror getCollectionParameterType(TypeMirror type) {
-		if(type != null && DeclaredType.class.isAssignableFrom(type.getClass())) {
-			if(((DeclaredType)type).getTypeArguments() != null && ((DeclaredType)type).getTypeArguments().size() > 0) {
-				return ((DeclaredType)type).getTypeArguments().get(0);
+		if (type != null && DeclaredType.class.isAssignableFrom(type.getClass())) {
+			if (((DeclaredType) type).getTypeArguments() != null
+					&& ((DeclaredType) type).getTypeArguments().size() > 0) {
+				return ((DeclaredType) type).getTypeArguments().get(0);
 			}
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Get the Class object the parameter type represents
+	 * 
 	 * @param type
 	 * @return Class The actual class the TypeMirror type represents
 	 * @throws ClassNotFoundException
 	 */
-	public static Class<?> getClass(TypeMirror type) throws ClassNotFoundException{
-		if(type != null && DeclaredType.class.isAssignableFrom(type.getClass())) {
-			return ClassUtils.getClass(((DeclaredType)type).asElement().toString());
+	public static Class<?> getClass(TypeMirror type) throws ClassNotFoundException {
+		if (type != null && DeclaredType.class.isAssignableFrom(type.getClass())) {
+			return ClassUtils.getClass(((DeclaredType) type).asElement().toString());
 		}
 		return null;
 	}
-	
-	
+
 	/**
-	 * Util method for collection all IDataElement and IDataElement collections in a given list of fields
+	 * Util method for collection all IDataElement and IDataElement collections in a
+	 * given list of fields
+	 * 
 	 * @param fields
 	 * @return IDataElement fields
 	 */
 	public List<Field> collectAllDataElementFields(List<Field> fields) {
 		return fields.stream()
 				.filter(field -> field.getMirror() != null && isIDataElementOrCollectionOf(field.getMirror()))
-				.collect(Collectors.toList());	
+				.collect(Collectors.toList());
 	}
-	
+
 	/**
-	 * Util method for checking if there are any fields of type IDataElement or a collection of IDataElements in a given list of fields
+	 * Util method for checking if there are any fields of type IDataElement or a
+	 * collection of IDataElements in a given list of fields
+	 * 
 	 * @param fields
 	 * @return
 	 */
@@ -84,38 +93,41 @@ public class VelocityUtils {
 		return fields.stream()
 				.anyMatch(field -> field.getMirror() != null && isIDataElementOrCollectionOf(field.getMirror()));
 	}
-	
+
 	/**
 	 * Checks if the given TypeMirror type represents an IDataElement
+	 * 
 	 * @param type
 	 * @return boolean
 	 */
 	public boolean isIDataElement(TypeMirror type) {
-		if(type != null) {
-			if(type.toString().contains(IDataElement.class.getSimpleName()))
-			{
+		if (type != null) {
+			if (type.toString().contains(IDataElement.class.getSimpleName())) {
 				return true;
 			}
-				for (TypeMirror supertype : processingEnvironment.getTypeUtils().directSupertypes(type)) {
-					   DeclaredType declared = (DeclaredType)supertype; 
-					   Element supertypeElement = declared.asElement();
-					   if(supertypeElement.asType().toString().contains(IDataElement.class.getSimpleName())) {
-						   return true;
-					   }
+			for (TypeMirror supertype : processingEnvironment.getTypeUtils().directSupertypes(type)) {
+				DeclaredType declared = (DeclaredType) supertype;
+				Element supertypeElement = declared.asElement();
+				if (supertypeElement.asType().toString().contains(IDataElement.class.getSimpleName())) {
+					return true;
 				}
-		
+			}
+
 		}
 		return false;
-		
+
 	}
-	
+
 	/**
-	 * Checks if a given TypeMirror type represents an IDataElement or a parameterized collection of IDataElement's
+	 * Checks if a given TypeMirror type represents an IDataElement or a
+	 * parameterized collection of IDataElement's
+	 * 
 	 * @param type
 	 * @return boolean
 	 */
 	public boolean isIDataElementOrCollectionOf(TypeMirror type) {
-		return this.isIDataElement(type) || (getCollectionParameterType(type) != null && this.isIDataElement(getCollectionParameterType(type)));
+		return this.isIDataElement(type)
+				|| (getCollectionParameterType(type) != null && this.isIDataElement(getCollectionParameterType(type)));
 	}
-	
+
 }

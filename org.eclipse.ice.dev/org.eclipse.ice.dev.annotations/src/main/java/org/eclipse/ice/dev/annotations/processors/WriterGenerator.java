@@ -22,11 +22,14 @@ import javax.lang.model.element.Element;
  */
 public interface WriterGenerator {
 	/**
-	 * Generates a list of VelocitySourceWriters based on data extracted from a Spec class
+	 * Generates a list of VelocitySourceWriters based on data extracted from a Spec
+	 * class
+	 * 
 	 * @param element
 	 * @param response
 	 * @return
 	 * @throws IOException
 	 */
-	public List<VelocitySourceWriter> generateWriters(Element element,AnnotationExtractionResponse response) throws IOException;
+	public List<VelocitySourceWriter> generateWriters(Element element, AnnotationExtractionResponse response)
+			throws IOException;
 }

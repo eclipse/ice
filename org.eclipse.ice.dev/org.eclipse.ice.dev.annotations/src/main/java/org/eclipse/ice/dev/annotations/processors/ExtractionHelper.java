@@ -16,12 +16,14 @@ import java.util.Optional;
 import javax.lang.model.element.Element;
 
 /**
- * Base interface for the flavors of extraction helpers for pulling data from Spec classes
+ * Base interface for the flavors of extraction helpers for pulling data from
+ * Spec classes
  *
  */
 public interface ExtractionHelper {
 	/**
 	 * Get the AnnotationMirror of a given type if present on the element.
+	 * 
 	 * @param <T>
 	 * @param element
 	 * @param cls
@@ -34,5 +36,5 @@ public interface ExtractionHelper {
 		}
 		return Optional.of(value);
 	}
-	
+
 }

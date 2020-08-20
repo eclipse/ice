@@ -25,8 +25,8 @@ import lombok.Builder;
 import lombok.NonNull;
 
 /**
- * Implementation of the VelocitySourceWriter that handles generating 
- * the DataElementImplementation
+ * Implementation of the VelocitySourceWriter that handles generating the
+ * DataElementImplementation
  *
  */
 public class DataElementImplementationWriter extends ImplementationWriter {
@@ -38,41 +38,41 @@ public class DataElementImplementationWriter extends ImplementationWriter {
 	 * to the src/main/resources folder.
 	 */
 	private static final String IMPL_TEMPLATE = "templates/DataElement.vm";
-	
+
 	@Builder
-	public DataElementImplementationWriter(String packageName, String interfaceName, String className, Fields fields, JavaFileObject generatedFile) {
+	public DataElementImplementationWriter(String packageName, String interfaceName, String className, Fields fields,
+			JavaFileObject generatedFile) {
 		super(packageName, interfaceName, className, fields, generatedFile);
 		this.template = IMPL_TEMPLATE;
 	}
-	
+
 	/**
-	 * Private argless constructor purely for use of the static method to have access to 
-	 * the inherited getInitializer() method
+	 * Private argless constructor purely for use of the static method to have
+	 * access to the inherited getInitializer() method
 	 */
 	private DataElementImplementationWriter() {
 		super();
 	}
 
 	/**
-	 *	Supplies a lambda that will provide a fully initialized 
-	 *	DataElementImplementationWriter given a map and a JavaFileObject
+	 * Supplies a lambda that will provide a fully initialized
+	 * DataElementImplementationWriter given a map and a JavaFileObject
 	 */
 	@Override
 	public BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getInitializer() {
 		return (fileObject, context) -> {
-			String name = (String)context.get(MetaTemplateProperty.QUALIFIEDIMPL);
+			String name = (String) context.get(MetaTemplateProperty.QUALIFIEDIMPL);
 			return Arrays.asList(DataElementImplementationWriter.builder()
-					.packageName((String)context.get(MetaTemplateProperty.PACKAGE))
-					.interfaceName((String)context.get(MetaTemplateProperty.INTERFACE))
-					.className((String)context.get(MetaTemplateProperty.CLASS))
-					.fields((Fields)context.get(MetaTemplateProperty.FIELDS))
-					.generatedFile(fileObject)
-					.build());
+					.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
+					.interfaceName((String) context.get(MetaTemplateProperty.INTERFACE))
+					.className((String) context.get(MetaTemplateProperty.CLASS))
+					.fields((Fields) context.get(MetaTemplateProperty.FIELDS)).generatedFile(fileObject).build());
 		};
 	}
-	
+
 	/**
 	 * Static method for cleanly fetching an initializer
+	 * 
 	 * @return DataElementImplementationWriter init lambda
 	 */
 	public static BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getContextInitializer() {

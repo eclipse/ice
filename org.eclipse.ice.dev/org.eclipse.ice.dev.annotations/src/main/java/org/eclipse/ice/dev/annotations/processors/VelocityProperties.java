@@ -20,11 +20,8 @@ enum VelocityProperties {
 
 	// Set up Velocity using the Singleton approach; ClasspathResourceLoader allows
 	// us to load templates from src/main/resources
-	RESOURCE_LOADER("resource.loader", "class"),
-	CLASS_RESOURCE_LOADER(
-		"class.resource.loader.class",
-		"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"
-	);
+	RESOURCE_LOADER("resource.loader", "class"), CLASS_RESOURCE_LOADER("class.resource.loader.class",
+			"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 
 	/**
 	 * Property key.
@@ -43,6 +40,7 @@ enum VelocityProperties {
 
 	/**
 	 * Get key from enum.
+	 * 
 	 * @return key
 	 */
 	String key() {
@@ -51,6 +49,7 @@ enum VelocityProperties {
 
 	/**
 	 * Get value from enum.
+	 * 
 	 * @return value
 	 */
 	String value() {
@@ -59,6 +58,7 @@ enum VelocityProperties {
 
 	/**
 	 * Generate and return Properties from enum.
+	 * 
 	 * @return Properties
 	 */
 	public static Properties get() {

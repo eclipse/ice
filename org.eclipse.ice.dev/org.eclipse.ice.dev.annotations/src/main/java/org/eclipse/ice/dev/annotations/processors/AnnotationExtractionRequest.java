@@ -30,9 +30,10 @@ public class AnnotationExtractionRequest {
 	 * Element to be extracted from
 	 */
 	private Element element;
-	
+
 	/**
-	 * Included list of static default fields in addition to fields specified in element
+	 * Included list of static default fields in addition to fields specified in
+	 * element
 	 */
 	@Builder.Default
 	private boolean includeDefaults = true;

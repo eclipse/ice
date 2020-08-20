@@ -20,6 +20,7 @@ import lombok.Builder;
 
 /**
  * Writer for DataElement Implementation classes.
+ * 
  * @author Daniel Bluhm
  */
 public abstract class ImplementationWriter extends VelocitySourceWriter {
@@ -44,9 +45,8 @@ public abstract class ImplementationWriter extends VelocitySourceWriter {
 	 */
 	private static final String CLASS = "class";
 
-	public ImplementationWriter(
-		String packageName, String interfaceName, String className, Fields fields, JavaFileObject generatedFile
-	) {
+	public ImplementationWriter(String packageName, String interfaceName, String className, Fields fields,
+			JavaFileObject generatedFile) {
 		super();
 		this.context.put(PACKAGE, packageName);
 		this.context.put(INTERFACE, interfaceName);
@@ -54,9 +54,9 @@ public abstract class ImplementationWriter extends VelocitySourceWriter {
 		this.context.put(FIELDS, fields);
 		this.generatedFile = generatedFile;
 	}
-	
+
 	protected ImplementationWriter() {
-		
+
 	}
 
 }

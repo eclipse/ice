@@ -35,6 +35,7 @@ public class SpecExtractionHelper implements ExtractionHelper {
 
 	/**
 	 * Convert Element element and field config fieldInfo to a Field POJO
+	 * 
 	 * @param element
 	 * @param elementUtils
 	 * @param fieldInfo
@@ -43,30 +44,23 @@ public class SpecExtractionHelper implements ExtractionHelper {
 	 */
 	public Field convertElementToField(Element element, Elements elementUtils, Field fieldInfo,
 			List<String> handledAnnotations) {
-		return Field.builder()
-				.name(extractFieldName(element))
-				.type(extractFieldType(element))
+		return Field.builder().name(extractFieldName(element)).type(extractFieldType(element))
 				.defaultValue(extractDefaultValue(element, elementUtils))
 				.docString(extractDocString(element, elementUtils))
 				.annotations(extractAnnotations(element, handledAnnotations))
-				.modifiersToString(extractModifiers(element))
-				.validator(extractValidator(element))
-				.getter(fieldInfo.isGetter())
-				.setter(fieldInfo.isSetter())
-				.match(fieldInfo.isMatch())
-				.unique(fieldInfo.isUnique())
-				.searchable(fieldInfo.isSearchable())
-				.nullable(fieldInfo.isNullable())
+				.modifiersToString(extractModifiers(element)).validator(extractValidator(element))
+				.getter(fieldInfo.isGetter()).setter(fieldInfo.isSetter()).match(fieldInfo.isMatch())
+				.unique(fieldInfo.isUnique()).searchable(fieldInfo.isSearchable()).nullable(fieldInfo.isNullable())
 				.build();
 	}
-	
+
 	/**
 	 * 
 	 * @param element
 	 * @return
 	 */
 	public String extractValidator(Element element) {
-		//TODO: implement method for DataModel annotation
+		// TODO: implement method for DataModel annotation
 		return null;
 	}
 
@@ -137,7 +131,8 @@ public class SpecExtractionHelper implements ExtractionHelper {
 	}
 
 	/**
-	 * Extract the value that a given DataField should be initialized to based on the Default annotation value
+	 * Extract the value that a given DataField should be initialized to based on
+	 * the Default annotation value
 	 * 
 	 * @param element
 	 * @param elementUtils
@@ -159,8 +154,11 @@ public class SpecExtractionHelper implements ExtractionHelper {
 	};
 
 	/**
-	 * Collect all fields in the given element.  Entire member variables can be ignored with the fieldFilter predicate.
-	 * handledAnnotations determines which annotations on the member variables should be maintained when converted into a field.
+	 * Collect all fields in the given element. Entire member variables can be
+	 * ignored with the fieldFilter predicate. handledAnnotations determines which
+	 * annotations on the member variables should be maintained when converted into
+	 * a field.
+	 * 
 	 * @param element
 	 * @param elementUtils
 	 * @param fieldFilter
@@ -173,22 +171,16 @@ public class SpecExtractionHelper implements ExtractionHelper {
 		if (element instanceof TypeElement) {
 
 			elementList = ElementFilter.fieldsIn(((TypeElement) element).getEnclosedElements()).stream()
-					.filter(fieldFilter)
-					.map(el -> {
+					.filter(fieldFilter).map(el -> {
 
 						DataField dataField = el.getAnnotation(DataField.class);
 						Field fieldInfo;
 						if (dataField == null) {
 							fieldInfo = Field.builder().build();
 						} else {
-							fieldInfo = Field.builder()
-							.getter(dataField.getter())
-							.setter(dataField.setter())
-							.match(dataField.match())
-							.unique(dataField.unique())
-							.searchable(dataField.searchable())
-							.nullable(dataField.nullable())
-							.build();
+							fieldInfo = Field.builder().getter(dataField.getter()).setter(dataField.setter())
+									.match(dataField.match()).unique(dataField.unique())
+									.searchable(dataField.searchable()).nullable(dataField.nullable()).build();
 						}
 
 						return (Field) convertElementToField(el, elementUtils, fieldInfo, handledAnnotations);

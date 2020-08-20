@@ -21,24 +21,24 @@ import javax.tools.JavaFileObject;
  *
  */
 public abstract class AbstractWriterGenerator implements WriterGenerator {
-	
+
 	/**
 	 * Used to create JavaFileObjects
 	 */
 	protected ProcessingEnvironment processingEnv;
-	
-	AbstractWriterGenerator(ProcessingEnvironment processingEnv){
+
+	AbstractWriterGenerator(ProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
 	}
-	
+
 	/**
 	 * Generates object used for writing templated class to
+	 * 
 	 * @param name
 	 * @return JavaFileObject used to write generated class file to
 	 * @throws IOException
 	 */
 	public JavaFileObject createFileObjectForName(String name) throws IOException {
-		return processingEnv.getFiler()
-				.createSourceFile(name);
+		return processingEnv.getFiler().createSourceFile(name);
 	}
 }

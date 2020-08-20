@@ -21,6 +21,7 @@ import lombok.NonNull;
 
 /**
  * Writer for DataElement Interfaces.
+ * 
  * @author Daniel Bluhm
  */
 public abstract class InterfaceWriter extends VelocitySourceWriter {
@@ -40,18 +41,17 @@ public abstract class InterfaceWriter extends VelocitySourceWriter {
 	 */
 	private static final String FIELDS = "fields";
 
-	public InterfaceWriter(
-		String packageName, String interfaceName, @NonNull Fields fields, JavaFileObject generatedFile
-	) {
+	public InterfaceWriter(String packageName, String interfaceName, @NonNull Fields fields,
+			JavaFileObject generatedFile) {
 		super();
 		context.put(PACKAGE, packageName);
 		context.put(INTERFACE, interfaceName);
 		context.put(FIELDS, fields);
 		this.generatedFile = generatedFile;
 	}
-	
+
 	protected InterfaceWriter() {
-		
+
 	}
 
 }

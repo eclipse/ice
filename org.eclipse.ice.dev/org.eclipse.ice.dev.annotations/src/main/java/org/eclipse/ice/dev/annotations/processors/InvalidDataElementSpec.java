@@ -2,6 +2,7 @@ package org.eclipse.ice.dev.annotations.processors;
 
 /**
  * Thrown when a type is annotated with {@code @DataElement} but is not a class.
+ * 
  * @author Daniel Bluhm
  */
 public class InvalidDataElementSpec extends Exception {

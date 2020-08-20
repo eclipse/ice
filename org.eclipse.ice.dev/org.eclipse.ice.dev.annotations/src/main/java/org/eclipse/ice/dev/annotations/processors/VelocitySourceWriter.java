@@ -27,6 +27,7 @@ import org.apache.velocity.context.Context;
 /**
  * Abstract base class for classes that render a Java Source file through
  * velocity templates.
+ * 
  * @author Daniel Bluhm
  */
 public abstract class VelocitySourceWriter {
@@ -34,13 +35,14 @@ public abstract class VelocitySourceWriter {
 	protected String template;
 	protected Map<String, Object> context;
 	protected JavaFileObject generatedFile;
-	
+
 	public VelocitySourceWriter() {
 		this.context = new HashMap<>();
 	}
-	
+
 	/**
 	 * Opens a writer and then proceed to write a source file
+	 * 
 	 * @param generatedFile
 	 * @throws IOException
 	 */
@@ -49,11 +51,12 @@ public abstract class VelocitySourceWriter {
 			write(writer);
 		}
 	}
-	
+
 	/**
 	 * Write the Java Source file to the open writer.
+	 * 
 	 * @param writer to which the java source will be written
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public void write(Writer writer) throws IOException {
 		// Make sure Velocity is initialized. Subsequent calls are harmless.
@@ -61,16 +64,15 @@ public abstract class VelocitySourceWriter {
 
 		// Make velocity context from generic map context.
 		Context velocityContext = new VelocityContext(context);
-		
+
 		// Write template from context.
 		Velocity.mergeTemplate(template, "UTF-8", velocityContext, writer);
 	}
-	
-	
+
 	public void write() throws IOException {
 		write(this.generatedFile);
 	}
-	
+
 	public abstract BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getInitializer();
-	
+
 }

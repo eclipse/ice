@@ -15,6 +15,7 @@ import javax.lang.model.element.AnnotationValue;
 
 /**
  * Helper for accessing and working with Annotated Classes.
+ * 
  * @author Daniel Bluhm
  */
 public abstract class AnnotatedElement {
@@ -29,14 +30,14 @@ public abstract class AnnotatedElement {
 	protected Elements elementUtils;
 
 	/**
-	 * The element representing an interface annotated with
-	 * {@code @DataElement}.
+	 * The element representing an interface annotated with {@code @DataElement}.
 	 */
 	protected Element element;
 
 	/**
 	 * Construct an AnnotatedElement from an Element.
-	 * @param element The annotated element
+	 * 
+	 * @param element      The annotated element
 	 * @param elementUtils Elements helper from processing environment
 	 */
 	public AnnotatedElement(Element element, Elements elementUtils) {
@@ -46,6 +47,7 @@ public abstract class AnnotatedElement {
 
 	/**
 	 * Determine if an annotation of a given type decorates this element.
+	 * 
 	 * @param cls class of annotation to check
 	 * @return whether annotation is present or not
 	 */
@@ -55,6 +57,7 @@ public abstract class AnnotatedElement {
 
 	/**
 	 * Get the AnnotationMirror of a given type if present on the element.
+	 * 
 	 * @param <T> Type of annotation to retrieve
 	 * @param cls class of annotation to retrieve
 	 * @return AnnotationMirror or null if not found
@@ -73,19 +76,17 @@ public abstract class AnnotatedElement {
 	 * This is useful when dealing with a complicated Annotation potentially
 	 * containing a value that is a Class object. Otherwise, it is recommended to
 	 * directly retrieve the value from an Annotation instance.
-	 * @param annotationClass the class of the annotation from which values
-	 *        will be retrieved.
+	 * 
+	 * @param annotationClass the class of the annotation from which values will be
+	 *                        retrieved.
 	 * @return Map of String to unwrapped AnnotationValue (Object)
 	 */
 	public Map<String, Object> getAnnotationValueMap(Class<?> annotationClass) {
 		return this.getAnnotationMirror(annotationClass)
-			.map(mirror -> elementUtils.getElementValuesWithDefaults(mirror))
-			.map(map -> map.entrySet().stream()
-				.collect(Collectors.toMap(
-					entry -> entry.getKey().getSimpleName().toString(),
-					entry -> entry.getValue().getValue()
-				))
-			).orElse(Collections.emptyMap());
+				.map(mirror -> elementUtils.getElementValuesWithDefaults(mirror))
+				.map(map -> map.entrySet().stream().collect(Collectors.toMap(
+						entry -> entry.getKey().getSimpleName().toString(), entry -> entry.getValue().getValue())))
+				.orElse(Collections.emptyMap());
 	}
 
 	/**
@@ -94,21 +95,21 @@ public abstract class AnnotatedElement {
 	 * This is useful when dealing with a complicated Annotation potentially
 	 * containing a value that is a Class object. Otherwise, it is recommended to
 	 * directly retrieve the value from an Annotation instance.
+	 * 
 	 * @param annotationClass the class of the annotation from which values will be
-	 *        retrieved.
+	 *                        retrieved.
 	 * @return list of AnnotationValue
 	 */
 	public List<AnnotationValue> getAnnotationValues(Class<?> annotationClass) {
 		return this.getAnnotationMirror(annotationClass)
-			.map(mirror -> elementUtils.getElementValuesWithDefaults(mirror))
-			.map(map -> map.entrySet().stream()
-				.map(entry -> (AnnotationValue) entry.getValue())
-				.collect(Collectors.toList())
-			).orElse(Collections.emptyList());
+				.map(mirror -> elementUtils.getElementValuesWithDefaults(mirror)).map(map -> map.entrySet().stream()
+						.map(entry -> (AnnotationValue) entry.getValue()).collect(Collectors.toList()))
+				.orElse(Collections.emptyList());
 	}
 
 	/**
 	 * Find and return annotation of a given on this element.
+	 * 
 	 * @param annotationClass Class of annotation mirror to retrieve
 	 * @return {@link Optional} of annotation mirror
 	 */
@@ -117,10 +118,7 @@ public abstract class AnnotatedElement {
 			this.mirrors = this.element.getAnnotationMirrors();
 		}
 		return this.mirrors.stream()
-			.filter(m -> m.getAnnotationType()
-				.toString().equals(annotationClass.getCanonicalName())
-			).findAny()
-			.map(m -> Optional.of((AnnotationMirror) m))
-			.orElse(Optional.empty());
+				.filter(m -> m.getAnnotationType().toString().equals(annotationClass.getCanonicalName())).findAny()
+				.map(m -> Optional.of((AnnotationMirror) m)).orElse(Optional.empty());
 	}
 }

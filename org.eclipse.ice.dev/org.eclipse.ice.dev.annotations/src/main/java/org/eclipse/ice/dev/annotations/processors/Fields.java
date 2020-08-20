@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * A collection of Field objects to be used especially in template rendering.
+ * 
  * @author Daniel Bluhm
  */
 public class Fields implements Iterable<Field> {
@@ -22,6 +23,7 @@ public class Fields implements Iterable<Field> {
 
 	/**
 	 * Create Fields from existing collection of Field objects.
+	 * 
 	 * @param fields initial fields
 	 */
 	public Fields(Collection<Field> fields) {
@@ -31,6 +33,7 @@ public class Fields implements Iterable<Field> {
 
 	/**
 	 * Add fields to the collection.
+	 * 
 	 * @param fields to add
 	 */
 	public void collect(Collection<Field> fields) {
@@ -44,9 +47,7 @@ public class Fields implements Iterable<Field> {
 	 * @see Field#isConstant()
 	 */
 	public Iterator<Field> getConstants() {
-		return fields.stream()
-			.filter(field -> field.isConstant())
-			.iterator();
+		return fields.stream().filter(field -> field.isConstant()).iterator();
 	}
 
 	/**
@@ -56,9 +57,7 @@ public class Fields implements Iterable<Field> {
 	 * @see Field#isConstant()
 	 */
 	public Iterator<Field> getMutable() {
-		return fields.stream()
-			.filter(field -> !field.isConstant())
-			.iterator();
+		return fields.stream().filter(field -> !field.isConstant()).iterator();
 	}
 
 	/**
@@ -68,22 +67,18 @@ public class Fields implements Iterable<Field> {
 	 * @see org.eclipse.ice.data.IDataElement#matches(Object)
 	 */
 	public Iterator<Field> getMatch() {
-		return fields.stream()
-			.filter(field -> field.isMatch())
-			.iterator();
+		return fields.stream().filter(field -> field.isMatch()).iterator();
 	}
 
 	/**
-	 * Return iterator over fields where the variable name differs from the
-	 * Field name.
+	 * Return iterator over fields where the variable name differs from the Field
+	 * name.
 	 *
 	 * @return iterator over the fields
 	 * @see Field#isVarDifferent()
 	 */
 	public Iterator<Field> getVarNamesDiffer() {
-		return fields.stream()
-			.filter(field -> field.isVarNameDifferent())
-			.iterator();
+		return fields.stream().filter(field -> field.isVarNameDifferent()).iterator();
 	}
 
 	/**

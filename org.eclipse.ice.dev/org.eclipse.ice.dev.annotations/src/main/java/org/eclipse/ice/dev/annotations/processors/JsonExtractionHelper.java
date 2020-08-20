@@ -35,11 +35,11 @@ public class JsonExtractionHelper implements ExtractionHelper {
 	/**
 	 * Collect Fields from DataFieldJson Annotations.
 	 *
-	 * The JSON input files are searched for in the "CLASS_OUTPUT" location,
-	 * meaning the same folder to which compiled class files will be output.
-	 * JSON files placed in src/main/resources are moved to this location before
-	 * the annotation processing phase and are therefore available at this
-	 * location at the time of annotation processing.
+	 * The JSON input files are searched for in the "CLASS_OUTPUT" location, meaning
+	 * the same folder to which compiled class files will be output. JSON files
+	 * placed in src/main/resources are moved to this location before the annotation
+	 * processing phase and are therefore available at this location at the time of
+	 * annotation processing.
 	 *
 	 * @param element
 	 * @param processingEnv
@@ -47,32 +47,33 @@ public class JsonExtractionHelper implements ExtractionHelper {
 	 * @return
 	 * @throws IOException
 	 */
-	public List<Field> collectFromDataFieldJson(Element element, ProcessingEnvironment processingEnv, ObjectMapper mapper) throws IOException {
+	public List<Field> collectFromDataFieldJson(Element element, ProcessingEnvironment processingEnv,
+			ObjectMapper mapper) throws IOException {
 		List<Field> fields = new ArrayList<>();
 		// Iterate through each JSON Data Field source and attempt to read
 		// fields from JSON file.
 		for (String source : getDataFieldJsonFileNames(element)) {
-			Reader reader = processingEnv.getFiler()
-				.getResource(StandardLocation.CLASS_OUTPUT, "", source)
-				.openReader(false);
+			Reader reader = processingEnv.getFiler().getResource(StandardLocation.CLASS_OUTPUT, "", source)
+					.openReader(false);
 			fields.addAll(Arrays.asList(mapper.readValue(reader, Field[].class)));
 		}
 		return fields;
 	}
-	
+
 	/**
 	 * Collect JSON File Strings from DataFieldJson Annotations.
+	 * 
 	 * @param element
 	 * @return
 	 */
 	public List<String> getDataFieldJsonFileNames(Element element) {
-		return getAnnotation(element, DataFieldJson.class)
-			.map(jsons -> Arrays.asList(jsons.value()))
-			.orElse(Collections.emptyList());
+		return getAnnotation(element, DataFieldJson.class).map(jsons -> Arrays.asList(jsons.value()))
+				.orElse(Collections.emptyList());
 	}
-	
+
 	/**
 	 * Return stack trace as string.
+	 * 
 	 * @param e subject exception
 	 * @return stack trace as string
 	 */
@@ -82,5 +83,5 @@ public class JsonExtractionHelper implements ExtractionHelper {
 		e.printStackTrace(pw);
 		return sw.toString();
 	}
-	
+
 }

@@ -11,7 +11,8 @@
 package org.eclipse.ice.dev.annotations.processors;
 
 /**
- * Iterfaced implemented by enums used to key properties used in velocity templating
+ * Iterfaced implemented by enums used to key properties used in velocity
+ * templating
  *
  */
 public interface TemplateProperty {

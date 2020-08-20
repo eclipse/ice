@@ -25,11 +25,13 @@ import lombok.Data;
 @Builder
 public class AnnotationExtractionResponse {
 	/**
-	 * Pojo containing metadata about fields to be included in Velocity generated classes
+	 * Pojo containing metadata about fields to be included in Velocity generated
+	 * classes
 	 */
 	private Fields fields;
 	/**
-	 * Map containing metadata surrounding the class types to be generated, e.g. package name
+	 * Map containing metadata surrounding the class types to be generated, e.g.
+	 * package name
 	 */
 	private Map<TemplateProperty, Object> classMetadata;
 }

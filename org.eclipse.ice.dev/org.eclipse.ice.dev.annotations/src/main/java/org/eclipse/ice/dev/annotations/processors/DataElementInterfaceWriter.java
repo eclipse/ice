@@ -21,12 +21,12 @@ import lombok.Builder;
 import lombok.NonNull;
 
 /**
- * Implementation of the VelocitySourceWriter that handles generating 
- * the DataElementInterfaceWriter
+ * Implementation of the VelocitySourceWriter that handles generating the
+ * DataElementInterfaceWriter
  *
  */
 public class DataElementInterfaceWriter extends InterfaceWriter {
-	
+
 	/**
 	 * Location of Interface template for use with velocity.
 	 *
@@ -34,36 +34,36 @@ public class DataElementInterfaceWriter extends InterfaceWriter {
 	 * to the src/main/resources folder.
 	 */
 	private static final String TEMPLATE = "templates/ElementInterface.vm";
-	
+
 	@Builder
-	public DataElementInterfaceWriter(String packageName, String interfaceName, @NonNull Fields fields, JavaFileObject generatedFile) {
+	public DataElementInterfaceWriter(String packageName, String interfaceName, @NonNull Fields fields,
+			JavaFileObject generatedFile) {
 		super(packageName, interfaceName, fields, generatedFile);
 		this.template = TEMPLATE;
 	}
-	
+
 	private DataElementInterfaceWriter() {
 		super();
 	}
 
 	/**
-	 *	Supplies a lambda that will provide a fully initialized 
-	 *	DataElementInterfaceWriter given a map and a JavaFileObject
+	 * Supplies a lambda that will provide a fully initialized
+	 * DataElementInterfaceWriter given a map and a JavaFileObject
 	 */
 	@Override
 	public BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getInitializer() {
 		return (fileObject, context) -> {
-			String name = (String)context.get(MetaTemplateProperty.QUALIFIED);
+			String name = (String) context.get(MetaTemplateProperty.QUALIFIED);
 			return Arrays.asList(DataElementInterfaceWriter.builder()
-					.packageName((String)context.get(MetaTemplateProperty.PACKAGE))
-					.interfaceName((String)context.get(MetaTemplateProperty.INTERFACE))
-					.fields((Fields)context.get(MetaTemplateProperty.FIELDS))
-					.generatedFile(fileObject)
-					.build());
+					.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
+					.interfaceName((String) context.get(MetaTemplateProperty.INTERFACE))
+					.fields((Fields) context.get(MetaTemplateProperty.FIELDS)).generatedFile(fileObject).build());
 		};
 	}
-	
+
 	/**
 	 * Static method for cleanly fetching an initializer
+	 * 
 	 * @return DataElementInterfaceWriter init lambda
 	 */
 	public static BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getContextInitializer() {

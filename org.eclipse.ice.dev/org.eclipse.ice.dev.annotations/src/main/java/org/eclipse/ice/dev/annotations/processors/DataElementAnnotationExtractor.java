@@ -33,39 +33,41 @@ import org.eclipse.ice.dev.annotations.Persisted;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Flavor of ICEAnnotationExtractionService that specializes in extracting data from Spec classes with 
- * the class level annotation of DataElement
+ * Flavor of ICEAnnotationExtractionService that specializes in extracting data
+ * from Spec classes with the class level annotation of DataElement
  *
  */
 public class DataElementAnnotationExtractor {
-	
+
 	/**
-	 * Annotations to not be transfered from member variables of Spec classes to final generated classes
+	 * Annotations to not be transfered from member variables of Spec classes to
+	 * final generated classes
 	 */
-	private static final List<String> nonTransferableAnnotations = Stream.of(
-			DataField.class,
-			DataField.Default.class
-		).map(cls -> cls.getCanonicalName())
-		.collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
-	
+	private static final List<String> nonTransferableAnnotations = Stream.of(DataField.class, DataField.Default.class)
+			.map(cls -> cls.getCanonicalName())
+			.collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+
 	/**
 	 * used for extracting and preparing data for writer generation
 	 */
 	private ICEAnnotationExtractionService annotationExtractionService;
 	/**
-	 * used to generate writers based on the output of the annotation extraction service
+	 * used to generate writers based on the output of the annotation extraction
+	 * service
 	 */
 	private WriterGenerator writerGenerator;
-	
-	DataElementAnnotationExtractor(ICEAnnotationExtractionService annotationExtractionService, WriterGenerator writerGenerator) {
+
+	DataElementAnnotationExtractor(ICEAnnotationExtractionService annotationExtractionService,
+			WriterGenerator writerGenerator) {
 		this.annotationExtractionService = annotationExtractionService;
 		this.writerGenerator = writerGenerator;
 		this.annotationExtractionService.setNonTransferableAnnotations(nonTransferableAnnotations);
 		this.annotationExtractionService.setFieldFilter(DataElementAnnotationExtractor::isDataField);
 	}
-	
+
 	/**
 	 * For a given request it will extract data and generate writers
+	 * 
 	 * @param request
 	 * @return list of generated SourceWriters
 	 * @throws IOException
@@ -74,16 +76,16 @@ public class DataElementAnnotationExtractor {
 		AnnotationExtractionResponse response = annotationExtractionService.extract(request);
 		return writerGenerator.generateWriters(request.getElement(), response);
 	}
-	
+
 	/**
 	 * For a given request it will generate then execute writers
+	 * 
 	 * @param request
 	 * @throws IOException
 	 */
 	public void generateAndWrite(AnnotationExtractionRequest request) throws IOException {
 		AnnotationExtractionResponse response = annotationExtractionService.extract(request);
-		writerGenerator.generateWriters(request.getElement(), response)
-		.forEach(writer -> {
+		writerGenerator.generateWriters(request.getElement(), response).forEach(writer -> {
 			try {
 				writer.write();
 			} catch (IOException e) {
@@ -91,14 +93,15 @@ public class DataElementAnnotationExtractor {
 			}
 		});
 	}
-	
+
 	/**
 	 * Determine if the passed field is a DataField.
+	 * 
 	 * @param element to check
 	 * @return whether element is a DataField
 	 */
 	public static boolean isDataField(Element element) {
 		return element.getAnnotation(DataField.class) != null;
 	}
-	
+
 }
