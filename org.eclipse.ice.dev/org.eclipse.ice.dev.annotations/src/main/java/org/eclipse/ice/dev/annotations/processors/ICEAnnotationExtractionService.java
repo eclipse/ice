@@ -36,15 +36,53 @@ import lombok.Data;
  * Base service for the extraction of class data from Spec classes
  *
  */
+/**
+ * @author Michael Walsh
+ *
+ */
 public class ICEAnnotationExtractionService {
 	
+	/**
+	 * Util provided by the annotation processing environment
+	 */
 	private Elements elementUtils;
+	
+	/**
+	 * Object serialization and deserialization
+	 */
 	private ObjectMapper mapper;
+	
+	/**
+	 * Annotation environment interface for interaction with the annotation processing flow
+	 */
 	private ProcessingEnvironment processingEnv;
+	
+	/**
+	 * Class that determines the naming schema of generated classes
+	 */
 	private NameGenerator nameGenerator;
+	
+	/**
+	 * List of annotations to not transfer from spec fields to their generated couterparts
+	 */
 	private List<String> nonTransferableAnnotations;
+	
+	
+	/**
+	 * Boolean lambda that determines whether or not a specific field is eligible for generation
+	 */
 	private Predicate<Element> fieldFilter;
+	
+	
+	/**
+	 * Util instance for extracting specific data from spec element classes
+	 */
 	protected SpecExtractionHelper specExtractionHelper = new SpecExtractionHelper();
+	
+	
+	/**
+	 * Util instance for extracting specific data from json spec schemas 
+	 */
 	protected JsonExtractionHelper jsonExtractionHelper = new JsonExtractionHelper();
 	
 	
@@ -55,10 +93,20 @@ public class ICEAnnotationExtractionService {
 		this.nameGenerator = nameGenerator;
 	}
 	
+	/**
+	 * The responsibility of initializing this field falls to the specific extractor class (e.g. DataElementAnnotationExtractor)
+	 * allows the customization of which annotations to filter out
+	 * @param nonTransferableAnnotations
+	 */
 	public void setNonTransferableAnnotations (List<String> nonTransferableAnnotations) {
 		this.nonTransferableAnnotations = nonTransferableAnnotations;
 	}
 	
+	/**
+	 * The responsibility of initializing this field falls to the specific extractor class (e.g. DataElementAnnotationExtractor)
+	 * allows the customization of which fields to filter out
+	 * @param fieldFilter
+	 */
 	public void setFieldFilter(Predicate<Element> fieldFilter) {
 		this.fieldFilter = fieldFilter;
 	}
@@ -106,6 +154,12 @@ public class ICEAnnotationExtractionService {
 		return context;
 	}
 	
+	/**
+	 * Given seed data extracted from a spec class, this method generates the necessary
+	 * metadata for class generation
+	 * @param seedData
+	 * @return
+	 */
 	protected Map<TemplateProperty, Object> generateClassMetadata(ClassSeedData seedData) {
 		Map<TemplateProperty, Object> context = new HashMap<TemplateProperty, Object>();
 		
@@ -115,6 +169,11 @@ public class ICEAnnotationExtractionService {
 		return context;
 	}
 	
+	/**
+	 * Package meta data for class interface and implementation
+	 * @param seedData
+	 * @param context
+	 */
 	protected void generateMetaTemplateData(ClassSeedData seedData, Map<TemplateProperty, Object> context) {
 		context.put(MetaTemplateProperty.PACKAGE, seedData.getPackageName());
 		context.put(MetaTemplateProperty.INTERFACE, seedData.getName());
@@ -124,6 +183,11 @@ public class ICEAnnotationExtractionService {
 		context.put(MetaTemplateProperty.QUALIFIEDIMPL, nameGenerator.getQualifiedImplName(seedData.getFullyQualifiedName()));
 	}
 	
+	/**
+	 * Package metadata for class persistence handler
+	 * @param seedData
+	 * @param context
+	 */
 	protected void generatePersistenceHandlerTemplateData(ClassSeedData seedData, Map<TemplateProperty, Object> context) {
 		context.put(PersistenceHandlerTemplateProperty.ELEMENT_INTERFACE, seedData.getName());
 		context.put(PersistenceHandlerTemplateProperty.COLLECTION, seedData.getCollectionName());
@@ -133,6 +197,12 @@ public class ICEAnnotationExtractionService {
 		context.put(PersistenceHandlerTemplateProperty.INTERFACE, nameGenerator.getPersistenceHandlerInterfaceName());
 	}
 	
+	/**
+	 * Extract and package seed data given an element(via request) and a list of extracted fields
+	 * @param request
+	 * @param fields
+	 * @return
+	 */
 	protected ClassSeedData extractSeedData(AnnotationExtractionRequest request, Fields fields) {
 		Element element = request.getElement();
 		String packageName = null;

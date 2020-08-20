@@ -20,6 +20,11 @@ import javax.tools.JavaFileObject;
 import lombok.Builder;
 import lombok.NonNull;
 
+/**
+ * Implementation of the VelocitySourceWriter that handles generating 
+ * the DataElementInterfaceWriter
+ *
+ */
 public class DataElementInterfaceWriter extends InterfaceWriter {
 	
 	/**
@@ -40,6 +45,10 @@ public class DataElementInterfaceWriter extends InterfaceWriter {
 		super();
 	}
 
+	/**
+	 *	Supplies a lambda that will provide a fully initialized 
+	 *	DataElementInterfaceWriter given a map and a JavaFileObject
+	 */
 	@Override
 	public BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getInitializer() {
 		return (fileObject, context) -> {
@@ -53,6 +62,10 @@ public class DataElementInterfaceWriter extends InterfaceWriter {
 		};
 	}
 	
+	/**
+	 * Static method for cleanly fetching an initializer
+	 * @return DataElementInterfaceWriter init lambda
+	 */
 	public static BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getContextInitializer() {
 		return new DataElementInterfaceWriter().getInitializer();
 	}

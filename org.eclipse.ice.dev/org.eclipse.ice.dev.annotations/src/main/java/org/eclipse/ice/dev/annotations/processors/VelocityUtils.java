@@ -32,7 +32,7 @@ public class VelocityUtils {
 	
 	private ProcessingEnvironment processingEnvironment;
 	
-	VelocityUtils(ProcessingEnvironment processingEnvironment){
+	public VelocityUtils(ProcessingEnvironment processingEnvironment){
 		this.processingEnvironment = processingEnvironment;
 	}
 	

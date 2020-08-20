@@ -24,6 +24,11 @@ import org.eclipse.ice.dev.annotations.processors.DataElementInterfaceWriter.Dat
 import lombok.Builder;
 import lombok.NonNull;
 
+/**
+ * Implementation of the VelocitySourceWriter that handles generating 
+ * the DataElementImplementation
+ *
+ */
 public class DataElementImplementationWriter extends ImplementationWriter {
 
 	/**
@@ -40,10 +45,18 @@ public class DataElementImplementationWriter extends ImplementationWriter {
 		this.template = IMPL_TEMPLATE;
 	}
 	
+	/**
+	 * Private argless constructor purely for use of the static method to have access to 
+	 * the inherited getInitializer() method
+	 */
 	private DataElementImplementationWriter() {
 		super();
 	}
 
+	/**
+	 *	Supplies a lambda that will provide a fully initialized 
+	 *	DataElementImplementationWriter given a map and a JavaFileObject
+	 */
 	@Override
 	public BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getInitializer() {
 		return (fileObject, context) -> {
@@ -58,6 +71,10 @@ public class DataElementImplementationWriter extends ImplementationWriter {
 		};
 	}
 	
+	/**
+	 * Static method for cleanly fetching an initializer
+	 * @return DataElementImplementationWriter init lambda
+	 */
 	public static BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getContextInitializer() {
 		return new DataElementImplementationWriter().getInitializer();
 	}

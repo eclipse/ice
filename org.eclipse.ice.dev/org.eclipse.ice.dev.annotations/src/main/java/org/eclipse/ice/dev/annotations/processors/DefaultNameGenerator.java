@@ -15,6 +15,10 @@ import javax.lang.model.element.Element;
 import org.eclipse.ice.dev.annotations.DataElement;
 import org.eclipse.ice.dev.annotations.Persisted;
 
+/**
+ * Class that encompasses the initial naming schema if generated files
+ *
+ */
 public class DefaultNameGenerator implements NameGenerator {
 	
 	/**

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2020- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Daniel Bluhm - Initial implementation
+ *******************************************************************************/
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.io.IOException;
@@ -43,6 +53,10 @@ import com.google.auto.service.AutoService;
  * DataElement, populating the implementation with metadata and fields specified
  * with the DataField annotation.
  */
+/**
+ * @author Michael Walsh
+ *
+ */
 @SupportedAnnotationTypes({
 	"org.eclipse.ice.dev.annotations.DataElement",
 	"org.eclipse.ice.dev.annotations.DataField",
@@ -66,9 +80,26 @@ public class DataElementProcessor extends AbstractProcessor {
 
 
 	protected Messager messager;
+	
+	/**
+	 * Util object provided by the Velocity Templating Engine
+	 */
 	protected Elements elementUtils;
+	
+	/**
+	 * For serialization and deserializion of objects to and from json during processing
+	 */
 	protected ObjectMapper mapper;
+	
+	/**
+	 * For the extraction of key data from Spec classes used in class generation
+	 */
 	protected DataElementAnnotationExtractor extractor;
+	
+	
+	/**
+	 * Util class for various specific data extraction from Elements
+	 */
 	private SpecExtractionHelper specExtractionHelper = new SpecExtractionHelper();
 	
 

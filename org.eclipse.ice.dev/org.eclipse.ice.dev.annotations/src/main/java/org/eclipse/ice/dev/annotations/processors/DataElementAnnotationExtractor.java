@@ -48,7 +48,13 @@ public class DataElementAnnotationExtractor {
 		).map(cls -> cls.getCanonicalName())
 		.collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
 	
+	/**
+	 * used for extracting and preparing data for writer generation
+	 */
 	private ICEAnnotationExtractionService annotationExtractionService;
+	/**
+	 * used to generate writers based on the output of the annotation extraction service
+	 */
 	private WriterGenerator writerGenerator;
 	
 	DataElementAnnotationExtractor(ICEAnnotationExtractionService annotationExtractionService, WriterGenerator writerGenerator) {
@@ -58,11 +64,22 @@ public class DataElementAnnotationExtractor {
 		this.annotationExtractionService.setFieldFilter(DataElementAnnotationExtractor::isDataField);
 	}
 	
+	/**
+	 * For a given request it will extract data and generate writers
+	 * @param request
+	 * @return list of generated SourceWriters
+	 * @throws IOException
+	 */
 	public List<VelocitySourceWriter> generateWriters(AnnotationExtractionRequest request) throws IOException {
 		AnnotationExtractionResponse response = annotationExtractionService.extract(request);
 		return writerGenerator.generateWriters(request.getElement(), response);
 	}
 	
+	/**
+	 * For a given request it will generate then execute writers
+	 * @param request
+	 * @throws IOException
+	 */
 	public void generateAndWrite(AnnotationExtractionRequest request) throws IOException {
 		AnnotationExtractionResponse response = annotationExtractionService.extract(request);
 		writerGenerator.generateWriters(request.getElement(), response)

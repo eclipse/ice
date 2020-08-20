@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2020- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Michael Walsh - Initial implementation
+ *******************************************************************************/
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.io.IOException;
@@ -14,8 +24,17 @@ import javax.tools.JavaFileObject;
 
 import org.eclipse.ice.dev.annotations.Persisted;
 
+/**
+ * Uses metadata extracted from spec classes annotated with @DataElement to generate 
+ * the interface, implementation, and persistence handler.
+ *
+ */
 public class DataElementWriterGenerator extends AbstractWriterGenerator implements WriterGenerator {
 
+	
+	/**
+	 * Map of file name key to the respective file's writer initializer
+	 */
 	private Map<TemplateProperty, BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>>> writerInitializers = 
 			new HashMap<TemplateProperty, BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>>>() {{
 			    put(MetaTemplateProperty.QUALIFIED, DataElementInterfaceWriter.getContextInitializer());
@@ -23,6 +42,9 @@ public class DataElementWriterGenerator extends AbstractWriterGenerator implemen
 			    put(PersistenceHandlerTemplateProperty.QUALIFIED, DataElementPersistenceHandlerWriter.getContextInitializer());
 			}};
 	
+	/**
+	 * Util instance for extracting specific data from Element objects
+	 */
 	protected SpecExtractionHelper specExtractionHelper = new SpecExtractionHelper();
 	
 	DataElementWriterGenerator(ProcessingEnvironment processingEnv) {

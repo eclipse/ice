@@ -23,6 +23,11 @@ import org.eclipse.ice.dev.annotations.processors.DataElementImplementationWrite
 import lombok.Builder;
 import lombok.NonNull;
 
+/**
+ * Implementation of the VelocitySourceWriter that handles generating 
+ * the DataElementPersistenceHandlerWriter
+ *
+ */
 public class DataElementPersistenceHandlerWriter extends PersistenceHandlerWriter {
 	
 	/**
@@ -44,6 +49,10 @@ public class DataElementPersistenceHandlerWriter extends PersistenceHandlerWrite
 		super();
 	}
 
+	/**
+	 *	Supplies a lambda that will provide a fully initialized 
+	 *	DataElementPersistenceHandlerWriter given a map and a JavaFileObject
+	 */
 	@Override
 	public BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getInitializer() {
 		return (fileObject, context) -> {
@@ -61,6 +70,10 @@ public class DataElementPersistenceHandlerWriter extends PersistenceHandlerWrite
 		};
 	}
 	
+	/**
+	 * Static method for cleanly fetching an initializer
+	 * @return DataElementPersistenceHandlerWriter init lambda
+	 */
 	public static BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getContextInitializer() {
 		return new DataElementPersistenceHandlerWriter().getInitializer();
 	}
