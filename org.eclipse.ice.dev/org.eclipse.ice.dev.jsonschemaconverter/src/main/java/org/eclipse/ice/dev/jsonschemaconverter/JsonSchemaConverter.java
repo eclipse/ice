@@ -92,18 +92,22 @@ public class JsonSchemaConverter {
 			   				JsonNode n = new JsonNode();
 				   			n.setName(entry.getKey());
 				   			n.setType("String");
-				   			n.setDocString((String) innerNode.get("description"));
+				   			n.setDocString(String.valueOf(innerNode.get("description")));
 				   			n.setDefaultValue("");
 				   			fields.add(n);
 			   				
 			   			} else if ("string".equals(innerNode.get("type"))) {
 			   				JsonNode n = new JsonNode();
 				   			n.setName(entry.getKey());
-				   			n.setType("String");
-				   			n.setDocString((String) innerNode.get("description"));
-				   			n.setDefaultValue((String) innerNode.get("default"));
-				   			if (n.getDefaultValue() == null) {
+				   			n.setDocString(String.valueOf(innerNode.get("description")));
+				   			n.setDefaultValue(String.valueOf(innerNode.get("default")));
+				   			if (isFloat(n.getDefaultValue())) {
+				   				n.setType("Float");
+				   			} else if (isBoolean(n.getDefaultValue())) {
+				   				n.setType("Boolean");
+				   			} else {
 				   				n.setDefaultValue("");
+				   				n.setType("String");
 				   			}
 				   			fields.add(n);
 			   			} else { //no type property or type='object'
@@ -112,10 +116,14 @@ public class JsonSchemaConverter {
 		   		} else if (entry.getValue() instanceof String){
 		   			JsonNode n = new JsonNode();
 		   			n.setName(entry.getKey());
-		   			n.setType("String");
-		   			n.setDefaultValue((String) entry.getValue());
-		   			if (n.getDefaultValue() == null) {
+		   			n.setDefaultValue(String.valueOf(entry.getValue()));
+		   			if (isFloat(n.getDefaultValue())) {
+		   				n.setType("Float");
+		   			} else if (isBoolean(n.getDefaultValue())) {
+		   				n.setType("Boolean");
+		   			} else {
 		   				n.setDefaultValue("");
+		   				n.setType("String");
 		   			}
 		   			fields.add(n);
 		   		}
@@ -136,10 +144,14 @@ public class JsonSchemaConverter {
 			   if (((Map<String, Object>)entry.getValue()).get("default") != null)  {
 				   JsonNode n = new JsonNode();
 				   n.setName(entry.getKey());				   
-				   n.setType("String"); //default to string for type
 				   n.setDefaultValue(String.valueOf(((Map<String, Object>)entry.getValue()).get("default")));
-				   if (n.getDefaultValue() == null) {
+				   if (isFloat(n.getDefaultValue())) {
+		   				n.setType("Float");
+		   			} else if (isBoolean(n.getDefaultValue())) {
+		   				n.setType("Boolean");
+		   			} else {
 		   				n.setDefaultValue("");
+		   				n.setType("String");
 		   			}
 				   n.setDocString(String.valueOf(((Map<String, Object>)entry.getValue()).get("description")));
 				   if (n.getDocString() == null) {
@@ -153,9 +165,14 @@ public class JsonSchemaConverter {
 					   JsonNode n = new JsonNode();
 					   n.setName(entry.getKey());				   
 					   n.setType("String"); //default to string for type 
-					   n.setDefaultValue(((String)entry.getValue()));
-					   if (n.getDefaultValue() == null) {
+					   n.setDefaultValue(String.valueOf(entry.getValue()));
+					   if (isFloat(n.getDefaultValue())) {
+			   				n.setType("Float");
+			   			} else if (isBoolean(n.getDefaultValue())) {
+			   				n.setType("Boolean");
+			   			} else {
 			   				n.setDefaultValue("");
+			   				n.setType("String");
 			   			}
 					   fields.add(n);
 				   }  
@@ -176,8 +193,13 @@ public class JsonSchemaConverter {
 						   n.setName(entry.getKey());					   
 						   n.setType("String"); //default to string for type 					   
 						   n.setDefaultValue(String.valueOf(((Map<String, Object>)entry.getValue()).get("default")));
-						   if (n.getDefaultValue() == null) {
+						   if (isFloat(n.getDefaultValue())) {
+				   				n.setType("Float");
+				   			} else if (isBoolean(n.getDefaultValue())) {
+				   				n.setType("Boolean");
+				   			} else {
 				   				n.setDefaultValue("");
+				   				n.setType("String");
 				   			}
 						   fields.add(n);
 					   } else {
@@ -188,9 +210,6 @@ public class JsonSchemaConverter {
 					   n.setName(key);
 					   n.setType("String");
 					   n.setDefaultValue("");
-					   if (n.getDefaultValue() == null) {
-			   				n.setDefaultValue("");
-			   			}
 					   n.setDocString(String.valueOf(entry.getValue()));
 					   fields.add(n);
 				   }
