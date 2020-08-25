@@ -123,7 +123,7 @@ public class DataFieldSpec extends AnnotatedElement {
 	}
 
 	/**
-	 * Return a this DataFieldSpec as a Field.
+	 * Return this DataFieldSpec as a Field.
 	 * @return field
 	 */
 	public Field toField() {

@@ -227,7 +227,7 @@ public class DataElementProcessor extends AbstractProcessor {
 	}
 
 	/**
-	 * Write the typescript of DataElement annotated class to file.
+	 * Write the TypeScript of DataElement annotated class to file.
 	 * @param element
 	 * @param fields
 	 * @throws IOException
@@ -250,9 +250,8 @@ public class DataElementProcessor extends AbstractProcessor {
 				.types(trimmed.getTypes())
 				.build()
 				.write(writer);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (UnsupportedOperationException e) {
+			messager.printMessage(Diagnostic.Kind.NOTE, stackTraceToString(e));
 		}
 	}
 }

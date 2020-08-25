@@ -6,13 +6,10 @@ import { DataElement } from "./data-element";
 
 export class $name extends DataElement {
 	#foreach($field in $fields)
-	${field.VarName}: $primitiveMap["#fieldtype"];
+	${field.VarName}?: $primitiveMap["#fieldtype"];
 	#end
 
 	constructor() {
 		super();
-		#foreach($field in $fields)
-		this.${field.VarName} = null;
-		#end
 	}
 }
