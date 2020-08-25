@@ -1,6 +1,7 @@
 package org.eclipse.ice.dev.jsonschemaconverter;
 
 import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +19,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+
+import org.eclipse.ice.dev.pojofromjson.PojoFromJson;
 
 
 /**
@@ -132,8 +135,9 @@ public class JsonSchemaConverter {
 		   		outputMap.put("fields", fields);
 		   		jsonArrayOutput.add(outputMap);
 	   		}
-	   	}	   	
-	   	writeJson(jsonArrayOutput, filePath);   
+	   	}	
+	   	writeJson(jsonArrayOutput, filePath);  
+	   	writeDataElements(jsonArrayOutput);
    }
    
    
@@ -164,7 +168,6 @@ public class JsonSchemaConverter {
 				   } else {
 					   JsonNode n = new JsonNode();
 					   n.setName(entry.getKey());				   
-					   n.setType("String"); //default to string for type 
 					   n.setDefaultValue(String.valueOf(entry.getValue()));
 					   if (isFloat(n.getDefaultValue())) {
 			   				n.setType("Float");
@@ -182,16 +185,22 @@ public class JsonSchemaConverter {
 		   if (map.keySet().contains("default")) {
 			   JsonNode n = new JsonNode();
 			   n.setName(key);			   
-			   n.setType("String"); //default to string for type 
 			   n.setDefaultValue(String.valueOf((map.get("default"))));
+			   if (isFloat(n.getDefaultValue())) {
+	   				n.setType("Float");
+	   			} else if (isBoolean(n.getDefaultValue())) {
+	   				n.setType("Boolean");
+	   			} else {
+	   				n.setDefaultValue("");
+	   				n.setType("String");
+	   			}
 			   fields.add(n);
 		   } else {
 			   for (Map.Entry<String, Object> entry : map.entrySet()) {
 				   if (entry.getValue() instanceof Map) {
 					   if (((Map<String, Object>)entry.getValue()).get("default") != null)  {
 						   JsonNode n = new JsonNode();
-						   n.setName(entry.getKey());					   
-						   n.setType("String"); //default to string for type 					   
+						   n.setName(entry.getKey());					   				   
 						   n.setDefaultValue(String.valueOf(((Map<String, Object>)entry.getValue()).get("default")));
 						   if (isFloat(n.getDefaultValue())) {
 				   				n.setType("Float");
@@ -225,6 +234,17 @@ public class JsonSchemaConverter {
 		   mapper.writeValue(new File(output + "/"+ file + "_" +"result.json"), json);
 	   } catch (Exception e) {
 		   System.err.println(e.getMessage());
+	   }
+   }
+   
+   public static void writeDataElements(List<Map<String, Object>> json) {
+//	   PojoFromJson pfj = new PojoFromJson();
+	   for (Map<String, Object> j : json) {
+		   try (InputStream stream = new ByteArrayInputStream(mapper.writeValueAsBytes(j))){
+			   PojoFromJson.handleInputJson(stream, Path.of(output));
+		   } catch (Exception e) {
+			   System.err.println(e.getMessage());
+		   }
 	   }
    }
    
