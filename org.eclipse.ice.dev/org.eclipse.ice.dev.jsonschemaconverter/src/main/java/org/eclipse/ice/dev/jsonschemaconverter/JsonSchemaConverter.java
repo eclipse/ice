@@ -20,7 +20,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import org.eclipse.ice.dev.pojofromjson.PojoFromJson;
+import org.eclipse.ice.dev.pojofromjson.*;
+import org.eclipse.ice.dev.annotations.processors.Field;
 
 
 /**
@@ -80,54 +81,43 @@ public class JsonSchemaConverter {
    
    public static void handleInputJson(InputStream is, Path destination,String filePath) throws JsonParseException, JsonMappingException, IOException {
 	   	Map<String, Object> map = mapper.readValue(is, new TypeReference<Map<String,Object>>(){});
-	   	List<JsonNode> outJson;
+	   	List<Field> outJson;
 	   	
 	   	//start out by checking to see is the current node has type : object
 	   	List<Map<String, Object>> jsonArrayOutput = new ArrayList<>();   
 	   	for (Map.Entry<String, Object> entry : map.entrySet()) {
 	   		Map<String, Object> outputMap = new LinkedHashMap<>();
-	   		List<JsonNode> fields = new ArrayList<>();
+	   		List<Field> fields = new ArrayList<>();
 	   		if (!entry.getKey().equals("definitions")) { //ignore definitions section 
 		   		if (entry.getValue() instanceof Map) {
 		   			Map<String, Object> innerNode = (Map<String, Object>) entry.getValue();
 		   			
 			   			if (innerNode.keySet().contains("anyOf")) { //default to string if multiple types are allowed
-			   				JsonNode n = new JsonNode();
-				   			n.setName(entry.getKey());
-				   			n.setType("String");
-				   			n.setDocString(String.valueOf(innerNode.get("description")));
-				   			n.setDefaultValue("");
+			   				Field n = Field.builder()
+			   						.name(entry.getKey())
+			   						.type("String")
+			   						.docString(String.valueOf(innerNode.get("description")))
+			   						.defaultValue("")
+			   						.build();
 				   			fields.add(n);
 			   				
 			   			} else if ("string".equals(innerNode.get("type"))) {
-			   				JsonNode n = new JsonNode();
-				   			n.setName(entry.getKey());
-				   			n.setDocString(String.valueOf(innerNode.get("description")));
-				   			n.setDefaultValue(String.valueOf(innerNode.get("default")));
-				   			if (isFloat(n.getDefaultValue())) {
-				   				n.setType("Float");
-				   			} else if (isBoolean(n.getDefaultValue())) {
-				   				n.setType("Boolean");
-				   			} else {
-				   				n.setDefaultValue("");
-				   				n.setType("String");
-				   			}
+			   				Field n = Field.builder()
+			   						.name(entry.getKey())
+			   						.docString(String.valueOf(innerNode.get("description")))
+			   						.defaultValue(String.valueOf(innerNode.get("default")))
+			   						.build();
+				   			n.setType(getTypeAsString(n.getDefaultValue()));
 				   			fields.add(n);
 			   			} else { //no type property or type='object'
 			   				fields = processJsonObject(innerNode, entry.getKey());
 			   			}   			
 		   		} else if (entry.getValue() instanceof String){
-		   			JsonNode n = new JsonNode();
-		   			n.setName(entry.getKey());
-		   			n.setDefaultValue(String.valueOf(entry.getValue()));
-		   			if (isFloat(n.getDefaultValue())) {
-		   				n.setType("Float");
-		   			} else if (isBoolean(n.getDefaultValue())) {
-		   				n.setType("Boolean");
-		   			} else {
-		   				n.setDefaultValue("");
-		   				n.setType("String");
-		   			}
+		   			Field n = Field.builder()
+	   						.name(entry.getKey())
+	   						.defaultValue(String.valueOf(entry.getValue()))
+	   						.build();
+		   			n.setType(getTypeAsString(n.getDefaultValue()));
 		   			fields.add(n);
 		   		}
 		   		outputMap.put("package", "testpackage");
@@ -141,85 +131,58 @@ public class JsonSchemaConverter {
    }
    
    
-   public static List<JsonNode> processJsonObject(Map<String, Object> map, String key) {
-	   List<JsonNode> fields = new ArrayList<>();
+   public static List<Field> processJsonObject(Map<String, Object> map, String key) {
+	   List<Field> fields = new ArrayList<>();
 	   if ("object".equals(map.get("type")) && map.get("properties") instanceof Map){
 		   for (Map.Entry<String, Object> entry : ((Map<String, Object>) map.get("properties")).entrySet()) {
 			   if (((Map<String, Object>)entry.getValue()).get("default") != null)  {
-				   JsonNode n = new JsonNode();
-				   n.setName(entry.getKey());				   
-				   n.setDefaultValue(String.valueOf(((Map<String, Object>)entry.getValue()).get("default")));
-				   if (isFloat(n.getDefaultValue())) {
-		   				n.setType("Float");
-		   			} else if (isBoolean(n.getDefaultValue())) {
-		   				n.setType("Boolean");
-		   			} else {
-		   				n.setDefaultValue("");
-		   				n.setType("String");
-		   			}
-				   n.setDocString(String.valueOf(((Map<String, Object>)entry.getValue()).get("description")));
-				   if (n.getDocString() == null) {
-		   				n.setDocString("");
-				   }				   
+				   Field n = Field.builder()
+	   						.name(entry.getKey())
+	   						.defaultValue(String.valueOf(((Map<String, Object>)entry.getValue()).get("default")))
+	   						.docString(String.valueOf(((Map<String, Object>)entry.getValue()).get("description")))
+	   						.build();
+				   n.setType(getTypeAsString(n.getDefaultValue()));		 			   
 				   fields.add(n);
 			   } else {
 				   if (entry.getValue() instanceof Map) {				   
 					   fields.addAll(processJsonObject((Map<String, Object>)entry.getValue(), entry.getKey()));					   
 				   } else {
-					   JsonNode n = new JsonNode();
-					   n.setName(entry.getKey());				   
-					   n.setDefaultValue(String.valueOf(entry.getValue()));
-					   if (isFloat(n.getDefaultValue())) {
-			   				n.setType("Float");
-			   			} else if (isBoolean(n.getDefaultValue())) {
-			   				n.setType("Boolean");
-			   			} else {
-			   				n.setDefaultValue("");
-			   				n.setType("String");
-			   			}
+					   Field n = Field.builder()
+		   						.name(entry.getKey())
+		   						.defaultValue(String.valueOf(entry.getValue()))
+		   						.build();
+					   n.setType(getTypeAsString(n.getDefaultValue()));
 					   fields.add(n);
 				   }  
 		   		}
 		   }   
 	   } else {
 		   if (map.keySet().contains("default")) {
-			   JsonNode n = new JsonNode();
-			   n.setName(key);			   
-			   n.setDefaultValue(String.valueOf((map.get("default"))));
-			   if (isFloat(n.getDefaultValue())) {
-	   				n.setType("Float");
-	   			} else if (isBoolean(n.getDefaultValue())) {
-	   				n.setType("Boolean");
-	   			} else {
-	   				n.setDefaultValue("");
-	   				n.setType("String");
-	   			}
+			   Field n = Field.builder()
+  						.name(key)
+  						.defaultValue(String.valueOf((map.get("default"))))
+  						.build();
+			   n.setType(getTypeAsString(n.getDefaultValue()));
 			   fields.add(n);
 		   } else {
 			   for (Map.Entry<String, Object> entry : map.entrySet()) {
 				   if (entry.getValue() instanceof Map) {
 					   if (((Map<String, Object>)entry.getValue()).get("default") != null)  {
-						   JsonNode n = new JsonNode();
-						   n.setName(entry.getKey());					   				   
-						   n.setDefaultValue(String.valueOf(((Map<String, Object>)entry.getValue()).get("default")));
-						   if (isFloat(n.getDefaultValue())) {
-				   				n.setType("Float");
-				   			} else if (isBoolean(n.getDefaultValue())) {
-				   				n.setType("Boolean");
-				   			} else {
-				   				n.setDefaultValue("");
-				   				n.setType("String");
-				   			}
+						   Field n = Field.builder()
+			  						.name(entry.getKey())
+			  						.defaultValue(String.valueOf(((Map<String, Object>)entry.getValue()).get("default")))
+			  						.build();
+						   n.setType(getTypeAsString(n.getDefaultValue()));
 						   fields.add(n);
 					   } else {
 						   fields.addAll(processJsonObject((Map<String, Object>)entry.getValue(), entry.getKey()));
 					   }
 				   } else if(!(entry.getValue() instanceof ArrayList)) {
-					   JsonNode n = new JsonNode();
-					   n.setName(key);
-					   n.setType("String");
-					   n.setDefaultValue("");
-					   n.setDocString(String.valueOf(entry.getValue()));
+					   Field n = Field.builder()
+		  						.name(key)
+		  						.type("String")
+		  						.docString(String.valueOf(entry.getValue()))
+		  						.build();
 					   fields.add(n);
 				   }
 			   }
@@ -298,6 +261,15 @@ public class JsonSchemaConverter {
    
    public static boolean isBoolean(String input) {
 	   return input.trim().equals("false") || input.trim().equals("true");
+   }
+   
+   public static String getTypeAsString(String input) {
+	   if (isFloat(input)) {
+		   return "Float";
+	   } else if (isBoolean(input)) {
+		   return "Boolean";		
+	   }
+	   return "String";	
    }
 
 }
