@@ -51,13 +51,13 @@ public class JsonSchemaConverter {
 
    
 	public static void main( String[] args )
-   {
+	{
        JsonSchemaConverter app = new JsonSchemaConverter();
        app.run(args);
-   }
+	}
    
-   public void run(String... args) {
-   	JCommander jcomm = JCommander.newBuilder()
+	public void run(String... args) {
+		JCommander jcomm = JCommander.newBuilder()
    			.addObject(this)
    			.build();
    		jcomm.setProgramName("JsonSchemaConverter");
@@ -81,12 +81,8 @@ public class JsonSchemaConverter {
    
    public static void handleInputJson(InputStream is, Path destination,String filePath) throws JsonParseException, JsonMappingException, IOException {
 	   	Map<String, Object> map = mapper.readValue(is, new TypeReference<Map<String,Object>>(){});
-	   	List<Field> outJson;
-	   	
-	   	//start out by checking to see is the current node has type : object
-	   	List<Map<String, Object>> jsonArrayOutput = new ArrayList<>();   
+	   	List<PojoOutline> jsonArrayOut = new ArrayList<>();
 	   	for (Map.Entry<String, Object> entry : map.entrySet()) {
-	   		Map<String, Object> outputMap = new LinkedHashMap<>();
 	   		List<Field> fields = new ArrayList<>();
 	   		if (!entry.getKey().equals("definitions")) { //ignore definitions section 
 		   		if (entry.getValue() instanceof Map) {
@@ -120,14 +116,16 @@ public class JsonSchemaConverter {
 		   			n.setType(getTypeAsString(n.getDefaultValue()));
 		   			fields.add(n);
 		   		}
-		   		outputMap.put("package", "testpackage");
-		   		outputMap.put("element", entry.getKey());
-		   		outputMap.put("fields", fields);
-		   		jsonArrayOutput.add(outputMap);
+		   		PojoOutline po = PojoOutline.builder()
+		   				.packageName("testpackage")
+		   				.element(entry.getKey())
+		   				.fields(fields)
+		   				.build();
+		   		jsonArrayOut.add(po);
 	   		}
 	   	}	
-	   	writeJson(jsonArrayOutput, filePath);  
-	   	writeDataElements(jsonArrayOutput);
+	   	writeJson(jsonArrayOut, filePath);  
+	   	writeDataElements(jsonArrayOut);
    }
    
    
@@ -191,20 +189,19 @@ public class JsonSchemaConverter {
 	   return fields;
    }
    
-   public static void writeJson(List<Map<String, Object>> json, String filePath) {
-	   String file = filePath.strip().substring(filePath.lastIndexOf('/')+1, filePath.length() - 5);
+   public static void writeJson(List<PojoOutline> json, String filePath) {
+	   String file = filePath.strip().substring(filePath.lastIndexOf('/') + 1, filePath.length() - 5);
 	   try {
-		   mapper.writeValue(new File(output + "/"+ file + "_" +"result.json"), json);
+		   mapper.writeValue(new File(output + "/" + file + "_" + "result.json"), json);
 	   } catch (Exception e) {
 		   System.err.println(e.getMessage());
 	   }
    }
    
-   public static void writeDataElements(List<Map<String, Object>> json) {
-//	   PojoFromJson pfj = new PojoFromJson();
-	   for (Map<String, Object> j : json) {
-		   try (InputStream stream = new ByteArrayInputStream(mapper.writeValueAsBytes(j))){
-			   PojoFromJson.handleInputJson(stream, Path.of(output));
+   public static void writeDataElements(List<PojoOutline> json) {
+	   for (PojoOutline j : json) {
+		   try {
+			   PojoFromJson.createDataElement(j, Path.of(output));
 		   } catch (Exception e) {
 			   System.err.println(e.getMessage());
 		   }
@@ -214,7 +211,7 @@ public class JsonSchemaConverter {
    /**
     * check if input string represents a float/double. taken from https://docs.oracle.com/javase/7/docs/api/java/lang/Double.html#valueOf(java.lang.String)
     * @param input string
-    * @return
+    * @return if input string is a float
     */
    public static boolean isFloat(String input) {
 	   final String Digits     = "(\\p{Digit}+)";
