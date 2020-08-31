@@ -2,12 +2,11 @@ package org.org.eclipse.ice.dev.dependencyscraper;
 
 
 import org.apache.maven.plugin.testing.MojoRule;
-import org.apache.maven.plugin.testing.WithoutMojo;
-
 import org.junit.Rule;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import java.io.File;
+import java.util.Set;
 
 public class DependencyScraperTest
 {
@@ -31,22 +30,19 @@ public class DependencyScraperTest
 
 		DependencyScraper myMojo = (DependencyScraper) rule.lookupConfiguredMojo(pom, "scrape");
 		assertNotNull(myMojo);
+		myMojo.setJarFiles(Set.of(new File(
+			"target/test-classes/project-to-test/pretend_dependency.jar"
+		)));
+		System.out.println(rule.getVariablesAndValuesFromObject(myMojo));
 		myMojo.execute();
 
-//		File outputDirectory = (File) rule.getVariableValueFromObject(myMojo, "outputDirectory");
-//		assertNotNull(outputDirectory);
-//		assertTrue(outputDirectory.exists());
-//
-//		File touch = new File(outputDirectory, "touch.txt");
-//		assertTrue(touch.exists());
-	}
+		File outputDirectory = (File) rule.getVariableValueFromObject(myMojo, "outputDirectory");
+		assertNotNull(outputDirectory);
+		assertTrue(outputDirectory.exists());
+		System.out.println(outputDirectory);
 
-	/** Do not need the MojoRule. */
-	@WithoutMojo
-	@Test
-	public void testSomethingWhichDoesNotNeedTheMojoAndProbablyShouldBeExtractedIntoANewClassOfItsOwn()
-	{
-		assertTrue(true);
+		File test = new File(outputDirectory, "test.txt");
+		assertTrue(test.exists());
 	}
 }
 

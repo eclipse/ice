@@ -58,15 +58,13 @@ public class DependencyScraper extends AbstractMojo {
 	 */
 	@Parameter(
 		property = "outputDirectory",
-		defaultValue = "frontend/src",
-		required = false
+		required = true
 	)
 	private File outputDirectory;
 
 	@Parameter(
 		property = "sourceDirectory",
-		defaultValue = "frontend",
-		required = false
+		required = true
 	)
 	private String sourceDirectory;
 
@@ -79,6 +77,19 @@ public class DependencyScraper extends AbstractMojo {
 		required = true
 	)
 	private List<String> includes;
+
+	/**
+	 * Set of jar files that will be searched for matching files.
+	 */
+	private Set<File> jarFiles;
+
+	/**
+	 * Setter for jarFiles.
+	 * @param jarFiles to set.
+	 */
+	public void setJarFiles(Set<File> jarFiles) {
+		this.jarFiles = jarFiles;
+	}
 
 	/**
 	 * Filter for whether a ZipEntry begins with the sourceDirectory.
@@ -153,9 +164,11 @@ public class DependencyScraper extends AbstractMojo {
 	 * directory specified by parameters.
 	 */
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		Set<File> jarFiles = project.getArtifacts().stream()
-			.filter(artifact -> "jar".equals(artifact.getType()))
-			.map(Artifact::getFile).collect(Collectors.toSet());
+		if (jarFiles == null) {
+			this.jarFiles = project.getArtifacts().stream()
+				.filter(artifact -> "jar".equals(artifact.getType()))
+				.map(Artifact::getFile).collect(Collectors.toSet());
+		}
 		for (File jar : jarFiles) {
 			try (JarFile jarFile = new JarFile(jar, false)) {
 				Set<ZipEntry> toCopy = jarFile.stream()
