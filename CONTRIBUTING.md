@@ -35,6 +35,7 @@ You do this by adding the `-s` flag when you make the commit(s), e.g.
 
 ## Making your changes
 
+If you are not a committer on this project, please follow these steps to submit your changes:
 * Fork the repository on GitHub.
 * Create a new branch for your changes.
 * Make your changes.
@@ -44,7 +45,19 @@ You do this by adding the `-s` flag when you make the commit(s), e.g.
 * Use descriptive and meaningful commit messages.
 * If you have a lot of commits, squash them into a single commit.
 * Make sure you use the `-s` flag when committing as explained above.
-* Push your changes to your branch in your forked repository.
+* Push your changes to your branch in your forked repository and create a Pull Request.
+
+## Code quality requirements
+
+All submissions are reviewed for technical merit. In additional to a technical review, pull requests are reviewed for code quality to maintain a standard across the code base. This includes:
+* Reviewing tests to understand the client-facing API of the submission and its general functionality.
+* Insuring sufficient test coverage such that at least 80% (preferrably more) of the submission is executed by the tests.
+* Insuring that the code satisfies basic quality metrics in a code quality tool (linter).
+* Reviewing the general look and feel, including the format, of the submission.
+
+Generated classes, including those from annotation processors, Lombok, and other tools, may not need to have unit tests.
+
+The project committers reserve the right to ask for more tests and other improvements to quality for any submission.
 
 ## Submitting the changes
 
