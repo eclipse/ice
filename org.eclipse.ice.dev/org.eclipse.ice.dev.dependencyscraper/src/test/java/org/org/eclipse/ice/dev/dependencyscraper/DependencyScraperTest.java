@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import java.io.File;
 
-public class MyMojoTest
+public class DependencyScraperTest
 {
 	@Rule
 	public MojoRule rule = new MojoRule() {
@@ -29,7 +29,7 @@ public class MyMojoTest
 		assertNotNull(pom);
 		assertTrue(pom.exists());
 
-		MyMojo myMojo = (MyMojo) rule.lookupConfiguredMojo(pom, "scrape");
+		DependencyScraper myMojo = (DependencyScraper) rule.lookupConfiguredMojo(pom, "scrape");
 		assertNotNull(myMojo);
 		myMojo.execute();
 

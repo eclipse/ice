@@ -42,7 +42,7 @@ import java.util.zip.ZipEntry;
 	defaultPhase = LifecyclePhase.PROCESS_SOURCES,
 	requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME
 )
-public class MyMojo extends AbstractMojo {
+public class DependencyScraper extends AbstractMojo {
 	/**
 	 * Current project. Used to get handle to dependencies.
 	 */
