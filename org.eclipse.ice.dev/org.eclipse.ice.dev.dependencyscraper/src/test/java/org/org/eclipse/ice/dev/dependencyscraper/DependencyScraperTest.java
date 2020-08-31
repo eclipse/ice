@@ -33,13 +33,11 @@ public class DependencyScraperTest
 		myMojo.setJarFiles(Set.of(new File(
 			"target/test-classes/project-to-test/pretend_dependency.jar"
 		)));
-		System.out.println(rule.getVariablesAndValuesFromObject(myMojo));
 		myMojo.execute();
 
 		File outputDirectory = (File) rule.getVariableValueFromObject(myMojo, "outputDirectory");
 		assertNotNull(outputDirectory);
 		assertTrue(outputDirectory.exists());
-		System.out.println(outputDirectory);
 
 		File test = new File(outputDirectory, "test.txt");
 		assertTrue(test.exists());
