@@ -49,7 +49,7 @@ If you are not a committer on this project, please follow these steps to submit 
 
 ## Code quality requirements
 
-All submissions are reviewed for technical merit. In additional to a technical review, pull requests are reviewed for code quality to maintain a standard across the code base. This includes:
+All submissions are reviewed for technical merit. In addition to a technical review, pull requests are reviewed for code quality to maintain a standard across the code base. This includes:
 * Reviewing tests to understand the client-facing API of the submission and its general functionality.
 * Insuring sufficient test coverage such that at least 80% (preferrably more) of the submission is executed by the tests.
 * Insuring that the code satisfies basic quality metrics in a code quality tool (linter).
