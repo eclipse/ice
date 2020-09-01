@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.List;
 import java.util.Set;
 
 public class DependencyScraperTest
@@ -126,7 +127,7 @@ public class DependencyScraperTest
 		);
 		contents = Files.readString(destFile);
 		assertEquals("a", contents);
-		
+
 		assertEquals(beforeAttrs.creationTime(), afterAttrs.creationTime());
 	}
 
@@ -148,5 +149,33 @@ public class DependencyScraperTest
 		mojo.execute();
 		contents = Files.readString(destFile);
 		assertEquals("a", contents);
+	}
+
+	@Test
+	public void testWildcardsAll() throws Exception {
+		DependencyScraper mojo = getMojo();
+		mojo.setIncludes(List.of("*"));
+		mojo.execute();
+		assertTrue(OUTPUT.toFile().exists());
+		assertTrue(OUTPUT.resolve("test.txt").toFile().exists());
+		assertTrue(OUTPUT.resolve("test.json").toFile().exists());
+	}
+
+	@Test
+	public void testWildcardsByExtension() throws Exception {
+		DependencyScraper mojo = getMojo();
+		mojo.setIncludes(List.of("*.txt"));
+		mojo.execute();
+		assertTrue(OUTPUT.resolve("test.txt").toFile().exists());
+		assertFalse(OUTPUT.resolve("test.json").toFile().exists());
+	}
+
+	@Test
+	public void testIncludeMultiple() throws Exception {
+		DependencyScraper mojo = getMojo();
+		mojo.setIncludes(List.of("*.txt", "*.json"));
+		mojo.execute();
+		assertTrue(OUTPUT.resolve("test.txt").toFile().exists());
+		assertTrue(OUTPUT.resolve("test.json").toFile().exists());
 	}
 }
