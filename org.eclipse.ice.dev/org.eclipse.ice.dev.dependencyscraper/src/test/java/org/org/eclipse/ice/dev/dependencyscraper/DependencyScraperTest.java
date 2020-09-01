@@ -151,6 +151,10 @@ public class DependencyScraperTest
 		assertEquals("a", contents);
 	}
 
+	/**
+	 * Test that include using a wildcard for all works.
+	 * @throws Exception if any
+	 */
 	@Test
 	public void testWildcardsAll() throws Exception {
 		DependencyScraper mojo = getMojo();
@@ -161,6 +165,10 @@ public class DependencyScraperTest
 		assertTrue(OUTPUT.resolve("test.json").toFile().exists());
 	}
 
+	/**
+	 * Test that include using a wildcard with an extension works.
+	 * @throws Exception if any
+	 */
 	@Test
 	public void testWildcardsByExtension() throws Exception {
 		DependencyScraper mojo = getMojo();
@@ -170,6 +178,10 @@ public class DependencyScraperTest
 		assertFalse(OUTPUT.resolve("test.json").toFile().exists());
 	}
 
+	/**
+	 * Test that including multiple wildcard patterns works.
+	 * @throws Exception if any
+	 */
 	@Test
 	public void testIncludeMultiple() throws Exception {
 		DependencyScraper mojo = getMojo();
