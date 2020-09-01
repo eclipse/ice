@@ -11,7 +11,6 @@
 
 package org.org.eclipse.ice.dev.dependencyscraper;
 
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.artifact.Artifact;
@@ -79,9 +78,35 @@ public class DependencyScraper extends AbstractMojo {
 	private List<String> includes;
 
 	/**
+	 * Whether files should be overwritten if they already exist.
+	 */
+	@Parameter(
+		property = "clobber",
+		required = false,
+		defaultValue = "false"
+	)
+	private boolean clobber;
+
+	/**
 	 * Set of jar files that will be searched for matching files.
 	 */
 	private Set<File> jarFiles;
+
+	/**
+	 * Setter for includes.
+	 * @param includes to set.
+	 */
+	public void setIncludes(List<String> includes) {
+		this.includes = includes;
+	}
+
+	/**
+	 * Setter for clobber.
+	 * @param clobber to set.
+	 */
+	public void setClobber(boolean clobber) {
+		this.clobber = clobber;
+	}
 
 	/**
 	 * Setter for jarFiles.
@@ -134,16 +159,28 @@ public class DependencyScraper extends AbstractMojo {
 		File target = new File(outputDirectory, relativePath);
 		try {
 			if (target.exists()) {
-				// Replace target if contents differ
-				File tempFile = File.createTempFile(fullPath, null);
-				FileUtils.copyInputStreamToFile(
-					jar.getInputStream(fileInJar), tempFile
-				);
-				if (!FileUtils.contentEquals(tempFile, target)) {
-					FileUtils.forceDelete(target);
-					FileUtils.moveFile(tempFile, target);
+				if (clobber) { // Overwrite existing file
+					getLog().info(String.format(
+						"File %s already exists and clobber is set; overwriting.",
+						target.getName()
+					));
+
+					// Replace target only if contents differ
+					File tempFile = File.createTempFile(fullPath, null);
+					FileUtils.copyInputStreamToFile(
+						jar.getInputStream(fileInJar), tempFile
+					);
+					if (!FileUtils.contentEquals(tempFile, target)) {
+						FileUtils.forceDelete(target);
+						FileUtils.moveFile(tempFile, target);
+					} else {
+						tempFile.delete();
+					}
 				} else {
-					tempFile.delete();
+					getLog().info(String.format(
+						"File %s already exists and clobber is not set; skipping.",
+						target.getName()
+					));
 				}
 			} else {
 				FileUtils.copyInputStreamToFile(
