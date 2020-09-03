@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+
+  "type": "object",
+  "properties": {
+    "schemaStamp": {"$ref": "common.json#/schemaStamp"},
+    "name": {
+      "$ref": "common.json#/name",
+      "default": "NAME"
+    },
+  
+    "outputFileName":  {"$ref":  "common.json#/outputFileName"},
+
+    "configuration": {
+      "type": "object",
+      "properties": {
+
+        "useBoolean": {"default": false},
+        "defaultInt": {"default": 5},
+        "defaultFloat": {"default": 5.0},
+        "defaultIntArray": {"default": [5, 65]},
+        "defaultArray": {"default": ["str1", "str2"]}
+      }
+    }
+  }
+}

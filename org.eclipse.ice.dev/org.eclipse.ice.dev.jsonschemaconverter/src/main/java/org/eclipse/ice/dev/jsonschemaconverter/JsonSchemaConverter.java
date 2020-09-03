@@ -1,7 +1,6 @@
 package org.eclipse.ice.dev.jsonschemaconverter;
 
 import java.io.FileInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -9,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -18,23 +17,28 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.eclipse.ice.dev.pojofromjson.*;
 import org.eclipse.ice.dev.annotations.processors.Field;
 
 
 /**
- * utility to convert json schemas to the json format that the PojoFromJson project accepts
- * Pieces of code was derived from Daniel Bluhm's org.eclipse.ice.dev.PojoFromJson
+ * Utility to convert JSON schemas to the JSON format that the
+ * PojoFromJson project accepts
+ * Pieces of code were derived from Daniel Bluhm's
+ * org.eclipse.ice.dev.PojoFromJson.
  * @author gzi
  *
  */
 public class JsonSchemaConverter {
-	
+
 	/**
-	 * Mapper used for deserializing POJO Outline JSON
+	 * Mapper used for deserializing POJO Outline JSON.
 	 */
-	private static ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);;
+	private static ObjectMapper mapper = new ObjectMapper()
+				.enable(SerializationFeature.INDENT_OUTPUT);
 
 	/**
 	 * List of files to operate on.
@@ -47,25 +51,46 @@ public class JsonSchemaConverter {
 	 */
 	@Parameter(names = {"-o", "--output"}, description = "Output directory")
 	private static String output = ".";
-	
+
 	/**
 	 * Package name of generated java files.
 	 */
-	@Parameter(names = {"-p", "--package"}, description = "Package Name of Generated Files")
+	@Parameter(names = {"-p", "--package"}, description = "Package of output files")
 	private static String packageName = "";
 
+	/**
+	 * System logger.
+	 */
+	private static final Logger logger =
+						LoggerFactory.getLogger(JsonSchemaConverter.class);
+
+
+	/**
+	 * Default type of JSON property if not specified in a JSON property.
+	 */
+	private static String typeField = "string";
+
+	/**
+	 * Name of JSON property that contains the default value of a parent.
+	 */
+	private static String defaultField = "default";
+
+	/**
+	 * Name of JSON property that contains the description of a parent.
+	 */
+	private static String descriptionField = "description";
+
    /**
-    * Executes program
+    * Executes program.
     * @param args command line arguments
     */
-	public static void main( String[] args )
-	{
+	public static void main( String[] args ) {
        JsonSchemaConverter app = new JsonSchemaConverter();
        app.run(args);
 	}
-   
+
 	/**
-	 * Parse arguments and continues execution of program
+	 * Parse arguments and continues execution of program.
 	 * @param args command line arguments
 	 */
 	public void run(String... args) {
@@ -74,75 +99,82 @@ public class JsonSchemaConverter {
    			.build();
    		jcomm.setProgramName("JsonSchemaConverter");
    		jcomm.parse(args);
-   		
+
    		try {
-   			if (jsonFiles.size() == 0) {
-   				handleInputJson(System.in, Path.of(output), "");
+   			if (jsonFiles.isEmpty()) {
+   				handleInputJson(System.in, Path.of(output));
    			}
    			for (String filePath : jsonFiles) {
-   				
-   				try (FileInputStream inputJson = new FileInputStream(filePath)) {
-   					handleInputJson(inputJson, Path.of(output), filePath);
+
+   				try (FileInputStream inputJson = 
+   											new FileInputStream(filePath)) {
+   					handleInputJson(inputJson, Path.of(filePath));
    				}
    			}
    		} catch (Exception ex) {
-   			System.err.println(ex.getMessage());
+   			logger.error(ex.getMessage());
    			System.exit(1);
    		}
    }
    /**
-    * Converts given json schema file into a json format accepted by org.eclipse.ice.dev.annotations
-    * @param is InputStream of original json schema file
+    * Converts given JSON schema file into a JSON format.
+    * accepted by org.eclipse.ice.dev.annotations.
+    * @param is InputStream of original JSON schema file
     * @param destination directory where output files will written
     * @param filePath string representing path to input file
-    * @throws JsonParseException On failure to parse the input json schema file
-    * @throws JsonMappingException On failure to map the json schema to Map<String, Object> 
+    * @throws JsonParseException On failure to parse the input JSON schema file
+    * @throws JsonMappingException On failure to map the JSON schema to Map<String, Object>
     * @throws IOException On failure to write files
     */
-   public static void handleInputJson(InputStream is, Path destination, String filePath) throws JsonParseException, JsonMappingException, IOException {
+   public static void handleInputJson(InputStream is, Path filePath) throws IOException {
 	   	Map<String, Object> map = mapper.readValue(is, new TypeReference<Map<String,Object>>(){});
 	   	List<PojoOutline> jsonArrayOut = new ArrayList<>();
-	   	String fileName = filePath.strip().substring(filePath.lastIndexOf('/') + 1, filePath.length() - 5); //get the filename from the path
-	   	packageName = packageName.equals("") ? fileName.toLowerCase(): packageName; //if no package name is given, set it to the input filename
-	   	
-	   	List<Map.Entry<String, Object>> entries = map.entrySet().stream()
-	   															.filter(e -> !e.getKey().equals("definitions"))
-	   															.collect(Collectors.toList());  //ignore definitions section 
-	   	
-	   	for (Map.Entry<String, Object> entry : entries.stream()
-	   												.filter(e -> e.getValue() instanceof Map)
-	   												.collect(Collectors.toList())) {
+	   	String fileName = filePath.getFileName().toString();
+	   	fileName = fileName.substring(0, fileName.length() - 5); //remove .json
+	   	packageName = packageName.equals("") ? fileName.toLowerCase() : packageName;
+	   	Stream<Map.Entry<String, Object>> entries = map.entrySet().stream();
+
+	   	entries.filter(e -> e.getValue() instanceof Map 
+	   						&& !e.getKey().equals("definitions"))
+	   	.forEach(entry -> {  //ignore definitions section 
 	   		List<Field> fields = new ArrayList<>();
-	   		Map<String, Object> innerNode = (Map<String, Object>) entry.getValue();   			
-	   			if (innerNode.keySet().contains("anyOf")) { //default to string if multiple types are allowed
+	   		Map<String, Object> node = (Map<String, Object>) entry.getValue();
+	   		
+	   			if (node.keySet().contains("anyOf")) {
 	   				Field n = Field.builder()
 	   						.name(getValidName(entry.getKey()))
-	   						.type("String")
-	   						.docString(String.valueOf(innerNode.get("description")))
+	   						.type(typeField)
+	   						.docString(String.valueOf(node.get(descriptionField)))
 	   						.defaultValue("")
 	   						.build();
-	   				fields.add(n);			   				
-	   			} else if ("string".equals(innerNode.get("type"))) {
+	   				fields.add(n);
+
+	   			} else if (typeField.equals(node.get("type"))) {
 	   				Field n = Field.builder()
 	   						.name(getValidName(entry.getKey()))
-	   						.docString(String.valueOf(innerNode.get("description")))
-	   						.defaultValue(String.valueOf(innerNode.get("default")))
+	   						.docString(String.valueOf(node.get(descriptionField)))
+	   						.defaultValue(String.valueOf(node.get(defaultField)))
 	   						.build();
 				   	n.setType(getTypeAsString(n.getDefaultValue()));
 				   	fields.add(n);
 	   			} else { //no type property or type='object'
-	   				fields = processJsonObject(innerNode, entry.getKey());
-	   			} 
+	   				fields = processJsonObject(node, entry.getKey());
+	   			}
+	   			
 	   			PojoOutline po = PojoOutline.builder()
 		   				.packageName(packageName)
-		   				.element(entry.getKey())
+		   				.element(entry.getKey().substring(0, 1).toUpperCase() 
+		   						+ entry.getKey().substring(1))
 		   				.fields(fields)
 		   				.build();
 		   		jsonArrayOut.add(po);
-	   	}
+
+	   	});
 	   	
-	   	List<Field> fields = new ArrayList<>(); //collect all top level string properties into one file
-	   	entries.stream().filter(e -> !(e.getValue() instanceof Map)).forEach(e -> {
+	   	//collect all top level string properties into one file
+	   	List<Field> fields = new ArrayList<>();
+	   	map.entrySet().stream()
+	   				  .filter(e -> !(e.getValue() instanceof Map)).forEach(e -> {
 	   		Field n = Field.builder()
    					.name(getValidName(e.getKey()))
    					.defaultValue(String.valueOf(e.getValue()))
@@ -150,49 +182,55 @@ public class JsonSchemaConverter {
 	   		n.setType(getTypeAsString(n.getDefaultValue()));
 	   		fields.add(n);
 	   	});
+	   	
 	   	PojoOutline po = PojoOutline.builder()
    				.packageName(packageName)
    				.element(fileName + "Properties")
    				.fields(fields)
    				.build();
    		jsonArrayOut.add(po);
-   		
-	   	writeJson(jsonArrayOut, fileName);  
-	   	writeDataElements(jsonArrayOut);
+
+	   	writeJson(jsonArrayOut, filePath, fileName);
+	   	writeDataElements(jsonArrayOut, filePath);
    }
-   
+
    /**
-    * Helper function to recursively obtain all of the fields from a map 
+    * Helper function to recursively obtain all of the fields from a map.
     * @param map map to get data fields from
     * @param key the name of key used to access this map from its parent map
     * @return list of Fields representing the data from the input map
     */
    public static List<Field> processJsonObject(Map<String, Object> map, String key) {
 	   List<Field> fields = new ArrayList<>();
-	   if (map.keySet().contains("default")) {
+	   if (map.keySet().contains(defaultField)) {
 		   Field n = Field.builder()
 						.name(getValidName(key))
 						.build();
-		   //set doc string to the provided description. if description isn't provided, then you $ref. If $ref is also not provided, then uses 'null'
-		   n.setDocString(map.get("description") == null ? String.valueOf(map.get("$ref")):String.valueOf(map.get("description"))); 
-		   if (map.get("default") instanceof ArrayList) {
-			   n.setDefaultValue(formatArrayListAsString((ArrayList) map.get("default")));
-			   n.setType(getTypeAsString(String.valueOf(((ArrayList) map.get("default")).get(0))) + "[]");
+		   //if no description can be found, then uses 'null'
+		   n.setDocString(
+				   map.get(descriptionField) == null ? String.valueOf(map.get("$ref"))
+						   : String.valueOf(map.get(descriptionField))); 
+		   
+		   if (map.get(defaultField) instanceof ArrayList) {
+			   n.setDefaultValue(formatListAsString((ArrayList) map.get(defaultField)));
+			   n.setType(getTypeAsString(String.valueOf(((ArrayList) map.get(defaultField)).get(0))) + "[]");
 		   } else {
-			   n.setDefaultValue(String.valueOf(map.get("default")));
+			   n.setDefaultValue(String.valueOf(map.get(defaultField)));
 			   n.setType(getTypeAsString(n.getDefaultValue()));
 		   }
-	
+
 		   fields.add(n);
 		   return fields;
 	   }
+	   
 	   map.entrySet().stream().forEach(e -> {
+		   
 		   if (e.getValue() instanceof Map) {
 			   fields.addAll(processJsonObject((Map<String, Object>)e.getValue(), e.getKey()));		
 		   } else if (!(e.getValue() instanceof ArrayList)) {
 			   Field n = Field.builder()
  						.name(getValidName(key))
- 						.type("String")
+ 						.type(typeField)
  						.docString(String.valueOf(e.getValue()))
  						.build();
 			   fields.add(n);
@@ -203,40 +241,47 @@ public class JsonSchemaConverter {
   						.build();
 			   n.setType(getTypeAsString(n.getDefaultValue()) + "[]");
 			   fields.add(n);
-		   }   	   
+		   }
+		   
 	   });
 	   return fields;
    }
-   
+
    /**
-    * Write the converted json file, represented as a list of PojoOutline to output destination
-    * @param json converted json file represented as a list of PojoOultine
-    * @param file the name of the new json file
+    * Write the converted JSON file, represented as a 
+    * list of PojoOutline to output destination.
+    * @param json converted JSON file represented as a list of PojoOultine
+    * @param file the name of the new JSON file
     */
-   public static void writeJson(List<PojoOutline> json, String file) {  
+   public static void writeJson(List<PojoOutline> json, Path filePath, String file) {  
 	   try {
-		   mapper.writeValue(new File(output + "/" + file + "_" + "result.json"), json);
+		   mapper.writeValue(filePath
+				   			 .resolve(filePath.getParent() 
+				   					 + "/" + file + "_" + "result.json")
+				   			 .toFile(), json);
 	   } catch (Exception e) {
-		   System.err.println(e.getMessage());
+		   logger.error(e.getMessage());
 	   }
    }
-   
+
    /**
-    * Uses PojoFromJson to write java files based on input json representation
+    * Uses PojoFromJson to write java files based on input JSON representation.
     * @param json list of PojoOutlines to be written as java objects
     */
-   public static void writeDataElements(List<PojoOutline> json) {
+   public static void writeDataElements(List<PojoOutline> json, Path filePath) {
 	   for (PojoOutline j : json) {
 		   try {
-			   PojoFromJson.createDataElement(j, Path.of(output));
+			   PojoFromJson.createDataElement(j, filePath.getParent());
 		   } catch (Exception e) {
-			   System.err.println(e.getMessage());
+			   logger.error(e.getMessage());
 		   }
 	   }
    }
-   
+
    /**
-    * Check if input string represents a float/double. taken from https://docs.oracle.com/javase/7/docs/api/java/lang/Double.html#valueOf(java.lang.String)
+    * Check if input string represents a float/double. 
+    * Sourced from 
+    * https://docs.oracle.com/javase/7/docs/api/java/lang/Double.html#valueOf(java.lang.String).
     * @param input string to check
     * @return boolean representing whether or not input is a float
     */
@@ -282,9 +327,9 @@ public class JsonSchemaConverter {
 
 	   return Pattern.matches(fpRegex, input);
    }
-   
+
    /**
-    * Checks if input string represents a boolean
+    * Checks if input string represents a boolean.
     * @param input string to check
     * @return boolean representing whether or not input is a boolean
     */
@@ -294,23 +339,24 @@ public class JsonSchemaConverter {
 	   }
 	   return input.trim().equals("false") || input.trim().equals("true");
    }
-   
+
    /**
-    * Checks if input string represents an int
+    * Checks if input string represents an int.
     * @param input string to check
     * @return boolean representing whether or not input is an int
     */
    public static boolean isInt(String input) {
 	   try {
-		   int integer = Integer.parseInt(input);
+		   Integer.parseInt(input);
 		   return true;
 	   } catch (Exception e) {
 		   return false;
 	   }
    }
-   
+
    /**
-    * gives the string representation of the type of input string. used when input string may represent an int, float, boolean, etc
+    * Gives the string representation of the type of input string.
+    * Used when input string may represent an int, float, boolean, etc.
     * @param input string that may represent a type other than string
     * @return the type of the input as a string
     */
@@ -320,38 +366,41 @@ public class JsonSchemaConverter {
 	   } else  if (isFloat(input)) {
 		   return "Float";
 	   } else if (isBoolean(input)) {
-		   return "Boolean";		
+		   return "Boolean";
 	   } 
-	   return "String";	
+	   return "String";
    }
-   
+
    /** 
-    * converts input arraylist into a string representation of a java array, eg String[] arr = {str1, str2}
-    * @param al arraylist to be converted
-    * @return a string representation of the input arraylist
+    * Converts input list into a string representation of a java.
+    * array, eg String[] arr = {str1, str2}.
+    * @param al list to be converted
+    * @return a string representation of the input list
     */
-   public static String formatArrayListAsString(ArrayList al) {
+   public static String formatListAsString(List<Object> li) {
 	   String output = "{";
-	   if (getTypeAsString(String.valueOf(al.get(0))).equals("String")) {
-		   for (Object o : al) {
-			   output += "\"" + String.valueOf(o) + "\",";
+	   if (getTypeAsString(String.valueOf(li.get(0))).equals("String")) {
+		   for (Object o : li) {
+			   output += String.valueOf("\"" + o + "\",");
 		   }
 		   return output.substring(0, output.length() - 1) + "}";
 	   }
-	   
-	   for (Object o : al) {
+
+	   for (Object o : li) {
 		   output += String.valueOf(o) + ",";
 	   }
 	   return output.substring(0, output.length() - 1) + "}";
    }
-   
+
    /**
-    * returns a string with a valid name for java variable
+    * Returns a string with a valid name for java variable.
     * @param str the input variable name
     * @return a valid java version of the name (starts with letter, $, _)
     */
    public static String getValidName(String str) {
-	   if (!Character.isLetter(str.charAt(0)) && str.charAt(0) != '$' && str.charAt(0) != '_') {
+	   if (!Character.isLetter(str.charAt(0))
+			   && str.charAt(0) != '$'
+			   && str.charAt(0) != '_') {
 		   return '_' + str;
 	   }
 	   return str;
