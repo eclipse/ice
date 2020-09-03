@@ -41,6 +41,7 @@ class JsonSchemaConverterTest {
 	void schemaConversionTest() throws FileNotFoundException, IOException {
 		 
 		InputStream jsonFile = new FileInputStream(jsonResource);
+		JsonSchemaConverter.setWriteFile(true);
 		JsonSchemaConverter.handleInputJson(jsonFile, destination);
 		assertTrue(Files.exists(destination.getParent().resolve(JSON_RESULT)));
 		assertTrue(Files.exists(destination.getParent().resolve(GENERATED_INTERFACE)));

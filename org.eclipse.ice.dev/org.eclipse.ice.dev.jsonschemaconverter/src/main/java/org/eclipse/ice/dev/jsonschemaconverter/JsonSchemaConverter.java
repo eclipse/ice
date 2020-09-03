@@ -59,6 +59,12 @@ public class JsonSchemaConverter {
 	private static String packageName = "";
 
 	/**
+	 * Boolean representing whether to write java files"
+	 */
+	@Parameter(names = {"-w", "--write"}, description = "Write java files")
+	private static boolean useWriteFile = false;
+	
+	/**
 	 * System logger.
 	 */
 	private static final Logger logger =
@@ -143,7 +149,8 @@ public class JsonSchemaConverter {
 	   			if (node.keySet().contains("anyOf")) {
 	   				Field n = Field.builder()
 	   						.name(getValidName(entry.getKey()))
-	   						.type(typeField)
+	   						.type(typeField.substring(0, 1).toUpperCase() 
+			   						+ typeField.substring(1))
 	   						.docString(String.valueOf(node.get(descriptionField)))
 	   						.defaultValue("")
 	   						.build();
@@ -191,7 +198,9 @@ public class JsonSchemaConverter {
    		jsonArrayOut.add(po);
 
 	   	writeJson(jsonArrayOut, filePath, fileName);
-	   	writeDataElements(jsonArrayOut, filePath);
+	   	if (useWriteFile) {
+	   		writeDataElements(jsonArrayOut, filePath);
+	   	}
    }
 
    /**
@@ -230,7 +239,8 @@ public class JsonSchemaConverter {
 		   } else if (!(e.getValue() instanceof ArrayList)) {
 			   Field n = Field.builder()
  						.name(getValidName(key))
- 						.type(typeField)
+ 						.type(typeField.substring(0, 1).toUpperCase() 
+		   						+ typeField.substring(1))
  						.docString(String.valueOf(e.getValue()))
  						.build();
 			   fields.add(n);
@@ -404,6 +414,14 @@ public class JsonSchemaConverter {
 		   return '_' + str;
 	   }
 	   return str;
+   }
+   
+   /**
+    * Set useWriteFile, mostly for testing.
+    * @param write boolean to set useWriteFile to
+    */
+   public static void setWriteFile(boolean write) {
+	   useWriteFile = write;
    }
 
 }
