@@ -14,19 +14,12 @@
  *******************************************************************************/
 package gov.ornl.rse.renderer.client.test;
 
-import java.io.Serializable;
 
 import org.eclipse.ice.data.IDataElement;
-import org.eclipse.ice.renderer.DataElement;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.util.JSON;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.JsModule;
-
-import elemental.json.JsonObject;
 
 /**
  * This is a base class for renderer clients tailored to Vaadin. It provides
@@ -36,7 +29,9 @@ import elemental.json.JsonObject;
  */
 @Tag("renderer-template")
 @JsModule("./src/renderer.ts")
-public class VaadinRendererClient<T extends IDataElement> extends Component implements IRendererClient<T> {
+public class VaadinRendererClient<T extends IDataElement<T>> extends Component implements IRendererClient<T> {
+
+	public static final String DATA_ELEMENT_JSON = "dataElementJSON";
 
 	/**
 	 * version UID
@@ -53,8 +48,8 @@ public class VaadinRendererClient<T extends IDataElement> extends Component impl
 	 */
 	public VaadinRendererClient() {
 		// This function updates the data every time the client posts and update.
-		getElement().addPropertyChangeListener("dataElementJSON", "data-changed", e -> {
-			String value = getElement().getProperty("dataElementJSON");
+		getElement().addPropertyChangeListener(DATA_ELEMENT_JSON, "data-changed", e -> {
+			String value = getElement().getProperty(DATA_ELEMENT_JSON);
 			data.fromJson(value);
 		});
 	}
@@ -68,7 +63,7 @@ public class VaadinRendererClient<T extends IDataElement> extends Component impl
 	@Override
 	public void setData(T otherData) {
 		data = otherData;
-		getElement().setProperty("dataElementJSON", data.toJson());
+		getElement().setProperty(DATA_ELEMENT_JSON, data.toJson());
 	}
 
 	/**

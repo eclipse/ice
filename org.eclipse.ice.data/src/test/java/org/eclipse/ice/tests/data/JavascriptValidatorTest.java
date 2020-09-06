@@ -1,4 +1,4 @@
-package org.eclipse.ice.dev.annotations.proxytest;
+package org.eclipse.ice.tests.data;
 
 import static org.junit.jupiter.api.Assertions.*;
 
