@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" immediate="false" name="org.eclipse.ice.core">
-   <implementation class="org.eclipse.ice.core.internal.Core"/>
-   <reference bind="registerCompositeItem" cardinality="0..n" interface="org.eclipse.ice.item.ICompositeItemBuilder" name="ICompositeItemBuilder" policy="dynamic" unbind="unregisterItem"/>
-   <reference bind="setIOService" cardinality="1..1" interface="org.eclipse.ice.io.serializable.IIOService" name="IIOService" policy="static"/>
-   <reference cardinality="1..1" interface="org.eclipse.ice.materials.IMaterialsDatabase" name="IMaterialsDatabase" policy="static"/>
-</scr:component>
