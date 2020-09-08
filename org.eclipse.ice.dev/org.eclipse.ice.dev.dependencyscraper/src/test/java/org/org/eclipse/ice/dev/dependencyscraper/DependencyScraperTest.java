@@ -16,11 +16,26 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Test DepedencyScraper Maven Plugin.
+ * @author Daniel Bluhm
+ */
 public class DependencyScraperTest
 {
+	/**
+	 * Test "project" path.
+	 */
 	private static final Path PROJECT = Path.of("target/test-classes/project-to-test");
+
+	/**
+	 * Test project's output path.
+	 */
 	private static final Path OUTPUT = Path.of("target/test-classes/project-to-test/test");
 
+	/**
+	 * Maven Plugin Testing Harness magic that enables us to get a dependency
+	 * scraper instance from reading a specified POM file.
+	 */
 	@Rule
 	public MojoRule rule = new MojoRule() {
 		@Override
@@ -49,6 +64,10 @@ public class DependencyScraperTest
 		return myMojo;
 	}
 
+	/**
+	 * Clean out the output directory after each test.
+	 * @throws IOException if any
+	 */
 	@After
 	public void clearOutputDirectory() throws IOException {
 		if (Files.exists(OUTPUT)) {
