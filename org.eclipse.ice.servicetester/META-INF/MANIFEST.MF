@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: ServiceTester
-Bundle-SymbolicName: org.eclipse.ice.servicetester
-Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.eclipse.ice.core.iCore
-Service-Component: OSGI-INF/component.xml
-Bundle-Vendor: Oak Ridge National Laboratory

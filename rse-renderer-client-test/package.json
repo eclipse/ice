@@ -3,9 +3,11 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@polymer/polymer": "3.2.0",
-    "@webcomponents/webcomponentsjs": "^2.2.10",
+    "@types/uuid": "^8.0.1",
     "@vaadin/flow-deps": "./target/frontend",
-    "lit-element": "^2.2.0"
+    "@webcomponents/webcomponentsjs": "^2.2.10",
+    "lit-element": "^2.2.0",
+    "uuid": "^8.3.0"
   },
   "devDependencies": {
     "copy-webpack-plugin": "5.1.0",

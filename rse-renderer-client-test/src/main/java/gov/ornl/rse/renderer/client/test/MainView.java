@@ -14,16 +14,10 @@ package gov.ornl.rse.renderer.client.test;
 import java.util.function.BiConsumer;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
-import org.eclipse.ice.data.IDataElement;
-import org.eclipse.ice.renderer.DataElement;
-import org.eclipse.ice.renderer.JavascriptValidator;
 import org.eclipse.ice.renderer.Renderer;
 import org.eclipse.ice.renderer.Person;
 import org.eclipse.ice.renderer.PersonImplementation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -49,7 +43,8 @@ public class MainView extends VerticalLayout {
 		// Nothing to do here - just sample setup
 		Person ross = new PersonImplementation();
 		try {
-			ross.setName("Ross Whitfield");
+			ross.setFirstName("Ross");
+			ross.setLastName("Whitfield");
 			ross.setDescription("Ross' name described by a generated IDataElement");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

@@ -1,3 +1,7 @@
+# Commands Integration Tests
+
+This README serves as additional information for setting up the more complicated tests for the Commands package. Additional information about Commands can be found in the ICE package `org.eclipse.ice.commands`. These tests can also serve as examples for how to use the Commands API.
+
 
 ### Dependencies
 All dependencies are noted in the `pom` file, and all but one are within maven central. The only non-centralized dependency is the ICE package `org.eclipse.ice.tests.data`. To install it, perform the following commands (after cloning the ICE repositiory) so that the Commands package can build successfully:
