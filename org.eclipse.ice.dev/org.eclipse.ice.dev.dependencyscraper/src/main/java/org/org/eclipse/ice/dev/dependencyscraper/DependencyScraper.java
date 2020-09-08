@@ -25,6 +25,7 @@ import org.apache.maven.project.MavenProject;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -42,6 +43,12 @@ import java.util.zip.ZipEntry;
 	requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME
 )
 public class DependencyScraper extends AbstractMojo {
+
+	/**
+	 * Prefix used for generated temp files.
+	 */
+	private static final String TEMP_PREFIX = "org.eclipse.ice.dev.dependencyscraper";
+
 	/**
 	 * Current project. Used to get handle to dependencies.
 	 */
@@ -140,6 +147,48 @@ public class DependencyScraper extends AbstractMojo {
 	}
 
 	/**
+	 * Efficient and safe copy, only overwriting if destination differs.
+	 * @param is input stream source
+	 * @param dest output file
+	 * @throws IOException on permission errors, etc..
+	 */
+	private void copyInputToDestIfDiffers(InputStream is, File dest) throws IOException {
+		File tempFile = File.createTempFile(TEMP_PREFIX, null);
+		FileUtils.copyInputStreamToFile(is, tempFile);
+		if (!FileUtils.contentEquals(tempFile, dest)) {
+			FileUtils.forceDelete(dest);
+			FileUtils.moveFile(tempFile, dest);
+		} else {
+			tempFile.delete();
+		}
+	}
+
+	/**
+	 * Copy InputStream to file, respecting clobber settings.
+	 * @param is input stream source
+	 * @param dest output file
+	 * @throws IOException on permission errors, etc..
+	 */
+	private void copyRespectingClobber(InputStream is, File dest) throws IOException {
+		if (dest.exists()) {
+			if (clobber) { // Overwrite existing file
+				getLog().info(String.format(
+					"File %s already exists and clobber is set; overwriting.",
+					dest.getName()
+					));
+				copyInputToDestIfDiffers(is, dest);
+			} else {
+				getLog().info(String.format(
+					"File %s already exists and clobber is not set; skipping.",
+					dest.getName()
+					));
+			}
+		} else {
+			FileUtils.copyInputStreamToFile(is, dest);
+		}
+	}
+
+	/**
 	 * Copy file from jar to output directory.
 	 * @param jar from which file will be copied
 	 * @param fileInJar file to copy
@@ -158,36 +207,7 @@ public class DependencyScraper extends AbstractMojo {
 		// Determine output path
 		File target = new File(outputDirectory, relativePath);
 		try {
-			if (target.exists()) {
-				if (clobber) { // Overwrite existing file
-					getLog().info(String.format(
-						"File %s already exists and clobber is set; overwriting.",
-						target.getName()
-					));
-
-					// Replace target only if contents differ
-					File tempFile = File.createTempFile(fullPath, null);
-					FileUtils.copyInputStreamToFile(
-						jar.getInputStream(fileInJar), tempFile
-					);
-					if (!FileUtils.contentEquals(tempFile, target)) {
-						FileUtils.forceDelete(target);
-						FileUtils.moveFile(tempFile, target);
-					} else {
-						tempFile.delete();
-					}
-				} else {
-					getLog().info(String.format(
-						"File %s already exists and clobber is not set; skipping.",
-						target.getName()
-					));
-				}
-			} else {
-				FileUtils.copyInputStreamToFile(
-					jar.getInputStream(fileInJar),
-					target
-				);
-			}
+			copyRespectingClobber(jar.getInputStream(fileInJar), target);
 		} catch (IOException e) {
 			throw new MojoFailureException(
 				"Failed to copy file " + fileInJar.getName()
