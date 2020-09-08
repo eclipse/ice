@@ -223,14 +223,20 @@ public class DependencyScraper extends AbstractMojo {
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (jarFiles == null) {
 			this.jarFiles = project.getArtifacts().stream()
+				// Only process jar dependencies
 				.filter(artifact -> "jar".equals(artifact.getType()))
-				.map(Artifact::getFile).collect(Collectors.toSet());
+				// Map to File
+				.map(Artifact::getFile)
+				.collect(Collectors.toSet());
 		}
 		for (File jar : jarFiles) {
 			try (JarFile jarFile = new JarFile(jar, false)) {
 				Set<ZipEntry> toCopy = jarFile.stream()
+					// Filter out directories
 					.filter(file -> !file.isDirectory())
+					// Filter out any files not in the source directory
 					.filter(this::startsWithSourceDirectory)
+					// Filter out files not matching any include wildcards
 					.filter(this::shouldInclude)
 					.collect(Collectors.toSet());
 				for (ZipEntry file : toCopy) {
