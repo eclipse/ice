@@ -3,6 +3,7 @@ package org.org.eclipse.ice.dev.dependencyscraper;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.testing.MojoRule;
+import org.apache.maven.plugin.MojoFailureException;
 import org.junit.After;
 import org.junit.Rule;
 import static org.junit.Assert.*;
@@ -189,5 +190,32 @@ public class DependencyScraperTest
 		mojo.execute();
 		assertTrue(OUTPUT.resolve("test.txt").toFile().exists());
 		assertTrue(OUTPUT.resolve("test.json").toFile().exists());
+	}
+
+	/**
+	 * Test that IOExceptions are handled properly.
+	 * @throws Exception if any
+	 */
+	@Test(expected=MojoFailureException.class)
+	public void testNonExistentJar() throws Exception {
+		DependencyScraper mojo = getMojo();
+		mojo.setJarFiles(Set.of(
+			PROJECT.resolve("non_existent.jar").toFile()
+		));
+		mojo.execute();
+	}
+
+	/**
+	 * Test that a destination that already exists is used and it's a directory
+	 * throws an error.
+	 * @throws Exception if any
+	 */
+	@Test(expected=MojoFailureException.class)
+	public void testDestinationExistsAndIsDirectory() throws Exception {
+		DependencyScraper mojo = getMojo();
+		mojo.setOutputDirectory(OUTPUT.toFile());
+		mojo.setClobber(true);
+		Files.createDirectories(OUTPUT.resolve("test.txt"));
+		mojo.execute();
 	}
 }

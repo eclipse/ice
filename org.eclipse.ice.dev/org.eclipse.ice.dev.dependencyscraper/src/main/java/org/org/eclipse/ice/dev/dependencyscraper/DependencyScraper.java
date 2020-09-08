@@ -100,6 +100,14 @@ public class DependencyScraper extends AbstractMojo {
 	private Set<File> jarFiles;
 
 	/**
+	 * Setter for outputDirectory.
+	 * @param outputDirectory to set.
+	 */
+	public void setOutputDirectory(File outputDirectory) {
+		this.outputDirectory = outputDirectory;
+	}
+
+	/**
 	 * Setter for includes.
 	 * @param includes to set.
 	 */
