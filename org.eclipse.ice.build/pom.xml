@@ -16,6 +16,7 @@
 	</properties>
 
 	<modules>
+		<module>../org.eclipse.ice.tests.util</module>
 		<module>../org.eclipse.ice.data</module>
 		<module>../org.eclipse.ice.dev</module>
 		<module>../org.eclipse.ice.archetypes</module>

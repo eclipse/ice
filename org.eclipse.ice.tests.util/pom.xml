@@ -6,6 +6,11 @@
 	<packaging>pom</packaging>
 	<name>Eclipse ICE Test Utilities</name>
 	<description>Common testing utilities for Eclipse ICE tests</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
 	<modules>
 		<module>org.eclipse.ice.tests.util.data</module>
 	</modules>

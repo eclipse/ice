@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
@@ -39,14 +39,14 @@ import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.RemoteFileHandler;
-import org.eclipse.ice.tests.data.TestDataPath;
+import org.eclipse.ice.tests.util.data.TestDataPath;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * This class tests remote file handling capabilities
- * 
+ *
  * @author Joe Osborn
  *
  */
@@ -71,12 +71,12 @@ public class RemoteFileHandlerTest {
 	 * A TDP for collecting config files
 	 */
 	static TestDataPath dataPath = new TestDataPath();
-	
-	
+
+
 	/**
 	 * Setup the dummy connection so that the file transfer tests can access an ssh
 	 * connection
-	 * 
+	 *
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
@@ -92,7 +92,7 @@ public class RemoteFileHandlerTest {
 
 	/**
 	 * Remove any extraneous connections that may still be open
-	 * 
+	 *
 	 * @throws java.lang.Exception
 	 */
 	@AfterClass
@@ -103,7 +103,7 @@ public class RemoteFileHandlerTest {
 	/**
 	 * Function which checks nonexistent source exception throwing for both local
 	 * and remote file handlers
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test(expected = Exception.class)
@@ -296,16 +296,16 @@ public class RemoteFileHandlerTest {
 	 * Dummy function which makes the connection configuration for the dummy remote
 	 * ssh connection. This way functions can grab the configuration at will with
 	 * one line of code.
-	 * 
+	 *
 	 * @return
 	 */
 	private static ConnectionConfiguration makeConnectionConfiguration() {
 		// Set the connection configuration to a dummy remote connection
 		ConnectionConfiguration config = new ConnectionConfiguration();
 
-		// Get a factory which determines the type of authorization		
+		// Get a factory which determines the type of authorization
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
-		
+
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
 		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
@@ -328,7 +328,7 @@ public class RemoteFileHandlerTest {
 	/**
 	 * This setup creates a test dummy file to transfer around. It creates the file
 	 * by default locally.
-	 * 
+	 *
 	 * @throws java.lang.Exception
 	 */
 	public void createLocalSource() throws Exception {
@@ -350,7 +350,7 @@ public class RemoteFileHandlerTest {
 	/**
 	 * This setup function creates a test local destination path to transfer a file
 	 * to.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	public void createLocalDestination() throws Exception {
@@ -372,7 +372,7 @@ public class RemoteFileHandlerTest {
 
 	/**
 	 * This function deletes/removes a test dummy file after the test has finished.
-	 * 
+	 *
 	 * @throws java.lang.Exception
 	 */
 
@@ -395,7 +395,7 @@ public class RemoteFileHandlerTest {
 	/**
 	 * This function deletes/removes a test dummy destination directory after the
 	 * test has finished.
-	 * 
+	 *
 	 * @throws java.lang.Exception
 	 */
 	public void deleteLocalDestination() throws Exception {
@@ -429,7 +429,7 @@ public class RemoteFileHandlerTest {
 
 	/**
 	 * This function creates a remote source file to move/copy
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	public void createRemoteSource() throws Exception {
@@ -499,7 +499,7 @@ public class RemoteFileHandlerTest {
 
 	/**
 	 * This function deletes the remote source that was created for testing
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	public void deleteRemoteSource() throws Exception {
@@ -524,7 +524,7 @@ public class RemoteFileHandlerTest {
 
 	/**
 	 * This function creates a remote directory to move/copy a file
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	public void createRemoteDestination() throws Exception {
@@ -552,7 +552,7 @@ public class RemoteFileHandlerTest {
 
 	/**
 	 * This function deletes the remote destination that was created for testing
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	public void deleteRemoteDestination() throws Exception {
@@ -568,7 +568,7 @@ public class RemoteFileHandlerTest {
 	/**
 	 * A simple test method to recursively delete temporary files/directories
 	 * created in this test class
-	 * 
+	 *
 	 * @param directory - top level directory from which to delete everything
 	 *                  underneath
 	 * @return - boolean - true if everything deleted, false if not
@@ -585,7 +585,7 @@ public class RemoteFileHandlerTest {
 
 	/**
 	 * Recurisve function that deletes a remote directory and its contents
-	 * 
+	 *
 	 * @param sftpChannel
 	 * @param path
 	 * @throws IOException
@@ -622,7 +622,7 @@ public class RemoteFileHandlerTest {
 	/**
 	 * Get the connection so that other classes can utilize the code already written
 	 * here
-	 * 
+	 *
 	 * @return
 	 */
 	public Connection getConnection() {
@@ -632,7 +632,7 @@ public class RemoteFileHandlerTest {
 	/**
 	 * Get the source string so that other classes can utilize the code already
 	 * written here
-	 * 
+	 *
 	 * @return
 	 */
 	public String getSource() {
@@ -642,7 +642,7 @@ public class RemoteFileHandlerTest {
 	/**
 	 * Get the destination string so that other classes can utilize the code already
 	 * written here
-	 * 
+	 *
 	 * @return
 	 */
 	public String getDestination() {
