@@ -2,7 +2,7 @@
  * $name DataElement.
  */
 
-import { DataElement } from "./data-element";
+import { DataElement } from "DataElement";
 
 export class $name extends DataElement {
 	#foreach($field in $fields)
