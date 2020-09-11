@@ -51,12 +51,13 @@ public class TypeScriptWriter extends VelocitySourceWriter {
 	 * Map of Java primitive + String type strings to TypeScript type strings.
 	 */
 	private static Map<String, String> primitiveMap = Map.ofEntries(
-		Map.entry("String", "string"),
+		Map.entry("java.lang.String", "string"),
 		Map.entry("boolean", "boolean"),
 		Map.entry("float", "number"),
 		Map.entry("long", "number"),
 		Map.entry("int", "number"),
-		Map.entry("double", "number")
+		Map.entry("double", "number"),
+		Map.entry("java.util.Date", "Date")
 	);
 
 	/**
@@ -72,7 +73,7 @@ public class TypeScriptWriter extends VelocitySourceWriter {
 	) throws UnsupportedOperationException {
 		super();
 		for (Field field : fields) {
-			if (!primitiveMap.containsKey(types.resolve(field.getType()))) {
+			if (!primitiveMap.containsKey(field.getType())) {
 				throw new UnsupportedOperationException(String.format(
 					"Field %s: type %s is unsupported",
 					field.getName(), field.getType()
