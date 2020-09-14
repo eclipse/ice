@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
@@ -36,7 +36,7 @@ import org.eclipse.ice.commands.LocalFileHandler;
 import org.eclipse.ice.commands.RemoteCommand;
 import org.eclipse.ice.commands.RemoteFileHandler;
 import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
-import org.eclipse.ice.tests.data.TestDataPath;
+import org.eclipse.ice.tests.util.data.TestDataPath;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -45,7 +45,7 @@ import org.junit.Test;
 
 /**
  * This class tests {@link org.eclipse.ice.commands.CommandFactory}.
- * 
+ *
  * @author Jay Jay Billings, Joe Osborn
  *
  */
@@ -76,7 +76,7 @@ public class CommandFactoryTest {
 	 * A TDP for collecting configuration files to run tests
 	 */
 	private TestDataPath dataPath = new TestDataPath();
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -85,7 +85,7 @@ public class CommandFactoryTest {
 
 	/**
 	 * Close the connections after we are finished with them in an individual test
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@After
@@ -96,7 +96,7 @@ public class CommandFactoryTest {
 
 	/**
 	 * Set no strict host key checking just for tests
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@BeforeClass
@@ -107,7 +107,7 @@ public class CommandFactoryTest {
 	 * Run after the tests have finished processing. This function just removes the
 	 * dummy text files that are created with log/error information from running
 	 * various commands tests.
-	 * 
+	 *
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
@@ -153,7 +153,7 @@ public class CommandFactoryTest {
 
 	/**
 	 * This function tests a multi-hop remote command, where the command logs into a
-	 * remote host and then executes on a different remote host. 
+	 * remote host and then executes on a different remote host.
 	 */
 	@Test
 	@Ignore // ignore until second host is setup
@@ -179,7 +179,7 @@ public class CommandFactoryTest {
 		// This is the connection where the job will be executed
 		// Get a factory which determines the type of authorization
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
-		
+
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
 		String keyPath = dataPath.resolve("commands/somekey").toString();
@@ -188,7 +188,7 @@ public class CommandFactoryTest {
 				keyPath);
 		auth.setHostname("hostname");
 		auth.setUsername("password");
-		
+
 		// Set it
 		ConnectionConfiguration firstConn = new ConnectionConfiguration();
 		firstConn.setAuthorization(auth);
@@ -199,9 +199,9 @@ public class CommandFactoryTest {
 		firstConn.deleteWorkingDirectory(false);
 
 		ConnectionConfiguration secondConn = new ConnectionConfiguration();
-		
-		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();		
-			
+
+		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
+
 		ConnectionAuthorizationHandler intermAuth = authFactory.getConnectionAuthorizationHandler("text",credFile);
 		secondConn.setAuthorization(intermAuth);
 		secondConn.setName("executeConnection");
@@ -667,7 +667,7 @@ public class CommandFactoryTest {
 	/**
 	 * This function sets up and returns a default case of a command configuration
 	 * for use throughout the tests.
-	 * 
+	 *
 	 * @return
 	 */
 	private CommandConfiguration setupDefaultCommandConfig() {
@@ -683,7 +683,7 @@ public class CommandFactoryTest {
 	/**
 	 * A helper function to return the dummy connection configuration for remote
 	 * testing
-	 * 
+	 *
 	 * @return - dummy connection configuration
 	 */
 	private ConnectionConfiguration setupDummyConnectionConfiguration() {
@@ -691,7 +691,7 @@ public class CommandFactoryTest {
 		ConnectionConfiguration cfg = new ConnectionConfiguration();
 		// Make the connection configuration
 		// Get a factory which determines the type of authorization
-		
+
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
@@ -712,7 +712,7 @@ public class CommandFactoryTest {
 	/**
 	 * This function just returns the local hostname of your local computer. It is
 	 * useful for testing a variety of local commands.
-	 * 
+	 *
 	 * @return - String - local hostname
 	 */
 	protected static String getLocalHostname() {

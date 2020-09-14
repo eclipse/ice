@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
@@ -25,14 +25,14 @@ import org.eclipse.ice.commands.EmailUpdateHandler;
 import org.eclipse.ice.commands.HTTPCommandUpdateHandler;
 import org.eclipse.ice.commands.ICommandUpdateHandler;
 import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
-import org.eclipse.ice.tests.data.TestDataPath;
+import org.eclipse.ice.tests.util.data.TestDataPath;
 import org.junit.Test;
 
 /**
  * This class tests local commands in conjunction with a given
  * ICommandUpdaterHandler class. The class is not intended to test the Command
  * logic, but rather the updater logic associated with the Command.
- * 
+ *
  * @author Joe Osborn
  *
  */
@@ -42,7 +42,7 @@ public class CommandFactoryUpdaterTest {
 	 * A TDP for collecting config files
 	 */
 	private TestDataPath dataPath = new TestDataPath();
-	
+
 	/**
 	 * This function tests a command with an HTTPUpdater
 	 */
@@ -107,7 +107,7 @@ public class CommandFactoryUpdaterTest {
 
 	/**
 	 * Helper function to create and return a local connection configuration
-	 * 
+	 *
 	 * @return
 	 */
 	private ConnectionConfiguration setupConnectionConfiguration() {
@@ -122,7 +122,7 @@ public class CommandFactoryUpdaterTest {
 
 	/**
 	 * Helper function to setup and create a local command configuration
-	 * 
+	 *
 	 * @return
 	 */
 	private CommandConfiguration setupCommandConfiguration() {
@@ -148,12 +148,12 @@ public class CommandFactoryUpdaterTest {
 
 	/**
 	 * Sets up the dummy email address via a text file credential for CI
-	 * 
+	 *
 	 * @return
 	 */
 	private EmailUpdateHandler setupEmailUpdateHandler() {
 		// Get a text file with credentials
-		
+
 		String credFile = dataPath.resolve("commands/ice-email-creds.txt").toString();
 
 		TxtFileConnectionAuthorizationHandler auth = new TxtFileConnectionAuthorizationHandler();

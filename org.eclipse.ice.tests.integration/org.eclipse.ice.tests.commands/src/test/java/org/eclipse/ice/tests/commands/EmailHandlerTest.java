@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
@@ -19,13 +19,13 @@ import java.io.IOException;
 
 import org.eclipse.ice.commands.EmailUpdateHandler;
 import org.eclipse.ice.commands.TxtFileConnectionAuthorizationHandler;
-import org.eclipse.ice.tests.data.TestDataPath;
+import org.eclipse.ice.tests.util.data.TestDataPath;
 import org.junit.Test;
 
 /**
  * This class tests the implementation of Email notification handling for jobs
  * as defined in the EmailHandler class
- * 
+ *
  * @author Joe Osborn
  *
  */
@@ -33,7 +33,7 @@ public class EmailHandlerTest {
 
 	/**
 	 * Tests successful email notification posting
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	@Test
@@ -42,7 +42,7 @@ public class EmailHandlerTest {
 		// Get a text file with credentials
 		TestDataPath dataPath = new TestDataPath();
 		String credFile = dataPath.resolve("commands/ice-email-creds.txt").toString();
-		
+
 		TxtFileConnectionAuthorizationHandler handler = new TxtFileConnectionAuthorizationHandler();
 		handler.setOption(credFile);
 
@@ -63,7 +63,7 @@ public class EmailHandlerTest {
 
 	/**
 	 * Tests bad credential error throwing
-	 * 
+	 *
 	 */
 	@Test
 	public void testEmailNotificationPostUpdateBadCreds()  {
@@ -83,9 +83,9 @@ public class EmailHandlerTest {
 			System.out.println("Couldn't create file to run test");
 			e.printStackTrace();
 		}
-		
+
 		handler.setOption(credFile);
-		
+
 		EmailUpdateHandler updater = new EmailUpdateHandler();
 		// Setup a bad credential file
 		updater.setCredHandler(handler);
@@ -99,12 +99,12 @@ public class EmailHandlerTest {
 			System.out.println("Exception correctly caught");
 			e.printStackTrace();
 		}
-		
+
 		// Delete the dummy file we made
 		File fileDel = new File(credFile);
 		fileDel.delete();
-		
-		
+
+
 	}
 
 }

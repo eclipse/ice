@@ -7,6 +7,9 @@
 	</parent>
 	<artifactId>org.eclipse.ice.tests.integration.dev.annotation</artifactId>
 	<name>ICE Dev Annoations Integration Tests</name>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<build>
 		<plugins>
 			<plugin>
@@ -57,7 +60,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.ice</groupId>
-			<artifactId>org.eclipse.ice.tests.data</artifactId>
+			<artifactId>org.eclipse.ice.tests.util.data</artifactId>
 			<version>3.0.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

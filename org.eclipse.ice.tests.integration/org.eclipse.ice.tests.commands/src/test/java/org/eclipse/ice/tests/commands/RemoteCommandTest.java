@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
@@ -25,7 +25,7 @@ import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.RemoteCommand;
-import org.eclipse.ice.tests.data.TestDataPath;
+import org.eclipse.ice.tests.util.data.TestDataPath;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -34,7 +34,7 @@ import org.junit.Test;
 
 /**
  * Test for class {@link org.eclipse.ice.commands.RemoteCommand}.
- * 
+ *
  * @author Joe Osborn
  *
  */
@@ -60,7 +60,7 @@ public class RemoteCommandTest {
 	 * A TDP for collecting config files
 	 */
 	static TestDataPath dataPath = new TestDataPath();
-	
+
 	@After
 	public void tearDown() throws Exception {
 		ConnectionManagerFactory.getConnectionManager().listAllConnections();
@@ -92,7 +92,7 @@ public class RemoteCommandTest {
 	/**
 	 * This function sets up the command and connection information to hand to the
 	 * command
-	 * 
+	 *
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
@@ -101,11 +101,11 @@ public class RemoteCommandTest {
 		// Make the connection configuration
 		// Get a factory which determines the type of authorization
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
-		
+
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
 		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
-		
+
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
 		// Set it
 		connectConfig.setAuthorization(auth);
@@ -122,7 +122,7 @@ public class RemoteCommandTest {
 	 * Run after the tests have finished processing. This function just removes the
 	 * dummy text files that are created with log/error information from running
 	 * various commands tests.
-	 * 
+	 *
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
@@ -166,7 +166,7 @@ public class RemoteCommandTest {
 	@Test
 	public void testRemoteCommand() {
 		System.out.println("Testing remote command configuration");
-		
+
 		// Get a command which just sets everything up
 		RemoteCommand command = new RemoteCommand(commandConfig, connectConfig, null);
 
@@ -211,7 +211,7 @@ public class RemoteCommandTest {
 	 * because the code will try to transfer the executable, but be unable to find
 	 * it. Can't have it throw an error because of the possibility that the
 	 * executable is a simple shell command like ls
-	 * 
+	 *
 	 * @throws JSchException
 	 */
 	@Test(expected = NullPointerException.class)
@@ -230,7 +230,7 @@ public class RemoteCommandTest {
 		badConfig.setOS(System.getProperty("os.name"));
 
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
-		
+
 		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
 
 		ConnectionAuthorizationHandler auth = authFactory.getConnectionAuthorizationHandler("text", credFile);
