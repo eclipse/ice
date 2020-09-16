@@ -28,13 +28,21 @@ import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Test set for the ICEAnnotationExtractionService
+ * 
+ * @author Michael Walsh
+ *
+ */
 public class ICEAnnotationExtractionServiceTest {
 	
+	//START member variables of ICEAnnotationExtractionService
 	TypeElement elem;
 	Elements elementUtils;
 	ObjectMapper mapper;
 	ProcessingEnvironment processingEnv;
 	NameGenerator nameGenerator;
+	//END   member variables of ICEAnnotationExtractionService
 	ICEAnnotationExtractionService extractionService;
 	
 	@Before
@@ -59,6 +67,11 @@ public class ICEAnnotationExtractionServiceTest {
 		extractionService.setFieldFilter(f -> true);
 	}
 	
+	/**
+	 * Tests that default fields are added as part of the extraction process
+	 * 
+	 * @throws IOException
+	 */
 	@Test
 	public void testExtractFields() throws IOException {
 		AnnotationExtractionRequest request = AnnotationExtractionRequest.builder()
@@ -74,6 +87,9 @@ public class ICEAnnotationExtractionServiceTest {
 		assertEquals(DefaultFields.get().size(), size);
 	}
 
+	/**
+	 * Tests the process of extracting and processing the metadata from a mocked Spec class
+	 */
 	@Test
 	public void testExtractClassMetadata() {
 		Fields fields = new Fields();

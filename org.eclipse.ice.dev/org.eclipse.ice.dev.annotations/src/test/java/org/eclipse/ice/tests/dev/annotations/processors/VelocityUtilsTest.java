@@ -22,6 +22,8 @@ import junit.framework.Assert;
 /**
  * Class that runs a battery of tests through the methods of the 
  * utility class {@link org.eclipse.ice.dev.annotations.processors.VelocityUtils}
+ * 
+ * @author Michael Walsh
  *
  */
 @SuppressWarnings("deprecation")

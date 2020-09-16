@@ -32,14 +32,32 @@ import org.mockito.Mockito;
 
 import lombok.Data;
 
+/**
+ * Tests for the SpecExtractionHelper
+ * 
+ * @author Michael Walsh
+ *
+ */
 public class SpecExtractionHelperTest {
 	
 	SpecExtractionHelper extractionHelper = new SpecExtractionHelper();
 
 	
+	/**
+	 * mock input data
+	 */
 	Element elem;
+	/**
+	 * mocked and used in the extraction helper
+	 */
 	Elements elementUtils;
+	/**
+	 * mocked data element annotation
+	 */
 	DataElement dataElementAnnotation;
+	/**
+	 * mocked persisted annotation
+	 */
 	Persisted persistedAnnotation;
 	
 	@Before
@@ -84,6 +102,9 @@ public class SpecExtractionHelperTest {
 		Mockito.when(elementUtils.getConstantExpression(Mockito.any())).thenReturn("retval");
 	}
 	
+	/**
+	 * Test that no data is lost during conversion of element to field
+	 */
 	@Test
 	public void testConvertElementToField() {
 		Field field = extractionHelper.convertElementToField(elem, elementUtils, Field.builder().build(), new ArrayList<>());
@@ -103,27 +124,42 @@ public class SpecExtractionHelperTest {
 		
 	}
 	
+	/**
+	 * Test that annotation detection works correctly
+	 */
 	@Test
 	public void testHasAnnotation() {
 		assertTrue(extractionHelper.hasAnnotation(elem, DataElement.class));
 		assertFalse(extractionHelper.hasAnnotation(elem, Data.class));
 	}
 	
+	/**
+	 * Test that it can in fact extract a modifier
+	 */
 	@Test
 	public void testExtractModifiers() {
 		assertEquals(1, extractionHelper.extractModifiers(elem).size());
 	}
 	
+	/**
+	 * Tests that it returns the correct extracted annotations
+	 */
 	@Test
 	public void testExtractAnnotations() {
 		assertEquals(Arrays.asList("annotationMirror"), extractionHelper.extractAnnotations(elem, new ArrayList<>()));
 	}
 	
+	/**
+	 * Test that when pulling the default value from a Spec class it produces the correct result
+	 */
 	@Test
 	public void testExtractDefaultValue() {
 		assertEquals("retval", extractionHelper.extractDefaultValue(elem, elementUtils));
 	}
 	
+	/**
+	 * Test the extraction of prexisting fields from a Spec class
+	 */
 	@Test
 	public void testGetAllFields() {
 		List<Field> fields = extractionHelper.getAllFields(elem, elementUtils, f->true, new ArrayList());
