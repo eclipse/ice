@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.ice.dev.annotations.processors;
 
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiFunction;
 
 import javax.tools.JavaFileObject;
@@ -22,12 +20,12 @@ import javax.tools.JavaFileObject;
 import org.eclipse.ice.dev.annotations.processors.DataElementInterfaceWriter.DataElementInterfaceWriterBuilder;
 
 import lombok.Builder;
-import lombok.NonNull;
 
 /**
  * Implementation of the VelocitySourceWriter that handles generating the
  * DataElementImplementation
- *
+ * 
+ * @author Michael Walsh
  */
 public class DataElementImplementationWriter extends ImplementationWriter {
 
@@ -39,6 +37,15 @@ public class DataElementImplementationWriter extends ImplementationWriter {
 	 */
 	private static final String IMPL_TEMPLATE = "templates/DataElement.vm";
 
+	/**
+	 * Constructor
+	 * 
+	 * @param packageName
+	 * @param interfaceName
+	 * @param className
+	 * @param fields
+	 * @param generatedFile
+	 */
 	@Builder
 	public DataElementImplementationWriter(String packageName, String interfaceName, String className, Fields fields,
 			JavaFileObject generatedFile) {

@@ -19,7 +19,8 @@ import lombok.Data;
 
 /**
  * Typical response from the flavors of ICEAnnotationExtractionService
- *
+ * 
+ * @author Michael Walsh
  */
 @Data
 @Builder

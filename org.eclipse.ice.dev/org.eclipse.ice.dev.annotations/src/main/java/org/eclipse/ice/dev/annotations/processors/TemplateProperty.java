@@ -11,9 +11,11 @@
 package org.eclipse.ice.dev.annotations.processors;
 
 /**
- * Iterfaced implemented by enums used to key properties used in velocity
- * templating
- *
+ * Interface implemented by enums used in places like {@link ICEAnnotationExtractionService}
+ * to map an arbitrary variety of key properties for the purposes of initializing and writing
+ * Velocity templates
+ * 
+ * @author Michael Walsh
  */
 public interface TemplateProperty {
 

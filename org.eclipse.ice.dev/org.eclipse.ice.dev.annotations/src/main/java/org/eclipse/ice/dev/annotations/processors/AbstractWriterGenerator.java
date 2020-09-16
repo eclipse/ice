@@ -17,8 +17,10 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.JavaFileObject;
 
 /**
- * Abstract class for service classes that generate SourceWriters
+ * Abstract class for service classes that generate 
+ * {@link org.eclipse.ice.dev.annotations.processors.VelocitySourceWriter}s
  *
+ * @author Michael Walsh
  */
 public abstract class AbstractWriterGenerator implements WriterGenerator {
 
@@ -27,6 +29,11 @@ public abstract class AbstractWriterGenerator implements WriterGenerator {
 	 */
 	protected ProcessingEnvironment processingEnv;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param processingEnv necessary to write source files with
+	 */
 	AbstractWriterGenerator(ProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
 	}
@@ -34,9 +41,9 @@ public abstract class AbstractWriterGenerator implements WriterGenerator {
 	/**
 	 * Generates object used for writing templated class to
 	 * 
-	 * @param name
+	 * @param name of file
 	 * @return JavaFileObject used to write generated class file to
-	 * @throws IOException
+	 * @throws IOException file writing
 	 */
 	public JavaFileObject createFileObjectForName(String name) throws IOException {
 		return processingEnv.getFiler().createSourceFile(name);

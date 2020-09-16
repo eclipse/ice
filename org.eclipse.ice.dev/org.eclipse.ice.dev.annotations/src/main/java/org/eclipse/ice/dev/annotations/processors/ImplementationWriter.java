@@ -12,11 +12,9 @@
 
 package org.eclipse.ice.dev.annotations.processors;
 
-import java.io.Writer;
 
 import javax.tools.JavaFileObject;
 
-import lombok.Builder;
 
 /**
  * Writer for DataElement Implementation classes.
@@ -45,6 +43,15 @@ public abstract class ImplementationWriter extends VelocitySourceWriter {
 	 */
 	private static final String CLASS = "class";
 
+	/**
+	 * Constructor
+	 * 
+	 * @param packageName
+	 * @param interfaceName
+	 * @param className
+	 * @param fields
+	 * @param generatedFile
+	 */
 	public ImplementationWriter(String packageName, String interfaceName, String className, Fields fields,
 			JavaFileObject generatedFile) {
 		super();

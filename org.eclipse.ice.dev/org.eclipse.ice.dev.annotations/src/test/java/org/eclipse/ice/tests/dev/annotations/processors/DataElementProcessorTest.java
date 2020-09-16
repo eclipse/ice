@@ -226,7 +226,6 @@ class DataElementProcessorTest {
 	@Test
 	void testNoDataFieldsSucceeds() {
 		Compilation compilation = helper.compile(Inputs.NO_DATAFIELDS.get());
-		
 		/*
 		 * System.out.println(
 		 * ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");

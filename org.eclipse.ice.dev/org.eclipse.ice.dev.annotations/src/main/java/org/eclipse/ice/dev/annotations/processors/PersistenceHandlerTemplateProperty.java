@@ -11,10 +11,35 @@
 package org.eclipse.ice.dev.annotations.processors;
 
 /**
- * Enum of keys mapped to extracted/generated metadata essential to interface
- * and class generation
+ * Enum of keys mapped to extracted/generated metadata essential to persistence handler 
+ * generation
+ * 
+ * @author Michael Walsh
  *
  */
 public enum PersistenceHandlerTemplateProperty implements TemplateProperty {
-	ELEMENT_INTERFACE, COLLECTION, CLASS, IMPLEMENTATION, QUALIFIED, INTERFACE;
+	/**
+	 * String name of the parameterized value in the implemented interface
+	 */
+	ELEMENT_INTERFACE,
+	/**
+	 * String name of the collection backing the persistence handler
+	 */
+	COLLECTION,
+	/**
+	 * String name of the generated persistence handler class
+	 */
+	CLASS,
+	/**
+	 * String name of the class Documents are converted to
+	 */
+	IMPLEMENTATION,
+	/**
+	 * Fully qualified name of the persistence handler
+	 */
+	QUALIFIED,
+	/**
+	 * String name of the interface that the generated persistence handler will implement
+	 */
+	INTERFACE;
 }

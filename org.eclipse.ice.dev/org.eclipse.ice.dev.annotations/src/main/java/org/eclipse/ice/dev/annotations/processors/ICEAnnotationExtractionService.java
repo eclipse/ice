@@ -11,32 +11,23 @@
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
-import javax.tools.JavaFileObject;
-
-import org.eclipse.ice.dev.annotations.DataElement;
-import org.eclipse.ice.dev.annotations.Persisted;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Setter;
 
 /**
  * Base service for the extraction of class data from Spec classes
- *
- */
-/**
  * @author Michael Walsh
  *
  */
@@ -50,6 +41,7 @@ public class ICEAnnotationExtractionService {
 	/**
 	 * Object serialization and deserialization
 	 */
+	@Setter
 	private ObjectMapper mapper;
 
 	/**
@@ -61,19 +53,22 @@ public class ICEAnnotationExtractionService {
 	/**
 	 * Class that determines the naming schema of generated classes
 	 */
+	@Setter
 	private NameGenerator nameGenerator;
 
 	/**
 	 * List of annotations to not transfer from spec fields to their generated
-	 * couterparts
+	 * counterparts
 	 */
-	private List<String> nonTransferableAnnotations;
+	@Setter
+	private List<String> nonTransferableAnnotations = new ArrayList<>();
 
 	/**
 	 * Boolean lambda that determines whether or not a specific field is eligible
 	 * for generation
 	 */
-	private Predicate<Element> fieldFilter;
+	@Setter
+	private Predicate<Element> fieldFilter = p->true;
 
 	/**
 	 * Util instance for extracting specific data from spec element classes
@@ -85,34 +80,26 @@ public class ICEAnnotationExtractionService {
 	 */
 	protected JsonExtractionHelper jsonExtractionHelper = new JsonExtractionHelper();
 
+	/**
+	 * Constructor
+	 */
+	public ICEAnnotationExtractionService(Elements elementUtils,
+			ProcessingEnvironment processingEnv) {
+		this.elementUtils = elementUtils;
+		this.mapper = new ObjectMapper();
+		this.processingEnv = processingEnv;
+		this.nameGenerator = new DefaultNameGenerator();
+	}
+	
+	/**
+	 * Constructor
+	 */
 	public ICEAnnotationExtractionService(Elements elementUtils, ObjectMapper mapper,
 			ProcessingEnvironment processingEnv, NameGenerator nameGenerator) {
 		this.elementUtils = elementUtils;
 		this.mapper = mapper;
 		this.processingEnv = processingEnv;
 		this.nameGenerator = nameGenerator;
-	}
-
-	/**
-	 * The responsibility of initializing this field falls to the specific extractor
-	 * class (e.g. DataElementAnnotationExtractor) allows the customization of which
-	 * annotations to filter out
-	 * 
-	 * @param nonTransferableAnnotations
-	 */
-	public void setNonTransferableAnnotations(List<String> nonTransferableAnnotations) {
-		this.nonTransferableAnnotations = nonTransferableAnnotations;
-	}
-
-	/**
-	 * The responsibility of initializing this field falls to the specific extractor
-	 * class (e.g. DataElementAnnotationExtractor) allows the customization of which
-	 * fields to filter out
-	 * 
-	 * @param fieldFilter
-	 */
-	public void setFieldFilter(Predicate<Element> fieldFilter) {
-		this.fieldFilter = fieldFilter;
 	}
 
 	/**
@@ -133,7 +120,7 @@ public class ICEAnnotationExtractionService {
 	 * applicable
 	 * 
 	 * @param request
-	 * @return
+	 * @return Fields of the Spec class
 	 * @throws IOException
 	 */
 	public Fields extractFields(AnnotationExtractionRequest request) throws IOException {
@@ -161,8 +148,8 @@ public class ICEAnnotationExtractionService {
 	 * @return metadata map
 	 */
 	public Map<TemplateProperty, Object> extractClassMetadata(AnnotationExtractionRequest request, Fields fields) {
-		ClassSeedData seedData = extractSeedData(request, fields);
-		Map<TemplateProperty, Object> context = generateClassMetadata(seedData);
+		SpecClassMetadata specData = extractSpecData(request, fields);
+		Map<TemplateProperty, Object> context = generateClassMetadata(specData);
 		return context;
 	}
 
@@ -170,49 +157,52 @@ public class ICEAnnotationExtractionService {
 	 * Given seed data extracted from a spec class, this method generates the
 	 * necessary metadata for class generation
 	 * 
-	 * @param seedData
-	 * @return
+	 * @param specData
+	 * @return enum keyed map of extracted and processed class metadata
 	 */
-	protected Map<TemplateProperty, Object> generateClassMetadata(ClassSeedData seedData) {
+	protected Map<TemplateProperty, Object> generateClassMetadata(SpecClassMetadata specData) {
 		Map<TemplateProperty, Object> context = new HashMap<TemplateProperty, Object>();
 
-		generateMetaTemplateData(seedData, context);
-		generatePersistenceHandlerTemplateData(seedData, context);
+		generateMetaTemplateData(specData, context);
+		generatePersistenceHandlerTemplateData(specData, context);
 
 		return context;
 	}
 
 	/**
-	 * Package meta data for class interface and implementation
+	 * Package meta data for class interface and implementation into the supplied 
+	 * map context
 	 * 
-	 * @param seedData
-	 * @param context
+	 * @param specData metadata extracted from the client Spec class
+	 * @param context map to store the processed metadata harvested from
+	 * the client Spec class
 	 */
-	protected void generateMetaTemplateData(ClassSeedData seedData, Map<TemplateProperty, Object> context) {
-		context.put(MetaTemplateProperty.PACKAGE, seedData.getPackageName());
-		context.put(MetaTemplateProperty.INTERFACE, seedData.getName());
-		context.put(MetaTemplateProperty.CLASS, nameGenerator.getImplName(seedData.getName()));
-		context.put(MetaTemplateProperty.FIELDS, seedData.getFields());
-		context.put(MetaTemplateProperty.QUALIFIED, seedData.getFullyQualifiedName());
+	protected void generateMetaTemplateData(SpecClassMetadata specData, Map<TemplateProperty, Object> context) {
+		context.put(MetaTemplateProperty.PACKAGE, specData.getPackageName());
+		context.put(MetaTemplateProperty.INTERFACE, specData.getName());
+		context.put(MetaTemplateProperty.CLASS, nameGenerator.getImplName(specData.getName()));
+		context.put(MetaTemplateProperty.FIELDS, specData.getFields());
+		context.put(MetaTemplateProperty.QUALIFIED, specData.getFullyQualifiedName());
 		context.put(MetaTemplateProperty.QUALIFIEDIMPL,
-				nameGenerator.getQualifiedImplName(seedData.getFullyQualifiedName()));
+				nameGenerator.getQualifiedImplName(specData.getFullyQualifiedName()));
 	}
 
 	/**
-	 * Package metadata for class persistence handler
+	 * Package metadata for class persistence handler into the supplied map context
 	 * 
-	 * @param seedData
-	 * @param context
+	 * @param specData metadata extracted from the client Spec class
+	 * @param context map to store the processed metadata harvested from
+	 * the client Spec class
 	 */
-	protected void generatePersistenceHandlerTemplateData(ClassSeedData seedData,
+	protected void generatePersistenceHandlerTemplateData(SpecClassMetadata specData,
 			Map<TemplateProperty, Object> context) {
-		context.put(PersistenceHandlerTemplateProperty.ELEMENT_INTERFACE, seedData.getName());
-		context.put(PersistenceHandlerTemplateProperty.COLLECTION, seedData.getCollectionName());
-		context.put(PersistenceHandlerTemplateProperty.IMPLEMENTATION, nameGenerator.getImplName(seedData.getName()));
+		context.put(PersistenceHandlerTemplateProperty.ELEMENT_INTERFACE, specData.getName());
+		context.put(PersistenceHandlerTemplateProperty.COLLECTION, specData.getCollectionName());
+		context.put(PersistenceHandlerTemplateProperty.IMPLEMENTATION, nameGenerator.getImplName(specData.getName()));
 		context.put(PersistenceHandlerTemplateProperty.QUALIFIED,
-				nameGenerator.getQualifiedPersistenceHandlerName(seedData.getFullyQualifiedName()));
+				nameGenerator.getQualifiedPersistenceHandlerName(specData.getFullyQualifiedName()));
 		context.put(PersistenceHandlerTemplateProperty.CLASS,
-				nameGenerator.getPersistenceHandlerName(seedData.getName()));
+				nameGenerator.getPersistenceHandlerName(specData.getName()));
 		context.put(PersistenceHandlerTemplateProperty.INTERFACE, nameGenerator.getPersistenceHandlerInterfaceName());
 	}
 
@@ -222,9 +212,9 @@ public class ICEAnnotationExtractionService {
 	 * 
 	 * @param request
 	 * @param fields
-	 * @return
+	 * @return extracted, unprocessed data from the Spec class
 	 */
-	protected ClassSeedData extractSeedData(AnnotationExtractionRequest request, Fields fields) {
+	protected SpecClassMetadata extractSpecData(AnnotationExtractionRequest request, Fields fields) {
 		Element element = request.getElement();
 		String packageName = null;
 		String fullyQualifiedName;
@@ -242,7 +232,7 @@ public class ICEAnnotationExtractionService {
 		}
 		collectionName = nameGenerator.extractCollectionName(element);
 
-		return ClassSeedData.builder().name(name).packageName(packageName).fullyQualifiedName(fullyQualifiedName)
+		return SpecClassMetadata.builder().name(name).packageName(packageName).fullyQualifiedName(fullyQualifiedName)
 				.collectionName(collectionName).fields(fields).build();
 	}
 

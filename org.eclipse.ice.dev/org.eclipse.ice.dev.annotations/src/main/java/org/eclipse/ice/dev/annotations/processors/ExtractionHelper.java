@@ -19,14 +19,16 @@ import javax.lang.model.element.Element;
  * Base interface for the flavors of extraction helpers for pulling data from
  * Spec classes
  *
+ * @author Michael Walsh
+ *
  */
 public interface ExtractionHelper {
 	/**
 	 * Get the AnnotationMirror of a given type if present on the element.
 	 * 
 	 * @param <T>
-	 * @param element
-	 * @param cls
+	 * @param element to extract the annotation from
+	 * @param cls annotation type
 	 * @return
 	 */
 	public default <T extends Annotation> Optional<T> getAnnotation(Element element, Class<T> cls) {

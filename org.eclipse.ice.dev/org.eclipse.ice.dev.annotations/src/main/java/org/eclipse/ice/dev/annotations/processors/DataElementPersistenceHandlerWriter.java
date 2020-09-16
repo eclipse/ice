@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.ice.dev.annotations.processors;
 
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,8 @@ import lombok.NonNull;
 /**
  * Implementation of the VelocitySourceWriter that handles generating the
  * DataElementPersistenceHandlerWriter
- *
+ * 
+ * @author Michael Walsh
  */
 public class DataElementPersistenceHandlerWriter extends PersistenceHandlerWriter {
 
@@ -38,6 +38,18 @@ public class DataElementPersistenceHandlerWriter extends PersistenceHandlerWrite
 	 */
 	private static final String PERSISTENCE_HANDLER_TEMPLATE = "templates/PersistenceHandler.vm";
 
+	/**
+	 * Constructor
+	 * 
+	 * @param packageName
+	 * @param elementInterface
+	 * @param className
+	 * @param interfaceName
+	 * @param implementation
+	 * @param collection
+	 * @param fields
+	 * @param generatedFile
+	 */
 	@Builder
 	public DataElementPersistenceHandlerWriter(String packageName, String elementInterface, String className,
 			String interfaceName, String implementation, String collection, @NonNull Fields fields,
@@ -47,6 +59,10 @@ public class DataElementPersistenceHandlerWriter extends PersistenceHandlerWrite
 		this.template = PERSISTENCE_HANDLER_TEMPLATE;
 	}
 
+	/**
+	 * Private argless constructor purely for use of the static method to have
+	 * access to the inherited getInitializer() method
+	 */
 	private DataElementPersistenceHandlerWriter() {
 		super();
 	}

@@ -17,6 +17,8 @@ import org.eclipse.ice.dev.annotations.Persisted;
 
 /**
  * Class that encompasses the initial naming schema if generated files
+ * 
+ * @author Michael Walsh
  *
  */
 public class DefaultNameGenerator implements NameGenerator {
@@ -31,6 +33,9 @@ public class DefaultNameGenerator implements NameGenerator {
 	 */
 	private final static String PERSISTENCE_SUFFIX = "PersistenceHandler";
 
+	/**
+	 * Used for pulling data from annotations on {@link Element}s
+	 */
 	private SpecExtractionHelper specExtractionHelper = new SpecExtractionHelper();
 
 	/**

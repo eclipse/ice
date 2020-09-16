@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Extraction helper that specializes in pulling Spec data from json
  *
+ * @author Michael Walsh
  */
 public class JsonExtractionHelper implements ExtractionHelper {
 	/**

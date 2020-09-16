@@ -12,11 +12,8 @@
 
 package org.eclipse.ice.dev.annotations.processors;
 
-import java.io.Writer;
-
 import javax.tools.JavaFileObject;
 
-import lombok.Builder;
 import lombok.NonNull;
 
 /**
@@ -61,6 +58,18 @@ public abstract class PersistenceHandlerWriter extends VelocitySourceWriter {
 	 */
 	private static final String FIELDS = "fields";
 
+	/**
+	 * Constructor
+	 * 
+	 * @param packageName
+	 * @param elementInterface
+	 * @param className
+	 * @param interfaceName
+	 * @param implementation
+	 * @param collection
+	 * @param fields
+	 * @param generatedFile
+	 */
 	public PersistenceHandlerWriter(String packageName, String elementInterface, String className, String interfaceName,
 			String implementation, String collection, @NonNull Fields fields, JavaFileObject generatedFile) {
 		super();

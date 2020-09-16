@@ -15,22 +15,57 @@ import javax.lang.model.element.Element;
 /**
  * Interface for helper classes that generate the various names and metadata for
  * class generation
- *
+ * 
+ * @author Michael Walsh
  */
 public interface NameGenerator {
 
+	/**
+	 * Generate class implementation name
+	 * @param name
+	 * @return implName
+	 */
 	String getImplName(String name);
 
+	/**
+	 * Generate full qualified implementation name
+	 * @param fullyQualifiedName
+	 * @return qualifiedImplName
+	 */
 	String getQualifiedImplName(String fullyQualifiedName);
 
+	/**
+	 * Generate fully qualified persistence handler name
+	 * @param fullyQualifiedName
+	 * @return qualifiedPersistenceHandlerName
+	 */
 	String getQualifiedPersistenceHandlerName(String fullyQualifiedName);
 
+	/**
+	 * Generate persistence handler name
+	 * @param name
+	 * @return persistenceHandlerName
+	 */
 	String getPersistenceHandlerName(String name);
 
+	/**
+	 * Extract class base name from element
+	 * @param element
+	 * @return name
+	 */
 	String extractName(Element element);
 
+	/**
+	 * Extract persistence collection name from @Peristed annotated elements
+	 * @param element
+	 * @return collectionName
+	 */
 	String extractCollectionName(Element element);
 
+	/**
+	 * Generate interface name that the persistence handler implements
+	 * @return persistenceHandlerInterfaceName
+	 */
 	String getPersistenceHandlerInterfaceName();
 
 }

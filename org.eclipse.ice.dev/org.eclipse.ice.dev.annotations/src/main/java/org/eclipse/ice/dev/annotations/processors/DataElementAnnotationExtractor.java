@@ -11,31 +11,20 @@
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.io.IOException;
-import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
-import javax.lang.model.util.Elements;
-import javax.tools.JavaFileObject;
 
-import org.eclipse.ice.dev.annotations.DataElement;
 import org.eclipse.ice.dev.annotations.DataField;
-import org.eclipse.ice.dev.annotations.Persisted;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Flavor of ICEAnnotationExtractionService that specializes in extracting data
- * from Spec classes with the class level annotation of DataElement
- *
+ * from Spec classes with the class level annotation of {@link DataElement}
+ * 
+ * @author Michael Walsh
  */
 public class DataElementAnnotationExtractor {
 
@@ -57,6 +46,12 @@ public class DataElementAnnotationExtractor {
 	 */
 	private WriterGenerator writerGenerator;
 
+	/**
+	 * Constructor that lets you initialize the {@link DataElementAnnotationExtractor} with different
+	 * implementations of {@link ICEAnnotationExtractionService} and {@link WriterGenerator} 
+	 * @param annotationExtractionService
+	 * @param writerGenerator
+	 */
 	DataElementAnnotationExtractor(ICEAnnotationExtractionService annotationExtractionService,
 			WriterGenerator writerGenerator) {
 		this.annotationExtractionService = annotationExtractionService;
@@ -66,15 +61,17 @@ public class DataElementAnnotationExtractor {
 	}
 
 	/**
-	 * For a given request it will extract data and generate writers
+	 * For a given request it will extract data from client classes 
+	 * and generate a list of {@link VelocitySourceWriter}
 	 * 
 	 * @param request
 	 * @return list of generated SourceWriters
-	 * @throws IOException
+	 * @throws IOException due to {@link ICEAnnotationExtractionService#extract(AnnotationExtractionRequest)}
 	 */
 	public List<VelocitySourceWriter> generateWriters(AnnotationExtractionRequest request) throws IOException {
 		AnnotationExtractionResponse response = annotationExtractionService.extract(request);
-		return writerGenerator.generateWriters(request.getElement(), response);
+		List<VelocitySourceWriter> writerList = writerGenerator.generateWriters(request.getElement(),response);
+		return writerList;
 	}
 
 	/**
@@ -84,8 +81,7 @@ public class DataElementAnnotationExtractor {
 	 * @throws IOException
 	 */
 	public void generateAndWrite(AnnotationExtractionRequest request) throws IOException {
-		AnnotationExtractionResponse response = annotationExtractionService.extract(request);
-		writerGenerator.generateWriters(request.getElement(), response).forEach(writer -> {
+		this.generateWriters(request).forEach(writer -> {
 			try {
 				writer.write();
 			} catch (IOException e) {

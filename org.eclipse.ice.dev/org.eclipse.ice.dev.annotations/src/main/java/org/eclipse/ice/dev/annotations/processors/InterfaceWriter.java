@@ -12,11 +12,9 @@
 
 package org.eclipse.ice.dev.annotations.processors;
 
-import java.io.Writer;
 
 import javax.tools.JavaFileObject;
 
-import lombok.Builder;
 import lombok.NonNull;
 
 /**
@@ -41,6 +39,14 @@ public abstract class InterfaceWriter extends VelocitySourceWriter {
 	 */
 	private static final String FIELDS = "fields";
 
+	/**
+	 * Constructor
+	 * 
+	 * @param packageName
+	 * @param interfaceName
+	 * @param fields
+	 * @param generatedFile
+	 */
 	public InterfaceWriter(String packageName, String interfaceName, @NonNull Fields fields,
 			JavaFileObject generatedFile) {
 		super();

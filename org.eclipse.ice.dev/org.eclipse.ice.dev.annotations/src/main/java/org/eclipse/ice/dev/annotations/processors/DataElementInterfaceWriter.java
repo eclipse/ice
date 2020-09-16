@@ -23,7 +23,8 @@ import lombok.NonNull;
 /**
  * Implementation of the VelocitySourceWriter that handles generating the
  * DataElementInterfaceWriter
- *
+ * 
+ * @author Michael Walsh
  */
 public class DataElementInterfaceWriter extends InterfaceWriter {
 
@@ -35,6 +36,14 @@ public class DataElementInterfaceWriter extends InterfaceWriter {
 	 */
 	private static final String TEMPLATE = "templates/ElementInterface.vm";
 
+	/**
+	 * Constructor
+	 * 
+	 * @param packageName
+	 * @param interfaceName
+	 * @param fields
+	 * @param generatedFile
+	 */
 	@Builder
 	public DataElementInterfaceWriter(String packageName, String interfaceName, @NonNull Fields fields,
 			JavaFileObject generatedFile) {
@@ -42,6 +51,10 @@ public class DataElementInterfaceWriter extends InterfaceWriter {
 		this.template = TEMPLATE;
 	}
 
+	/**
+	 * Private argless constructor purely for use of the static method to have
+	 * access to the inherited getInitializer() method
+	 */
 	private DataElementInterfaceWriter() {
 		super();
 	}

@@ -18,15 +18,32 @@ import lombok.NoArgsConstructor;
 /**
  * Pojo class used to encapsulate initial data extracted from Spec classes
  *
+ * @author Michael Walsh
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClassSeedData {
+public class SpecClassMetadata {
+	/**
+	 * Base name of classes to be generated
+	 */
 	private String name;
+	/**
+	 * Base package name of classes to be generated
+	 */
 	private String packageName;
+	/**
+	 * Fully qualified version of the base name
+	 */
 	private String fullyQualifiedName;
+	/**
+	 * String name of the collection backing the persistence handler
+	 * (see {@link org.eclipse.ice.dev.annotations.Persisted})
+	 */
 	private String collectionName;
+	/**
+	 * Collection of pre-existing fields in the Spec class
+	 */
 	private Fields fields;
 }

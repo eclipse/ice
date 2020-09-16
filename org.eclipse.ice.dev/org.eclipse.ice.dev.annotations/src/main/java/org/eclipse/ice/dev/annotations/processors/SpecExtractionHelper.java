@@ -12,7 +12,6 @@ package org.eclipse.ice.dev.annotations.processors;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -29,6 +28,8 @@ import org.eclipse.ice.dev.annotations.DataField;
 
 /**
  * Extraction helper that specializes in pulling Spec data from Spec classes
+ *
+ * @author Michael Walsh
  *
  */
 public class SpecExtractionHelper implements ExtractionHelper {
