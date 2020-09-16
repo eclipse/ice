@@ -53,9 +53,9 @@ public class DataElementPersistenceHandlerWriter extends PersistenceHandlerWrite
 	@Builder
 	public DataElementPersistenceHandlerWriter(String packageName, String elementInterface, String className,
 			String interfaceName, String implementation, String collection, @NonNull Fields fields,
-			JavaFileObject generatedFile) {
+			Types types, JavaFileObject generatedFile) {
 		super(packageName, elementInterface, className, interfaceName, implementation, collection, fields,
-				generatedFile);
+				types, generatedFile);
 		this.template = PERSISTENCE_HANDLER_TEMPLATE;
 	}
 
@@ -78,8 +78,9 @@ public class DataElementPersistenceHandlerWriter extends PersistenceHandlerWrite
 			return Arrays.asList(DataElementPersistenceHandlerWriter.builder()
 					.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
 					.className((String) context.get(PersistenceHandlerTemplateProperty.CLASS))
-					.interfaceName((String) context.get(PersistenceHandlerTemplateProperty.INTERFACE))
+					.types(((Fields) context.get(MetaTemplateProperty.FIELDS)).getTypes())	.interfaceName((String) context.get(PersistenceHandlerTemplateProperty.INTERFACE))
 					.fields((Fields) context.get(MetaTemplateProperty.FIELDS))
+					.types(((Fields) context.get(MetaTemplateProperty.FIELDS)).getTypes())
 					.elementInterface((String) context.get(PersistenceHandlerTemplateProperty.ELEMENT_INTERFACE))
 					.collection((String) context.get(PersistenceHandlerTemplateProperty.COLLECTION))
 					.implementation((String) context.get(PersistenceHandlerTemplateProperty.IMPLEMENTATION))

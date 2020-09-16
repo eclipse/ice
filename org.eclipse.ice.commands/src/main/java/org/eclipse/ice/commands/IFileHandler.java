@@ -27,7 +27,7 @@ public interface IFileHandler {
 	 * path If the operation fails, an exception is thrown
 	 * 
 	 * @return - CommandStatus - a CommandStatus indicating whether or not the move
-	 *         was successful
+	 *           was successful
 	 * @throws IOException
 	 */
 	public abstract CommandStatus move(final String source, final String destination) throws IOException;
@@ -37,7 +37,7 @@ public interface IFileHandler {
 	 * path If the operation fails, an exception is thrown
 	 * 
 	 * @return - CommandStatus - a CommandStatus indicating whether or not the copy
-	 *         was successful
+	 *           was successful
 	 * @throws IOException
 	 */
 	public abstract CommandStatus copy(final String source, final String destination) throws IOException;
@@ -47,9 +47,9 @@ public interface IFileHandler {
 	 * already exists for a given path.
 	 * 
 	 * @param - String - a string with the path for the method to check its
-	 *          existence
+	 *                   existence
 	 * @return - boolean indicating whether or not the file exists (returns true) or
-	 *         does not exist (returns false)
+	 *           does not exist (returns false)
 	 * @throws IOException
 	 */
 	public abstract boolean exists(final String file) throws IOException;
@@ -59,8 +59,8 @@ public interface IFileHandler {
 	 * destination doesn't exist, it tries to make it. If the destination can't be
 	 * made, or the source doesn't exist, the method throws an exception.
 	 * 
-	 * @param source
-	 * @param destination
+	 * @param source - source path to check existence of before file transfer
+	 * @param destination - destination path to check existence of before file transfer
 	 * @throws IOException
 	 */
 	public abstract void checkExistence(final String source, final String destination) throws IOException;
@@ -68,7 +68,7 @@ public interface IFileHandler {
 	/**
 	 * Method that returns a FileBrowser instance
 	 * 
-	 * @return - FileBrowser
+	 * @return - FileBrowser - a FileBrowser instance
 	 * @param  - Directory to browse
 	 */
 	public abstract FileBrowser getFileBrowser(final String topDirectory);

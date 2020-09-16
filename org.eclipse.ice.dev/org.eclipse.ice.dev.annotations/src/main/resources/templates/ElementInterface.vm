@@ -1,9 +1,9 @@
-#parse("templates/common.vm")
 #if($package)
 package $package;
 #end
 
 import org.eclipse.ice.data.IDataElement;
+#imports
 
 /**
  * This interface satisfies the dependencies of the @DataElement Annotation and

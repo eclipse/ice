@@ -1,8 +1,8 @@
 # Commands Package
 
-This README serves as an overview of the commands package, which is a standalone maven package that can be used within or outside of ICE. The package provides the necessary API to set up and run jobs on either one's local computer or a remote host. Additionally, the API includes file transfer and file system browsing capabilities, with the option to move or copy files on the local host or remote host. It is suggested that users encode their file processing logic into a bash/python/powershell script to be run locally/remotely.
+This README serves as an overview of the commands package, which is a standalone maven package that can be used within or outside of ICE. The package provides the necessary API to set up and run jobs on either one's local computer or a remote host. Additionally, the API includes file transfer and file system browsing capabilities, with the option to move or copy files on the local host or remote host. It is suggested that users encode their file processing logic into a bash/python/powershell script to be run locally/remotely. For example, a remote job on a remote host B could be run from commands on local host A which executes a remote job on remote host C, assuming the script contains the necessary logic to connect remote host B to remote host C.
 
-Examples can be found in either the `src/test/java/org/eclipse/ice/tests/commands` directory or in the standalone package within ICE `org/eclipse/ice/demo/commands/`. 
+Examples can be found directly underneath this directory in`src/test/java/org/eclipse/ice/tests/commands` or in the standalone demo package within ICE `org.eclipse.ice.demo/src/org/eclipse/ice/demo/commands`. Other tests, that can serve as examples of remote command usage, can be found in `org.eclipse.ice.tests.integration/org.eclipse.ice.tests.commands`.
 
 
 ## Build Instructions
@@ -20,46 +20,16 @@ $ mvn clean verify
 
 In both cases one can skip the tests by including `-DskipTests` in your build. 
 
-#### Dependencies
-All dependencies are noted in the `pom` file, and are within Maven central. Thus, there should be no external dependencies that are necessary when running the Commands API.
+### Dependencies
+All dependencies are noted in the `pom` file, and all but one are within maven central. The only non-centralized dependency is the ICE package `org.eclipse.ice.tests.util.data`. To install it, perform the following commands (after cloning the ICE repositiory) so that the Commands package can build successfully:
 
-#### Note about tests
-The automated testing is performed with a dummy remote host, which has private credentials. Thus, if the tests are built with the package, a significant portion of the tests will fail due to the fact that the dummy remote host credentials are not distributed publicly. To solve this, one may enter any generic remote host credentials into the file `/tmp/ice-remote-creds.txt` in the following order
-
-```
-username 
-password
-hostname
+```shell
+$ cd org.eclipse.ice.data
+$ mvn clean install
 ```
 
-Windows users need to put their ssh credentials into the file located at `C:\Users\Adminstrator\ice-remote-creds.txt` in order for the tests to properly function.
-
-The automated tests will then grab the necessary credentials from this file to run the tests. Any valid ssh connection will work. If you still find that the tests fail, ensure that the ssh connection you are using has been logged into before from your host computer such that there is a key fingerprint associated to that host in your `~/.ssh/known_hosts` file. The Commands package requires that this key exists in order for authentication to proceed, no matter what form of authentication you use. Alternatively, you can set `StrictHostKeyChecking` to false in the `ConnectionManager`, which is not advised as it is inherently unsecure. To do this for the static `ConnectionManager`, just write:
-
-```java
-ConnectionManagerFactory.getConnectionManager().setRequireStrictHostKeyChecking(false);
-
-```
-
-Note that this is also a way through which ssh validation can be performed in the package for running actual remote commands/file transfers.
-
-
-#### KeyGen Tests and Connections
-
-Connections may be established via a public/private key pair that is generated between the local and remote host. The JSch API only works with RSA keys - Commands can also function with ECDSA, but it is advised to use RSA. You should be sure to generate a key similarly to the following snip of shell code:
-
-```bash
-$ ssh-keygen -t rsa -m PEM
-$ ssh-copy-id -i ~/.ssh/keyname.pub username@hostname
-```
-
-For the keygen connection tests to pass, you should also create a key to a remote host that the tests expect to find. This can be done with any arbitrary remote server that you have credential access to; however, the key must be named dummyhostkey and must exist in your home `.ssh` directory. In other words, the key must be here:
-
-```
-~/.ssh/dummyhostkey
-```
-
-
+### Test packages
+The tests are split into two separate directories to enable simplified compilation. Tests pertaining to local commands are available within this package, while the tests pertaining to remote commands are available in `org.eclipse.ice.tests.integration/org.eclipse.ice.tests.commands`. The remote tests require additional testing setup, which is why they are available in the integration testing suite. Please see [this link](https://github.com/eclipse/ice/tree/next/org.eclipse.ice.tests.integration/org.eclipse.ice.tests.commands) for further details.
 
 
 ## Commands API

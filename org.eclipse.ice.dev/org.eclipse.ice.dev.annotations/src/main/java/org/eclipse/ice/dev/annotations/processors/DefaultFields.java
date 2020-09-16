@@ -27,10 +27,18 @@ public class DefaultFields {
 	 *
 	 * This field is left out of the <code>DataElement.matches</code> checks.
 	 */
-	private static Field privateId = Field.builder().name("UUID").varName("privateId").type(UUID.class)
-			.docString("The private UUID of this element. This field is left out of matches().")
-			.defaultValue(UUID.class.getCanonicalName() + ".randomUUID()").match(false).getter(true).setter(false)
-			.defaultField(true).unique(true).build();
+	private static Field privateId = Field.builder()
+		.name("UUID")
+		.varName("privateId")
+		.type(UUID.class)
+		.docString("The private UUID of this element. This field is left out of matches().")
+		.defaultValue("UUID.randomUUID()")
+		.match(false)
+		.getter(true)
+		.setter(false)
+		.defaultField(true)
+		.unique(true)
+		.build();
 
 	/**
 	 * A unique identifier for this element.

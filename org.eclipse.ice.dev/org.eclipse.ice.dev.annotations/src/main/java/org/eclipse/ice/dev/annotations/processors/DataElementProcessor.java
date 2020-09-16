@@ -8,6 +8,7 @@
  * Contributors:
  *    Daniel Bluhm - Initial implementation
  *******************************************************************************/
+
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.io.IOException;
@@ -47,8 +48,12 @@ import com.google.auto.service.AutoService;
  * @author Michael Walsh
  *
  */
-@SupportedAnnotationTypes({ "org.eclipse.ice.dev.annotations.DataElement", "org.eclipse.ice.dev.annotations.DataField",
-		"org.eclipse.ice.dev.annotations.DataField.Default", "org.eclipse.ice.dev.annotations.Persisted" })
+@SupportedAnnotationTypes({
+	"org.eclipse.ice.dev.annotations.DataElement",
+	"org.eclipse.ice.dev.annotations.DataField",
+	"org.eclipse.ice.dev.annotations.DataField.Default",
+	"org.eclipse.ice.dev.annotations.Persisted"
+})
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 @AutoService(Processor.class)
 public class DataElementProcessor extends AbstractProcessor {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A collection of Field objects to be used especially in template rendering.
@@ -79,6 +80,24 @@ public class Fields implements Iterable<Field> {
 	 */
 	public Iterator<Field> getVarNamesDiffer() {
 		return fields.stream().filter(field -> field.isVarNameDifferent()).iterator();
+	}
+
+	/**
+	 * Return iterable of fields needed for interface.
+	 * @return Iterable of fields needed for interface.
+	 */
+	public Iterable<Field> getInterfaceFields() {
+		return fields.stream()
+			.filter(field -> !field.isDefaultField())
+			.collect(Collectors.toList());
+	}
+
+	/**
+	 * Return Types instance for this set of Fields.
+	 * @return Types instance
+	 */
+	public Types getTypes() {
+		return new Types(this);
 	}
 
 	/**

@@ -48,8 +48,8 @@ public class DataElementImplementationWriter extends ImplementationWriter {
 	 */
 	@Builder
 	public DataElementImplementationWriter(String packageName, String interfaceName, String className, Fields fields,
-			JavaFileObject generatedFile) {
-		super(packageName, interfaceName, className, fields, generatedFile);
+			Types types, JavaFileObject generatedFile) {
+		super(packageName, interfaceName, className, fields, types, generatedFile);
 		this.template = IMPL_TEMPLATE;
 	}
 
@@ -73,7 +73,9 @@ public class DataElementImplementationWriter extends ImplementationWriter {
 					.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
 					.interfaceName((String) context.get(MetaTemplateProperty.INTERFACE))
 					.className((String) context.get(MetaTemplateProperty.CLASS))
-					.fields((Fields) context.get(MetaTemplateProperty.FIELDS)).generatedFile(fileObject).build());
+					.fields((Fields) context.get(MetaTemplateProperty.FIELDS))
+					.types(((Fields) context.get(MetaTemplateProperty.FIELDS)).getTypes())
+					.generatedFile(fileObject).build());
 		};
 	}
 

@@ -12,9 +12,9 @@
 
 package org.eclipse.ice.dev.annotations.processors;
 
+import lombok.NonNull;
 
 import javax.tools.JavaFileObject;
-
 
 /**
  * Writer for DataElement Implementation classes.
@@ -39,11 +39,16 @@ public abstract class ImplementationWriter extends VelocitySourceWriter {
 	private static final String FIELDS = "fields";
 
 	/**
+	 * Context key for types.
+	 */
+	private static final String TYPES = "types";
+
+	/**
 	 * Context key for class.
 	 */
 	private static final String CLASS = "class";
 
-	/**
+		/**
 	 * Constructor
 	 * 
 	 * @param packageName
@@ -52,13 +57,16 @@ public abstract class ImplementationWriter extends VelocitySourceWriter {
 	 * @param fields
 	 * @param generatedFile
 	 */
-	public ImplementationWriter(String packageName, String interfaceName, String className, Fields fields,
-			JavaFileObject generatedFile) {
+	public ImplementationWriter(
+		String packageName, String interfaceName, String className,
+		@NonNull Fields fields, @NonNull Types types, JavaFileObject generatedFile
+	) {
 		super();
 		this.context.put(PACKAGE, packageName);
 		this.context.put(INTERFACE, interfaceName);
 		this.context.put(CLASS, className);
 		this.context.put(FIELDS, fields);
+		this.context.put(TYPES, types);
 		this.generatedFile = generatedFile;
 	}
 

@@ -12,7 +12,6 @@
 
 package org.eclipse.ice.dev.annotations.processors;
 
-
 import javax.tools.JavaFileObject;
 
 import lombok.NonNull;
@@ -40,6 +39,12 @@ public abstract class InterfaceWriter extends VelocitySourceWriter {
 	private static final String FIELDS = "fields";
 
 	/**
+	 * Context key for types.
+	 */
+	private static final String TYPES = "types";
+
+	
+	/**
 	 * Constructor
 	 * 
 	 * @param packageName
@@ -47,13 +52,16 @@ public abstract class InterfaceWriter extends VelocitySourceWriter {
 	 * @param fields
 	 * @param generatedFile
 	 */
-	public InterfaceWriter(String packageName, String interfaceName, @NonNull Fields fields,
-			JavaFileObject generatedFile) {
+	public InterfaceWriter(
+		String packageName, String interfaceName, @NonNull Fields fields,
+		@NonNull Types types, JavaFileObject generatedFile
+	) {
 		super();
 		context.put(PACKAGE, packageName);
 		context.put(INTERFACE, interfaceName);
 		context.put(FIELDS, fields);
 		this.generatedFile = generatedFile;
+		context.put(TYPES, types);
 	}
 
 	protected InterfaceWriter() {

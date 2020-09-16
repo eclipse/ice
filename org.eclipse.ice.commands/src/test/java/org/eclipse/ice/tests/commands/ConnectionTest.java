@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
 
+import static org.junit.Assert.assertNull;
+
 import org.eclipse.ice.commands.Connection;
 import org.junit.Test;
 
@@ -31,9 +33,9 @@ public class ConnectionTest {
 		Connection connection = new Connection();
 
 		// Check that the default connection leaves the configuration empty
-		assert (connection.getConfiguration() == null);
+		assertNull(connection.getConfiguration());
 
-		assert (connection.getSession() == null);
+		assertNull(connection.getSession());
 	}
 
 }

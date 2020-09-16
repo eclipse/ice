@@ -17,18 +17,38 @@
 		</dependency>
 		<dependency>
       		<groupId>org.slf4j</groupId>
-     	    <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.12</version>
+     	    <artifactId>slf4j-simple</artifactId>
+            <version>1.7.30</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.eclipse.ice</groupId>
+        	<artifactId>org.eclipse.ice.tests.util.data</artifactId>
+        	<version>3.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
            <version>1.2.17</version>
-        </dependency> 
-        <dependency>
-        	<groupId>com.jcraft</groupId>
-        	<artifactId>jsch</artifactId>
-        	<version>0.1.55</version>
         </dependency>
-	</dependencies>
+         <dependency>
+        	<groupId>org.apache.sshd</groupId>
+        	<artifactId>sshd-core</artifactId>
+        	<version>2.3.0</version>
+        </dependency>
+         <dependency>
+        	<groupId>org.apache.sshd</groupId>
+        	<artifactId>sshd-sftp</artifactId>
+        	<version>2.3.0</version>
+        </dependency>
+        <dependency>
+      		<groupId>com.sun.mail</groupId>
+      		<artifactId>javax.mail</artifactId>
+      		<version>1.6.2</version>
+    	</dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+      		<version>4.5.10</version>
+        </dependency>
+   	</dependencies>
 </project>

@@ -155,20 +155,6 @@ public class Field {
 	}
 
 	/**
-	 * Get a class by name or return null if not found
-	 * 
-	 * @param cls
-	 * @return found class or null
-	 */
-	private static Class<?> getClassOrNull(String cls) {
-		try {
-			return ClassUtils.getClass(cls);
-		} catch (ClassNotFoundException e) {
-			return null;
-		}
-	}
-
-	/**
 	 * Return this Fields name ready for use in a method name.
 	 * 
 	 * @return capitalized name
@@ -209,6 +195,19 @@ public class Field {
 	}
 
 	/**
+	 * Get a class by name or return null if not found
+	 * @param cls
+	 * @return found class or null
+	 */
+	private static Class<?> getClassOrNull(String cls) {
+		try {
+			return ClassUtils.getClass(cls);
+		} catch (ClassNotFoundException e) {
+			return null;
+		}
+	}
+
+	/**
 	 * Instruct Jackson how to deserialize fields.
 	 */
 	private interface FieldBuilderMeta {
@@ -237,7 +236,7 @@ public class Field {
 		 */
 		@JsonIgnore
 		public FieldBuilder type(Class<?> type) {
-			this.type = type.getName().toString();
+			this.type = type.getCanonicalName();
 			this.primitive = type.isPrimitive();
 			return this;
 		}

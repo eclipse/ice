@@ -27,8 +27,9 @@ public enum TaskState {
 	INITIALIZED,
 	
 	/**
-	 * This state indicates that the task can be executed and that all
-     * initialization has completed. It is ready to be executed.
+	 * This state indicates that the task is ready to be executed and that all
+     * initialization has completed. It requires that data and other
+     * information be provided to the task.
      * 
      * Idempotent tasks may re-enter the ready state when complete, using the
      * FINISHED state as a transition back to readiness. 
@@ -53,9 +54,10 @@ public enum TaskState {
 	EXECUTING,
 	
 	/**
-	 * This state indicates that the task is waiting on internal resources or
-	 * events, such as the allocation of compute or data resources or the
-	 * completion of other tasks.
+	 * This state indicates that the task is waiting on information, internal 
+	 * resources or events, such as the allocation of compute or data resources 
+	 * or the completion of other tasks. Most commonly, this state means that
+	 * the task is waiting on data or the action to be set.
 	 */
 	WAITING,
 	
@@ -65,7 +67,7 @@ public enum TaskState {
 	 * the workflow system, such as humans, file systems that generate events,
 	 * or automated systems that provide information to the task.
 	 */
-	WAITINGFORAGENT,
+	WAITING_FOR_AGENT,
 	
 	/**
 	 * This is the ideal terminal state for the task and indicates that all

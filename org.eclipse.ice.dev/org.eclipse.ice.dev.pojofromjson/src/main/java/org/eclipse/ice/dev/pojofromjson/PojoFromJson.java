@@ -24,6 +24,7 @@ import org.eclipse.ice.dev.annotations.processors.DefaultFields;
 import org.eclipse.ice.dev.annotations.processors.Fields;
 import org.eclipse.ice.dev.annotations.processors.DataElementImplementationWriter;
 import org.eclipse.ice.dev.annotations.processors.DataElementInterfaceWriter;
+import org.eclipse.ice.dev.annotations.processors.Types;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -89,6 +90,7 @@ public class PojoFromJson {
 				.packageName(pojo.getPackageName())
 				.interfaceName(pojo.getElement())
 				.fields(fields)
+				.types(new Types(fields.getInterfaceFields()))
 				.build()
 				.write(elementInterface);
 		}
@@ -102,6 +104,7 @@ public class PojoFromJson {
 				.interfaceName(pojo.getElement())
 				.className(pojo.getImplementation())
 				.fields(fields)
+				.types(fields.getTypes())
 				.build()
 				.write(elementImpl);
 		}

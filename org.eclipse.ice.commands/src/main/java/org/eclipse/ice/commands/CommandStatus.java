@@ -40,9 +40,6 @@ package org.eclipse.ice.commands;
  *
  */
 
-
-
-
 public enum CommandStatus{
 	SUCCESS, PROCESSING, RUNNING, INFOERROR, FAILED, CANCELED;
 }

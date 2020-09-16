@@ -99,7 +99,7 @@ class GeneratedDataElementTest {
 		assertEquals(element.isSecret(), secret);
 
 		// Make sure that adding validators works superficially
-		JavascriptValidator<GeneratedDataElement> validator = new JavascriptValidator<GeneratedDataElement>();
+		JavascriptValidator<GeneratedDataElement> validator = new JavascriptValidator<>();
 		element.setValidator(validator);
 		assertEquals(element.getValidator(), validator);
 
@@ -167,7 +167,7 @@ class GeneratedDataElementTest {
 		GeneratedDataElement element = getStringElement("Major Lazer & La Roux");
 		element.setSecret(true);
 		element.setRequired(true);
-		element.setValidator(new JavascriptValidator<GeneratedDataElement>());
+		element.setValidator(new JavascriptValidator<>());
 
 		// Because of the private id changing and being unique, this cannot be checked
 		// against a reference but can only be checked by inversion.
@@ -178,7 +178,7 @@ class GeneratedDataElementTest {
 		element.setTestField("Eastern Sun");
 		System.out.println(output);
 		GeneratedDataElement element2 = getStringElement("Emancipator");
-		element2.setValidator(new JavascriptValidator<GeneratedDataElement>());
+		element2.setValidator(new JavascriptValidator<>());
 		element2.fromJson(output);
 		element.fromJson(output);
 		assertEquals(element,element2);
@@ -198,7 +198,7 @@ class GeneratedDataElementTest {
 		element.setTestPOJO(new TestPOJO());
 		element.setSecret(true);
 		element.setRequired(true);
-		element.setValidator(new JavascriptValidator<GeneratedDataElementPOJO>());
+		element.setValidator(new JavascriptValidator<>());
 
 		// Because of the private id changing and being unique, this cannot be checked
 		// against a reference but can only be checked by inversion.
@@ -209,7 +209,7 @@ class GeneratedDataElementTest {
 		GeneratedDataElementPOJO element2 = new GeneratedDataElementPOJOImplementation();
 		TestPOJO pojo2 = new TestPOJO();
 		pojo2.setDoubleValue(1.072);
-		element2.setValidator(new JavascriptValidator<GeneratedDataElementPOJO>());
+		element2.setValidator(new JavascriptValidator<>());
 		element2.setTestPOJO(pojo2);
 		element2.fromJson(output);
 
@@ -236,12 +236,12 @@ class GeneratedDataElementTest {
 		GeneratedDataElement element4 = getStringElement("Halsey");
 
 		// Need a validator for the tests that is shared on the equal elements.
-		JavascriptValidator<GeneratedDataElement> validator = new JavascriptValidator<GeneratedDataElement>();
+		JavascriptValidator<GeneratedDataElement> validator = new JavascriptValidator<>();
 		element.setValidator(validator);
 		element2.setValidator(validator);
 		element4.setValidator(validator);
 		// Billie needs her own validator
-		element3.setValidator(new JavascriptValidator<GeneratedDataElement>());
+		element3.setValidator(new JavascriptValidator<>());
 
 		// Data elements must be checked both for matching - a deep inequality except
 		// the UUID - and for a fully complete match that contains the UUID. Start with

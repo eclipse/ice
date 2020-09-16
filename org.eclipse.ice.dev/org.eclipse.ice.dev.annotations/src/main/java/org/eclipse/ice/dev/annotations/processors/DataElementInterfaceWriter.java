@@ -46,8 +46,8 @@ public class DataElementInterfaceWriter extends InterfaceWriter {
 	 */
 	@Builder
 	public DataElementInterfaceWriter(String packageName, String interfaceName, @NonNull Fields fields,
-			JavaFileObject generatedFile) {
-		super(packageName, interfaceName, fields, generatedFile);
+			Types types, JavaFileObject generatedFile) {
+		super(packageName, interfaceName, fields, types, generatedFile);
 		this.template = TEMPLATE;
 	}
 
@@ -70,7 +70,9 @@ public class DataElementInterfaceWriter extends InterfaceWriter {
 			return Arrays.asList(DataElementInterfaceWriter.builder()
 					.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
 					.interfaceName((String) context.get(MetaTemplateProperty.INTERFACE))
-					.fields((Fields) context.get(MetaTemplateProperty.FIELDS)).generatedFile(fileObject).build());
+					.fields((Fields) context.get(MetaTemplateProperty.FIELDS))
+					.types(new Types(((Fields) context.get(MetaTemplateProperty.FIELDS)).getInterfaceFields()))
+					.generatedFile(fileObject).build());
 		};
 	}
 

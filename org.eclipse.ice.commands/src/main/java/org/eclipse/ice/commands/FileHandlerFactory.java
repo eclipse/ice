@@ -40,12 +40,26 @@ public class FileHandlerFactory {
 	}
 
 	/**
+	 * A helper function for file handles that don't require more than one
+	 * connection, i.e. all file handles that are not from one remote host B to
+	 * another remote host C
+	 * 
+	 * @param connectionConfig
+	 * @return
+	 * @throws IOException
+	 */
+	public FileHandler getFileHandler(ConnectionConfiguration connectionConfig) throws IOException {
+		return getFileHandler(connectionConfig, null);
+	}
+
+	/**
 	 * Method which gets a FileHandler and subsequently executes it to initiate a
 	 * file transfer.
 	 * 
 	 * @return FileHandler - instance of FileHandler that does the transfer
 	 */
-	public FileHandler getFileHandler(ConnectionConfiguration connectionConfig) throws IOException {
+	public FileHandler getFileHandler(ConnectionConfiguration connectionConfig,
+			KeyPathConnectionAuthorizationHandler remoteHostC) throws IOException {
 		FileHandler handler = null;
 
 		// Determine if the hostname in the config is local or not
@@ -55,9 +69,19 @@ public class FileHandlerFactory {
 		if (isLocal) {
 			handler = new LocalFileHandler();
 		} else {
-			RemoteFileHandler remoteHandler = new RemoteFileHandler();
-			remoteHandler.setConnectionConfiguration(connectionConfig);
-			handler = remoteHandler;
+			// If the remoteHostC is null then it is a local->remote (or vice versa)
+			// transfer
+			if (remoteHostC == null) {
+				RemoteFileHandler remoteHandler = new RemoteFileHandler();
+				remoteHandler.setConnectionConfiguration(connectionConfig);
+				handler = remoteHandler;
+			} else {
+				// otherwise it is a remote host B to remote host C transfer
+				RemoteRemoteFileHandler remoteHandler = new RemoteRemoteFileHandler();
+				remoteHandler.setConnectionConfiguration(connectionConfig);
+				remoteHandler.setDestinationAuthorization(remoteHostC);
+				handler = remoteHandler;
+			}
 		}
 
 		return handler;

@@ -35,7 +35,7 @@ public class ConnectionManagerFactory {
 	/**
 	 * A function to return the static instance of ConnectionManager
 	 * 
-	 * @return
+	 * @return - static instance of ConnectionManager
 	 */
 	public static ConnectionManager getConnectionManager() {
 		return manager;
