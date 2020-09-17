@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" immediate="false" name="org.eclipse.ice.persistence.xml">
-   <implementation class="org.eclipse.ice.persistence.xml.XMLPersistenceProvider"/>
-   <reference bind="registerClassProvider" cardinality="0..n" interface="org.eclipse.ice.datastructures.jaxbclassprovider.IJAXBClassProvider" name="IJAXBClassProvider" policy="dynamic"/>
-</scr:component>

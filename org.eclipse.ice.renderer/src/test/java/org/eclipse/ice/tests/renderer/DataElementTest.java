@@ -322,6 +322,7 @@ class DataElementTest {
 		assertFalse(element.matches(null));
 
 		// Now check equality with a clone - therefore also confirming clone works
+		@SuppressWarnings("unchecked")
 		DataElement<String> elementClone = (DataElement<String>) element.clone();
 		// Check reflexivity first
 		assertEquals(element, element);

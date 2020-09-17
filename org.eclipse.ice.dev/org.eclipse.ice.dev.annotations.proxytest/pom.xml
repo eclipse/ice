@@ -8,6 +8,11 @@
 		<version>3.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>org.eclipse.ice.dev.annotations.proxytest</artifactId>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -15,13 +20,6 @@
 				<version>3.8.1</version>
 				<configuration>
 					<release>11</release>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.eclipse.ice</groupId>
-							<artifactId>org.eclipse.ice.dev.annotations</artifactId>
-							<version>3.0.0-SNAPSHOT</version>
-						</path>
-					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 			<plugin>
