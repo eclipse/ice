@@ -25,12 +25,12 @@ public class SANSInstrumentConfigurationSpec {
 	/**
 	 * option to use a mask file
 	 */
-	@DataField.Default(value = "false") @DataField private boolean useMaskFileName; 
+	@DataField.Default("false") @DataField private boolean useMaskFileName; 
 	
 	/**
 	 * option to use default mask
 	 */
-	@DataField.Default(value = "false") @DataField private boolean useDefaultMask; 
+	@DataField.Default("false") @DataField private boolean useDefaultMask; 
 	
 	/**
 	 * beam flux file that is set to be used
@@ -40,17 +40,17 @@ public class SANSInstrumentConfigurationSpec {
 	/**
 	 * option to use beam flux file
 	 */
-	@DataField.Default(value = "false") @DataField private boolean useBeamFluxFileName;
+	@DataField.Default("false") @DataField private boolean useBeamFluxFileName;
 	
 	/**
 	 * option to use either dark file or blocked beam
 	 */
-	@DataField.Default(value = "false") @DataField private boolean useDarkFileBlockedBeam; 
+	@DataField.Default("false") @DataField private boolean useDarkFileBlockedBeam; 
 	
 	/**
 	 * option to use blocked beam
 	 */
-	@DataField.Default(value = "false") @DataField private boolean useBlockedBeam; 
+	@DataField.Default("false") @DataField private boolean useBlockedBeam; 
 	
 	/**
 	 * dark file that is set to be used
@@ -60,7 +60,7 @@ public class SANSInstrumentConfigurationSpec {
 	/**
 	 * option to use dark file
 	 */
-	@DataField.Default(value = "false") @DataField private boolean useDarkFileName;
+	@DataField.Default("false") @DataField private boolean useDarkFileName;
 	
 	/**
 	 * sensitivity file that is set to be used
@@ -70,7 +70,7 @@ public class SANSInstrumentConfigurationSpec {
 	/**
 	 * option to use sensitivity file
 	 */
-	@DataField.Default(value = "false") @DataField private boolean useSensitivityFileName;
+	@DataField.Default("false") @DataField private boolean useSensitivityFileName;
 	
 	/**
 	 * the absolute scale used
@@ -95,7 +95,7 @@ public class SANSInstrumentConfigurationSpec {
 	/**
 	 * option to apply sample offset
 	 */
-	@DataField.Default(value = "false") @DataField private boolean useSampleOffset; 
+	@DataField.Default("false") @DataField private boolean useSampleOffset; 
 	
 	/**
 	 * detector offset (mm) to be used
@@ -105,17 +105,17 @@ public class SANSInstrumentConfigurationSpec {
 	/**
 	 * option to use detector offset
 	 */
-	@DataField.Default(value = "false") @DataField private boolean useDetectorOffset;
+	@DataField.Default("false") @DataField private boolean useDetectorOffset;
 	
 	/**
 	 * option to use Solid Angle Correction
 	 */
-	@DataField.Default(value = "false") @DataField private boolean useSolidAngleCorrection;
+	@DataField.Default("false") @DataField private boolean useSolidAngleCorrection;
 	
 	/**
 	 * option to use Detector Tube type
 	 */
-	@DataField.Default(value = "false") @DataField private boolean useDetectorTubeType;
+	@DataField.Default("false") @DataField private boolean useDetectorTubeType;
 	
 	/**
 	 * option to use Flight Path Correction
@@ -125,7 +125,7 @@ public class SANSInstrumentConfigurationSpec {
 	/**
 	 * option to use Theta Dependent Transmission Correction
 	 */
-	@DataField.Default(value = "false") @DataField private boolean useThetaDepTransCorrection;
+	@DataField.Default("false") @DataField private boolean useThetaDepTransCorrection;
 	
 	/**
 	 * transmission radius (pixels)
@@ -135,7 +135,7 @@ public class SANSInstrumentConfigurationSpec {
 	/**
 	 * I(Qx, Qy) number of bins
 	 */
-	@DataField.Default(value = "100") @DataField private int numQxQyBins; 
+	@DataField.Default("100") @DataField private int numQxQyBins; 
 	
 	/**
 	 * I(Q) binning type; linear or log
@@ -145,17 +145,17 @@ public class SANSInstrumentConfigurationSpec {
 	/**
 	 * number of bins for 1D, I(Q)
 	 */
-	@DataField.Default(value = "100") @DataField private int numQBins;
+	@DataField.Default("100") @DataField private int numQBins;
 	
 	/**
 	 * option to bin with error weighting
 	 */
-	@DataField.Default(value = "false") @DataField private boolean useErrorWeighting;
+	@DataField.Default("false") @DataField private boolean useErrorWeighting;
 	
 	/**
 	 * option to use TOF cutoffs
 	 */
-	@DataField.Default(value = "false") @DataField private boolean useTOFcuts;
+	@DataField.Default("false") @DataField private boolean useTOFcuts;
 	
 	/**
 	 * TOF minimum cutoff
@@ -170,7 +170,7 @@ public class SANSInstrumentConfigurationSpec {
 	/**
 	 * option to mask back tubes
 	 */
-	@DataField.Default(value = "false") @DataField private boolean useMaskBackTubes;
+	@DataField.Default("false") @DataField private boolean useMaskBackTubes;
 	
 	/**
 	 * wavelength step type; constant lambda or constant delta-lambda/lambda 

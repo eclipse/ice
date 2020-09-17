@@ -120,7 +120,7 @@ public class RunSpec {
 	 * a hacky place to store just a value, not associated with any run, typically
 	 * setting the transmission to _e.g._ 0.9
 	 */
-	@DataField	String value;
+	@DataField private String value;
 
 
 }

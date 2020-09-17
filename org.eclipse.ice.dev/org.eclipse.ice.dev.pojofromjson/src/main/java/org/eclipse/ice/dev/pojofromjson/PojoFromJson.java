@@ -94,29 +94,29 @@ public class PojoFromJson {
 		// Write Interface
 		try (Writer elementInterface = Files.newBufferedWriter(
 				destination.resolve(pojo.getElement() + ".java")
-				)) {
+		)) {
 			InterfaceWriter.builder()
-			.packageName(pojo.getPackageName())
-			.interfaceName(pojo.getElement())
-			.fields(fields)
-			.types(new Types(fields.getInterfaceFields()))
-			.build()
-			.write(elementInterface);
+					.packageName(pojo.getPackageName())
+					.interfaceName(pojo.getElement())
+					.fields(fields)
+					.types(new Types(fields.getInterfaceFields()))
+					.build()
+					.write(elementInterface);
 		}
 
 		// Write implementation
 		try (Writer elementImpl = Files.newBufferedWriter(
 				destination.resolve(pojo.getImplementation() + ".java")
-					)) {
-						ImplementationWriter.builder()
-							.packageName(pojo.getPackageName())
-							.interfaceName(pojo.getElement())
-							.className(pojo.getImplementation())
-							.fields(fields)
-							.types(fields.getTypes())
-							.build()
-							.write(elementImpl);
-					}
+		)) {
+			ImplementationWriter.builder()
+					.packageName(pojo.getPackageName())
+					.interfaceName(pojo.getElement())
+					.className(pojo.getImplementation())
+					.fields(fields)
+					.types(fields.getTypes())
+					.build()
+					.write(elementImpl);
+		}
 	}
 
 	/**

@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.lang.model.SourceVersion;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -74,17 +77,17 @@ public class JsonSchemaConverter {
 	/**
 	 * Default type of JSON property if not specified in a JSON property.
 	 */
-	private static String typeField = "string";
+	private static final String TYPE_FIELD = "String";
 
 	/**
 	 * Name of JSON property that contains the default value of a parent.
 	 */
-	private static String defaultField = "default";
+	private static final String DEFAULT_FIELD = "default";
 
 	/**
 	 * Name of JSON property that contains the description of a parent.
 	 */
-	private static String descriptionField = "description";
+	private static final String DESCRIPTION_FIELD = "description";
 
    /**
     * Executes program.
@@ -126,7 +129,6 @@ public class JsonSchemaConverter {
     * Converts given JSON schema file into a JSON format.
     * accepted by org.eclipse.ice.dev.annotations.
     * @param is InputStream of original JSON schema file
-    * @param destination directory where output files will written
     * @param filePath string representing path to input file
     * @throws JsonParseException On failure to parse the input JSON schema file
     * @throws JsonMappingException On failure to map the JSON schema to Map<String, Object>
@@ -135,64 +137,35 @@ public class JsonSchemaConverter {
    public static void handleInputJson(InputStream is, Path filePath) throws IOException {
 	   	Map<String, Object> map = mapper.readValue(is, new TypeReference<Map<String,Object>>(){});
 	   	List<PojoOutline> jsonArrayOut = new ArrayList<>();
-	   	String fileName = filePath.getFileName().toString();
-	   	fileName = fileName.substring(0, fileName.length() - 5); //remove .json
+	   	String fileName = "";
+	   	try {
+	   		fileName = formatFileName(filePath.getFileName().toString());
+	   	} catch (Exception ex) {
+	   		logger.error(ex.getMessage());
+	   		System.exit(1);
+	   	}
 	   	packageName = packageName.equals("") ? fileName.toLowerCase() : packageName;
-	   	Stream<Map.Entry<String, Object>> entries = map.entrySet().stream();
-
-	   	entries.filter(e -> e.getValue() instanceof Map 
+	   	//Process the nested json nodes
+	   	List<PojoOutline> outlines = map.entrySet().stream().filter(e -> e.getValue() instanceof Map 
 	   						&& !e.getKey().equals("definitions"))
-	   	.forEach(entry -> {  //ignore definitions section 
-	   		List<Field> fields = new ArrayList<>();
-	   		Map<String, Object> node = (Map<String, Object>) entry.getValue();
-	   		
-	   			if (node.keySet().contains("anyOf")) {
-	   				Field n = Field.builder()
-	   						.name(getValidName(entry.getKey()))
-	   						.type(typeField.substring(0, 1).toUpperCase() 
-			   						+ typeField.substring(1))
-	   						.docString(String.valueOf(node.get(descriptionField)))
-	   						.defaultValue("")
-	   						.build();
-	   				fields.add(n);
-
-	   			} else if (typeField.equals(node.get("type"))) {
-	   				Field n = Field.builder()
-	   						.name(getValidName(entry.getKey()))
-	   						.docString(String.valueOf(node.get(descriptionField)))
-	   						.defaultValue(String.valueOf(node.get(defaultField)))
-	   						.build();
-				   	n.setType(getTypeAsString(n.getDefaultValue()));
-				   	fields.add(n);
-	   			} else { //no type property or type='object'
-	   				fields = processJsonObject(node, entry.getKey());
-	   			}
-	   			
-	   			PojoOutline po = PojoOutline.builder()
-		   				.packageName(packageName)
-		   				.element(entry.getKey().substring(0, 1).toUpperCase() 
-		   						+ entry.getKey().substring(1))
-		   				.fields(fields)
-		   				.build();
-		   		jsonArrayOut.add(po);
-
-	   	});
+	   	.map(entry -> {  //ignore definitions section 
+	   		return processJsonNodes(entry);
+	   	}).collect(Collectors.toList());
+	   	jsonArrayOut.addAll(outlines);
 	   	
 	   	//collect all top level string properties into one file
-	   	List<Field> fields = new ArrayList<>();
-	   	map.entrySet().stream()
-	   				  .filter(e -> !(e.getValue() instanceof Map)).forEach(e -> {
+	   	List<Field> fields = map.entrySet().stream().filter(e -> !(e.getValue() instanceof Map)).map(e -> {
 	   		Field n = Field.builder()
-   					.name(getValidName(e.getKey()))
+   					.name(getValidVariableName(e.getKey()))
    					.defaultValue(String.valueOf(e.getValue()))
    					.build();
 	   		n.setType(getTypeAsString(n.getDefaultValue()));
-	   		fields.add(n);
-	   	});
+	   		return n;
+	   	}).collect(Collectors.toList());
 	   	
 	   	PojoOutline po = PojoOutline.builder()
    				.packageName(packageName)
-   				.element(fileName + "Properties")
+   				.element(fileName + "Fields")
    				.fields(fields)
    				.build();
    		jsonArrayOut.add(po);
@@ -202,29 +175,68 @@ public class JsonSchemaConverter {
 	   		writeDataElements(jsonArrayOut, filePath);
 	   	}
    }
+   
+   /**
+    * Parent function to recursively obtain all of the fields from a map representing a JSON node.
+    * @param entry parent entry to get data fields from
+    * @return a PojoOutline representing the structure of this JSON node
+    */
+   public static PojoOutline processJsonNodes(Map.Entry<String, Object> entry) {
 
+	   List<Field> fields = new ArrayList<>();
+	   Map<String, Object> node = (Map<String, Object>) entry.getValue();
+  		
+	   if (node.keySet().contains("anyOf")) {
+		   Field n = Field.builder()
+				   .name(getValidVariableName(entry.getKey()))
+				   .type(TYPE_FIELD)
+				   .docString(String.valueOf(node.get(DESCRIPTION_FIELD)))
+				   .defaultValue("")
+				   .build();
+		   fields.add(n);
+
+	   } else if (TYPE_FIELD.equalsIgnoreCase(String.valueOf(node.get("type")))) {
+		   Field n = Field.builder()
+				   .name(getValidVariableName(entry.getKey()))
+				   .docString(String.valueOf(node.get(DESCRIPTION_FIELD)))
+				   .defaultValue(String.valueOf(node.get(DEFAULT_FIELD)))
+				   .build();
+		   n.setType(getTypeAsString(n.getDefaultValue()));
+		   fields.add(n);
+	   } else { //no type property or type='object'
+		   fields = processJsonHelper(node, entry.getKey());
+	   }
+  			
+	   return PojoOutline.builder()
+			   .packageName(packageName)
+			   .element(entry.getKey().substring(0, 1).toUpperCase() 
+					   + entry.getKey().substring(1))
+			   .fields(fields)
+			   .build();	   
+   }
+   
    /**
     * Helper function to recursively obtain all of the fields from a map.
     * @param map map to get data fields from
     * @param key the name of key used to access this map from its parent map
     * @return list of Fields representing the data from the input map
     */
-   public static List<Field> processJsonObject(Map<String, Object> map, String key) {
+   public static List<Field> processJsonHelper(Map<String, Object> map, String key) {
 	   List<Field> fields = new ArrayList<>();
-	   if (map.keySet().contains(defaultField)) {
+	   if (map.keySet().contains(DEFAULT_FIELD)) {
 		   Field n = Field.builder()
-						.name(getValidName(key))
+						.name(getValidVariableName(key))
 						.build();
 		   //if no description can be found, then uses 'null'
 		   n.setDocString(
-				   map.get(descriptionField) == null ? String.valueOf(map.get("$ref"))
-						   : String.valueOf(map.get(descriptionField))); 
+				   map.get(DESCRIPTION_FIELD) == null ? String.valueOf(map.get("$ref"))
+						   : String.valueOf(map.get(DESCRIPTION_FIELD))); 
 		   
-		   if (map.get(defaultField) instanceof ArrayList) {
-			   n.setDefaultValue(formatListAsString((ArrayList) map.get(defaultField)));
-			   n.setType(getTypeAsString(String.valueOf(((ArrayList) map.get(defaultField)).get(0))) + "[]");
+		   if (map.get(DEFAULT_FIELD) instanceof ArrayList) {
+			   n.setDefaultValue(formatListAsString((ArrayList) map.get(DEFAULT_FIELD)));
+			   n.setType(getTypeAsString(String.valueOf(((ArrayList) map.get(DEFAULT_FIELD)).get(0))) + "[]");
 		   } else {
-			   n.setDefaultValue(String.valueOf(map.get(defaultField)));
+			   n.setDefaultValue(String.valueOf(map.get(DEFAULT_FIELD)));
 			   n.setType(getTypeAsString(n.getDefaultValue()));
 		   }
 
@@ -235,18 +247,17 @@ public class JsonSchemaConverter {
 	   map.entrySet().stream().forEach(e -> {
 		   
 		   if (e.getValue() instanceof Map) {
-			   fields.addAll(processJsonObject((Map<String, Object>)e.getValue(), e.getKey()));		
+			   fields.addAll(processJsonHelper((Map<String, Object>)e.getValue(), e.getKey()));		
 		   } else if (!(e.getValue() instanceof ArrayList)) {
 			   Field n = Field.builder()
- 						.name(getValidName(key))
- 						.type(typeField.substring(0, 1).toUpperCase() 
-		   						+ typeField.substring(1))
+ 						.name(getValidVariableName(key))
+ 						.type(TYPE_FIELD)
  						.docString(String.valueOf(e.getValue()))
  						.build();
 			   fields.add(n);
 		   } else {
 			   Field n = Field.builder()
-  						.name(getValidName(e.getKey()))
+  						.name(getValidVariableName(e.getKey()))
   						.defaultValue(String.valueOf(e.getValue()))
   						.build();
 			   n.setType(getTypeAsString(n.getDefaultValue()) + "[]");
@@ -290,52 +301,16 @@ public class JsonSchemaConverter {
 
    /**
     * Check if input string represents a float/double. 
-    * Sourced from 
-    * https://docs.oracle.com/javase/7/docs/api/java/lang/Double.html#valueOf(java.lang.String).
     * @param input string to check
     * @return boolean representing whether or not input is a float
     */
    public static boolean isFloat(String input) {
-	   final String Digits     = "(\\p{Digit}+)";
-	   final String HexDigits  = "(\\p{XDigit}+)";
-	   // an exponent is 'e' or 'E' followed by an optionally
-	   // signed decimal integer.
-	   final String Exp        = "[eE][+-]?"+Digits;
-	   final String fpRegex    =
-	       ("[\\x00-\\x20]*"+  // Optional leading "whitespace"
-	        "[+-]?(" + // Optional sign character
-	        "NaN|" +           // "NaN" string
-	        "Infinity|" +      // "Infinity" string
-
-	        // A decimal floating-point string representing a finite positive
-	        // number without a leading sign has at most five basic pieces:
-	        // Digits . Digits ExponentPart FloatTypeSuffix
-	        //
-	        // Since this method allows integer-only strings as input
-	        // in addition to strings of floating-point literals, the
-	        // two sub-patterns below are simplifications of the grammar
-	        // productions from section 3.10.2 of
-	        // The Java™ Language Specification.
-
-	        // Digits ._opt Digits_opt ExponentPart_opt FloatTypeSuffix_opt
-	        "((("+Digits+"(\\.)?("+Digits+"?)("+Exp+")?)|"+
-
-	        // . Digits ExponentPart_opt FloatTypeSuffix_opt
-	        "(\\.("+Digits+")("+Exp+")?)|"+
-
-	        // Hexadecimal strings
-	        "((" +
-	         // 0[xX] HexDigits ._opt BinaryExponent FloatTypeSuffix_opt
-	         "(0[xX]" + HexDigits + "(\\.)?)|" +
-
-	         // 0[xX] HexDigits_opt . HexDigits BinaryExponent FloatTypeSuffix_opt
-	         "(0[xX]" + HexDigits + "?(\\.)" + HexDigits + ")" +
-
-	         ")[pP][+-]?" + Digits + "))" +
-	        "[fFdD]?))" +
-	        "[\\x00-\\x20]*");// Optional trailing "whitespace"
-
-	   return Pattern.matches(fpRegex, input);
+	   try {
+		   Float.parseFloat(input);
+		   return true;
+	   } catch (Exception e) {
+		   return false;
+	   }
    }
 
    /**
@@ -407,7 +382,7 @@ public class JsonSchemaConverter {
     * @param str the input variable name
     * @return a valid java version of the name (starts with letter, $, _)
     */
-   public static String getValidName(String str) {
+   public static String getValidVariableName(String str) {
 	   if (!Character.isLetter(str.charAt(0))
 			   && str.charAt(0) != '$'
 			   && str.charAt(0) != '_') {
@@ -423,5 +398,25 @@ public class JsonSchemaConverter {
    public static void setWriteFile(boolean write) {
 	   useWriteFile = write;
    }
-
+   
+   /**
+    * Creates a valid java file name out of the input string
+    * @param s the string to be formatted
+    * @return a valid java file name 
+    */
+   public static String formatFileName(String s) throws InvalidFileNameException {
+	   String out = s;
+	   if (out.substring(out.length() - 5).equals(".json")) {
+		   out = out.substring(0, out.length() - 5); //remove .json
+	   }
+	   if (out.contains(".")) {
+		   out = out.replace(".", "");
+	   }
+	   if (SourceVersion.isName(out)) {
+		   return out;
+	   } else {
+		   throw new InvalidFileNameException(String.format("Cannot format given file name %s.", s));
+	   }
+   }
+   
 }

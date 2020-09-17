@@ -6,10 +6,9 @@ import org.junit.Test;
 
 public class AppTest {
    
-    @Test
+	@Test
     public void shouldAnswerWithTrue() {
-    	ReductionConfiguration ex = new ReductionConfigurationImplementation();
-    	assertTrue(ex.getNumQBins() == 100);
-    	
+		ReductionConfiguration ex = new ReductionConfigurationImplementation();
+		assertTrue(ex.getNumQBins() == 100);   	
     }
 }

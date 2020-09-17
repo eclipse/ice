@@ -19,9 +19,9 @@ class JsonSchemaConverterTest {
 	
 	public static final String JSON_RESULT = "TestJson_result.json";
 	
-	public static final String GENERATED_INTERFACE = "TestJsonProperties.java";
+	public static final String GENERATED_INTERFACE = "TestJsonFields.java";
 	
-	public static final String GENERATED_IMPLEMENTATION = "TestJsonPropertiesImplementation.java";
+	public static final String GENERATED_IMPLEMENTATION = "TestJsonFieldsImplementation.java";
 	
 	public static final String GENERATED_PROP_INTERFACE = "Properties.java";
 	

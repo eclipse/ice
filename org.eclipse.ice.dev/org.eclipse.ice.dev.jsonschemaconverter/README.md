@@ -1,7 +1,7 @@
 # JSON Schema Converter
 
 This README's purpose is to be a guide for the JsonSchemaConverter utility by explaining it's purpose, usage, and expected output. This utility takes a JSON file
-following the format of Json Schema (https://json-schema.org/), and saves a JSON file containing the data from the schema that follows the JSON format accepted by org.eclipse.ice.dev.PojoFromJson. This utility can also automatically invoke PojoFromJson's conversion methods to go ahead and produce Java files representing the original JSON schema file.
+following the format of JSON Schema (https://json-schema.org/), and saves a JSON file containing the data from the schema that follows the JSON format accepted by org.eclipse.ice.dev.PojoFromJson. This utility can also automatically invoke PojoFromJson's conversion methods to go ahead and produce Java files representing the original JSON schema file.
 
 ## Building and Executing
 
@@ -18,15 +18,17 @@ $ mvn clean verify
 ```
 
 In order to run the utility, use:
+
 ```
 $ mvn exec:java -Dexec.args="-o /path/to/desired/output/directory /path/to/json/schema/file.json"
 ```
 
-Required parameters are `-o` or `--output` which is the path to the desired output directory and also the path to the schema file to be converted. Two optional parameters are also avaliable, `-w` or `--write` and `-p` or `--package`. `-w` is the a boolean that specifies whetehr or not to automatically write Java files using org.eclipse.ice.dev.pojofromjson, with the default being false (and not writing the Java files). `-p` is the package name that should be used for the generated Java files. By default, generated Java files will use the name of the original schema file as the package name. 
+Required parameters are `-o` or `--output` which is the path to the desired output directory and also the path to the schema file to be converted. Two optional parameters are also available, `-w` or `--write` and `-p` or `--package`. `-w` is the a boolean that specifies whether or not to automatically write Java files using org.eclipse.ice.dev.pojofromjson, with the default being false (and not writing the Java files). `-p` is the package name that should be used for the generated Java files. By default, generated Java files will use the name of the original schema file as the package name. 
 
-## Json Schema Files and Expected Output
+## JSON Schema Files and Expected Output
 
 As defined on https://json-schema.org/, a JSON schema file takes the form of something like:
+
 ```
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -68,7 +70,9 @@ As defined on https://json-schema.org/, a JSON schema file takes the form of som
     }
 }
 ```
-The format acceped by org.eclipse.ice.dev.pojofromjson takes the form  of: 
+
+The format accepted by org.eclipse.ice.dev.pojofromjson takes the form  of: 
+
 ```
 {
 	"package": "testpackage",
@@ -80,7 +84,8 @@ The format acceped by org.eclipse.ice.dev.pojofromjson takes the form  of:
 }
 ```
 
-Taking the first example and converting it would give you (omitting some fields for sake of brevity):
+Taking the first example and converting it would give you (omitting some fields for the sake of brevity):
+
 ```
 [ {
   "element" : "Properties",
