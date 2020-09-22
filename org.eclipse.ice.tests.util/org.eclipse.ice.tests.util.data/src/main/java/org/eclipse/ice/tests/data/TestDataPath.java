@@ -7,7 +7,7 @@
  * Contributors: Daniel Bluhm - Initial implementation
  *******************************************************************************/
 
-package org.eclipse.ice.tests.data;
+package org.eclipse.ice.tests.util.data;
 
 import java.io.IOException;
 import java.io.InputStream;

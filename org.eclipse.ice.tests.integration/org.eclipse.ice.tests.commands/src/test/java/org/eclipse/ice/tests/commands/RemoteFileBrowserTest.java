@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
 
@@ -37,14 +37,14 @@ import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.RemoteFileBrowser;
 import org.eclipse.ice.commands.RemoteFileHandler;
-import org.eclipse.ice.tests.data.TestDataPath;
+import org.eclipse.ice.tests.util.data.TestDataPath;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * This class tests the RemoteFileBrowser and associated functionality
- * 
+ *
  * @author Joe Osborn
  *
  */
@@ -65,7 +65,7 @@ public class RemoteFileBrowserTest {
 	 * A TDP for collecting config files
 	 */
 	static TestDataPath dataPath = new TestDataPath();
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -96,7 +96,7 @@ public class RemoteFileBrowserTest {
 	 * test. We call one main function so that a file structure can be created at
 	 * the beginning of the test, accessed by both "subtests", and then deleted at
 	 * the end
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -122,7 +122,7 @@ public class RemoteFileBrowserTest {
 
 	/**
 	 * Test for file browsing on remote system
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public void testRemoteFileBrowsing(String topDirectory) throws IOException {
@@ -150,7 +150,7 @@ public class RemoteFileBrowserTest {
 
 	/**
 	 * Test for directory browsing on remote system
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public void testRemoteDirectoryBrowsing(String topDirectory) throws IOException {
@@ -189,7 +189,7 @@ public class RemoteFileBrowserTest {
 	/**
 	 * Function that creates a dummy remote file structure tree to test the file
 	 * browsing source code
-	 * 
+	 *
 	 * @param - topDirectory - refers to top directory whose contents will hold the
 	 *          dummy directories/files
 	 * @throws Exception
@@ -224,7 +224,7 @@ public class RemoteFileBrowserTest {
 		putFile(sftpChannel, filename, topDirectory + "/dir3/newfile.txt");
 
 	}
-	
+
 	private void putFile(SftpClient client, String src, String dest) throws IOException {
 		try {
 			if (client.stat(dest).isDirectory()) {
@@ -234,7 +234,7 @@ public class RemoteFileBrowserTest {
 					sep = "/";
 				}
 				dest += sep + path.getFileName();
-			}	
+			}
 		} catch (SftpException e) {
             if (!(e.getStatus() == SftpConstants.SSH_FX_NO_SUCH_FILE)) {
                 throw e;
@@ -253,7 +253,7 @@ public class RemoteFileBrowserTest {
 	/**
 	 * Function that deletes the remote file structure tree created for testing file
 	 * browsing
-	 * 
+	 *
 	 * @param - topDirectory - refers to top directory whose contents hold the dummy
 	 *          directories/files
 	 * @throws IOException
@@ -270,7 +270,7 @@ public class RemoteFileBrowserTest {
 
 	/**
 	 * Recurisve function that deletes a remote directory and its contents
-	 * 
+	 *
 	 * @param sftpChannel
 	 * @param path
 	 * @throws IOException
@@ -308,16 +308,16 @@ public class RemoteFileBrowserTest {
 	 * Dummy function which makes the connection configuration for the dummy remote
 	 * ssh connection. This way functions can grab the configuration at will with
 	 * one line of code.
-	 * 
+	 *
 	 * @return
 	 */
 	private static ConnectionConfiguration makeConnectionConfiguration() {
 		// Set the connection configuration to a dummy remote connection
 		ConnectionConfiguration config = new ConnectionConfiguration();
-		
+
 		// Get a factory which determines the type of authorization
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
-		
+
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
 		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();

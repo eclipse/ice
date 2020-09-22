@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
@@ -27,7 +27,7 @@ import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManager;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
 import org.eclipse.ice.commands.KeyPathConnectionAuthorizationHandler;
-import org.eclipse.ice.tests.data.TestDataPath;
+import org.eclipse.ice.tests.util.data.TestDataPath;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -39,7 +39,7 @@ import org.junit.Test;
  * as currently implemented, the ssh connection is a dummy account set up within
  * gitlab that will be used in CI for testing. The test class reads from a txt
  * file the username, password, and hostname of the dummy account.
- * 
+ *
  * @author Joe Osborn
  *
  */
@@ -64,10 +64,10 @@ public class ConnectionManagerTest {
 	 * A TDP for collecting config files
 	 */
 	static TestDataPath dataPath = new TestDataPath();
-	
+
 	/**
 	 * This function makes a test connection with which to play with
-	 * 
+	 *
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
@@ -76,7 +76,7 @@ public class ConnectionManagerTest {
 		// Set up the configuration with the necessary credentials
 		// Get a factory which determines the type of authorization
 		ConnectionAuthorizationHandlerFactory authFactory = new ConnectionAuthorizationHandlerFactory();
-		
+
 		// Request a ConnectionAuthorization of type text file which contains the
 		// credentials
 		ConnectionAuthorizationHandler auth = null;
@@ -93,7 +93,7 @@ public class ConnectionManagerTest {
 	/**
 	 * Clear out the connections formed after each test so that each test starts
 	 * fresh with a clean slated connection manager
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@After
@@ -110,7 +110,7 @@ public class ConnectionManagerTest {
 	/**
 	 * This function deletes all of the connections in the connection manager once
 	 * the tests have run and completed.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@AfterClass
@@ -129,7 +129,7 @@ public class ConnectionManagerTest {
 
 	/**
 	 * This function tests opening a connection with an already generated key path
-	 * 
+	 *
 	 * @throws JSchException
 	 */
 	@Test
@@ -298,7 +298,7 @@ public class ConnectionManagerTest {
 	/**
 	 * This tests failure if the known host does not exist in the known_hosts ssh
 	 * file
-	 * 
+	 *
 	 * @throws JSchException
 	 */
 	@Test(expected = IOException.class)
@@ -316,12 +316,12 @@ public class ConnectionManagerTest {
 	/**
 	 * This tests the method openForwardingConnection, which creates a connection
 	 * between three systems by porting the connection through an intermediary host
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@Test
 	@Ignore // ignore until second dummy host is setup
 	public void testForwardConnection() throws IOException {
-		
+
 		ConnectionManager manager = ConnectionManagerFactory.getConnectionManager();
 
 		// Read in a dummy configuration file that contains credentials
@@ -339,10 +339,10 @@ public class ConnectionManagerTest {
 		config.setAuthorization(auth);
 		config.setName("forwardConnection");
 		Connection firstConnection = manager.openConnection(config);
-		
+
 		// Make sure the connection was opened properly
 		assert (manager.isConnectionOpen(firstConnection.getConfiguration().getName()));
-		
+
 		// Now get the final host authorization
 		ConnectionAuthorizationHandler intermauth = authFactory.getConnectionAuthorizationHandler("text",
 				credFile);

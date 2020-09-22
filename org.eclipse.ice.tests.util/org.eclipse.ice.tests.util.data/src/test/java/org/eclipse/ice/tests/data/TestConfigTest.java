@@ -9,7 +9,7 @@
  *    Daniel Bluhm - Initial implementation
  *******************************************************************************/
 
-package org.eclipse.ice.tests.data;
+package org.eclipse.ice.tests.util.data;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -4,7 +4,7 @@ This README serves as additional information for setting up the more complicated
 
 
 ### Dependencies
-All dependencies are noted in the `pom` file, and all but one are within maven central. The only non-centralized dependency is the ICE package `org.eclipse.ice.tests.data`. To install it, perform the following commands (after cloning the ICE repositiory) so that the Commands package can build successfully:
+All dependencies are noted in the `pom` file, and all but one are within maven central. The only non-centralized dependency is the ICE package `org.eclipse.ice.tests.util.data`. To install it, perform the following commands (after cloning the ICE repositiory) so that the Commands package can build successfully:
 
 ```shell
 $ cd org.eclipse.ice.tests
@@ -20,7 +20,7 @@ password
 hostname
 ```
 
-See the README in `org.eclipse.ice.tests/org.eclipse.ice.tests.data` for information regarding the `$TEST_DATA_PATH` environment variable; [this link](https://github.com/dbluhm/ice/blob/next/org.eclipse.ice.tests/org.eclipse.ice.tests.data/README.md) takes you to the README on the `next` branch.
+See the README in `org.eclipse.ice.tests/org.eclipse.ice.tests.util.data` for information regarding the `$TEST_DATA_PATH` environment variable; [this link](https://github.com/dbluhm/ice/blob/next/org.eclipse.ice.tests/org.eclipse.ice.tests.util.data/README.md) takes you to the README on the `next` branch.
 
 The automated tests will then grab the necessary credentials from this file to run. Any valid ssh connection will work. If you still find that the tests fail, ensure that the ssh connection you are using has been logged into before from your host computer such that there is a key fingerprint associated to that host in your `~/.ssh/known_hosts` file. The Commands package requires that this key exists in order for authentication to proceed, no matter what form of authentication you use. In the event that tests fail on a host that already exists in `known_hosts` (e.g. with the error message `server key did not validate`, try deleting your `known_hosts` file (or the entries in your `known_hosts` that correspond to the host you are trying to run the tests on), logging in again to re-establish a fingerprint, and running the tests again. 
 

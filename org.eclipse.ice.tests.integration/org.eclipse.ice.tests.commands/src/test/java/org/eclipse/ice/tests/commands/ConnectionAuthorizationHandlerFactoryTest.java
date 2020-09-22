@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings, Joe Osborn
  *******************************************************************************/
 package org.eclipse.ice.tests.commands;
@@ -25,13 +25,13 @@ import org.eclipse.ice.commands.ConnectionAuthorizationHandler;
 import org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory;
 import org.eclipse.ice.commands.ConnectionConfiguration;
 import org.eclipse.ice.commands.ConnectionManagerFactory;
-import org.eclipse.ice.tests.data.TestDataPath;
+import org.eclipse.ice.tests.util.data.TestDataPath;
 import org.junit.Test;
 
 /**
  * This class tests
  * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory}
- * 
+ *
  * @author Joe Osborn
  *
  */
@@ -46,7 +46,7 @@ public class ConnectionAuthorizationHandlerFactoryTest {
 	 * A TDP for collecting config files
 	 */
 	private TestDataPath dataPath = new TestDataPath();
-	
+
 	/**
 	 * Tests local authorization of
 	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory#getConnectionAuthorizationHandler(String)}
@@ -71,12 +71,12 @@ public class ConnectionAuthorizationHandlerFactoryTest {
 	/**
 	 * Tests text file authorization of
 	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory#getConnectionAuthorizationHandler(String)}
-	 * 
+	 *
 	 * @throws JSchException
 	 */
 	@Test
 	public void testTextAuthorization() throws IOException {
-		
+
 		String credFile = dataPath.resolve("commands/ice-remote-creds.txt").toString();
 
 		// Get a text file authorization handler
@@ -90,15 +90,15 @@ public class ConnectionAuthorizationHandlerFactoryTest {
 			// delete the password since we don't need it here
 			Arrays.fill(pwd, Character.MIN_VALUE);
 			String hostname = scanner.next();
-			
+
 			assertEquals(username, text.getUsername());
 			assertEquals(hostname, text.getHostname());
-	
+
 			// Create a connection configuration to actually try and open the connection
 			ConnectionConfiguration config = new ConnectionConfiguration();
 			config.setName("Text");
 			config.setAuthorization(text);
-	
+
 			// Try to open the connection
 			ConnectionManagerFactory.getConnectionManager().openConnection(config);
 			// Assert that it was correctly opened
@@ -111,14 +111,14 @@ public class ConnectionAuthorizationHandlerFactoryTest {
 	/**
 	 * Tests key path authorization of
 	 * {@link org.eclipse.ice.commands.ConnectionAuthorizationHandlerFactory#getConnectionAuthorizationHandler(String)}
-	 * 
+	 *
 	 * @throws JSchException
 	 */
 	@Test
 	public void testKeyPathAuthorization() throws IOException {
 		// Filepath to the dummy host key
 		String keyPath = System.getProperty("user.home") + "/.ssh/dummyhostkey";
-		
+
 		// Create a text file credential path to get the same username/hostname
 		// as the key, in the event someone is using a host that is not the dummy
 		// server
@@ -126,7 +126,7 @@ public class ConnectionAuthorizationHandlerFactoryTest {
 
 		// Get a text file authorization handler
 		ConnectionAuthorizationHandler text = factory.getConnectionAuthorizationHandler("text", credFile);
-		
+
 		// Create a connection authorization handler for a keypath
 		ConnectionAuthorizationHandler auth = factory.getConnectionAuthorizationHandler("keypath", keyPath);
 		auth.setHostname(text.getHostname());

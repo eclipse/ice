@@ -21,7 +21,7 @@ $ mvn clean verify
 In both cases one can skip the tests by including `-DskipTests` in your build. 
 
 ### Dependencies
-All dependencies are noted in the `pom` file, and all but one are within maven central. The only non-centralized dependency is the ICE package `org.eclipse.ice.tests.data`. To install it, perform the following commands (after cloning the ICE repositiory) so that the Commands package can build successfully:
+All dependencies are noted in the `pom` file, and all but one are within maven central. The only non-centralized dependency is the ICE package `org.eclipse.ice.tests.util.data`. To install it, perform the following commands (after cloning the ICE repositiory) so that the Commands package can build successfully:
 
 ```shell
 $ cd org.eclipse.ice.data
