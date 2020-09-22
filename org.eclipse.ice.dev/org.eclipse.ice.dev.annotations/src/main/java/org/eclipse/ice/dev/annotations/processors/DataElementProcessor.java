@@ -97,7 +97,7 @@ public class DataElementProcessor extends AbstractProcessor {
 	private SpecExtractionHelper specExtractionHelper = new SpecExtractionHelper();
 
 	@Override
-	public void init(final ProcessingEnvironment env) {
+	public synchronized void init(final ProcessingEnvironment env) {
 		messager = env.getMessager();
 		elementUtils = env.getElementUtils();
 		mapper = new ObjectMapper();
@@ -142,7 +142,7 @@ public class DataElementProcessor extends AbstractProcessor {
 	 * @return the extracted name
 	 */
 	private String extractName(Element element) {
-		return specExtractionHelper.getAnnotation(element, DataElement.class).map(e -> e.name()).orElse(null);
+		return specExtractionHelper.getAnnotation(element, DataElement.class).map(DataElement::name).orElse(null);
 	}
 
 	/**

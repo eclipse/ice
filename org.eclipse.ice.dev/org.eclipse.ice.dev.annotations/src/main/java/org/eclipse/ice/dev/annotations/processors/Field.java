@@ -288,7 +288,7 @@ public class Field {
 		 */
 		@JsonIgnore
 		public FieldBuilder modifiersToString(Set<Modifier> modifiers) {
-			return this.modifiers(modifiers.stream().map(modifier -> modifier.toString()).collect(Collectors.toSet()));
+			return this.modifiers(modifiers.stream().map(Object::toString).collect(Collectors.toSet()));
 		}
 	}
 }

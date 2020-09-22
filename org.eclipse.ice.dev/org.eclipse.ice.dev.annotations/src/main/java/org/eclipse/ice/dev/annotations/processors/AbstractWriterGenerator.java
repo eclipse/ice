@@ -11,7 +11,6 @@
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.JavaFileObject;

@@ -33,14 +33,7 @@ public class DataElementWriterGenerator extends AbstractWriterGenerator implemen
 	/**
 	 * Map of file name key to the respective file's writer initializer
 	 */
-	private Map<TemplateProperty, BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>>> writerInitializers = new HashMap<TemplateProperty, BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>>>() {
-		{
-			put(MetaTemplateProperty.QUALIFIED, DataElementInterfaceWriter.getContextInitializer());
-			put(MetaTemplateProperty.QUALIFIEDIMPL, DataElementImplementationWriter.getContextInitializer());
-			put(PersistenceHandlerTemplateProperty.QUALIFIED,
-					DataElementPersistenceHandlerWriter.getContextInitializer());
-		}
-	};
+	private Map<TemplateProperty, BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>>> writerInitializers = new HashMap<>();
 
 	/**
 	 * Util instance for extracting specific data from Element objects
@@ -49,6 +42,10 @@ public class DataElementWriterGenerator extends AbstractWriterGenerator implemen
 
 	DataElementWriterGenerator(ProcessingEnvironment processingEnv) {
 		super(processingEnv);
+		writerInitializers.put(MetaTemplateProperty.QUALIFIED, DataElementInterfaceWriter.getContextInitializer());
+		writerInitializers.put(MetaTemplateProperty.QUALIFIEDIMPL, DataElementImplementationWriter.getContextInitializer());
+		writerInitializers.put(PersistenceHandlerTemplateProperty.QUALIFIED,
+				DataElementPersistenceHandlerWriter.getContextInitializer());
 	}
 
 	/**

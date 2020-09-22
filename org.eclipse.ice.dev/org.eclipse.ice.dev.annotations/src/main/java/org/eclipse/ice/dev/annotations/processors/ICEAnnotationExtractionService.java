@@ -161,7 +161,7 @@ public class ICEAnnotationExtractionService {
 	 * @return enum keyed map of extracted and processed class metadata
 	 */
 	protected Map<TemplateProperty, Object> generateClassMetadata(SpecClassMetadata specData) {
-		Map<TemplateProperty, Object> context = new HashMap<TemplateProperty, Object>();
+		Map<TemplateProperty, Object> context = new HashMap<>();
 
 		generateMetaTemplateData(specData, context);
 		generatePersistenceHandlerTemplateData(specData, context);

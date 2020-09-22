@@ -12,8 +12,6 @@ package org.eclipse.ice.dev.annotations.processors;
 
 import java.util.Map;
 
-import org.eclipse.ice.dev.annotations.processors.AnnotationExtractionRequest.AnnotationExtractionRequestBuilder;
-
 import lombok.Builder;
 import lombok.Data;
 

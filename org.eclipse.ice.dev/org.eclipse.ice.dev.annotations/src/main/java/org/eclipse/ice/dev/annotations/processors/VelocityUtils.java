@@ -53,12 +53,12 @@ public class VelocityUtils {
 	 *         exist
 	 */
 	public static TypeMirror getCollectionParameterType(TypeMirror type) {
-		if (type != null && DeclaredType.class.isAssignableFrom(type.getClass())) {
-			if (((DeclaredType) type).getTypeArguments() != null
-					&& ((DeclaredType) type).getTypeArguments().size() > 0) {
-				return ((DeclaredType) type).getTypeArguments().get(0);
-			}
+		if (type != null && DeclaredType.class.isAssignableFrom(type.getClass())
+				&& ((DeclaredType) type).getTypeArguments() != null
+				&& !((DeclaredType) type).getTypeArguments().isEmpty()) {
+			return ((DeclaredType) type).getTypeArguments().get(0);
 		}
+
 		return null;
 	}
 

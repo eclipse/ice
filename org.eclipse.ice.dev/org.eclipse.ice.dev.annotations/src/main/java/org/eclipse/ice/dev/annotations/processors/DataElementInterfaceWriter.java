@@ -65,15 +65,13 @@ public class DataElementInterfaceWriter extends InterfaceWriter {
 	 */
 	@Override
 	public BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getInitializer() {
-		return (fileObject, context) -> {
-			String name = (String) context.get(MetaTemplateProperty.QUALIFIED);
-			return Arrays.asList(DataElementInterfaceWriter.builder()
+		return (fileObject, context) -> 
+					Arrays.asList(DataElementInterfaceWriter.builder()
 					.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
 					.interfaceName((String) context.get(MetaTemplateProperty.INTERFACE))
 					.fields((Fields) context.get(MetaTemplateProperty.FIELDS))
 					.types(new Types(((Fields) context.get(MetaTemplateProperty.FIELDS)).getInterfaceFields()))
 					.generatedFile(fileObject).build());
-		};
 	}
 
 	/**

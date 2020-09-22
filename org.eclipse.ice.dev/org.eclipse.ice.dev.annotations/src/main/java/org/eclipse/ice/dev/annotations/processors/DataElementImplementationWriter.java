@@ -17,8 +17,6 @@ import java.util.function.BiFunction;
 
 import javax.tools.JavaFileObject;
 
-import org.eclipse.ice.dev.annotations.processors.DataElementInterfaceWriter.DataElementInterfaceWriterBuilder;
-
 import lombok.Builder;
 
 /**
@@ -67,16 +65,14 @@ public class DataElementImplementationWriter extends ImplementationWriter {
 	 */
 	@Override
 	public BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getInitializer() {
-		return (fileObject, context) -> {
-			String name = (String) context.get(MetaTemplateProperty.QUALIFIEDIMPL);
-			return Arrays.asList(DataElementImplementationWriter.builder()
+		return (fileObject, context) -> 
+					Arrays.asList(DataElementImplementationWriter.builder()
 					.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
 					.interfaceName((String) context.get(MetaTemplateProperty.INTERFACE))
 					.className((String) context.get(MetaTemplateProperty.CLASS))
 					.fields((Fields) context.get(MetaTemplateProperty.FIELDS))
 					.types(((Fields) context.get(MetaTemplateProperty.FIELDS)).getTypes())
 					.generatedFile(fileObject).build());
-		};
 	}
 
 	/**

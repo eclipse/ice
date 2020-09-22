@@ -33,7 +33,7 @@ public class DataElementAnnotationExtractor {
 	 * final generated classes
 	 */
 	private static final List<String> nonTransferableAnnotations = Stream.of(DataField.class, DataField.Default.class)
-			.map(cls -> cls.getCanonicalName())
+			.map(Class::getCanonicalName)
 			.collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
 
 	/**

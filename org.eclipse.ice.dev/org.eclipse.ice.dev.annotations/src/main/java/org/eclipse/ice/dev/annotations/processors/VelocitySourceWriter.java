@@ -56,9 +56,8 @@ public abstract class VelocitySourceWriter {
 	 * Write the Java Source file to the open writer.
 	 * 
 	 * @param writer to which the java source will be written
-	 * @throws IOException
 	 */
-	public void write(Writer writer) throws IOException {
+	public void write(Writer writer) {
 		// Make sure Velocity is initialized. Subsequent calls are harmless.
 		Velocity.init(VelocityProperties.get());
 

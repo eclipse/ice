@@ -98,8 +98,8 @@ public class SpecExtractionHelper implements ExtractionHelper {
 	public List<String> extractAnnotations(Element element, List<String> handledAnnotations) {
 		return element.getAnnotationMirrors().stream()
 				.filter(mirror -> !handledAnnotations.contains(mirror.getAnnotationType().toString()))
-				.map(mirror -> mirror.toString()).collect(Collectors.toList());
-	};
+				.map(Object::toString).collect(Collectors.toList());
+	}
 
 	/**
 	 * Return the class of this Field.
@@ -152,7 +152,7 @@ public class SpecExtractionHelper implements ExtractionHelper {
 			retval = elementUtils.getConstantExpression(((VariableElement) element).getConstantValue());
 		}
 		return retval;
-	};
+	}
 
 	/**
 	 * Collect all fields in the given element. Entire member variables can be

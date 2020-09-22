@@ -21,6 +21,13 @@ import org.eclipse.ice.data.JavascriptValidator;
  * default.
  */
 public class DefaultFields {
+	
+	/* 
+	 * Explicit private constructor to hide implicit public constructor, otherwise this would be a code smell
+	 */
+	private DefaultFields() {
+		
+	}
 
 	/**
 	 * The private UUID of this element.

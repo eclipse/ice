@@ -26,12 +26,12 @@ public class DefaultNameGenerator implements NameGenerator {
 	/**
 	 * The value appended to DataElement implementation class names.
 	 */
-	private final static String IMPL_SUFFIX = "Implementation";
+	private static final String IMPL_SUFFIX = "Implementation";
 
 	/**
 	 * The value appended to DataElement Persistence Handler class names.
 	 */
-	private final static String PERSISTENCE_SUFFIX = "PersistenceHandler";
+	private static final String PERSISTENCE_SUFFIX = "PersistenceHandler";
 
 	/**
 	 * Used for pulling data from annotations on {@link Element}s
@@ -45,7 +45,7 @@ public class DefaultNameGenerator implements NameGenerator {
 	 */
 	@Override
 	public String extractName(Element element) {
-		return specExtractionHelper.getAnnotation(element, DataElement.class).map(e -> e.name()).orElse(null);
+		return specExtractionHelper.getAnnotation(element, DataElement.class).map(DataElement::name).orElse(null);
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class DefaultNameGenerator implements NameGenerator {
 	 */
 	@Override
 	public String extractCollectionName(Element element) {
-		return specExtractionHelper.getAnnotation(element, Persisted.class).map(p -> p.collection()).orElse(null);
+		return specExtractionHelper.getAnnotation(element, Persisted.class).map(Persisted::collection).orElse(null);
 	}
 
 	/**
