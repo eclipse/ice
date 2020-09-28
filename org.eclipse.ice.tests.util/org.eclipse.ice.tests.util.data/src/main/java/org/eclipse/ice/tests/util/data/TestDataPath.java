@@ -58,7 +58,7 @@ public class TestDataPath {
 	 * No args constructor.
 	 */
 	public TestDataPath() {
-		fs = FileSystems.getDefault();
+		this.fs = FileSystems.getDefault();
 		this.testDataDir = determineTestDataDirectory(System.getenv());
 	}
 
@@ -85,6 +85,22 @@ public class TestDataPath {
 		} else {
 			return fs.getPath(alternateTestDataDir);
 		}
+	}
+
+	/**
+	 * Return the testDataDirectory as string.
+	 */
+	@Override
+	public String toString() {
+		return this.testDataDir.toString();
+	}
+
+	/**
+	 * Get the test data directory.
+	 * @return test data directory
+	 */
+	public Path getTestDataDirectory() {
+		return this.testDataDir;
 	}
 
 	/**

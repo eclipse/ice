@@ -33,18 +33,20 @@ import com.google.common.jimfs.Jimfs;
  */
 class TestDataPathTest {
 
+	private static final String TEST_DATA_PATH = "/home/test/test_data";
+	private static final Map<String, String> ALTERNATE_ENVIRONMENT = Map.of(
+		TestDataPath.TEST_DATA_PATH_ENV_VAR, TEST_DATA_PATH
+	);
+
 	public static TestDataPath inMemTestDataPath(
-		Map<String, String> env, String... dirs
+		String... dirs
 	) throws IOException {
 		FileSystem fs = Jimfs.newFileSystem(Configuration.unix());
 		for (String dir : dirs) {
 			Path toMake = fs.getPath(dir);
 			Files.createDirectories(toMake);
 		}
-		if (env == null) {
-			env = Collections.emptyMap();
-		}
-		return new TestDataPath(fs, env);
+		return new TestDataPath(fs, ALTERNATE_ENVIRONMENT);
 	}
 
 	@Test
@@ -57,29 +59,35 @@ class TestDataPathTest {
 	}
 
 	@Test
-	void testResolve() throws IOException {
-		TestDataPath data = inMemTestDataPath(null);
+	void testDefaultInPlaceWhenNoOverrideGiven() throws IOException {
+		TestDataPath data = new TestDataPath();
 		assertEquals(
-			TestDataPath.DEFAULT_TEST_DATA_DIR.resolve("test").toString(),
-			data.resolve("test").toString()
+			TestDataPath.DEFAULT_TEST_DATA_DIR,
+			data.getTestDataDirectory()
 		);
 	}
 
 	@Test
-	void testResolveWithOverridenDefault() throws IOException {
-		final Path alt = Path.of("/home/test/test_data");
-		TestDataPath data = inMemTestDataPath(
-			Map.of(TestDataPath.TEST_DATA_PATH_ENV_VAR, alt.toString())
-		);
+	void testOverridenDefault() throws IOException {
+		TestDataPath data = inMemTestDataPath();
 		assertEquals(
-			alt.resolve("test").toString(),
+			TEST_DATA_PATH,
+			data.toString()
+		);
+	}
+
+	@Test
+	void testResolve() throws IOException {
+		TestDataPath data = inMemTestDataPath();
+		assertEquals(
+			TEST_DATA_PATH + "/test",
 			data.resolve("test").toString()
 		);
 	}
 
 	@Test
 	void testCreate() throws IOException {
-		TestDataPath data = inMemTestDataPath(null);
+		TestDataPath data = inMemTestDataPath();
 		data.create();
 		assertTrue(Files.exists(data.resolve("")));
 	}
@@ -87,14 +95,14 @@ class TestDataPathTest {
 	@Test
 	void testCreateDirString() throws IOException {
 		final String test = "test";
-		TestDataPath data = inMemTestDataPath(null);
+		TestDataPath data = inMemTestDataPath();
 		data.createDir(test);
 		assertTrue(Files.exists(data.resolve(test)));
 	}
 
 	@Test
 	void testCreateDirPath() throws IOException {
-		TestDataPath data = inMemTestDataPath(null);
+		TestDataPath data = inMemTestDataPath();
 		final Path test = data.resolve("test");
 		data.createDir(test);
 		assertTrue(Files.exists(test));
@@ -102,56 +110,54 @@ class TestDataPathTest {
 
 	@Test
 	void testExists() throws IOException {
-		TestDataPath data = inMemTestDataPath(
-			null, TestDataPath.DEFAULT_TEST_DATA_DIR.toString()
-		);
+		TestDataPath data = inMemTestDataPath();
+		assertFalse(data.exists());
+		Files.createDirectories(data.getTestDataDirectory());
 		assertTrue(data.exists());
 	}
 
 	@Test
 	void testExistsString() throws IOException {
-		TestDataPath data = inMemTestDataPath(
-			null,
-			TestDataPath.DEFAULT_TEST_DATA_DIR.resolve("test").toString()
-		);
+		TestDataPath data = inMemTestDataPath();
+		assertFalse(data.exists("test"));
+		Files.createDirectories(data.getTestDataDirectory().resolve("test"));
 		assertTrue(data.exists("test"));
 	}
 
 	@Test
 	void testExistsPath() throws IOException {
-		TestDataPath data = inMemTestDataPath(
-			null,
-			TestDataPath.DEFAULT_TEST_DATA_DIR.resolve("test").toString()
-		);
+		TestDataPath data = inMemTestDataPath();
 		final Path test = data.resolve("test");
+		assertFalse(data.exists(test));
+		Files.createDirectories(data.getTestDataDirectory().resolve(test));
 		assertTrue(data.exists(test));
 	}
 
 	@Test
 	void testInputString() throws IOException {
-		TestDataPath data = inMemTestDataPath(null);
+		TestDataPath data = inMemTestDataPath();
 		assertThrows(IOException.class, () -> {data.input("test");});
 		data.create();
-		Files.createFile(data.resolve("test"));
+		Files.createFile(data.getTestDataDirectory().resolve("test"));
 		InputStream input = data.input("test");
 		assertEquals(0, input.available());
 	}
 
 	@Test
 	void testInputPath() throws IOException {
-		TestDataPath data = inMemTestDataPath(null);
+		TestDataPath data = inMemTestDataPath();
 		assertThrows(IOException.class, () -> {
-			data.input(data.resolve("test"));
+			data.input(data.getTestDataDirectory().resolve("test"));
 		});
 		data.create();
-		Files.createFile(data.resolve("test"));
-		InputStream input = data.input(data.resolve("test"));
+		Files.createFile(data.getTestDataDirectory().resolve("test"));
+		InputStream input = data.input(data.getTestDataDirectory().resolve("test"));
 		assertEquals(0, input.available());
 	}
 
 	@Test
 	void testOutputString() throws IOException {
-		TestDataPath data = inMemTestDataPath(null);
+		TestDataPath data = inMemTestDataPath();
 		assertThrows(IOException.class, () -> {
 			data.output("test");
 		});
@@ -162,40 +168,40 @@ class TestDataPathTest {
 
 	@Test
 	void testOutputPath() throws IOException {
-		TestDataPath data = inMemTestDataPath(null);
+		TestDataPath data = inMemTestDataPath();
 		assertThrows(IOException.class, () -> {
-			data.output(data.resolve("test"));
+			data.output(data.getTestDataDirectory().resolve("test"));
 		});
 		data.create();
-		data.output(data.resolve("test"));
-		Files.exists(data.resolve("test"));
+		data.output(data.getTestDataDirectory().resolve("test"));
+		Files.exists(data.getTestDataDirectory().resolve("test"));
 	}
 
 	@Test
 	void testReaderString() throws IOException {
-		TestDataPath data = inMemTestDataPath(null);
+		TestDataPath data = inMemTestDataPath();
 		assertThrows(IOException.class, () -> {data.reader("test");});
 		data.create();
-		Files.createFile(data.resolve("test"));
+		Files.createFile(data.getTestDataDirectory().resolve("test"));
 		Reader reader = data.reader("test");
 		assertEquals(-1, reader.read());
 	}
 
 	@Test
 	void testReaderPath() throws IOException {
-		TestDataPath data = inMemTestDataPath(null);
+		TestDataPath data = inMemTestDataPath();
 		assertThrows(IOException.class, () -> {
-			data.reader(data.resolve("test"));
+			data.reader(data.getTestDataDirectory().resolve("test"));
 		});
 		data.create();
-		Files.createFile(data.resolve("test"));
-		Reader reader = data.reader(data.resolve("test"));
+		Files.createFile(data.getTestDataDirectory().resolve("test"));
+		Reader reader = data.reader(data.getTestDataDirectory().resolve("test"));
 		assertEquals(-1, reader.read());
 	}
 
 	@Test
 	void testWriterString() throws IOException {
-		TestDataPath data = inMemTestDataPath(null);
+		TestDataPath data = inMemTestDataPath();
 		assertThrows(IOException.class, () -> {
 			data.writer("test");
 		});
@@ -206,12 +212,12 @@ class TestDataPathTest {
 
 	@Test
 	void testWriterPath() throws IOException {
-		TestDataPath data = inMemTestDataPath(null);
+		TestDataPath data = inMemTestDataPath();
 		assertThrows(IOException.class, () -> {
-			data.writer(data.resolve("test"));
+			data.writer(data.getTestDataDirectory().resolve("test"));
 		});
 		data.create();
-		data.writer(data.resolve("test"));
-		Files.exists(data.resolve("test"));
+		data.writer(data.getTestDataDirectory().resolve("test"));
+		Files.exists(data.getTestDataDirectory().resolve("test"));
 	}
 }
