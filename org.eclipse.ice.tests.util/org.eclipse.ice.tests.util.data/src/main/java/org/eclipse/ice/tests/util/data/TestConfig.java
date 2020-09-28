@@ -55,20 +55,13 @@ public class TestConfig extends Properties {
 	 */
 	public void load(String propertyFilename) {
 		Path propPath = dataPath.resolve(propertyFilename);
-		if (dataPath.exists(propPath)) {
-			try(InputStream propStream = dataPath.input(propPath)) {
-				super.load(propStream);
-			} catch (IOException e) {
-				logger.warn(
-					"Could not load properties from {}: {}",
-					propPath.toString(),
-					e.getMessage()
-				);
-			}
-		} else {
+		try(InputStream propStream = dataPath.input(propPath)) {
+			super.load(propStream);
+		} catch (IOException e) {
 			logger.warn(
-				"Could not find properties file {} in test data directory",
-				propPath.toString()
+				"Could not load properties from {}:",
+				propPath,
+				e
 			);
 		}
 	}

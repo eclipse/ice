@@ -38,11 +38,36 @@ class TestConfigTest {
 
 	@Test
 	void testLoadAndAccess() throws IOException {
-		TestDataPath dataPath = TestDataPathTest.inMemTestDataPath(null);
+		TestDataPath dataPath = TestDataPathTest.inMemTestDataPath();
 		TestConfig config = new TestConfig(dataPath);
 		setupPropFile(dataPath);
 		config.load(PROP_FILENAME);
-		String test = config.getProperty("test");
-		assertEquals("abcd1234", test);
+		assertEquals("abcd1234", config.getProperty("test"));
+	}
+
+	@Test
+	void testExceptionNotThrownOnFileNotExist() throws IOException {
+		TestDataPath dataPath = TestDataPathTest.inMemTestDataPath();
+		TestConfig config = new TestConfig(dataPath);
+		config.load(PROP_FILENAME);
+		assertEquals("default", config.getProperty("test", "default"));
+	}
+
+	@Test
+	void testExceptionNotThrownOnBadPropFile() throws IOException {
+		TestDataPath dataPath = TestDataPathTest.inMemTestDataPath();
+		TestConfig config = new TestConfig(dataPath);
+		dataPath.create();
+		try(PrintWriter writer = new PrintWriter(dataPath.writer(PROP_FILENAME))) {
+			writer.println("Not valid property contents");
+		}
+		config.load(PROP_FILENAME);
+		assertEquals("default", config.getProperty("test", "default"));
+	}
+
+	@Test
+	void testFrom() {
+		TestConfig config = TestConfig.from("");
+		assertEquals("default", config.getProperty("test", "default"));
 	}
 }
