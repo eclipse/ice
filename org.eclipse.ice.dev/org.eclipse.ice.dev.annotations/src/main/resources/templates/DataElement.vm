@@ -46,7 +46,7 @@ public class ${class} implements ${interface}, Serializable {
 	#foreach($field in $fields)
 
 		#fielddoc
-		#nonnull($tab, $newline)
+		#nonnull($tab, $esc.newline)
 		#if(!${field.Getter} || ${field.VarNameDifferent})
 	@Getter(AccessLevel.NONE)
 		#end
@@ -179,7 +179,7 @@ public class ${class} implements ${interface}, Serializable {
 					retval =
 					#@settab(6)
 						#foreach($field in ${fields.Match})#@nonewline
-						${field.VarName}Match#if($foreach.hasNext) &&#if($foreach.count % 3 == 0)$newline#else #end#end
+						${field.VarName}Match#if($foreach.hasNext) &&#if($foreach.count % 3 == 0)$esc.newline#else #end#end
 						#end#end;
 					#end
 				}
