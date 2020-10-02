@@ -13,9 +13,14 @@ package org.eclipse.ice.tests.dev.annotations.processors;
 
 import static com.google.testing.compile.CompilationSubject.*;
 
+import java.util.Locale;
+
+import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.testing.compile.Compilation;
 
@@ -55,6 +60,11 @@ class DataElementProcessorTest {
 	 * Fully qualified name of the generated implementation.
 	 */
 	private static final String IMPLEMENTATION = "TestImplementation";
+
+	/**
+	 * Logger.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(DataElementProcessorTest.class);
 
 	/**
 	 * Enumeration of inputs used in testing.
@@ -135,6 +145,17 @@ class DataElementProcessorTest {
 		@Override
 		public String getPath() {
 			return PARENT + this.filename;
+		}
+	}
+	
+	/**
+	 * Assert that the compilation succeeded and log any warnings.
+	 * @param compilation to check.
+	 */
+	private static void assertSucceededAndLogWarnings(Compilation compilation) {
+		assertThat(compilation).succeeded();
+		for (Diagnostic<?> warning : compilation.warnings()) {
+			logger.warn(warning.getMessage(Locale.ENGLISH));
 		}
 	}
 
@@ -224,7 +245,7 @@ class DataElementProcessorTest {
 	@Test
 	void testNoDataFieldsSucceeds() {
 		Compilation compilation = helper.compile(Inputs.NO_DATAFIELDS.get());
-		assertThat(compilation).succeededWithoutWarnings();
+		assertSucceededAndLogWarnings(compilation);
 		assertDefaultsPresent(compilation);
 	}
 
@@ -234,7 +255,7 @@ class DataElementProcessorTest {
 	@Test
 	void testWithSingleDataFieldSucceeds() {
 		Compilation compilation = helper.compile(Inputs.SINGLE.get());
-		assertThat(compilation).succeededWithoutWarnings();
+		assertSucceededAndLogWarnings(compilation);
 		assertDefaultsPresent(compilation);
 		assertInterfaceMatches(compilation, Patterns.SINGLE_INT.get());
 		assertImplementationMatches(compilation, Patterns.SINGLE_IMPL.get());
@@ -246,7 +267,7 @@ class DataElementProcessorTest {
 	@Test
 	void testWithManyDataFieldsSucceeds() {
 		Compilation compilation = helper.compile(Inputs.MANY.get());
-		assertThat(compilation).succeededWithoutWarnings();
+		assertSucceededAndLogWarnings(compilation);
 		assertDefaultsPresent(compilation);
 		assertInterfaceMatches(compilation, Patterns.MANY_INT.get());
 		assertImplementationMatches(compilation, Patterns.MANY_IMPL.get());
@@ -258,7 +279,7 @@ class DataElementProcessorTest {
 	@Test
 	void testSingleNonPrimitiveDataFieldSucceeds() {
 		Compilation compilation = helper.compile(Inputs.SINGLE_NON_PRIMITIVE.get());
-		assertThat(compilation).succeededWithoutWarnings();
+		assertSucceededAndLogWarnings(compilation);
 		assertDefaultsPresent(compilation);
 		assertInterfaceMatches(compilation, Patterns.SINGLE_NON_PRIMITIVE_INT.get());
 		assertImplementationMatches(compilation, Patterns.SINGLE_NON_PRIMITIVE_IMPL.get());
@@ -270,7 +291,7 @@ class DataElementProcessorTest {
 	@Test
 	void testManyNonPrimitiveDataFieldSucceeds() {
 		Compilation compilation = helper.compile(Inputs.MANY_NON_PRIMITIVE.get());
-		assertThat(compilation).succeededWithoutWarnings();
+		assertSucceededAndLogWarnings(compilation);
 		assertDefaultsPresent(compilation);
 		assertInterfaceMatches(compilation, Patterns.MANY_NON_PRIMITIVE_INT.get());
 		assertImplementationMatches(compilation, Patterns.MANY_NON_PRIMITIVE_IMPL.get());
@@ -303,7 +324,7 @@ class DataElementProcessorTest {
 	@Test
 	void testDocStringsPreserved() {
 		Compilation compilation = helper.compile(Inputs.SINGLE.get());
-		assertThat(compilation).succeededWithoutWarnings();
+		assertSucceededAndLogWarnings(compilation);
 		assertThat(compilation).generatedSourceFile(IMPLEMENTATION)
 			.contentsAsUtf8String()
 			.contains("* A UNIQUE STRING IN THE DOC STRING.");
@@ -319,7 +340,7 @@ class DataElementProcessorTest {
 	@Test
 	void testAccessibilityPreserved() {
 		Compilation compilation = helper.compile(Inputs.ACCESSIBILITY_PRESERVED.get());
-		assertThat(compilation).succeededWithoutWarnings();
+		assertSucceededAndLogWarnings(compilation);
 		assertImplementationMatches(compilation, Patterns.ACCESSIBILITY_PRESERVED.get());
 	}
 
@@ -352,7 +373,7 @@ class DataElementProcessorTest {
 	@Test
 	void testDataFieldGetterOption() {
 		Compilation compilation = helper.compile(Inputs.DATAFIELD_GETTER.get());
-		assertThat(compilation).succeededWithoutWarnings();
+		assertSucceededAndLogWarnings(compilation);
 		assertThat(compilation)
 			.generatedSourceFile(INTERFACE)
 			.hasSourceEquivalentTo(Patterns.DATAFIELD_GETTER_INT.get());
@@ -364,7 +385,7 @@ class DataElementProcessorTest {
 	@Test
 	void testDataFieldSetterOption() {
 		Compilation compilation = helper.compile(Inputs.DATAFIELD_SETTER.get());
-		assertThat(compilation).succeededWithoutWarnings();
+		assertSucceededAndLogWarnings(compilation);
 		assertThat(compilation)
 			.generatedSourceFile(INTERFACE)
 			.hasSourceEquivalentTo(Patterns.DATAFIELD_SETTER_INT.get());
@@ -376,7 +397,7 @@ class DataElementProcessorTest {
 	@Test
 	void testDataFieldMatchOption() {
 		Compilation compilation = helper.compile(Inputs.DATAFIELD_MATCH.get());
-		assertThat(compilation).succeededWithoutWarnings();
+		assertSucceededAndLogWarnings(compilation);
 		assertThat(compilation)
 			.generatedSourceFile(IMPLEMENTATION)
 			.contentsAsUtf8String()
@@ -393,7 +414,7 @@ class DataElementProcessorTest {
 	@Test
 	void testDataFieldDefaultNonString() {
 		Compilation compilation = helper.compile(Inputs.DEFAULT_NON_STRING.get());
-		assertThat(compilation).succeededWithoutWarnings();
+		assertSucceededAndLogWarnings(compilation);
 		assertImplementationMatches(
 			compilation,
 			Patterns.DEFAULT_NON_STRING_IMPL.get()
@@ -406,7 +427,7 @@ class DataElementProcessorTest {
 	@Test
 	void testDataFieldDefaultString() {
 		Compilation compilation = helper.compile(Inputs.DEFAULT_STRING.get());
-		assertThat(compilation).succeededWithoutWarnings();
+		assertSucceededAndLogWarnings(compilation);
 		assertImplementationMatches(
 			compilation,
 			Patterns.DEFAULT_STRING_IMPL.get()

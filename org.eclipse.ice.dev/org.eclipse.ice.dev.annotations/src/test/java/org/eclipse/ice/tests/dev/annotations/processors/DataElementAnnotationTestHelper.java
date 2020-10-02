@@ -19,6 +19,8 @@ import javax.annotation.processing.Processor;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
+import org.eclipse.ice.dev.annotations.processors.DataElementProcessor;
+
 import com.google.testing.compile.Compilation;
 
 import static com.google.testing.compile.Compiler.*;
@@ -85,7 +87,7 @@ public class DataElementAnnotationTestHelper {
 		Compilation compilation = javac()
 			.withProcessors(
 				getLombokAnnotationProcessor(),
-				new LoggingDataElementProcessor()
+				new DataElementProcessor()
 			).compile(sources);
 		if (showDiagnostics) {
 			printDiagnostics(compilation);
