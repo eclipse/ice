@@ -29,7 +29,7 @@ import org.eclipse.ice.dev.annotations.Persisted;
  * generate the interface, implementation, and persistence handler.
  *
  */
-public class DataElementWriterGenerator extends AbstractWriterGenerator implements WriterGenerator {
+public class DataElementWriterGenerator extends AbstractWriterGenerator {
 
 	/**
 	 * Map of file name key to the respective file's writer initializer
@@ -66,7 +66,6 @@ public class DataElementWriterGenerator extends AbstractWriterGenerator implemen
 	 * DataElement specific method of class generation. Includes interfaces,
 	 * implementation, and possibly a persistence handler
 	 */
-	@Override
 	public List<VelocitySourceWriter> generateWriters(
 		Element element, AnnotationExtractionResponse response
 	) {

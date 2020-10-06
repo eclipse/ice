@@ -106,9 +106,13 @@ public class DataElementProcessor extends AbstractProcessor {
 		elementUtils = env.getElementUtils();
 		mapper = new ObjectMapper();
 
-		ICEAnnotationExtractionService extractionService = new ICEAnnotationExtractionService(elementUtils, mapper, env,
-				new DefaultNameGenerator());
-		WriterGenerator writerGenerator = new DataElementWriterGenerator(env);
+		ICEAnnotationExtractionService extractionService =
+			new ICEAnnotationExtractionService(
+				elementUtils, mapper, env,
+				new DefaultNameGenerator()
+			);
+
+		DataElementWriterGenerator writerGenerator = new DataElementWriterGenerator(env);
 		this.extractor = new DataElementAnnotationExtractor(
 			extractionService, writerGenerator
 		);

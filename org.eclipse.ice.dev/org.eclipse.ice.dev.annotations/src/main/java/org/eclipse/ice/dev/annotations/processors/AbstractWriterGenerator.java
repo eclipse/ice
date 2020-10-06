@@ -23,7 +23,7 @@ import javax.tools.StandardLocation;
  *
  * @author Michael Walsh
  */
-public abstract class AbstractWriterGenerator implements WriterGenerator {
+public abstract class AbstractWriterGenerator {
 
 	/**
 	 * Used to create JavaFileObjects

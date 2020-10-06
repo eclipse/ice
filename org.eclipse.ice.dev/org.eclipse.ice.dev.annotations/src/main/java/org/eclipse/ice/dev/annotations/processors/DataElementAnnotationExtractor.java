@@ -49,7 +49,7 @@ public class DataElementAnnotationExtractor {
 	 * used to generate writers based on the output of the annotation extraction
 	 * service
 	 */
-	private WriterGenerator writerGenerator;
+	private DataElementWriterGenerator writerGenerator;
 
 	/**
 	 * Constructor that lets you initialize the {@link DataElementAnnotationExtractor} with different
@@ -59,7 +59,7 @@ public class DataElementAnnotationExtractor {
 	 */
 	DataElementAnnotationExtractor(
 		ICEAnnotationExtractionService annotationExtractionService,
-		WriterGenerator writerGenerator
+		DataElementWriterGenerator writerGenerator
 	) {
 		this.annotationExtractionService = annotationExtractionService;
 		this.writerGenerator = writerGenerator;

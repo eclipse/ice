@@ -7,36 +7,25 @@
  *
  * Contributors:
  *    Michael Walsh - Initial implementation
+ *    Daniel Bluhm
  *******************************************************************************/
 package org.eclipse.ice.dev.annotations.processors;
 
-import java.io.IOException;
 import java.util.List;
 
-import javax.lang.model.element.Element;
-
 /**
- * Interface implemented with the purpose of generating specific files given the
- * annotation data extracted.
+ * Interface for classes that generate one or more file writers from a given
+ * set of data.
  * 
- * This type of class serves as the configuration for which {@link VelocitySourceWriter}s to generate
- * and how to generate them.
- * 
- * Implementations of this interface include:
- * {@link org.eclipse.ice.dev.annotations.processors.AbstractWriterGenerator}
- * {@link org.eclipse.ice.dev.annotations.processors.DataElementWriterGenerator}
- *
+ * @author Michael Walsh
+ * @author Daniel Bluhm
  */
-public interface WriterGenerator {
+public interface WriterGenerator<T> {
+
 	/**
-	 * Generates a list of VelocitySourceWriters based on data extracted from a Spec
-	 * class
-	 * 
-	 * @param element
-	 * @param response
-	 * @return List of generated Writers
-	 * @throws IOException due to file writing
+	 * Generate one or more FileWriters from the passed data.
+	 * @param data from which file writers will be generated.
+	 * @return
 	 */
-	public List<VelocitySourceWriter> generateWriters(Element element, AnnotationExtractionResponse response)
-			throws IOException;
+	public List<FileWriter> generate(T data);
 }
