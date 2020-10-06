@@ -67,7 +67,9 @@ public class DataElementWriterGenerator extends AbstractWriterGenerator implemen
 	 * implementation, and possibly a persistence handler
 	 */
 	@Override
-	public List<VelocitySourceWriter> generateWriters(Element element, AnnotationExtractionResponse response) {
+	public List<VelocitySourceWriter> generateWriters(
+		Element element, AnnotationExtractionResponse response
+	) {
 		List<VelocitySourceWriter> writers = new ArrayList<>();
 		Map<TemplateProperty, Object> classMetadata = response.getClassMetadata();
 		boolean hasAnnotation = specExtractionHelper.hasAnnotation(element, Persisted.class);

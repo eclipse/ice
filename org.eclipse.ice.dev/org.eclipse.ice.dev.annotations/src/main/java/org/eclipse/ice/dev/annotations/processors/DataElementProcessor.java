@@ -109,12 +109,9 @@ public class DataElementProcessor extends AbstractProcessor {
 		ICEAnnotationExtractionService extractionService = new ICEAnnotationExtractionService(elementUtils, mapper, env,
 				new DefaultNameGenerator());
 		WriterGenerator writerGenerator = new DataElementWriterGenerator(env);
-		this.extractor = new DataElementAnnotationExtractor(extractionService, writerGenerator);
-
-		// Set up Velocity using the Singleton approach; ClasspathResourceLoader allows
-		// us to load templates from src/main/resources
-		final Properties p = VelocityProperties.get();
-		Velocity.init(p);
+		this.extractor = new DataElementAnnotationExtractor(
+			extractionService, writerGenerator
+		);
 		super.init(env);
 	}
 

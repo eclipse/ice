@@ -23,7 +23,7 @@ import org.eclipse.ice.dev.annotations.DataField;
 /**
  * Flavor of ICEAnnotationExtractionService that specializes in extracting data
  * from Spec classes with the class level annotation of {@link DataElement}
- * 
+ *
  * @author Michael Walsh
  */
 public class DataElementAnnotationExtractor {
@@ -32,9 +32,14 @@ public class DataElementAnnotationExtractor {
 	 * Annotations to not be transfered from member variables of Spec classes to
 	 * final generated classes
 	 */
-	private static final List<String> nonTransferableAnnotations = Stream.of(DataField.class, DataField.Default.class)
+	private static final List<String> nonTransferableAnnotations =
+		Stream.of(DataField.class, DataField.Default.class)
 			.map(Class::getCanonicalName)
-			.collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+			.collect(
+				Collectors.collectingAndThen(
+					Collectors.toList(), Collections::unmodifiableList
+				)
+			);
 
 	/**
 	 * used for extracting and preparing data for writer generation
@@ -48,12 +53,14 @@ public class DataElementAnnotationExtractor {
 
 	/**
 	 * Constructor that lets you initialize the {@link DataElementAnnotationExtractor} with different
-	 * implementations of {@link ICEAnnotationExtractionService} and {@link WriterGenerator} 
+	 * implementations of {@link ICEAnnotationExtractionService} and {@link WriterGenerator}
 	 * @param annotationExtractionService
 	 * @param writerGenerator
 	 */
-	DataElementAnnotationExtractor(ICEAnnotationExtractionService annotationExtractionService,
-			WriterGenerator writerGenerator) {
+	DataElementAnnotationExtractor(
+		ICEAnnotationExtractionService annotationExtractionService,
+		WriterGenerator writerGenerator
+	) {
 		this.annotationExtractionService = annotationExtractionService;
 		this.writerGenerator = writerGenerator;
 		this.annotationExtractionService.setNonTransferableAnnotations(nonTransferableAnnotations);
@@ -61,22 +68,23 @@ public class DataElementAnnotationExtractor {
 	}
 
 	/**
-	 * For a given request it will extract data from client classes 
+	 * For a given request it will extract data from client classes
 	 * and generate a list of {@link VelocitySourceWriter}
-	 * 
+	 *
 	 * @param request
 	 * @return list of generated SourceWriters
 	 * @throws IOException due to {@link ICEAnnotationExtractionService#extract(AnnotationExtractionRequest)}
 	 */
-	public List<VelocitySourceWriter> generateWriters(AnnotationExtractionRequest request) throws IOException {
+	public List<VelocitySourceWriter> generateWriters(
+		AnnotationExtractionRequest request
+	) throws IOException {
 		AnnotationExtractionResponse response = annotationExtractionService.extract(request);
-		List<VelocitySourceWriter> writerList = writerGenerator.generateWriters(request.getElement(),response);
-		return writerList;
+		return writerGenerator.generateWriters(request.getElement(),response);
 	}
 
 	/**
 	 * For a given request it will generate then execute writers
-	 * 
+	 *
 	 * @param request
 	 * @throws IOException
 	 */
@@ -92,12 +100,11 @@ public class DataElementAnnotationExtractor {
 
 	/**
 	 * Determine if the passed field is a DataField.
-	 * 
+	 *
 	 * @param element to check
 	 * @return whether element is a DataField
 	 */
 	public static boolean isDataField(Element element) {
 		return element.getAnnotation(DataField.class) != null;
 	}
-
 }

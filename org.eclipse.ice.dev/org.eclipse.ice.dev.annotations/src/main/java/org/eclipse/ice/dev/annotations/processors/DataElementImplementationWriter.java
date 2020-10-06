@@ -30,9 +30,6 @@ public class DataElementImplementationWriter extends ImplementationWriter {
 
 	/**
 	 * Location of DataElement template for use with velocity.
-	 *
-	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
-	 * to the src/main/resources folder.
 	 */
 	private static final String IMPL_TEMPLATE = "templates/DataElement.vm";
 
@@ -46,8 +43,10 @@ public class DataElementImplementationWriter extends ImplementationWriter {
 	 * @param generatedFile
 	 */
 	@Builder
-	public DataElementImplementationWriter(String packageName, String interfaceName, String className, Fields fields,
-			Types types, FileObject generatedFile) {
+	public DataElementImplementationWriter(
+        String packageName, String interfaceName, String className, Fields
+        fields, Types types, FileObject generatedFile
+	) {
 		super(packageName, interfaceName, className, fields, types, generatedFile);
 		this.template = IMPL_TEMPLATE;
 	}

@@ -90,7 +90,7 @@ public class ICEAnnotationExtractionService {
 		this.processingEnv = processingEnv;
 		this.nameGenerator = new DefaultNameGenerator();
 	}
-	
+
 	/**
 	 * Constructor
 	 */
@@ -104,63 +104,78 @@ public class ICEAnnotationExtractionService {
 
 	/**
 	 * Main entry point into the metadata extraction flow
-	 * 
+	 *
 	 * @param request
 	 * @return Extracted metadata
 	 * @throws IOException
 	 */
-	public AnnotationExtractionResponse extract(AnnotationExtractionRequest request) throws IOException {
+	public AnnotationExtractionResponse extract(
+		AnnotationExtractionRequest request
+	) throws IOException {
 		Fields fields = extractFields(request);
 		Map<TemplateProperty, Object> metaData = extractClassMetadata(request, fields);
-		return AnnotationExtractionResponse.builder().fields(fields).classMetadata(metaData).build();
+		return AnnotationExtractionResponse
+			.builder()
+			.fields(fields)
+			.classMetadata(metaData)
+			.build();
 	}
 
 	/**
 	 * Collect fields from Spec class, static default field collection, and json if
 	 * applicable
-	 * 
+	 *
 	 * @param request
 	 * @return Fields of the Spec class
 	 * @throws IOException
 	 */
-	public Fields extractFields(AnnotationExtractionRequest request) throws IOException {
+	public Fields extractFields(
+		AnnotationExtractionRequest request
+	) throws IOException {
 		Fields fields = new Fields();
 		Element element = request.getElement();
 
-		if (request.isIncludeDefaults())
+		if (request.isIncludeDefaults()) {
 			fields.collect(DefaultFields.get());
+		}
+
 		fields.collect(
-				specExtractionHelper.getAllFields(element, elementUtils, fieldFilter, nonTransferableAnnotations)); // get
-																													// all
-																													// members
-																													// with
-																													// given
-																													// filter
-		fields.collect(jsonExtractionHelper.collectFromDataFieldJson(element, processingEnv, mapper));
+			specExtractionHelper.getAllFields(
+				element, elementUtils, fieldFilter, nonTransferableAnnotations
+			)
+		); // get all members with given filter
+		fields.collect(
+			jsonExtractionHelper.collectFromDataFieldJson(
+				element, processingEnv, mapper
+			)
+		);
 		return fields;
 	}
 
 	/**
 	 * Parse, generate, and store class metadata in a map.
-	 * 
+	 *
 	 * @param request
 	 * @param fields
 	 * @return metadata map
 	 */
-	public Map<TemplateProperty, Object> extractClassMetadata(AnnotationExtractionRequest request, Fields fields) {
+	public Map<TemplateProperty, Object> extractClassMetadata(
+		AnnotationExtractionRequest request, Fields fields
+	) {
 		SpecClassMetadata specData = extractSpecData(request, fields);
-		Map<TemplateProperty, Object> context = generateClassMetadata(specData);
-		return context;
+		return generateClassMetadata(specData);
 	}
 
 	/**
 	 * Given seed data extracted from a spec class, this method generates the
 	 * necessary metadata for class generation
-	 * 
+	 *
 	 * @param specData
 	 * @return enum keyed map of extracted and processed class metadata
 	 */
-	protected Map<TemplateProperty, Object> generateClassMetadata(SpecClassMetadata specData) {
+	protected Map<TemplateProperty, Object> generateClassMetadata(
+		SpecClassMetadata specData
+	) {
 		Map<TemplateProperty, Object> context = new HashMap<>();
 
 		generateMetaTemplateData(specData, context);
@@ -170,46 +185,83 @@ public class ICEAnnotationExtractionService {
 	}
 
 	/**
-	 * Package meta data for class interface and implementation into the supplied 
+	 * Package meta data for class interface and implementation into the supplied
 	 * map context
-	 * 
+	 *
 	 * @param specData metadata extracted from the client Spec class
 	 * @param context map to store the processed metadata harvested from
 	 * the client Spec class
 	 */
-	protected void generateMetaTemplateData(SpecClassMetadata specData, Map<TemplateProperty, Object> context) {
-		context.put(MetaTemplateProperty.PACKAGE, specData.getPackageName());
-		context.put(MetaTemplateProperty.INTERFACE, specData.getName());
-		context.put(MetaTemplateProperty.CLASS, nameGenerator.getImplName(specData.getName()));
-		context.put(MetaTemplateProperty.FIELDS, specData.getFields());
-		context.put(MetaTemplateProperty.QUALIFIED, specData.getFullyQualifiedName());
-		context.put(MetaTemplateProperty.QUALIFIEDIMPL,
-				nameGenerator.getQualifiedImplName(specData.getFullyQualifiedName()));
+	protected void generateMetaTemplateData(
+		SpecClassMetadata specData, Map<TemplateProperty, Object> context
+	) {
+		context.put(
+			MetaTemplateProperty.PACKAGE,
+			specData.getPackageName()
+		);
+		context.put(
+			MetaTemplateProperty.INTERFACE,
+			specData.getName()
+		);
+		context.put(
+			MetaTemplateProperty.CLASS,
+			nameGenerator.getImplName(specData.getName())
+		);
+		context.put(
+			MetaTemplateProperty.FIELDS,
+			specData.getFields()
+		);
+		context.put(
+			MetaTemplateProperty.QUALIFIED,
+			specData.getFullyQualifiedName()
+		);
+		context.put(
+			MetaTemplateProperty.QUALIFIEDIMPL,
+			nameGenerator.getQualifiedImplName(specData.getFullyQualifiedName())
+		);
 	}
 
 	/**
 	 * Package metadata for class persistence handler into the supplied map context
-	 * 
+	 *
 	 * @param specData metadata extracted from the client Spec class
 	 * @param context map to store the processed metadata harvested from
 	 * the client Spec class
 	 */
-	protected void generatePersistenceHandlerTemplateData(SpecClassMetadata specData,
-			Map<TemplateProperty, Object> context) {
-		context.put(PersistenceHandlerTemplateProperty.ELEMENT_INTERFACE, specData.getName());
-		context.put(PersistenceHandlerTemplateProperty.COLLECTION, specData.getCollectionName());
-		context.put(PersistenceHandlerTemplateProperty.IMPLEMENTATION, nameGenerator.getImplName(specData.getName()));
-		context.put(PersistenceHandlerTemplateProperty.QUALIFIED,
-				nameGenerator.getQualifiedPersistenceHandlerName(specData.getFullyQualifiedName()));
+	protected void generatePersistenceHandlerTemplateData(
+		SpecClassMetadata specData,
+		Map<TemplateProperty, Object> context
+	) {
+		context.put(
+			PersistenceHandlerTemplateProperty.ELEMENT_INTERFACE,
+			specData.getName()
+		);
+		context.put(
+			PersistenceHandlerTemplateProperty.COLLECTION,
+			specData.getCollectionName()
+		);
+		context.put(
+			PersistenceHandlerTemplateProperty.IMPLEMENTATION,
+			nameGenerator.getImplName(specData.getName())
+		);
+		context.put(
+			PersistenceHandlerTemplateProperty.QUALIFIED,
+			nameGenerator.getQualifiedPersistenceHandlerName(
+				specData.getFullyQualifiedName()
+			)
+		);
 		context.put(PersistenceHandlerTemplateProperty.CLASS,
 				nameGenerator.getPersistenceHandlerName(specData.getName()));
-		context.put(PersistenceHandlerTemplateProperty.INTERFACE, nameGenerator.getPersistenceHandlerInterfaceName());
+		context.put(
+			PersistenceHandlerTemplateProperty.INTERFACE,
+			nameGenerator.getPersistenceHandlerInterfaceName()
+		);
 	}
 
 	/**
 	 * Extract and package seed data given an element(via request) and a list of
 	 * extracted fields
-	 * 
+	 *
 	 * @param request
 	 * @param fields
 	 * @return extracted, unprocessed data from the Spec class
@@ -219,8 +271,9 @@ public class ICEAnnotationExtractionService {
 		String packageName = null;
 		String fullyQualifiedName;
 		String name = request.getClassName();
-		String elementFQN = (element instanceof TypeElement) ? ((TypeElement) element).getQualifiedName().toString()
-				: element.getClass().getName();
+		String elementFQN = (element instanceof TypeElement) ?
+			((TypeElement) element).getQualifiedName().toString() :
+			element.getClass().getName();
 		String collectionName;
 
 		final int lastDot = elementFQN.lastIndexOf('.');
@@ -232,8 +285,13 @@ public class ICEAnnotationExtractionService {
 		}
 		collectionName = nameGenerator.extractCollectionName(element);
 
-		return SpecClassMetadata.builder().name(name).packageName(packageName).fullyQualifiedName(fullyQualifiedName)
-				.collectionName(collectionName).fields(fields).build();
+		return SpecClassMetadata.builder()
+			.name(name)
+			.packageName(packageName)
+			.fullyQualifiedName(fullyQualifiedName)
+			.collectionName(collectionName)
+			.fields(fields)
+			.build();
 	}
 
 }

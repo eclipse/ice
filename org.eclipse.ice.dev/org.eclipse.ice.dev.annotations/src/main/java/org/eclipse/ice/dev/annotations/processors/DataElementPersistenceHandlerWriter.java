@@ -24,7 +24,7 @@ import lombok.NonNull;
 /**
  * Implementation of the VelocitySourceWriter that handles generating the
  * DataElementPersistenceHandlerWriter
- * 
+ *
  * @author Michael Walsh
  */
 public class DataElementPersistenceHandlerWriter extends PersistenceHandlerWriter {
@@ -39,7 +39,7 @@ public class DataElementPersistenceHandlerWriter extends PersistenceHandlerWrite
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param packageName
 	 * @param elementInterface
 	 * @param className
@@ -50,11 +50,15 @@ public class DataElementPersistenceHandlerWriter extends PersistenceHandlerWrite
 	 * @param generatedFile
 	 */
 	@Builder
-	public DataElementPersistenceHandlerWriter(String packageName, String elementInterface, String className,
-			String interfaceName, String implementation, String collection, @NonNull Fields fields,
-			Types types, FileObject generatedFile) {
-		super(packageName, elementInterface, className, interfaceName, implementation, collection, fields,
-				types, generatedFile);
+	public DataElementPersistenceHandlerWriter(
+		String packageName, String elementInterface, String className,
+		String interfaceName, String implementation, String collection,
+		@NonNull Fields fields, Types types, FileObject generatedFile
+	) {
+		super(
+			packageName, elementInterface, className, interfaceName,
+			implementation, collection, fields, types, generatedFile
+		);
 		this.template = PERSISTENCE_HANDLER_TEMPLATE;
 	}
 
@@ -72,26 +76,27 @@ public class DataElementPersistenceHandlerWriter extends PersistenceHandlerWrite
 	 */
 	@Override
 	public BiFunction<FileObject, Map, List<VelocitySourceWriter>> getInitializer() {
-		return (fileObject, context) -> 
-					Arrays.asList(DataElementPersistenceHandlerWriter.builder()
-					.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
-					.className((String) context.get(PersistenceHandlerTemplateProperty.CLASS))
-					.types(((Fields) context.get(MetaTemplateProperty.FIELDS)).getTypes())	.interfaceName((String) context.get(PersistenceHandlerTemplateProperty.INTERFACE))
-					.fields((Fields) context.get(MetaTemplateProperty.FIELDS))
-					.types(((Fields) context.get(MetaTemplateProperty.FIELDS)).getTypes())
-					.elementInterface((String) context.get(PersistenceHandlerTemplateProperty.ELEMENT_INTERFACE))
-					.collection((String) context.get(PersistenceHandlerTemplateProperty.COLLECTION))
-					.implementation((String) context.get(PersistenceHandlerTemplateProperty.IMPLEMENTATION))
-					.generatedFile(fileObject).build());
+		return (fileObject, context) -> Arrays.asList(
+			DataElementPersistenceHandlerWriter.builder()
+				.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
+				.className((String) context.get(PersistenceHandlerTemplateProperty.CLASS))
+				.types(((Fields) context.get(MetaTemplateProperty.FIELDS)).getTypes())
+				.interfaceName((String) context.get(PersistenceHandlerTemplateProperty.INTERFACE))
+				.fields((Fields) context.get(MetaTemplateProperty.FIELDS))
+				.types(((Fields) context.get(MetaTemplateProperty.FIELDS)).getTypes())
+				.elementInterface((String) context.get(PersistenceHandlerTemplateProperty.ELEMENT_INTERFACE))
+				.collection((String) context.get(PersistenceHandlerTemplateProperty.COLLECTION))
+				.implementation((String) context.get(PersistenceHandlerTemplateProperty.IMPLEMENTATION))
+				.generatedFile(fileObject).build()
+		);
 	}
 
 	/**
 	 * Static method for cleanly fetching an initializer
-	 * 
+	 *
 	 * @return DataElementPersistenceHandlerWriter init lambda
 	 */
 	public static BiFunction<FileObject, Map, List<VelocitySourceWriter>> getContextInitializer() {
 		return new DataElementPersistenceHandlerWriter().getInitializer();
 	}
-
 }
