@@ -22,8 +22,8 @@ import java.util.List;
 
 import org.eclipse.ice.dev.annotations.processors.DefaultFields;
 import org.eclipse.ice.dev.annotations.processors.Fields;
-import org.eclipse.ice.dev.annotations.processors.ImplementationWriter;
-import org.eclipse.ice.dev.annotations.processors.InterfaceWriter;
+import org.eclipse.ice.dev.annotations.processors.DataElementImplementationWriter;
+import org.eclipse.ice.dev.annotations.processors.DataElementInterfaceWriter;
 import org.eclipse.ice.dev.annotations.processors.Types;
 
 import com.beust.jcommander.JCommander;
@@ -86,7 +86,7 @@ public class PojoFromJson {
 		try (Writer elementInterface = Files.newBufferedWriter(
 			destination.resolve(pojo.getElement() + ".java")
 		)) {
-			InterfaceWriter.builder()
+			DataElementInterfaceWriter.builder()
 				.packageName(pojo.getPackageName())
 				.interfaceName(pojo.getElement())
 				.fields(fields)
@@ -99,7 +99,7 @@ public class PojoFromJson {
 		try (Writer elementImpl = Files.newBufferedWriter(
 			destination.resolve(pojo.getImplementation() + ".java")
 		)) {
-			ImplementationWriter.builder()
+			DataElementImplementationWriter.builder()
 				.packageName(pojo.getPackageName())
 				.interfaceName(pojo.getElement())
 				.className(pojo.getImplementation())

@@ -13,8 +13,13 @@ package org.eclipse.ice.tests.dev.annotations.processors;
 
 import static com.google.testing.compile.CompilationSubject.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import javax.tools.JavaFileObject;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
 import com.google.testing.compile.Compilation;
@@ -139,6 +144,7 @@ class DataElementProcessorTest {
 	}
 
 	/**
+
 	 * Assert that the interface generated in this compilation matches the given
 	 * pattern.
 	 * @param compilation about which the assertion is made
@@ -230,6 +236,7 @@ class DataElementProcessorTest {
 
 	/**
 	 * Test that a single DataField generates as expected.
+	 * @throws IOException 
 	 */
 	@Test
 	void testWithSingleDataFieldSucceeds() {

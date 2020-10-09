@@ -12,6 +12,13 @@ import com.mongodb.client.model.Filters;
  * @author Daniel Bluhm
  */
 public class PersistenceFilters {
+	
+	/* 
+	 * Explicit private constructor to hide implicit public constructor, otherwise this would be a code smell
+	 */
+	private PersistenceFilters() {
+		
+	}
 	/**
 	 * Create a filter for a UUID.
 	 *

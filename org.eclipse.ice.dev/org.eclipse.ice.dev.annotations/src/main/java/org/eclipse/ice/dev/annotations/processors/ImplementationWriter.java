@@ -7,26 +7,21 @@
  *
  * Contributors:
  *    Daniel Bluhm - Initial implementation
+ *    Michael Walsh
  *******************************************************************************/
 
 package org.eclipse.ice.dev.annotations.processors;
 
-import lombok.Builder;
 import lombok.NonNull;
+
+import javax.tools.JavaFileObject;
 
 /**
  * Writer for DataElement Implementation classes.
+ * 
  * @author Daniel Bluhm
  */
-public class ImplementationWriter extends VelocitySourceWriter {
-
-	/**
-	 * Location of DataElement template for use with velocity.
-	 *
-	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
-	 * to the src/main/resources folder.
-	 */
-	private static final String IMPL_TEMPLATE = "templates/DataElement.vm";
+public abstract class ImplementationWriter extends VelocitySourceWriter {
 
 	/**
 	 * Context key for package.
@@ -53,17 +48,30 @@ public class ImplementationWriter extends VelocitySourceWriter {
 	 */
 	private static final String CLASS = "class";
 
-	@Builder
+		/**
+	 * Constructor
+	 * 
+	 * @param packageName
+	 * @param interfaceName
+	 * @param className
+	 * @param fields
+	 * @param generatedFile
+	 */
 	public ImplementationWriter(
 		String packageName, String interfaceName, String className,
-		@NonNull Fields fields, @NonNull Types types
+		@NonNull Fields fields, @NonNull Types types, JavaFileObject generatedFile
 	) {
 		super();
-		this.template = IMPL_TEMPLATE;
 		this.context.put(PACKAGE, packageName);
 		this.context.put(INTERFACE, interfaceName);
 		this.context.put(CLASS, className);
 		this.context.put(FIELDS, fields);
 		this.context.put(TYPES, types);
+		this.generatedFile = generatedFile;
 	}
+
+	protected ImplementationWriter() {
+
+	}
+
 }

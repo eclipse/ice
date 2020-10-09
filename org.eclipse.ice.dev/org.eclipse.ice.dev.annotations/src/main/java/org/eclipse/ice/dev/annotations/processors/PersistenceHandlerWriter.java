@@ -7,26 +7,21 @@
  *
  * Contributors:
  *    Daniel Bluhm - Initial implementation
+ *    Michael Walsh
  *******************************************************************************/
 
 package org.eclipse.ice.dev.annotations.processors;
 
-import lombok.Builder;
+import javax.tools.JavaFileObject;
+
 import lombok.NonNull;
 
 /**
  * Writer for DataElement Persistence classes.
+ * 
  * @author Daniel Bluhm
  */
-public class PersistenceHandlerWriter extends VelocitySourceWriter {
-
-	/**
-	 * Location of PersistenceHandler template for use with velocity.
-	 *
-	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
-	 * to the src/main/resources folder.
-	 */
-	private static final String PERSISTENCE_HANDLER_TEMPLATE = "templates/PersistenceHandler.vm";
+public abstract class PersistenceHandlerWriter extends VelocitySourceWriter {
 
 	/**
 	 * Context key for package.
@@ -66,16 +61,23 @@ public class PersistenceHandlerWriter extends VelocitySourceWriter {
 	/**
 	 * Context key for types.
 	 */
-	private static final String TYPES = "types";
+	private static final String TYPES = "types";	
 
-	@Builder
-	public PersistenceHandlerWriter(
-		String packageName, String elementInterface, String interfaceName,
-		String className, String implementation, String collection,
-		@NonNull Fields fields, @NonNull Types types
-	) {
+	/**
+	 * Constructor
+	 * 
+	 * @param packageName
+	 * @param elementInterface
+	 * @param className
+	 * @param interfaceName
+	 * @param implementation
+	 * @param collection
+	 * @param fields
+	 * @param generatedFile
+	 */
+	public PersistenceHandlerWriter(String packageName, String elementInterface, String className, String interfaceName,
+			String implementation, String collection, @NonNull Fields fields, @NonNull Types types, JavaFileObject generatedFile) {
 		super();
-		this.template = PERSISTENCE_HANDLER_TEMPLATE;
 		this.context.put(PACKAGE, packageName);
 		this.context.put(ELEMENT_INTERFACE, elementInterface);
 		this.context.put(CLASS, className);
@@ -84,5 +86,11 @@ public class PersistenceHandlerWriter extends VelocitySourceWriter {
 		this.context.put(IMPLEMENTATION, implementation);
 		this.context.put(FIELDS, fields);
 		this.context.put(TYPES, types);
+		this.generatedFile = generatedFile;
 	}
+
+	protected PersistenceHandlerWriter() {
+
+	}
+
 }

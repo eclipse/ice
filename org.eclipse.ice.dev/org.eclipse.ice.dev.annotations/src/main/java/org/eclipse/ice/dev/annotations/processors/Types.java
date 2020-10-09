@@ -14,6 +14,7 @@ package org.eclipse.ice.dev.annotations.processors;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -132,7 +133,7 @@ public class Types {
 			// Filter out collisions (fully qualified maps to itself)
 			// Also filters out primitives (boolean shortened is still boolean)
 			.filter(entry -> !entry.getKey().equals(entry.getValue()))
-			.map(entry -> entry.getValue())
+			.map(Entry::getValue)
 			// No need to import java.lang package
 			.filter(type -> !type.startsWith("java.lang"))
 			.filter(type -> !type.startsWith("$"))
