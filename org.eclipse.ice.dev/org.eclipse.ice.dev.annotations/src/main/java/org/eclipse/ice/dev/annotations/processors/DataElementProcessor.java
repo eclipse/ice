@@ -30,6 +30,10 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
+import javax.tools.FileObject;
+import javax.tools.JavaFileManager.Location;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardLocation;
 
 import org.apache.velocity.app.Velocity;
 import org.eclipse.ice.dev.annotations.DataElement;
@@ -119,7 +123,6 @@ public class DataElementProcessor extends AbstractProcessor {
 		// Iterate over all elements with DataElement Annotation
 		for (final Element elem : roundEnv.getElementsAnnotatedWith(DataElement.class)) {
 			try {
-
 				if (!valid(elem))
 					throw new InvalidDataElementSpec("DataElementSpec must be class, found " + elem.toString());
 
@@ -127,7 +130,6 @@ public class DataElementProcessor extends AbstractProcessor {
 						.className(extractName(elem)).build();
 
 				extractor.generateAndWrite(request);
-
 			} catch (final IOException | InvalidDataElementSpec e) {
 				messager.printMessage(Diagnostic.Kind.ERROR, stackTraceToString(e));
 				return false;
@@ -153,5 +155,34 @@ public class DataElementProcessor extends AbstractProcessor {
 	 */
 	private boolean valid(Element element) {
 		return element.getKind() == ElementKind.CLASS;
+	}
+
+	/**
+	 * Write the TypeScript of DataElement annotated class to file.
+	 * @param element
+	 * @param fields
+	 * @throws IOException
+	 */
+	private void writeTypeScript(
+		DataElementSpec element,
+		Fields fields
+	) throws IOException {
+		final FileObject generatedFile = processingEnv.getFiler()
+			.createResource(
+				StandardLocation.SOURCE_OUTPUT,
+				"",
+				"frontend/" + element.getName() + ".ts"
+			);
+		try (Writer writer = generatedFile.openWriter()) {
+			Fields trimmed = fields.getNonDefaultFields();
+			TypeScriptWriter.builder()
+				.name(element.getName())
+				.fields(trimmed)
+				.types(trimmed.getTypes())
+				.build()
+				.write(writer);
+		} catch (UnsupportedOperationException e) {
+			messager.printMessage(Diagnostic.Kind.NOTE, stackTraceToString(e));
+		}
 	}
 }

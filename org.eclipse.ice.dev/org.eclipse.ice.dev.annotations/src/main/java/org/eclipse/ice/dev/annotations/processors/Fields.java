@@ -91,6 +91,18 @@ public class Fields implements Iterable<Field> {
 			.filter(field -> !field.isDefaultField())
 			.collect(Collectors.toList());
 	}
+	
+	/**
+	 * Return Fields that are not marked as default.
+	 * @return Fields new instance with default fields filtered out.
+	 */
+	public Fields getNonDefaultFields() {
+		return new Fields(
+			fields.stream()
+				.filter(field -> !field.isDefaultField())
+				.collect(Collectors.toList())
+		);
+	}
 
 	/**
 	 * Return Types instance for this set of Fields.
