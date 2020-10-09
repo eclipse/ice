@@ -11,11 +11,13 @@
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.processing.Filer;
 import javax.lang.model.element.Element;
 
 import org.eclipse.ice.dev.annotations.DataField;
@@ -89,13 +91,25 @@ public class DataElementAnnotationExtractor {
 	 * @throws IOException
 	 */
 	public void generateAndWrite(AnnotationExtractionRequest request) throws IOException {
-		this.generateWriters(request).forEach(writer -> {
-			try {
-				writer.write();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
+		AnnotationExtractionResponse response = annotationExtractionService.extract(request);
+		Filer filer = writerGenerator.processingEnv.getFiler();
+		writerGenerator.generateWriters(request.getElement(),response)
+			.forEach(writer -> {
+				try {
+					writer.write();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+		writerGenerator.generate(response)
+			.forEach(writer -> {
+				try (Writer file = writer.openWriter(filer)) {
+					writer.write(file);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			});
 	}
 
 	/**

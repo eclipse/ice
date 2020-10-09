@@ -15,7 +15,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
@@ -50,10 +53,6 @@ public class DataElementWriterGenerator
 		writerInitializers.put(
 			MetaTemplateProperty.QUALIFIED,
 			DataElementInterfaceWriter.getContextInitializer()
-		);
-		writerInitializers.put(
-			MetaTemplateProperty.QUALIFIEDIMPL,
-			DataElementImplementationWriter.getContextInitializer()
 		);
 		writerInitializers.put(
 			PersistenceHandlerTemplateProperty.QUALIFIED,
@@ -94,8 +93,12 @@ public class DataElementWriterGenerator
 
 	@Override
 	public List<GeneratedFileWriter> generate(AnnotationExtractionResponse response) {
-		return List.of(
-			TypeScriptWriter.fromContext(response.getClassMetadata())
-		);
+		List<GeneratedFileWriter> writers = new ArrayList<>();
+		writers.add(ImplementationWriter.fromContext(response.getClassMetadata()));
+		writers.add(TypeScriptWriter.fromContext(response.getClassMetadata()));
+		return writers
+			.stream()
+			.filter(Objects::nonNull)
+			.collect(Collectors.toList());
 	}
 }

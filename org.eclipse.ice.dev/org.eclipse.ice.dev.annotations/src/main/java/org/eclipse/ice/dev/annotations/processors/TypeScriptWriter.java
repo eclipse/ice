@@ -122,10 +122,16 @@ public class TypeScriptWriter
 		Map<TemplateProperty, Object> context
 	) {
 		Fields trimmed = ((Fields) context.get(MetaTemplateProperty.FIELDS)).getNonDefaultFields();
-		return TypeScriptWriter.builder()
-			.name((String) context.get(MetaTemplateProperty.CLASS))
-			.fields(trimmed)
-			.types(trimmed.getTypes())
-			.build();
+		TypeScriptWriter instance = null;
+		try {
+			instance = TypeScriptWriter.builder()
+				.name((String) context.get(MetaTemplateProperty.CLASS))
+				.fields(trimmed)
+				.types(trimmed.getTypes())
+				.build();
+		} catch (UnsupportedOperationException e) {
+			// TODO Handle this better
+		}
+		return instance;
 	}
 }
