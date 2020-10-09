@@ -12,16 +12,32 @@
 
 package org.eclipse.ice.dev.annotations.processors;
 
-import javax.tools.FileObject;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Map;
 
+import javax.annotation.processing.Filer;
+
+import lombok.Builder;
 import lombok.NonNull;
 
 /**
  * Writer for DataElement Interfaces.
- * 
+ *
  * @author Daniel Bluhm
  */
-public abstract class InterfaceWriter extends SelfInitializingWriter {
+public class InterfaceWriter
+	extends VelocitySourceWriter
+	implements GeneratedFileWriter
+{
+
+	/**
+	 * Location of Interface template for use with velocity.
+	 *
+	 * Use of Velocity ClasspathResourceLoader means files are discovered
+	 * relative to the src/main/resources folder.
+	 */
+	private static final String TEMPLATE = "templates/ElementInterface.vm";
 
 	/**
 	 * Context key for package.
@@ -43,29 +59,54 @@ public abstract class InterfaceWriter extends SelfInitializingWriter {
 	 */
 	private static final String TYPES = "types";
 
-	
+	/**
+	 * Name of generated interface;
+	 */
+	private String interfaceName;
+
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param packageName
 	 * @param interfaceName
 	 * @param fields
 	 * @param generatedFile
 	 */
+	@Builder
 	public InterfaceWriter(
 		String packageName, String interfaceName, @NonNull Fields fields,
-		@NonNull Types types, FileObject generatedFile
+		@NonNull Types types
 	) {
-		super(generatedFile);
+		this.template = TEMPLATE;
+		this.interfaceName = interfaceName;
 		context.put(PACKAGE, packageName);
 		context.put(INTERFACE, interfaceName);
 		context.put(FIELDS, fields);
 		context.put(TYPES, types);
 	}
 
+	@Override
+	public Writer openWriter(Filer filer) throws IOException {
+		return filer.createSourceFile(interfaceName).openWriter();
+	}
 
-	public InterfaceWriter() {
-		// TODO Auto-generated constructor stub
-		super();
+	/**
+	 * Create InterfaceWriter from context.
+	 *
+	 * TODO move this logic elsewhere.
+	 *
+	 * @param context map of extracted data.
+	 * @return initialized InterfaceWriter.
+	 */
+	public static InterfaceWriter fromContext(
+		Map<TemplateProperty, Object> context
+	) {
+		return InterfaceWriter.builder()
+			.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
+			.interfaceName((String) context.get(MetaTemplateProperty.INTERFACE))
+			.fields((Fields) context.get(MetaTemplateProperty.FIELDS))
+			.types(new Types(((Fields) context.get(MetaTemplateProperty.FIELDS)).getInterfaceFields()))
+			.build();
 	}
 }

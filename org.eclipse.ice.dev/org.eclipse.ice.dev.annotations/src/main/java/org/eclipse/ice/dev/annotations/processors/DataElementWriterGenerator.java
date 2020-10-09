@@ -51,10 +51,6 @@ public class DataElementWriterGenerator
 	DataElementWriterGenerator(ProcessingEnvironment processingEnv) {
 		super(processingEnv);
 		writerInitializers.put(
-			MetaTemplateProperty.QUALIFIED,
-			DataElementInterfaceWriter.getContextInitializer()
-		);
-		writerInitializers.put(
 			PersistenceHandlerTemplateProperty.QUALIFIED,
 			DataElementPersistenceHandlerWriter.getContextInitializer()
 		);
@@ -94,6 +90,7 @@ public class DataElementWriterGenerator
 	@Override
 	public List<GeneratedFileWriter> generate(AnnotationExtractionResponse response) {
 		List<GeneratedFileWriter> writers = new ArrayList<>();
+		writers.add(InterfaceWriter.fromContext(response.getClassMetadata()));
 		writers.add(ImplementationWriter.fromContext(response.getClassMetadata()));
 		writers.add(TypeScriptWriter.fromContext(response.getClassMetadata()));
 		return writers
