@@ -11,12 +11,6 @@ import java.io.Writer;
 public interface FileWriter {
 
 	/**
-	 * Get the filename suggested by this file generator.
-	 * @return suggested file name.
-	 */
-	public String suggestedFileName();
-
-	/**
 	 * Write the file to the open writer.
 	 * @param writer to which the file will be written.
 	 */

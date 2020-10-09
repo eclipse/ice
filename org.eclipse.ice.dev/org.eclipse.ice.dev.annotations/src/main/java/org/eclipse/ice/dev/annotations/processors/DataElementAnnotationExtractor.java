@@ -75,7 +75,7 @@ public class DataElementAnnotationExtractor {
 	 * @return list of generated SourceWriters
 	 * @throws IOException due to {@link ICEAnnotationExtractionService#extract(AnnotationExtractionRequest)}
 	 */
-	public List<VelocitySourceWriter> generateWriters(
+	public List<SelfInitializingWriter> generateWriters(
 		AnnotationExtractionRequest request
 	) throws IOException {
 		AnnotationExtractionResponse response = annotationExtractionService.extract(request);

@@ -44,8 +44,8 @@ public class DataElementImplementationWriter extends ImplementationWriter {
 	 */
 	@Builder
 	public DataElementImplementationWriter(
-        String packageName, String interfaceName, String className, Fields
-        fields, Types types, FileObject generatedFile
+		String packageName, String interfaceName, String className, Fields
+		fields, Types types, FileObject generatedFile
 	) {
 		super(packageName, interfaceName, className, fields, types, generatedFile);
 		this.template = IMPL_TEMPLATE;
@@ -64,7 +64,7 @@ public class DataElementImplementationWriter extends ImplementationWriter {
 	 * DataElementImplementationWriter given a map and a JavaFileObject
 	 */
 	@Override
-	public BiFunction<FileObject, Map, List<VelocitySourceWriter>> getInitializer() {
+	public BiFunction<FileObject, Map, List<SelfInitializingWriter>> getInitializer() {
 		return (fileObject, context) -> 
 					Arrays.asList(DataElementImplementationWriter.builder()
 					.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
@@ -80,7 +80,7 @@ public class DataElementImplementationWriter extends ImplementationWriter {
 	 * 
 	 * @return DataElementImplementationWriter init lambda
 	 */
-	public static BiFunction<FileObject, Map, List<VelocitySourceWriter>> getContextInitializer() {
+	public static BiFunction<FileObject, Map, List<SelfInitializingWriter>> getContextInitializer() {
 		return new DataElementImplementationWriter().getInitializer();
 	}
 

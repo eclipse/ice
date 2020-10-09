@@ -65,7 +65,7 @@ public class DataElementInterfaceWriter extends InterfaceWriter {
 	 * DataElementInterfaceWriter given a map and a JavaFileObject
 	 */
 	@Override
-	public BiFunction<FileObject, Map, List<VelocitySourceWriter>> getInitializer() {
+	public BiFunction<FileObject, Map, List<SelfInitializingWriter>> getInitializer() {
 		return (fileObject, context) -> 
 					Arrays.asList(DataElementInterfaceWriter.builder()
 					.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
@@ -80,7 +80,7 @@ public class DataElementInterfaceWriter extends InterfaceWriter {
 	 *
 	 * @return DataElementInterfaceWriter init lambda
 	 */
-	public static BiFunction<FileObject, Map, List<VelocitySourceWriter>> getContextInitializer() {
+	public static BiFunction<FileObject, Map, List<SelfInitializingWriter>> getContextInitializer() {
 		return new DataElementInterfaceWriter().getInitializer();
 	}
 }

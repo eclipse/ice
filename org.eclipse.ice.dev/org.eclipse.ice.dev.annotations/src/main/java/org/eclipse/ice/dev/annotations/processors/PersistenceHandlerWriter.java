@@ -21,7 +21,7 @@ import lombok.NonNull;
  * 
  * @author Daniel Bluhm
  */
-public abstract class PersistenceHandlerWriter extends VelocitySourceWriter {
+public abstract class PersistenceHandlerWriter extends SelfInitializingWriter {
 
 	/**
 	 * Context key for package.
@@ -77,7 +77,7 @@ public abstract class PersistenceHandlerWriter extends VelocitySourceWriter {
 	 */
 	public PersistenceHandlerWriter(String packageName, String elementInterface, String className, String interfaceName,
 			String implementation, String collection, @NonNull Fields fields, @NonNull Types types, FileObject generatedFile) {
-		super();
+		super(generatedFile);
 		this.context.put(PACKAGE, packageName);
 		this.context.put(ELEMENT_INTERFACE, elementInterface);
 		this.context.put(CLASS, className);
@@ -86,7 +86,6 @@ public abstract class PersistenceHandlerWriter extends VelocitySourceWriter {
 		this.context.put(IMPLEMENTATION, implementation);
 		this.context.put(FIELDS, fields);
 		this.context.put(TYPES, types);
-		this.generatedFile = generatedFile;
 	}
 
 	protected PersistenceHandlerWriter() {

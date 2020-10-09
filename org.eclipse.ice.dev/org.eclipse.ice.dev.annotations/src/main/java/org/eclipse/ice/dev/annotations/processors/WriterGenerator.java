@@ -27,5 +27,5 @@ public interface WriterGenerator<T> {
 	 * @param data from which file writers will be generated.
 	 * @return
 	 */
-	public List<FileWriter> generate(T data);
+	public List<GeneratedFileWriter> generate(T data);
 }

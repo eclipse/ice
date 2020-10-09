@@ -11,17 +11,29 @@
 
 package org.eclipse.ice.dev.annotations.processors;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Map;
 
-import javax.tools.FileObject;
+import javax.annotation.processing.Filer;
+import javax.tools.StandardLocation;
 
+import lombok.Builder;
 import lombok.NonNull;
 
 /**
  * Writer for TypeScript representation of DataElement.
  * @author Daniel Bluhm
  */
-public abstract class TypeScriptWriter extends VelocitySourceWriter {
+public class TypeScriptWriter
+	extends VelocitySourceWriter
+	implements GeneratedFileWriter
+{
+
+	/**
+	 * Template used for this writer.
+	 */
+	private static final String TYPESCRIPT_TEMPLATE = "templates/TypeScript.vm";
 
 	/**
 	 * Context key for name.
@@ -57,15 +69,20 @@ public abstract class TypeScriptWriter extends VelocitySourceWriter {
 	);
 
 	/**
+	 * Name of file generated.
+	 */
+	private String filename;
+
+	/**
 	 * Create Writer.
 	 * @param name of TypeScript class generated.
 	 * @param fields present on data element.
 	 * @param types of fields.
 	 * @throws UnsupportedOperationException When any field is not supported.
 	 */
+	@Builder
 	public TypeScriptWriter(
-		String name, @NonNull Fields fields, @NonNull Types types,
-		FileObject generatedFile
+		String name, @NonNull Fields fields, @NonNull Types types
 	) {
 		super();
 		for (Field field : fields) {
@@ -76,14 +93,39 @@ public abstract class TypeScriptWriter extends VelocitySourceWriter {
 				));
 			}
 		}
+		this.template = TYPESCRIPT_TEMPLATE;
+		this.filename = name;
 		this.context.put(NAME, name);
 		this.context.put(FIELDS, fields);
 		this.context.put(TYPES, types);
 		this.context.put(PRIMITIVE_MAP, primitiveMap);
-		this.generatedFile = generatedFile;
 	}
 
-	public TypeScriptWriter() {
-		// TODO Auto-generated constructor stub
+	@Override
+	public Writer openWriter(Filer filer) throws IOException {
+		return filer.createResource(
+			StandardLocation.SOURCE_OUTPUT,
+			"",
+			String.format("frontend/%s.ts", filename)
+		).openWriter();
+	}
+
+	/**
+	 * Initialze from context map.
+	 *
+	 * TODO Move this logic elsewhere.
+	 *
+	 * @param context map of extracted properties.
+	 * @return initialzed TypeScriptWriter
+	 */
+	public static TypeScriptWriter fromContext(
+		Map<TemplateProperty, Object> context
+	) {
+		Fields trimmed = ((Fields) context.get(MetaTemplateProperty.FIELDS)).getNonDefaultFields();
+		return TypeScriptWriter.builder()
+			.name((String) context.get(MetaTemplateProperty.CLASS))
+			.fields(trimmed)
+			.types(trimmed.getTypes())
+			.build();
 	}
 }

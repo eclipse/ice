@@ -29,12 +29,15 @@ import org.eclipse.ice.dev.annotations.Persisted;
  * generate the interface, implementation, and persistence handler.
  *
  */
-public class DataElementWriterGenerator extends AbstractWriterGenerator {
+public class DataElementWriterGenerator
+	extends AbstractWriterGenerator
+	implements WriterGenerator<AnnotationExtractionResponse>
+{
 
 	/**
 	 * Map of file name key to the respective file's writer initializer
 	 */
-	private Map<TemplateProperty, BiFunction<FileObject, Map, List<VelocitySourceWriter>>> writerInitializers =
+	private Map<TemplateProperty, BiFunction<FileObject, Map, List<SelfInitializingWriter>>> writerInitializers =
 		new HashMap<>();
 
 	/**
@@ -56,20 +59,16 @@ public class DataElementWriterGenerator extends AbstractWriterGenerator {
 			PersistenceHandlerTemplateProperty.QUALIFIED,
 			DataElementPersistenceHandlerWriter.getContextInitializer()
 		);
-		writerInitializers.put(
-			MetaTemplateProperty.TYPESCRIPT,
-			DataElementTypeScriptWriter.getContextInitializer()
-		);
 	}
 
 	/**
 	 * DataElement specific method of class generation. Includes interfaces,
 	 * implementation, and possibly a persistence handler
 	 */
-	public List<VelocitySourceWriter> generateWriters(
+	public List<SelfInitializingWriter> generateWriters(
 		Element element, AnnotationExtractionResponse response
 	) {
-		List<VelocitySourceWriter> writers = new ArrayList<>();
+		List<SelfInitializingWriter> writers = new ArrayList<>();
 		Map<TemplateProperty, Object> classMetadata = response.getClassMetadata();
 		boolean hasAnnotation = specExtractionHelper.hasAnnotation(element, Persisted.class);
 
@@ -77,16 +76,9 @@ public class DataElementWriterGenerator extends AbstractWriterGenerator {
 			.filter(key -> key != PersistenceHandlerTemplateProperty.QUALIFIED || hasAnnotation)
 			.forEach(key -> {
 				try {
-					FileObject fileObject = null;
-					if (key == MetaTemplateProperty.TYPESCRIPT) {
-						fileObject = createResourceForName(
-							(String) classMetadata.get(MetaTemplateProperty.CLASS)
-						);
-					} else {
-						String name = (String) classMetadata.get(key);
-						fileObject = createFileObjectForName(name);
-					}
-					List<VelocitySourceWriter> newWriters = writerInitializers
+					String name = (String) classMetadata.get(key);
+					FileObject fileObject = createFileObjectForName(name);
+					List<SelfInitializingWriter> newWriters = writerInitializers
 						.get(key)
 						.apply(
 							fileObject,
@@ -97,8 +89,13 @@ public class DataElementWriterGenerator extends AbstractWriterGenerator {
 					e.printStackTrace();
 				}
 			});
-
 		return writers;
 	}
 
+	@Override
+	public List<GeneratedFileWriter> generate(AnnotationExtractionResponse response) {
+		return List.of(
+			TypeScriptWriter.fromContext(response.getClassMetadata())
+		);
+	}
 }

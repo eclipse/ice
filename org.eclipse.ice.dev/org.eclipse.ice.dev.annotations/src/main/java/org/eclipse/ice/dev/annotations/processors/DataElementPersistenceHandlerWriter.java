@@ -75,7 +75,7 @@ public class DataElementPersistenceHandlerWriter extends PersistenceHandlerWrite
 	 * DataElementPersistenceHandlerWriter given a map and a JavaFileObject
 	 */
 	@Override
-	public BiFunction<FileObject, Map, List<VelocitySourceWriter>> getInitializer() {
+	public BiFunction<FileObject, Map, List<SelfInitializingWriter>> getInitializer() {
 		return (fileObject, context) -> Arrays.asList(
 			DataElementPersistenceHandlerWriter.builder()
 				.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
@@ -96,7 +96,7 @@ public class DataElementPersistenceHandlerWriter extends PersistenceHandlerWrite
 	 *
 	 * @return DataElementPersistenceHandlerWriter init lambda
 	 */
-	public static BiFunction<FileObject, Map, List<VelocitySourceWriter>> getContextInitializer() {
+	public static BiFunction<FileObject, Map, List<SelfInitializingWriter>> getContextInitializer() {
 		return new DataElementPersistenceHandlerWriter().getInitializer();
 	}
 }
