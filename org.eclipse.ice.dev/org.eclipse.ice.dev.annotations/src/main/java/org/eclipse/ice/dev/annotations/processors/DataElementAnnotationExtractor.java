@@ -77,11 +77,11 @@ public class DataElementAnnotationExtractor {
 	 * @return list of generated SourceWriters
 	 * @throws IOException due to {@link ICEAnnotationExtractionService#extract(AnnotationExtractionRequest)}
 	 */
-	public List<SelfInitializingWriter> generateWriters(
+	public List<GeneratedFileWriter> generateWriters(
 		AnnotationExtractionRequest request
 	) throws IOException {
 		AnnotationExtractionResponse response = annotationExtractionService.extract(request);
-		return writerGenerator.generateWriters(request.getElement(),response);
+		return writerGenerator.generate(response);
 	}
 
 	/**
@@ -91,17 +91,8 @@ public class DataElementAnnotationExtractor {
 	 * @throws IOException
 	 */
 	public void generateAndWrite(AnnotationExtractionRequest request) throws IOException {
-		AnnotationExtractionResponse response = annotationExtractionService.extract(request);
 		Filer filer = writerGenerator.processingEnv.getFiler();
-		writerGenerator.generateWriters(request.getElement(),response)
-			.forEach(writer -> {
-				try {
-					writer.write();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			});
-		writerGenerator.generate(response)
+		generateWriters(request)
 			.forEach(writer -> {
 				try (Writer file = writer.openWriter(filer)) {
 					writer.write(file);

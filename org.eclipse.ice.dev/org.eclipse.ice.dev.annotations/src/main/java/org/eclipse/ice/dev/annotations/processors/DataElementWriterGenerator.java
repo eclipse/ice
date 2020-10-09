@@ -50,37 +50,6 @@ public class DataElementWriterGenerator
 		super(processingEnv);
 	}
 
-	/**
-	 * DataElement specific method of class generation. Includes interfaces,
-	 * implementation, and possibly a persistence handler
-	 */
-	public List<SelfInitializingWriter> generateWriters(
-		Element element, AnnotationExtractionResponse response
-	) {
-		List<SelfInitializingWriter> writers = new ArrayList<>();
-		Map<TemplateProperty, Object> classMetadata = response.getClassMetadata();
-		boolean hasAnnotation = specExtractionHelper.hasAnnotation(element, Persisted.class);
-
-		writerInitializers.keySet().stream()
-			.filter(key -> key != PersistenceHandlerTemplateProperty.QUALIFIED || hasAnnotation)
-			.forEach(key -> {
-				try {
-					String name = (String) classMetadata.get(key);
-					FileObject fileObject = createFileObjectForName(name);
-					List<SelfInitializingWriter> newWriters = writerInitializers
-						.get(key)
-						.apply(
-							fileObject,
-							classMetadata
-						);
-					writers.addAll(newWriters);
-				} catch (UnsupportedOperationException | IOException e) {
-					e.printStackTrace();
-				}
-			});
-		return writers;
-	}
-
 	@Override
 	public List<GeneratedFileWriter> generate(AnnotationExtractionResponse response) {
 		List<GeneratedFileWriter> writers = new ArrayList<>();
