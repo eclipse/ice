@@ -17,13 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.tools.FileObject;
-import javax.tools.JavaFileObject;
 
 import org.eclipse.ice.dev.annotations.Persisted;
 
@@ -50,10 +48,6 @@ public class DataElementWriterGenerator
 
 	DataElementWriterGenerator(ProcessingEnvironment processingEnv) {
 		super(processingEnv);
-		writerInitializers.put(
-			PersistenceHandlerTemplateProperty.QUALIFIED,
-			DataElementPersistenceHandlerWriter.getContextInitializer()
-		);
 	}
 
 	/**
@@ -93,6 +87,10 @@ public class DataElementWriterGenerator
 		writers.add(InterfaceWriter.fromContext(response.getClassMetadata()));
 		writers.add(ImplementationWriter.fromContext(response.getClassMetadata()));
 		writers.add(TypeScriptWriter.fromContext(response.getClassMetadata()));
+		// TODO This check should be more graceful or happen elsewhere
+		if (response.getClassMetadata().get(PersistenceHandlerTemplateProperty.COLLECTION) != null) {
+			writers.add(PersistenceHandlerWriter.fromContext(response.getClassMetadata()));
+		}
 		return writers
 			.stream()
 			.filter(Objects::nonNull)

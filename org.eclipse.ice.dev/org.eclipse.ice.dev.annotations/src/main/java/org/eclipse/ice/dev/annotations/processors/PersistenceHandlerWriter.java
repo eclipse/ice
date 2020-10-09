@@ -12,16 +12,24 @@
 
 package org.eclipse.ice.dev.annotations.processors;
 
-import javax.tools.FileObject;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Map;
 
+import javax.annotation.processing.Filer;
+
+import lombok.Builder;
 import lombok.NonNull;
 
 /**
  * Writer for DataElement Persistence classes.
- * 
+ *
  * @author Daniel Bluhm
  */
-public abstract class PersistenceHandlerWriter extends SelfInitializingWriter {
+public class PersistenceHandlerWriter
+	extends VelocitySourceWriter
+	implements GeneratedFileWriter
+{
 
 	/**
 	 * Context key for package.
@@ -61,11 +69,20 @@ public abstract class PersistenceHandlerWriter extends SelfInitializingWriter {
 	/**
 	 * Context key for types.
 	 */
-	private static final String TYPES = "types";	
+	private static final String TYPES = "types";
 
 	/**
+	 * Path to template of persistence handler.
+	 */
+	private static final String TEMPLATE = "templates/PersistenceHandler.vm";
+
+	/**
+	 * Name of generated class.
+	 */
+	private String className;
+	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param packageName
 	 * @param elementInterface
 	 * @param className
@@ -75,9 +92,14 @@ public abstract class PersistenceHandlerWriter extends SelfInitializingWriter {
 	 * @param fields
 	 * @param generatedFile
 	 */
-	public PersistenceHandlerWriter(String packageName, String elementInterface, String className, String interfaceName,
-			String implementation, String collection, @NonNull Fields fields, @NonNull Types types, FileObject generatedFile) {
-		super(generatedFile);
+	@Builder
+	public PersistenceHandlerWriter(
+		String packageName, String elementInterface, String className, String
+		interfaceName, String implementation, String collection, @NonNull Fields
+		fields, @NonNull Types types
+	) {
+		this.template = TEMPLATE;
+		this.className = className;
 		this.context.put(PACKAGE, packageName);
 		this.context.put(ELEMENT_INTERFACE, elementInterface);
 		this.context.put(CLASS, className);
@@ -88,8 +110,29 @@ public abstract class PersistenceHandlerWriter extends SelfInitializingWriter {
 		this.context.put(TYPES, types);
 	}
 
-	protected PersistenceHandlerWriter() {
-
+	@Override
+	public Writer openWriter(Filer filer) throws IOException {
+		return filer.createSourceFile(className).openWriter();
 	}
 
+	/**
+	 * Create instance of PersistenceHanlderWriter from context.
+	 * @param context Map of extracted data.
+	 * @return initialized PersistenceHandlerWriter.
+	 */
+	public static PersistenceHandlerWriter fromContext(
+		Map<TemplateProperty, Object> context
+	) {
+		return PersistenceHandlerWriter.builder()
+			.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
+			.className((String) context.get(PersistenceHandlerTemplateProperty.CLASS))
+			.types(((Fields) context.get(MetaTemplateProperty.FIELDS)).getTypes())
+			.interfaceName((String) context.get(PersistenceHandlerTemplateProperty.INTERFACE))
+			.fields((Fields) context.get(MetaTemplateProperty.FIELDS))
+			.types(((Fields) context.get(MetaTemplateProperty.FIELDS)).getTypes())
+			.elementInterface((String) context.get(PersistenceHandlerTemplateProperty.ELEMENT_INTERFACE))
+			.collection((String) context.get(PersistenceHandlerTemplateProperty.COLLECTION))
+			.implementation((String) context.get(PersistenceHandlerTemplateProperty.IMPLEMENTATION))
+			.build();
+	}
 }
