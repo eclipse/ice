@@ -14,6 +14,7 @@ package org.eclipse.ice.dev.annotations.processors;
 
 import lombok.NonNull;
 
+import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
 
 /**
@@ -59,7 +60,7 @@ public abstract class ImplementationWriter extends VelocitySourceWriter {
 	 */
 	public ImplementationWriter(
 		String packageName, String interfaceName, String className,
-		@NonNull Fields fields, @NonNull Types types, JavaFileObject generatedFile
+		@NonNull Fields fields, @NonNull Types types, FileObject generatedFile
 	) {
 		super();
 		this.context.put(PACKAGE, packageName);

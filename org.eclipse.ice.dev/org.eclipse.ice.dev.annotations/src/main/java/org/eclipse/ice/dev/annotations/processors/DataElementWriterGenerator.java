@@ -19,6 +19,7 @@ import java.util.function.BiFunction;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
+import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
 
 import org.eclipse.ice.dev.annotations.Persisted;
@@ -33,7 +34,8 @@ public class DataElementWriterGenerator extends AbstractWriterGenerator implemen
 	/**
 	 * Map of file name key to the respective file's writer initializer
 	 */
-	private Map<TemplateProperty, BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>>> writerInitializers = new HashMap<>();
+	private Map<TemplateProperty, BiFunction<FileObject, Map, List<VelocitySourceWriter>>> writerInitializers =
+		new HashMap<>();
 
 	/**
 	 * Util instance for extracting specific data from Element objects
@@ -42,10 +44,22 @@ public class DataElementWriterGenerator extends AbstractWriterGenerator implemen
 
 	DataElementWriterGenerator(ProcessingEnvironment processingEnv) {
 		super(processingEnv);
-		writerInitializers.put(MetaTemplateProperty.QUALIFIED, DataElementInterfaceWriter.getContextInitializer());
-		writerInitializers.put(MetaTemplateProperty.QUALIFIEDIMPL, DataElementImplementationWriter.getContextInitializer());
-		writerInitializers.put(PersistenceHandlerTemplateProperty.QUALIFIED,
-				DataElementPersistenceHandlerWriter.getContextInitializer());
+		writerInitializers.put(
+			MetaTemplateProperty.QUALIFIED,
+			DataElementInterfaceWriter.getContextInitializer()
+		);
+		writerInitializers.put(
+			MetaTemplateProperty.QUALIFIEDIMPL,
+			DataElementImplementationWriter.getContextInitializer()
+		);
+		writerInitializers.put(
+			PersistenceHandlerTemplateProperty.QUALIFIED,
+			DataElementPersistenceHandlerWriter.getContextInitializer()
+		);
+		writerInitializers.put(
+			MetaTemplateProperty.TYPESCRIPT,
+			DataElementTypeScriptWriter.getContextInitializer()
+		);
 	}
 
 	/**
@@ -59,18 +73,29 @@ public class DataElementWriterGenerator extends AbstractWriterGenerator implemen
 		boolean hasAnnotation = specExtractionHelper.hasAnnotation(element, Persisted.class);
 
 		writerInitializers.keySet().stream()
-				.filter(key -> key != PersistenceHandlerTemplateProperty.QUALIFIED || hasAnnotation).forEach(key -> {
-					try {
+			.filter(key -> key != PersistenceHandlerTemplateProperty.QUALIFIED || hasAnnotation)
+			.forEach(key -> {
+				try {
+					FileObject fileObject = null;
+					if (key == MetaTemplateProperty.TYPESCRIPT) {
+						fileObject = createResourceForName(
+							(String) classMetadata.get(MetaTemplateProperty.CLASS)
+						);
+					} else {
 						String name = (String) classMetadata.get(key);
-						JavaFileObject fileObject = createFileObjectForName(name);
-						List<VelocitySourceWriter> newWriters = writerInitializers.get(key).apply(fileObject,
-								classMetadata);
-
-						writers.addAll(newWriters);
-					} catch (IOException e) {
-						e.printStackTrace();
+						fileObject = createFileObjectForName(name);
 					}
-				});
+					List<VelocitySourceWriter> newWriters = writerInitializers
+						.get(key)
+						.apply(
+							fileObject,
+							classMetadata
+						);
+					writers.addAll(newWriters);
+				} catch (UnsupportedOperationException | IOException e) {
+					e.printStackTrace();
+				}
+			});
 
 		return writers;
 	}

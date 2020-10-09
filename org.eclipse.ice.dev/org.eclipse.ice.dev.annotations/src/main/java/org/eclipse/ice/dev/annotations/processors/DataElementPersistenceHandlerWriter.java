@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
 
 import lombok.Builder;
@@ -51,7 +52,7 @@ public class DataElementPersistenceHandlerWriter extends PersistenceHandlerWrite
 	@Builder
 	public DataElementPersistenceHandlerWriter(String packageName, String elementInterface, String className,
 			String interfaceName, String implementation, String collection, @NonNull Fields fields,
-			Types types, JavaFileObject generatedFile) {
+			Types types, FileObject generatedFile) {
 		super(packageName, elementInterface, className, interfaceName, implementation, collection, fields,
 				types, generatedFile);
 		this.template = PERSISTENCE_HANDLER_TEMPLATE;
@@ -70,7 +71,7 @@ public class DataElementPersistenceHandlerWriter extends PersistenceHandlerWrite
 	 * DataElementPersistenceHandlerWriter given a map and a JavaFileObject
 	 */
 	@Override
-	public BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getInitializer() {
+	public BiFunction<FileObject, Map, List<VelocitySourceWriter>> getInitializer() {
 		return (fileObject, context) -> 
 					Arrays.asList(DataElementPersistenceHandlerWriter.builder()
 					.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
@@ -89,7 +90,7 @@ public class DataElementPersistenceHandlerWriter extends PersistenceHandlerWrite
 	 * 
 	 * @return DataElementPersistenceHandlerWriter init lambda
 	 */
-	public static BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getContextInitializer() {
+	public static BiFunction<FileObject, Map, List<VelocitySourceWriter>> getContextInitializer() {
 		return new DataElementPersistenceHandlerWriter().getInitializer();
 	}
 

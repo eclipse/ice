@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
 
 import org.apache.velocity.VelocityContext;
@@ -34,7 +35,7 @@ public abstract class VelocitySourceWriter {
 
 	protected String template;
 	protected Map<String, Object> context;
-	protected JavaFileObject generatedFile;
+	protected FileObject generatedFile;
 
 	public VelocitySourceWriter() {
 		this.context = new HashMap<>();
@@ -46,7 +47,7 @@ public abstract class VelocitySourceWriter {
 	 * @param generatedFile
 	 * @throws IOException
 	 */
-	public void write(JavaFileObject generatedFile) throws IOException {
+	public void write(FileObject generatedFile) throws IOException {
 		try (Writer writer = generatedFile.openWriter()) {
 			write(writer);
 		}
@@ -72,6 +73,6 @@ public abstract class VelocitySourceWriter {
 		write(this.generatedFile);
 	}
 
-	public abstract BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getInitializer();
+	public abstract BiFunction<FileObject, Map, List<VelocitySourceWriter>> getInitializer();
 
 }

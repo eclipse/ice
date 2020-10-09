@@ -156,33 +156,4 @@ public class DataElementProcessor extends AbstractProcessor {
 	private boolean valid(Element element) {
 		return element.getKind() == ElementKind.CLASS;
 	}
-
-	/**
-	 * Write the TypeScript of DataElement annotated class to file.
-	 * @param element
-	 * @param fields
-	 * @throws IOException
-	 */
-	private void writeTypeScript(
-		DataElementSpec element,
-		Fields fields
-	) throws IOException {
-		final FileObject generatedFile = processingEnv.getFiler()
-			.createResource(
-				StandardLocation.SOURCE_OUTPUT,
-				"",
-				"frontend/" + element.getName() + ".ts"
-			);
-		try (Writer writer = generatedFile.openWriter()) {
-			Fields trimmed = fields.getNonDefaultFields();
-			TypeScriptWriter.builder()
-				.name(element.getName())
-				.fields(trimmed)
-				.types(trimmed.getTypes())
-				.build()
-				.write(writer);
-		} catch (UnsupportedOperationException e) {
-			messager.printMessage(Diagnostic.Kind.NOTE, stackTraceToString(e));
-		}
-	}
 }

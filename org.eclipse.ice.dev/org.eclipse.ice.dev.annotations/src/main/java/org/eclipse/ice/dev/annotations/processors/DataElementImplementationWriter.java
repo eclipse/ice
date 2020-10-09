@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
 
 import lombok.Builder;
@@ -46,7 +47,7 @@ public class DataElementImplementationWriter extends ImplementationWriter {
 	 */
 	@Builder
 	public DataElementImplementationWriter(String packageName, String interfaceName, String className, Fields fields,
-			Types types, JavaFileObject generatedFile) {
+			Types types, FileObject generatedFile) {
 		super(packageName, interfaceName, className, fields, types, generatedFile);
 		this.template = IMPL_TEMPLATE;
 	}
@@ -64,7 +65,7 @@ public class DataElementImplementationWriter extends ImplementationWriter {
 	 * DataElementImplementationWriter given a map and a JavaFileObject
 	 */
 	@Override
-	public BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getInitializer() {
+	public BiFunction<FileObject, Map, List<VelocitySourceWriter>> getInitializer() {
 		return (fileObject, context) -> 
 					Arrays.asList(DataElementImplementationWriter.builder()
 					.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
@@ -80,7 +81,7 @@ public class DataElementImplementationWriter extends ImplementationWriter {
 	 * 
 	 * @return DataElementImplementationWriter init lambda
 	 */
-	public static BiFunction<JavaFileObject, Map, List<VelocitySourceWriter>> getContextInitializer() {
+	public static BiFunction<FileObject, Map, List<VelocitySourceWriter>> getContextInitializer() {
 		return new DataElementImplementationWriter().getInitializer();
 	}
 

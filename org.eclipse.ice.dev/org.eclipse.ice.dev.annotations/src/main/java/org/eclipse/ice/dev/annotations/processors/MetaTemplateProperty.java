@@ -40,5 +40,6 @@ public enum MetaTemplateProperty implements TemplateProperty {
 	/**
 	 * String of fully qualified interface name
 	 */
-	QUALIFIED;
+	QUALIFIED,
+	TYPESCRIPT;
 }

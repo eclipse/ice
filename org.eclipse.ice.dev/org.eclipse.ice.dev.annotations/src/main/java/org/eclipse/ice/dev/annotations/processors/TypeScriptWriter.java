@@ -13,19 +13,15 @@ package org.eclipse.ice.dev.annotations.processors;
 
 import java.util.Map;
 
-import lombok.Builder;
+import javax.tools.FileObject;
+
 import lombok.NonNull;
 
 /**
  * Writer for TypeScript representation of DataElement.
  * @author Daniel Bluhm
  */
-public class TypeScriptWriter extends VelocitySourceWriter {
-
-	/**
-	 * Template used for this writer.
-	 */
-	private static final String TEMPLATE = "templates/TypeScript.vm";
+public abstract class TypeScriptWriter extends VelocitySourceWriter {
 
 	/**
 	 * Context key for name.
@@ -67,10 +63,10 @@ public class TypeScriptWriter extends VelocitySourceWriter {
 	 * @param types of fields.
 	 * @throws UnsupportedOperationException When any field is not supported.
 	 */
-	@Builder
 	public TypeScriptWriter(
-		String name, @NonNull Fields fields, @NonNull Types types
-	) throws UnsupportedOperationException {
+		String name, @NonNull Fields fields, @NonNull Types types,
+		FileObject generatedFile
+	) {
 		super();
 		for (Field field : fields) {
 			if (!primitiveMap.containsKey(field.getType())) {
@@ -80,10 +76,14 @@ public class TypeScriptWriter extends VelocitySourceWriter {
 				));
 			}
 		}
-		this.template = TEMPLATE;
 		this.context.put(NAME, name);
 		this.context.put(FIELDS, fields);
 		this.context.put(TYPES, types);
 		this.context.put(PRIMITIVE_MAP, primitiveMap);
+		this.generatedFile = generatedFile;
+	}
+
+	public TypeScriptWriter() {
+		// TODO Auto-generated constructor stub
 	}
 }
