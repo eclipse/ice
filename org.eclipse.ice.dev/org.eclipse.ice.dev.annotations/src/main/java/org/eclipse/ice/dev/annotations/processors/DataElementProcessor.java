@@ -15,8 +15,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
@@ -102,15 +104,19 @@ public class DataElementProcessor extends AbstractProcessor {
 				Optional<PersistenceMetadata> persistence =
 					persistenceExtractor.extractIfApplies(elem);
 
-				Set<WriterGenerator> generators = WriterGeneratorFactory.create(
-					data,
-					persistence
-				);
-				for (WriterGenerator generator : generators) {
-					for (GeneratedFileWriter fileWriter : generator.generate()) {
-						try (Writer writer = fileWriter.openWriter(processingEnv.getFiler())) {
-							fileWriter.write(writer);
-						}
+				// Get flattened list of GeneratedFileWriters from set of
+				// Generators.
+				List<GeneratedFileWriter> fileWriters =
+					WriterGeneratorFactory.create(data, persistence).stream()
+						// generators into GeneratedFileWriter Streams
+						.flatMap(generator -> generator.generate().stream())
+						// Collect into flattened list
+						.collect(Collectors.toList());
+
+				// Run the writers
+				for (GeneratedFileWriter fileWriter : fileWriters) {
+					try (Writer writer = fileWriter.openWriter(processingEnv.getFiler())) {
+						fileWriter.write(writer);
 					}
 				}
 			} catch (final IOException | InvalidElementException e) {
