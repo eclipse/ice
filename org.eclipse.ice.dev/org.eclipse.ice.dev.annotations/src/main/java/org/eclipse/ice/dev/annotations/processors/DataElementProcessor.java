@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -96,18 +98,32 @@ public class DataElementProcessor extends AbstractProcessor {
 			.dataFieldExtractor(new DataFieldExtractor(elementUtils))
 			.build();
 		PersistenceExtractor persistenceExtractor = new PersistenceExtractor();
+		WriterGeneratorFactory generatorFactory = new WriterGeneratorFactory(
+			Set.of(
+				DataElementWriterGenerator.class,
+				PersistenceWriterGenerator.class
+			)
+		);
 
 		// Iterate over all elements with DataElement Annotation
-		for (final Element elem : roundEnv.getElementsAnnotatedWith(DataElement.class)) {
+		for (final Element element : roundEnv.getElementsAnnotatedWith(DataElement.class)) {
 			try {
-				DataElementMetadata data = dataElementExtractor.extract(elem);
+				// Create and populate DataPool
+				Map<Class<?>, Object> dataPool = new HashMap<>();
+				dataPool.put(
+					DataElementMetadata.class,
+					dataElementExtractor.extract(element)
+				);
 				Optional<PersistenceMetadata> persistence =
-					persistenceExtractor.extractIfApplies(elem);
+					persistenceExtractor.extractIfApplies(element);
+				if (persistence.isPresent()) {
+					dataPool.put(PersistenceMetadata.class, persistence.get());
+				}
 
 				// Get flattened list of GeneratedFileWriters from set of
 				// Generators.
 				List<GeneratedFileWriter> fileWriters =
-					WriterGeneratorFactory.create(data, persistence).stream()
+					generatorFactory.create(dataPool).stream()
 						// generators into GeneratedFileWriter Streams
 						.flatMap(generator -> generator.generate().stream())
 						// Collect into flattened list
