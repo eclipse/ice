@@ -11,8 +11,17 @@
 
 package org.eclipse.ice.dev.annotations.processors;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Factory for WriterGenerators. Create method parameters represent dependencies
@@ -20,39 +29,93 @@ import java.util.Set;
  * @author Daniel Bluhm
  */
 public class WriterGeneratorFactory {
-	private WriterGeneratorFactory() {}
+	/**
+	 * Logger.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(WriterGeneratorFactory.class);
 
 	/**
-	 * Create WriterGenerators that depend on only DataElementMetadata.
-	 * @param dataElement DataElementMetadata extracted from element.
-	 * @return set of writer generators for passed data.
+	 * Generators to potentially create.
 	 */
-	public static Set<WriterGenerator> create(
-		DataElementMetadata dataElement
+	private Set<Class<? extends WriterGenerator>> generators;
+
+	/**
+	 * Create WriterGeneratorFactory.
+	 * @param generators set of generators that can be created.
+	 */
+	public WriterGeneratorFactory(
+		Set<Class<? extends WriterGenerator>> generators
 	) {
-		return Set.of(new DataElementWriterGenerator(dataElement));
+		this.generators = generators;
 	}
 
 	/**
-	 * Create WriterGenerators that depend on DataElementMetadata and
-	 * potentially PersistenceMetadata.
-	 * @param dataElement DataElementMetadata extracted from element.
-	 * @param persistence PersisteneMetadata extracted from element.
-	 * @return set of writer generators for passed data.
+	 * Create all writer generators that can be created from the given data
+	 * pool.
+	 * @param dataPool pool of data from which writer generators are created.
+	 * @return created writer generators.
 	 */
-	public static Set<WriterGenerator> create(
-		DataElementMetadata dataElement,
-		Optional<PersistenceMetadata> persistence
+	public Set<WriterGenerator> create(Map<Class<?>, Object> dataPool) {
+		return generators.stream()
+			.map(cls -> create(cls, dataPool))
+			.filter(Optional::isPresent)
+			.map(Optional::get)
+			.collect(Collectors.toSet());
+	}
+
+	/**
+	 * Get a writer generator instance of given type from data pool if possible,
+	 * null otherwise.
+	 * @param cls type of writer generator to attempt creating.
+	 * @param dataPool pool of data from which writer generator will be created.
+	 * @return created writer generator or null.
+	 */
+	private Optional<WriterGenerator> create(
+		Class<? extends WriterGenerator> cls,
+		Map<Class<?>, Object> dataPool
 	) {
-		Set<WriterGenerator> value = null;
-		if (persistence.isEmpty()) {
-			value = create(dataElement);
-		} else {
-			value = Set.of(
-				new DataElementWriterGenerator(dataElement),
-				new PersistenceWriterGenerator(dataElement, persistence.get())
-			);
+		Constructor<?>[] constructors = cls.getConstructors();
+		for (Constructor<?> cons : constructors) {
+			Class<?>[] parameters = cons.getParameterTypes();
+			Optional<Object[]> objects = getAll(dataPool, parameters);
+			if (objects.isPresent()) {
+				try {
+					return Optional.of(
+						(WriterGenerator) cons.newInstance(objects.get())
+					);
+				} catch (
+					InstantiationException | IllegalAccessException |
+					IllegalArgumentException | InvocationTargetException e
+				) {
+					logger.debug(
+						"Failed to instantiate WriterGenerator from data pool:",
+						e
+					);
+					return Optional.empty();
+				}
+			}
 		}
-		return value;
+		return Optional.empty();
+	}
+
+	/**
+	 * Get all values for given keys from dataPool if all keys are present,
+	 * otherwise return empty.
+	 * @param dataPool from which data is retrieved.
+	 * @param keys types to look up in data pool.
+	 * @return Objects gathered wrapped in Optional or empty.
+	 */
+	private Optional<Object[]> getAll(
+		Map<Class<?>, Object> dataPool, Class<?>... keys
+	) {
+		List<Object> parameters = new ArrayList<>();
+		for (Class<?> key : keys) {
+			Object retrieved = dataPool.get(key);
+			if (retrieved == null) {
+				return Optional.empty();
+			}
+			parameters.add(retrieved);
+		}
+		return Optional.of(parameters.toArray());
 	}
 }
