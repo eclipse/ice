@@ -33,7 +33,6 @@ import javax.tools.Diagnostic;
 
 import org.eclipse.ice.dev.annotations.DataElement;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auto.service.AutoService;
 
 /**
@@ -79,30 +78,30 @@ public class DataElementProcessor extends AbstractProcessor {
 	 */
 	protected Elements elementUtils;
 
-	/**
-	 * For the extraction of key data from Spec classes used in class generation
-	 */
-	protected DataElementExtractor extractor;
-
 	@Override
 	public synchronized void init(final ProcessingEnvironment env) {
 		this.messager = env.getMessager();
 		this.elementUtils = env.getElementUtils();
-		this.extractor = DataElementExtractor.builder()
-			.elementUtils(elementUtils)
-			.dataFieldExtractor(new DataFieldExtractor(elementUtils))
-			.build();
 		super.init(env);
 	}
 
 	@Override
 	public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
+		// Initialize extractors
+		// TODO Move this to a service?
+		DataElementExtractor dataElementExtractor = DataElementExtractor.builder()
+			.elementUtils(elementUtils)
+			.dataFieldExtractor(new DataFieldExtractor(elementUtils))
+			.build();
+		PersistenceExtractor persistenceExtractor = new PersistenceExtractor();
+
 		// Iterate over all elements with DataElement Annotation
 		for (final Element elem : roundEnv.getElementsAnnotatedWith(DataElement.class)) {
 			try {
-				DataElementMetadata data = this.extractor.extract(elem);
+				DataElementMetadata data = dataElementExtractor.extract(elem);
 				Optional<PersistenceMetadata> persistence =
-					new PersistenceExtractor().extractIfApplies(elem);
+					persistenceExtractor.extractIfApplies(elem);
+
 				Set<WriterGenerator> generators = WriterGeneratorFactory.create(
 					data,
 					persistence

@@ -9,6 +9,7 @@
  *    Michael Walsh - Initial implementation
  *    Daniel Bluhm - Modifications
  *******************************************************************************/
+
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.util.ArrayList;
@@ -20,8 +21,7 @@ import org.slf4j.LoggerFactory;
 import lombok.AllArgsConstructor;
 
 /**
- * Uses metadata extracted from spec classes annotated with @DataElement to
- * generate the interface, implementation, and persistence handler.
+ * Get list of generated file writers for DataElement annotations.
  *
  * @author Michael Walsh
  * @author Daniel Bluhm
