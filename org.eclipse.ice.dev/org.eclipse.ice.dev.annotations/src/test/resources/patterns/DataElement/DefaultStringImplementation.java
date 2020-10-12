@@ -1,6 +1,4 @@
-@Builder
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @JsonAutoDetect(
 	fieldVisibility = Visibility.ANY,
@@ -9,7 +7,6 @@
 	setterVisibility = Visibility.NONE
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonDeserialize(builder = TestImplementation.TestImplementationBuilder.class)
 public class TestImplementation implements Test, Serializable {
-	@NonNull @Builder.Default public String test = "A String Value";
+	@NonNull public String test = "A String Value";
 }
