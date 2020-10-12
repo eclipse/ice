@@ -14,7 +14,6 @@ package org.eclipse.ice.dev.annotations.processors;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
 
 import javax.annotation.processing.Filer;
 
@@ -113,26 +112,5 @@ public class PersistenceHandlerWriter
 	@Override
 	public Writer openWriter(Filer filer) throws IOException {
 		return filer.createSourceFile(className).openWriter();
-	}
-
-	/**
-	 * Create instance of PersistenceHanlderWriter from context.
-	 * @param context Map of extracted data.
-	 * @return initialized PersistenceHandlerWriter.
-	 */
-	public static PersistenceHandlerWriter fromContext(
-		Map<TemplateProperty, Object> context
-	) {
-		return PersistenceHandlerWriter.builder()
-			.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
-			.className((String) context.get(PersistenceHandlerTemplateProperty.CLASS))
-			.types(((Fields) context.get(MetaTemplateProperty.FIELDS)).getTypes())
-			.interfaceName((String) context.get(PersistenceHandlerTemplateProperty.INTERFACE))
-			.fields((Fields) context.get(MetaTemplateProperty.FIELDS))
-			.types(((Fields) context.get(MetaTemplateProperty.FIELDS)).getTypes())
-			.elementInterface((String) context.get(PersistenceHandlerTemplateProperty.ELEMENT_INTERFACE))
-			.collection((String) context.get(PersistenceHandlerTemplateProperty.COLLECTION))
-			.implementation((String) context.get(PersistenceHandlerTemplateProperty.IMPLEMENTATION))
-			.build();
 	}
 }

@@ -17,7 +17,6 @@ import lombok.NonNull;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
 
 import javax.annotation.processing.Filer;
 
@@ -92,25 +91,5 @@ public class ImplementationWriter
 	@Override
 	public Writer openWriter(Filer filer) throws IOException {
 		return filer.createSourceFile(className).openWriter();
-	}
-
-	/**
-	 * Map from context to implementation writer.
-	 *
-	 * TODO move this logic elsewhere.
-	 *
-	 * @param context extracted data.
-	 * @return initialized ImplementationWriter
-	 */
-	public static ImplementationWriter fromContext(
-		Map<TemplateProperty, Object> context
-	) {
-		return ImplementationWriter.builder()
-			.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
-			.interfaceName((String) context.get(MetaTemplateProperty.INTERFACE))
-			.className((String) context.get(MetaTemplateProperty.CLASS))
-			.fields((Fields) context.get(MetaTemplateProperty.FIELDS))
-			.types(((Fields) context.get(MetaTemplateProperty.FIELDS)).getTypes())
-			.build();
 	}
 }

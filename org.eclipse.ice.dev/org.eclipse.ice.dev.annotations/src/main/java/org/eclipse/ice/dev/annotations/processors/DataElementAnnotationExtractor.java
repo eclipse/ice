@@ -1,24 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2020- UT-Battelle, LLC.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2020- UT-Battelle, LLC. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse
+ * Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *    Michael Walsh - Initial implementation
+ * Contributors: Michael Walsh - Initial implementation
  *******************************************************************************/
 package org.eclipse.ice.dev.annotations.processors;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import javax.annotation.processing.Filer;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
@@ -38,22 +31,7 @@ import lombok.Builder;
  * @author Michael Walsh
  */
 public class DataElementAnnotationExtractor
-	implements AnnotationExtractor<DataElementMetadata>
-{
-
-	/**
-	 * Annotations to not be transfered from member variables of Spec classes to
-	 * final generated classes
-	 */
-	private static final List<String> nonTransferableAnnotations =
-		Stream.of(DataField.class, DataField.Default.class)
-			.map(Class::getCanonicalName)
-			.collect(
-				Collectors.collectingAndThen(
-					Collectors.toList(), Collections::unmodifiableList
-				)
-			);
-
+	implements AnnotationExtractor<DataElementMetadata> {
 	/**
 	 * Logger.
 	 */
@@ -70,10 +48,10 @@ public class DataElementAnnotationExtractor
 	private DataFieldExtractor dataFieldExtractor;
 
 	/**
-	 * Constructor that lets you initialize the {@link DataElementAnnotationExtractor} with different
-	 * implementations of {@link ICEAnnotationExtractionService} and {@link WriterGenerator}
-	 * @param annotationExtractionService
-	 * @param writerGenerator
+	 * Create DataElement Annotation Extractor.
+	 * @param elementUtils Elements from processing environment.
+	 * @param dataFieldExtractor Extractor for elements annotated with
+	 *        DataField.
 	 */
 	@Builder
 	public DataElementAnnotationExtractor(

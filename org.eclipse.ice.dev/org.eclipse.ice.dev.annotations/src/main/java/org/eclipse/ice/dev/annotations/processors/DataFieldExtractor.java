@@ -49,6 +49,11 @@ public class DataFieldExtractor implements AnnotationExtractor<Field> {
 	@Override
 	public Field extract(Element element) throws InvalidElementException {
 		DataField fieldInfo = element.getAnnotation(DataField.class);
+		if (fieldInfo == null) {
+			throw new InvalidElementException(
+				"DataField annotation not found on element."
+			);
+		}
 		return Field.builder()
 			.name(extractFieldName(element))
 			.type(extractFieldType(element))

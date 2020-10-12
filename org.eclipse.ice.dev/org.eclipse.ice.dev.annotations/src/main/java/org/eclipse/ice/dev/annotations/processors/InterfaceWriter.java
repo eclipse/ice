@@ -14,7 +14,6 @@ package org.eclipse.ice.dev.annotations.processors;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
 
 import javax.annotation.processing.Filer;
 
@@ -89,24 +88,5 @@ public class InterfaceWriter
 	@Override
 	public Writer openWriter(Filer filer) throws IOException {
 		return filer.createSourceFile(interfaceName).openWriter();
-	}
-
-	/**
-	 * Create InterfaceWriter from context.
-	 *
-	 * TODO move this logic elsewhere.
-	 *
-	 * @param context map of extracted data.
-	 * @return initialized InterfaceWriter.
-	 */
-	public static InterfaceWriter fromContext(
-		Map<TemplateProperty, Object> context
-	) {
-		return InterfaceWriter.builder()
-			.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
-			.interfaceName((String) context.get(MetaTemplateProperty.INTERFACE))
-			.fields((Fields) context.get(MetaTemplateProperty.FIELDS))
-			.types(new Types(((Fields) context.get(MetaTemplateProperty.FIELDS)).getInterfaceFields()))
-			.build();
 	}
 }

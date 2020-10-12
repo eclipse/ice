@@ -18,7 +18,6 @@ import java.util.Locale;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

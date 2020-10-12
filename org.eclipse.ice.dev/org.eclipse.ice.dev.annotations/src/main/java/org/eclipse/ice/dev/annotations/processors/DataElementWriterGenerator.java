@@ -61,7 +61,7 @@ public class DataElementWriterGenerator implements WriterGenerator {
 				.types(nonDefaults.getTypes())
 				.build());
 		} catch (UnsupportedOperationException e) {
-			logger.warn("Failed to create typescript writer for element:", e);
+			logger.info("Failed to create typescript writer for element:", e);
 		}
 
 		return writers;

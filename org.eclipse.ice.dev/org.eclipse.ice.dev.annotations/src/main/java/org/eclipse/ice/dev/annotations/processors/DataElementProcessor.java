@@ -27,7 +27,6 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
@@ -91,11 +90,6 @@ public class DataElementProcessor extends AbstractProcessor {
 	 */
 	protected DataElementAnnotationExtractor extractor;
 
-	/**
-	 * Util class for various specific data extraction from Elements
-	 */
-	private SpecExtractionHelper specExtractionHelper = new SpecExtractionHelper();
-
 	@Override
 	public synchronized void init(final ProcessingEnvironment env) {
 		this.messager = env.getMessager();
@@ -114,7 +108,8 @@ public class DataElementProcessor extends AbstractProcessor {
 		for (final Element elem : roundEnv.getElementsAnnotatedWith(DataElement.class)) {
 			try {
 				DataElementMetadata data = this.extractor.extract(elem);
-				Optional<PersistenceMetadata> persistence = Optional.empty();
+				Optional<PersistenceMetadata> persistence =
+					new PersistenceExtractor().extractIfApplies(elem);
 				Set<WriterGenerator> generators = WriterGeneratorFactory.create(
 					data,
 					persistence

@@ -25,7 +25,7 @@ public class PersistenceWriterGenerator implements WriterGenerator {
 				.elementInterface(dataElement.getName())
 				.className(dataElement.getName() + "PersistenceHandler")
 				// TODO Just move interface name into template (it's static)
-				.interfaceName("IPersistenceHanlder")
+				.interfaceName("IPersistenceHandler")
 				.implementation(dataElement.getName()+ "Implementation")
 				.collection(persistence.getCollection())
 				.fields(dataElement.getFields())

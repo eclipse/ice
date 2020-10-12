@@ -109,29 +109,4 @@ public class TypeScriptWriter
 			String.format("frontend/%s.ts", filename)
 		).openWriter();
 	}
-
-	/**
-	 * Initialze from context map.
-	 *
-	 * TODO Move this logic elsewhere.
-	 *
-	 * @param context map of extracted properties.
-	 * @return initialzed TypeScriptWriter
-	 */
-	public static TypeScriptWriter fromContext(
-		Map<TemplateProperty, Object> context
-	) {
-		Fields trimmed = ((Fields) context.get(MetaTemplateProperty.FIELDS)).getNonDefaultFields();
-		TypeScriptWriter instance = null;
-		try {
-			instance = TypeScriptWriter.builder()
-				.name((String) context.get(MetaTemplateProperty.CLASS))
-				.fields(trimmed)
-				.types(trimmed.getTypes())
-				.build();
-		} catch (UnsupportedOperationException e) {
-			// TODO Handle this better
-		}
-		return instance;
-	}
 }
