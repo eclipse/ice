@@ -22,7 +22,7 @@ import org.apache.velocity.tools.ToolManager;
 /**
  * Abstract base class for classes that render a Java Source file through
  * velocity templates.
- * 
+ *
  * @author Daniel Bluhm
  */
 public abstract class VelocitySourceWriter implements FileWriter {
@@ -79,7 +79,7 @@ public abstract class VelocitySourceWriter implements FileWriter {
 
 	/**
 	 * Write the Java Source file to the open writer.
-	 * 
+	 *
 	 * @param writer to which the java source will be written
 	 */
 	public void write(Writer writer) {

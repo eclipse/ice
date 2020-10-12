@@ -42,8 +42,8 @@ import com.google.auto.service.AutoService;
  * This will generate an implementation for an interface annotated with
  * DataElement, populating the implementation with metadata and fields specified
  * with the DataField annotation.
- * 
- * @author Daniel Bluhm 
+ *
+ * @author Daniel Bluhm
  * @author Michael Walsh
  *
  */
@@ -58,7 +58,7 @@ import com.google.auto.service.AutoService;
 public class DataElementProcessor extends AbstractProcessor {
 	/**
 	 * Return stack trace as string.
-	 * 
+	 *
 	 * @param e subject exception
 	 * @return stack trace as string
 	 */
@@ -88,14 +88,14 @@ public class DataElementProcessor extends AbstractProcessor {
 	/**
 	 * For the extraction of key data from Spec classes used in class generation
 	 */
-	protected DataElementAnnotationExtractor extractor;
+	protected DataElementExtractor extractor;
 
 	@Override
 	public synchronized void init(final ProcessingEnvironment env) {
 		this.messager = env.getMessager();
 		this.elementUtils = env.getElementUtils();
 		this.mapper = new ObjectMapper();
-		this.extractor = DataElementAnnotationExtractor.builder()
+		this.extractor = DataElementExtractor.builder()
 			.elementUtils(elementUtils)
 			.dataFieldExtractor(new DataFieldExtractor(elementUtils))
 			.build();

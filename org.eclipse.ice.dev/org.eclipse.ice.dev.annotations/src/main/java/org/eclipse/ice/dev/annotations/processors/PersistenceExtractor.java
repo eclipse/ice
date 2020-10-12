@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2020- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Daniel Bluhm - Initial implementation
+ *******************************************************************************/
+
 package org.eclipse.ice.dev.annotations.processors;
 
 import javax.lang.model.element.Element;
@@ -7,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Extractor for persistence metadata.
+ * Extractor for persistence metadata on Persisted annotated elements.
  * @author Daniel Bluhm
  */
 public class PersistenceExtractor implements AnnotationExtractor<PersistenceMetadata> {

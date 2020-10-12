@@ -7,7 +7,7 @@
  *
  * Contributors:
  *    Daniel Bluhm - Initial implementation
- *    Michael Walsh
+ *    Michael Walsh - Modifications
  *******************************************************************************/
 
 package org.eclipse.ice.dev.annotations.processors;

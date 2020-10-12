@@ -22,9 +22,9 @@ import org.apache.commons.lang3.ClassUtils;
 import org.eclipse.ice.data.IDataElement;
 
 /**
- * Util class passed to the Velocity template engine that enables 
+ * Util class passed to the Velocity template engine that enables
  * logic to be executed through Java rather than templating syntax
- * 
+ *
  * @author Michael Walsh
  *
  */
@@ -46,7 +46,7 @@ public class VelocityUtils {
 	/**
 	 * Util method that attempts to determine the parameterized type of a given
 	 * TypeMirror
-	 * 
+	 *
 	 * @param type A TypeMirror that has a Parameterized Type e.g.
 	 *             List<ParameterizedType>
 	 * @return TypeMirror The ParamterizedType's TypeMirror or null if it does not
@@ -63,7 +63,7 @@ public class VelocityUtils {
 	}
 
 	/**
-	 * Get the Class object the parameter type represents, if it is null or not a 
+	 * Get the Class object the parameter type represents, if it is null or not a
 	 * {@link javax.lang.model.type.DeclaredType} then this method returns null
 	 * @param type Any given TypeMirror
 	 * @return Class The actual class the TypeMirror type represents
@@ -79,7 +79,7 @@ public class VelocityUtils {
 	/**
 	 * Util method for collection all IDataElement and IDataElement collections in a
 	 * given list of fields
-	 * 
+	 *
 	 * @param fields to be filtered
 	 * @return a list of {@link IDataElement} (or collections of) contained within the given list
 	 */
@@ -92,7 +92,7 @@ public class VelocityUtils {
 	/**
 	 * Util method for checking if there are any fields of type IDataElement or a
 	 * collection of IDataElements in a given list of fields
-	 * 
+	 *
 	 * @param fields to be searched
 	 * @return boolean true if any results are found, false if none
 	 */
@@ -103,7 +103,7 @@ public class VelocityUtils {
 
 	/**
 	 * Checks if the given TypeMirror type represents an IDataElement
-	 * 
+	 *
 	 * @param type any TypeMirror
 	 * @return boolean true if it or its parent classes are of type {@link IDataElement}, else false
 	 */
@@ -128,7 +128,7 @@ public class VelocityUtils {
 	/**
 	 * Checks if a given TypeMirror type represents an IDataElement or a
 	 * parameterized collection of IDataElement's
-	 * 
+	 *
 	 * @param type any given TypeMirror
 	 * @return boolean true if it is an {@link IDataElement} or collection of {@link IDataElement}, else false
 	 */

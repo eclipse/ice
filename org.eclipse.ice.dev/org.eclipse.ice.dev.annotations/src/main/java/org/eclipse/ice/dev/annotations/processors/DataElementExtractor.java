@@ -5,6 +5,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors: Michael Walsh - Initial implementation
+ *     Daniel Bluhm - Modifications
  *******************************************************************************/
 package org.eclipse.ice.dev.annotations.processors;
 
@@ -29,13 +30,14 @@ import lombok.Builder;
  * from Spec classes with the class level annotation of {@link DataElement}
  *
  * @author Michael Walsh
+ * @author Daniel Bluhm
  */
-public class DataElementAnnotationExtractor
+public class DataElementExtractor
 	implements AnnotationExtractor<DataElementMetadata> {
 	/**
 	 * Logger.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(DataElementAnnotationExtractor.class);
+	private static final Logger logger = LoggerFactory.getLogger(DataElementExtractor.class);
 
 	/**
 	 * Element utilities from annotation processing environment.
@@ -54,7 +56,7 @@ public class DataElementAnnotationExtractor
 	 *        DataField.
 	 */
 	@Builder
-	public DataElementAnnotationExtractor(
+	public DataElementExtractor(
 		Elements elementUtils,
 		DataFieldExtractor dataFieldExtractor
 	) {

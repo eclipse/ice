@@ -23,10 +23,12 @@ import lombok.AllArgsConstructor;
  * Uses metadata extracted from spec classes annotated with @DataElement to
  * generate the interface, implementation, and persistence handler.
  *
+ * @author Michael Walsh
+ * @author Daniel Bluhm
  */
 @AllArgsConstructor
 public class DataElementWriterGenerator implements WriterGenerator {
-	
+
 	/**
 	 * Logger.
 	 */

@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Interface for classes that generate one or more file writers from a given
  * set of data.
- * 
+ *
  * @author Michael Walsh
  * @author Daniel Bluhm
  */
