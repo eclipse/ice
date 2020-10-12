@@ -26,8 +26,7 @@ import org.slf4j.LoggerFactory;
 import lombok.Builder;
 
 /**
- * Flavor of ICEAnnotationExtractionService that specializes in extracting data
- * from Spec classes with the class level annotation of {@link DataElement}
+ * Extractor of DataElement metadata from annotated elements.
  *
  * @author Michael Walsh
  * @author Daniel Bluhm
