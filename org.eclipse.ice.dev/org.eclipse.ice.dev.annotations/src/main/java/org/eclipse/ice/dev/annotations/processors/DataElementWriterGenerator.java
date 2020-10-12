@@ -7,36 +7,64 @@
  *
  * Contributors:
  *    Michael Walsh - Initial implementation
+ *    Daniel Bluhm - Modifications
  *******************************************************************************/
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import lombok.AllArgsConstructor;
 
 /**
  * Uses metadata extracted from spec classes annotated with @DataElement to
  * generate the interface, implementation, and persistence handler.
  *
  */
-public class DataElementWriterGenerator
-	implements WriterGenerator<AnnotationExtractionResponse>
-{
+@AllArgsConstructor
+public class DataElementWriterGenerator implements WriterGenerator {
+	
+	/**
+	 * Logger.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(DataElementWriterGenerator.class);
+
+	/**
+	 * Data from which FileWriters are generated.
+	 */
+	private DataElementMetadata data;
 
 	@Override
-	public List<GeneratedFileWriter> generate(AnnotationExtractionResponse response) {
+	public List<GeneratedFileWriter> generate() {
 		List<GeneratedFileWriter> writers = new ArrayList<>();
-		writers.add(InterfaceWriter.fromContext(response.getClassMetadata()));
-		writers.add(ImplementationWriter.fromContext(response.getClassMetadata()));
-		writers.add(TypeScriptWriter.fromContext(response.getClassMetadata()));
-		// TODO This check should be more graceful or happen elsewhere
-		if (response.getClassMetadata().get(PersistenceHandlerTemplateProperty.COLLECTION) != null) {
-			writers.add(PersistenceHandlerWriter.fromContext(response.getClassMetadata()));
+		Fields nonDefaults = data.getFields().getNonDefaultFields();
+		writers.add(InterfaceWriter.builder()
+			.packageName(data.getPackageName())
+			.interfaceName(data.getName())
+			.fields(nonDefaults)
+			.types(nonDefaults.getTypes())
+			.build());
+		writers.add(ImplementationWriter.builder()
+			.packageName(data.getPackageName())
+			.interfaceName(data.getName())
+			.className(data.getName() + "Implementation")
+			.fields(data.getFields())
+			.types(data.getFields().getTypes())
+			.build());
+		try {
+			writers.add(TypeScriptWriter.builder()
+				.name(data.getName())
+				.fields(nonDefaults)
+				.types(nonDefaults.getTypes())
+				.build());
+		} catch (UnsupportedOperationException e) {
+			logger.warn("Failed to create typescript writer for element:", e);
 		}
-		return writers
-			.stream()
-			.filter(Objects::nonNull)
-			.collect(Collectors.toList());
+
+		return writers;
 	}
+
 }

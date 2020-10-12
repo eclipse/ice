@@ -20,12 +20,11 @@ import java.util.List;
  * @author Michael Walsh
  * @author Daniel Bluhm
  */
-public interface WriterGenerator<T> {
+public interface WriterGenerator {
 
 	/**
 	 * Generate one or more FileWriters from the passed data.
-	 * @param data from which file writers will be generated.
 	 * @return
 	 */
-	public List<GeneratedFileWriter> generate(T data);
+	public List<GeneratedFileWriter> generate();
 }

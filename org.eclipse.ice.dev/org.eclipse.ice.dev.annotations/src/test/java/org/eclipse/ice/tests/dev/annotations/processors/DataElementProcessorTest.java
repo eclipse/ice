@@ -227,7 +227,7 @@ class DataElementProcessorTest {
 	void testAnnotateInterfaceFails() {
 		Compilation compilation = helper.compile(Inputs.ON_INTERFACE.get());
 		assertThat(compilation)
-			.hadErrorContaining("DataElementSpec must be class");
+			.hadErrorContaining("Element must be class");
 	}
 
 	/**
@@ -237,7 +237,7 @@ class DataElementProcessorTest {
 	void testAnnotateEnumFails() {
 		Compilation compilation = helper.compile(Inputs.ON_ENUM.get());
 		assertThat(compilation)
-			.hadErrorContaining("DataElementSpec must be class");
+			.hadErrorContaining("Element must be class");
 	}
 
 	/**

@@ -18,7 +18,7 @@ import javax.lang.model.element.AnnotationValue;
  * 
  * @author Daniel Bluhm
  */
-public abstract class AnnotatedElement {
+public class AnnotatedElement {
 	/**
 	 * List of all annotation mirrors on this element.
 	 */

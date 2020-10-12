@@ -14,13 +14,20 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.processing.Filer;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Elements;
 
+import org.eclipse.ice.dev.annotations.DataElement;
 import org.eclipse.ice.dev.annotations.DataField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import lombok.Builder;
 
@@ -30,7 +37,9 @@ import lombok.Builder;
  *
  * @author Michael Walsh
  */
-public class DataElementAnnotationExtractor {
+public class DataElementAnnotationExtractor
+	implements AnnotationExtractor<DataElementMetadata>
+{
 
 	/**
 	 * Annotations to not be transfered from member variables of Spec classes to
@@ -46,20 +55,19 @@ public class DataElementAnnotationExtractor {
 			);
 
 	/**
-	 * used for extracting and preparing data for writer generation
+	 * Logger.
 	 */
-	private ICEAnnotationExtractionService annotationExtractionService;
-	
-	/**
-	 * Filer used for generating files.
-	 */
-	private Filer filer;
+	private static final Logger logger = LoggerFactory.getLogger(DataElementAnnotationExtractor.class);
 
 	/**
-	 * used to generate writers based on the output of the annotation extraction
-	 * service
+	 * Element utilities from annotation processing environment.
 	 */
-	private WriterGenerator<AnnotationExtractionResponse> writerGenerator;
+	private Elements elementUtils;
+
+	/**
+	 * Extractor for data fields found on data element.
+	 */
+	private DataFieldExtractor dataFieldExtractor;
 
 	/**
 	 * Constructor that lets you initialize the {@link DataElementAnnotationExtractor} with different
@@ -68,58 +76,87 @@ public class DataElementAnnotationExtractor {
 	 * @param writerGenerator
 	 */
 	@Builder
-	DataElementAnnotationExtractor(
-		ICEAnnotationExtractionService annotationExtractionService,
-		Filer filer,
-		WriterGenerator<AnnotationExtractionResponse> writerGenerator
+	public DataElementAnnotationExtractor(
+		Elements elementUtils,
+		DataFieldExtractor dataFieldExtractor
 	) {
-		this.annotationExtractionService = annotationExtractionService;
-		this.filer = filer;
-		this.writerGenerator = writerGenerator;
-		this.annotationExtractionService.setNonTransferableAnnotations(nonTransferableAnnotations);
-		this.annotationExtractionService.setFieldFilter(DataElementAnnotationExtractor::isDataField);
+		this.elementUtils = elementUtils;
+		this.dataFieldExtractor = dataFieldExtractor;
+	}
+
+	@Override
+	public Logger log() {
+		return logger;
+	}
+
+	@Override
+	public DataElementMetadata extract(Element element) throws InvalidElementException {
+		if (element.getKind() != ElementKind.CLASS) {
+			throw new InvalidElementException(
+				"Element must be class, found " + element.toString()
+			);
+		}
+		AnnotatedElement helper = new AnnotatedElement(element, elementUtils);
+		if (!helper.hasAnnotation(DataElement.class)) {
+			throw new InvalidElementException(
+				"Element is not annotated with DataElement"
+			);
+		}
+		Fields fields = new Fields();
+		fields.collect(DefaultFields.get());
+		fields.collect(extractFields(element));
+
+		return DataElementMetadata.builder()
+			.name(extractName(helper))
+			.packageName(extractPackageName(element))
+			.fields(fields)
+			.build();
 	}
 
 	/**
-	 * For a given request it will extract data from client classes
-	 * and generate a list of {@link VelocitySourceWriter}
-	 *
-	 * @param request
-	 * @return list of generated SourceWriters
-	 * @throws IOException due to {@link ICEAnnotationExtractionService#extract(AnnotationExtractionRequest)}
+	 * Extract name from DataElement annotation.
+	 * @param element from which name will be extracted.
+	 * @return String or null if DataElement annotation is missing.
 	 */
-	public List<GeneratedFileWriter> generateWriters(
-		AnnotationExtractionRequest request
-	) throws IOException {
-		AnnotationExtractionResponse response = annotationExtractionService.extract(request);
-		return writerGenerator.generate(response);
+	private String extractName(AnnotatedElement element) {
+		return element.getAnnotation(DataElement.class)
+			.map(DataElement::name)
+			.orElse(null);
 	}
 
 	/**
-	 * For a given request it will generate then execute writers
-	 *
-	 * @param request
-	 * @throws IOException
+	 * Determine package name from element.
+	 * @param element from which package name will be determined.
+	 * @return String or null if element is not in a package.
 	 */
-	public void generateAndWrite(AnnotationExtractionRequest request) throws IOException {
-		generateWriters(request)
-			.forEach(writer -> {
-				try (Writer file = writer.openWriter(filer)) {
-					writer.write(file);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+	private String extractPackageName(Element element) {
+		String elementFQN = ((TypeElement) element).getQualifiedName().toString();
+		String packageName = null;
+		final int lastDot = elementFQN.lastIndexOf('.');
+		if (lastDot > 0) {
+			packageName = elementFQN.substring(0, lastDot);
+		}
+		return packageName;
+	}
+
+	/**
+	 * Use DataFieldExtractor to extract DataField annotated elements contained
+	 * in this DataElement.
+	 * @param element containing DataFields.
+	 * @return extracted Fields.
+	 */
+	private List<Field> extractFields(Element element) {
+		return element.getEnclosedElements().stream()
+			.filter(child -> child.getAnnotation(DataField.class) != null)
+			.map(dataField -> {
+				try {
+					return dataFieldExtractor.extract(dataField);
+				} catch (InvalidElementException e) {
+					logger.warn("Invalid element encountered while extracting DataField", e);
+					return null;
 				}
-			});
-	}
-
-	/**
-	 * Determine if the passed field is a DataField.
-	 *
-	 * @param element to check
-	 * @return whether element is a DataField
-	 */
-	public static boolean isDataField(Element element) {
-		return element.getAnnotation(DataField.class) != null;
+			})
+			.filter(Objects::nonNull)
+			.collect(Collectors.toList());
 	}
 }

@@ -14,6 +14,8 @@ package org.eclipse.ice.dev.annotations.processors;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -96,20 +98,12 @@ public class DataElementProcessor extends AbstractProcessor {
 
 	@Override
 	public synchronized void init(final ProcessingEnvironment env) {
-		messager = env.getMessager();
-		elementUtils = env.getElementUtils();
-		mapper = new ObjectMapper();
-
-		ICEAnnotationExtractionService extractionService =
-			new ICEAnnotationExtractionService(
-				elementUtils, mapper, env,
-				new DefaultNameGenerator()
-			);
-
+		this.messager = env.getMessager();
+		this.elementUtils = env.getElementUtils();
+		this.mapper = new ObjectMapper();
 		this.extractor = DataElementAnnotationExtractor.builder()
-			.annotationExtractionService(extractionService)
-			.filer(env.getFiler())
-			.writerGenerator(new DataElementWriterGenerator())
+			.elementUtils(elementUtils)
+			.dataFieldExtractor(new DataFieldExtractor(elementUtils))
 			.build();
 		super.init(env);
 	}
@@ -119,37 +113,24 @@ public class DataElementProcessor extends AbstractProcessor {
 		// Iterate over all elements with DataElement Annotation
 		for (final Element elem : roundEnv.getElementsAnnotatedWith(DataElement.class)) {
 			try {
-				if (!valid(elem))
-					throw new InvalidDataElementSpec("DataElementSpec must be class, found " + elem.toString());
-
-				AnnotationExtractionRequest request = AnnotationExtractionRequest.builder().element(elem)
-						.className(extractName(elem)).build();
-
-				extractor.generateAndWrite(request);
-			} catch (final IOException | InvalidDataElementSpec e) {
+				DataElementMetadata data = this.extractor.extract(elem);
+				Optional<PersistenceMetadata> persistence = Optional.empty();
+				Set<WriterGenerator> generators = WriterGeneratorFactory.create(
+					data,
+					persistence
+				);
+				for (WriterGenerator generator : generators) {
+					for (GeneratedFileWriter fileWriter : generator.generate()) {
+						try (Writer writer = fileWriter.openWriter(processingEnv.getFiler())) {
+							fileWriter.write(writer);
+						}
+					}
+				}
+			} catch (final IOException | InvalidElementException e) {
 				messager.printMessage(Diagnostic.Kind.ERROR, stackTraceToString(e));
 				return false;
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Return the element name as extracted from the DataElement annotation.
-	 * 
-	 * @return the extracted name
-	 */
-	private String extractName(Element element) {
-		return specExtractionHelper.getAnnotation(element, DataElement.class).map(DataElement::name).orElse(null);
-	}
-
-	/**
-	 * Determine if a given annotated element is a valid class for transformation
-	 * 
-	 * @param element
-	 * @return
-	 */
-	private boolean valid(Element element) {
-		return element.getKind() == ElementKind.CLASS;
 	}
 }
