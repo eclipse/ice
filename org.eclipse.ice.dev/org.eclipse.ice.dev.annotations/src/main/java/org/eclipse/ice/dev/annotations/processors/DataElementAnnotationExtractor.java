@@ -22,6 +22,8 @@ import javax.lang.model.element.Element;
 
 import org.eclipse.ice.dev.annotations.DataField;
 
+import lombok.Builder;
+
 /**
  * Flavor of ICEAnnotationExtractionService that specializes in extracting data
  * from Spec classes with the class level annotation of {@link DataElement}
@@ -47,11 +49,17 @@ public class DataElementAnnotationExtractor {
 	 * used for extracting and preparing data for writer generation
 	 */
 	private ICEAnnotationExtractionService annotationExtractionService;
+	
+	/**
+	 * Filer used for generating files.
+	 */
+	private Filer filer;
+
 	/**
 	 * used to generate writers based on the output of the annotation extraction
 	 * service
 	 */
-	private DataElementWriterGenerator writerGenerator;
+	private WriterGenerator<AnnotationExtractionResponse> writerGenerator;
 
 	/**
 	 * Constructor that lets you initialize the {@link DataElementAnnotationExtractor} with different
@@ -59,11 +67,14 @@ public class DataElementAnnotationExtractor {
 	 * @param annotationExtractionService
 	 * @param writerGenerator
 	 */
+	@Builder
 	DataElementAnnotationExtractor(
 		ICEAnnotationExtractionService annotationExtractionService,
-		DataElementWriterGenerator writerGenerator
+		Filer filer,
+		WriterGenerator<AnnotationExtractionResponse> writerGenerator
 	) {
 		this.annotationExtractionService = annotationExtractionService;
+		this.filer = filer;
 		this.writerGenerator = writerGenerator;
 		this.annotationExtractionService.setNonTransferableAnnotations(nonTransferableAnnotations);
 		this.annotationExtractionService.setFieldFilter(DataElementAnnotationExtractor::isDataField);
@@ -91,7 +102,6 @@ public class DataElementAnnotationExtractor {
 	 * @throws IOException
 	 */
 	public void generateAndWrite(AnnotationExtractionRequest request) throws IOException {
-		Filer filer = writerGenerator.processingEnv.getFiler();
 		generateWriters(request)
 			.forEach(writer -> {
 				try (Writer file = writer.openWriter(filer)) {

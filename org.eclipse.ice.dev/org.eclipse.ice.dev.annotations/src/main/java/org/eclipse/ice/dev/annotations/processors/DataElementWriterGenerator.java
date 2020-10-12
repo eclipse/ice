@@ -10,20 +10,10 @@
  *******************************************************************************/
 package org.eclipse.ice.dev.annotations.processors;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.Element;
-import javax.tools.FileObject;
-
-import org.eclipse.ice.dev.annotations.Persisted;
 
 /**
  * Uses metadata extracted from spec classes annotated with @DataElement to
@@ -31,24 +21,8 @@ import org.eclipse.ice.dev.annotations.Persisted;
  *
  */
 public class DataElementWriterGenerator
-	extends AbstractWriterGenerator
 	implements WriterGenerator<AnnotationExtractionResponse>
 {
-
-	/**
-	 * Map of file name key to the respective file's writer initializer
-	 */
-	private Map<TemplateProperty, BiFunction<FileObject, Map, List<SelfInitializingWriter>>> writerInitializers =
-		new HashMap<>();
-
-	/**
-	 * Util instance for extracting specific data from Element objects
-	 */
-	protected SpecExtractionHelper specExtractionHelper = new SpecExtractionHelper();
-
-	DataElementWriterGenerator(ProcessingEnvironment processingEnv) {
-		super(processingEnv);
-	}
 
 	@Override
 	public List<GeneratedFileWriter> generate(AnnotationExtractionResponse response) {

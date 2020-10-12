@@ -14,7 +14,6 @@ package org.eclipse.ice.dev.annotations.processors;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -30,12 +29,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
-import javax.tools.FileObject;
-import javax.tools.JavaFileManager.Location;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardLocation;
 
-import org.apache.velocity.app.Velocity;
 import org.eclipse.ice.dev.annotations.DataElement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -112,10 +106,11 @@ public class DataElementProcessor extends AbstractProcessor {
 				new DefaultNameGenerator()
 			);
 
-		DataElementWriterGenerator writerGenerator = new DataElementWriterGenerator(env);
-		this.extractor = new DataElementAnnotationExtractor(
-			extractionService, writerGenerator
-		);
+		this.extractor = DataElementAnnotationExtractor.builder()
+			.annotationExtractionService(extractionService)
+			.filer(env.getFiler())
+			.writerGenerator(new DataElementWriterGenerator())
+			.build();
 		super.init(env);
 	}
 
