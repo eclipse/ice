@@ -15,9 +15,9 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
-import org.apache.velocity.context.Context;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.tools.ToolContext;
+import org.apache.velocity.tools.ToolManager;
 
 /**
  * Abstract base class for classes that render a Java Source file through
@@ -27,7 +27,50 @@ import org.apache.velocity.context.Context;
  */
 public abstract class VelocitySourceWriter implements FileWriter {
 
+	/**
+	 * Tool configuration file.
+	 */
+	private static final String TOOL_CONFIG = "tools.xml";
+
+	/**
+	 * Velocity Engine.
+	 */
+	private static VelocityEngine engine = configureVelocityEngine();
+
+	/**
+	 * Velocity Tools.
+	 */
+	private static ToolManager tools = configureTools();
+
+	/**
+	 * Set up the velocity engine with properties.
+	 * @return initialized VelocityEngine
+	 */
+	private static VelocityEngine configureVelocityEngine() {
+		VelocityEngine engine = new VelocityEngine();
+		engine.init(VelocityProperties.get());
+		return engine;
+	}
+
+	/**
+	 * Set up the velocity tool manager.
+	 * @return
+	 */
+	private static ToolManager configureTools() {
+		// autoConfigure = false, includeDefaults = true
+		ToolManager tools = new ToolManager(false, true);
+		tools.configure(TOOL_CONFIG);
+		return tools;
+	}
+
+	/**
+	 * Template for writing. Should be filled by concrete classes.
+	 */
 	protected String template;
+
+	/**
+	 * Context for template. Should be filled by concrete classes.
+	 */
 	protected Map<String, Object> context;
 
 	public VelocitySourceWriter() {
@@ -40,13 +83,17 @@ public abstract class VelocitySourceWriter implements FileWriter {
 	 * @param writer to which the java source will be written
 	 */
 	public void write(Writer writer) {
-		// Make sure Velocity is initialized. Subsequent calls are harmless.
-		Velocity.init(VelocityProperties.get());
+		if (template == null || template.isEmpty()) {
+			throw new IllegalStateException("template must be set by concrete VelocitySourceWriter.");
+		}
 
-		// Make velocity context from generic map context.
-		Context velocityContext = new VelocityContext(context);
+		// Make tool context (subclass of velocity context) from generic map
+		// context. This places all tools into the template context.
+		ToolContext velocityContext = tools.createContext();
+		// Put all our values into the template context.
+		velocityContext.putAll(context);
 
 		// Write template from context.
-		Velocity.mergeTemplate(template, "UTF-8", velocityContext, writer);
+		engine.mergeTemplate(template, "UTF-8", velocityContext, writer);
 	}
 }

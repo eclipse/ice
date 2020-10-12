@@ -10,14 +10,12 @@
 ## Use as a block macro to set the tab index of all lines in body.
 #macro(settab $num)
 	#set($tab = "	")
-	#set($newline = "
-")
 	#if($num == 0)
 		#set($shift = "")
 	#else
 		#set($shift = "#foreach($i in [1..$num])$tab#end")
 	#end
-	#noop$shift$bodyContent.toString().replace("$tab", "").replace("$newline", "$newline$shift").trim()
+	#noop$shift$bodyContent.toString().replace("$tab", "").replace("$esc.newline", "$esc.newline$shift").trim()
 #end
 
 ## Use as a block macro to remove the first newline in the body.
@@ -62,12 +60,10 @@
 ## Get field doc comment
 #macro(fielddoc)
 	#set($tab = "	")
-	#set($newline = "
-")
 	#if(${field.DocString})
 	#@settab(1)
 	/**
-	 * $field.DocString.trim().replace("$newline", "$newline$tab *")
+	 * $field.DocString.trim().replace("$esc.newline", "$esc.newline$tab *")
 	 */
 	#end
 	#end
