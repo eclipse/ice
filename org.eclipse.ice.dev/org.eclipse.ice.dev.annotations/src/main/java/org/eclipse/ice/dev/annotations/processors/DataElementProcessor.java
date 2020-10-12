@@ -75,15 +75,9 @@ public class DataElementProcessor extends AbstractProcessor {
 	protected Messager messager;
 
 	/**
-	 * Util object provided by the Velocity Templating Engine
+	 * Elements utilities from processing environment.
 	 */
 	protected Elements elementUtils;
-
-	/**
-	 * For serialization and deserializion of objects to and from json during
-	 * processing
-	 */
-	protected ObjectMapper mapper;
 
 	/**
 	 * For the extraction of key data from Spec classes used in class generation
@@ -94,7 +88,6 @@ public class DataElementProcessor extends AbstractProcessor {
 	public synchronized void init(final ProcessingEnvironment env) {
 		this.messager = env.getMessager();
 		this.elementUtils = env.getElementUtils();
-		this.mapper = new ObjectMapper();
 		this.extractor = DataElementExtractor.builder()
 			.elementUtils(elementUtils)
 			.dataFieldExtractor(new DataFieldExtractor(elementUtils))
