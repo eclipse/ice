@@ -94,10 +94,13 @@ public class AnnotatedElement {
 	 */
 	public Map<String, Object> getAnnotationValueMap(Class<?> annotationClass) {
 		return this.getAnnotationMirror(annotationClass)
-				.map(mirror -> elementUtils.getElementValuesWithDefaults(mirror))
-				.map(map -> map.entrySet().stream().collect(Collectors.toMap(
-						entry -> entry.getKey().getSimpleName().toString(), entry -> entry.getValue().getValue())))
-				.orElse(Collections.emptyMap());
+			.map(mirror -> elementUtils.getElementValuesWithDefaults(mirror))
+			.map(map -> map.entrySet().stream()
+				.collect(Collectors.toMap(
+					entry -> entry.getKey().getSimpleName().toString(),
+					entry -> entry.getValue().getValue()
+				))
+			).orElse(Collections.emptyMap());
 	}
 
 	/**
@@ -129,7 +132,10 @@ public class AnnotatedElement {
 			this.mirrors = this.element.getAnnotationMirrors();
 		}
 		return this.mirrors.stream()
-				.filter(m -> m.getAnnotationType().toString().equals(annotationClass.getCanonicalName())).findAny()
-				.map(m -> Optional.of((AnnotationMirror) m)).orElse(Optional.empty());
+			.filter(m -> m.getAnnotationType()
+				.toString().equals(annotationClass.getCanonicalName())
+			).findAny()
+			.map(m -> Optional.of((AnnotationMirror) m))
+			.orElse(Optional.empty());
 	}
 }
