@@ -97,6 +97,7 @@ public class PersistenceHandlerWriter
 		interfaceName, String implementation, String collection, @NonNull Fields
 		fields, @NonNull Types types
 	) {
+		super();
 		this.template = TEMPLATE;
 		this.className = className;
 		this.context.put(PACKAGE, packageName);

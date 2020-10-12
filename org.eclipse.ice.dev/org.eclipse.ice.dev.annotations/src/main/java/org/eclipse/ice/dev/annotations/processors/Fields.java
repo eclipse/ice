@@ -59,7 +59,9 @@ public class Fields implements Iterable<Field> {
 	 * @see Field#isConstant()
 	 */
 	public Iterator<Field> getConstants() {
-		return fields.stream().filter(Field::isConstant).iterator();
+		return fields.stream()
+			.filter(Field::isConstant)
+			.iterator();
 	}
 
 	/**
@@ -69,7 +71,9 @@ public class Fields implements Iterable<Field> {
 	 * @see Field#isConstant()
 	 */
 	public Iterator<Field> getMutable() {
-		return fields.stream().filter(field -> !field.isConstant()).iterator();
+		return fields.stream()
+			.filter(field -> !field.isConstant())
+			.iterator();
 	}
 
 	/**
@@ -79,7 +83,9 @@ public class Fields implements Iterable<Field> {
 	 * @see org.eclipse.ice.data.IDataElement#matches(Object)
 	 */
 	public Iterator<Field> getMatch() {
-		return fields.stream().filter(Field::isMatch).iterator();
+		return fields.stream()
+			.filter(Field::isMatch)
+			.iterator();
 	}
 
 	/**
@@ -90,7 +96,9 @@ public class Fields implements Iterable<Field> {
 	 * @see Field#isVarDifferent()
 	 */
 	public Iterator<Field> getVarNamesDiffer() {
-		return fields.stream().filter(Field::isVarNameDifferent).iterator();
+		return fields.stream()
+			.filter(Field::isVarNameDifferent)
+			.iterator();
 	}
 
 	/**
