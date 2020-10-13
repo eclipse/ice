@@ -85,11 +85,12 @@ public class DataElementExtractor
 		fields.collect(DefaultFields.get());
 		fields.collect(extractFields(element));
 
-		return DataElementMetadata.builder()
+		DataElementMetadata data = DataElementMetadata.builder()
 			.name(extractName(helper))
 			.packageName(extractPackageName(element))
 			.fields(fields)
 			.build();
+		return data;
 	}
 
 	/**

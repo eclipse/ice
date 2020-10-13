@@ -34,7 +34,7 @@ public class PersistenceWriterGenerator implements WriterGenerator {
 
 	@Override
 	public List<GeneratedFileWriter> generate() {
-		return List.of(
+		List<GeneratedFileWriter> writers = List.of(
 			PersistenceHandlerWriter.builder()
 				.packageName(dataElement.getPackageName())
 				.elementInterface(dataElement.getName())
@@ -47,6 +47,6 @@ public class PersistenceWriterGenerator implements WriterGenerator {
 				.types(dataElement.getFields().getTypes())
 				.build()
 		);
+		return writers;
 	}
-
 }

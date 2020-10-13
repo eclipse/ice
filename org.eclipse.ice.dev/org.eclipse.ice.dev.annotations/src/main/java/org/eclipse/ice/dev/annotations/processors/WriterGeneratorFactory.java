@@ -37,7 +37,7 @@ public class WriterGeneratorFactory {
 	/**
 	 * Generators to potentially create.
 	 */
-	private Set<Class<? extends WriterGenerator>> generators;
+	private Set<Class<? extends WriterGenerator>> generatorClasses;
 
 	/**
 	 * Create WriterGeneratorFactory.
@@ -46,7 +46,7 @@ public class WriterGeneratorFactory {
 	public WriterGeneratorFactory(
 		Set<Class<? extends WriterGenerator>> generators
 	) {
-		this.generators = generators;
+		this.generatorClasses = generators;
 	}
 
 	/**
@@ -56,11 +56,12 @@ public class WriterGeneratorFactory {
 	 * @return created writer generators.
 	 */
 	public Set<WriterGenerator> create(Map<Class<?>, Object> dataPool) {
-		return generators.stream()
+		Set<WriterGenerator> generators = generatorClasses.stream()
 			.map(cls -> create(cls, dataPool))
 			.filter(Optional::isPresent)
 			.map(Optional::get)
 			.collect(Collectors.toSet());
+		return generators;
 	}
 
 	/**

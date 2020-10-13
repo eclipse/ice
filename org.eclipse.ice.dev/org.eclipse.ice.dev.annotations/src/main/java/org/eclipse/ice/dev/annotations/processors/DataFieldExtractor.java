@@ -69,7 +69,7 @@ public class DataFieldExtractor implements AnnotationExtractor<Field> {
 				"DataField annotation not found on element."
 			);
 		}
-		return Field.builder()
+		Field field = Field.builder()
 			.name(extractFieldName(element))
 			.type(extractFieldType(element))
 			.defaultValue(extractDefaultValue(element))
@@ -83,6 +83,7 @@ public class DataFieldExtractor implements AnnotationExtractor<Field> {
 			.searchable(fieldInfo.searchable())
 			.nullable(fieldInfo.nullable())
 			.build();
+		return field;
 	}
 
 	/**
