@@ -15,10 +15,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -98,7 +96,7 @@ public class DataElementProcessor extends AbstractProcessor {
 			.dataFieldExtractor(new DataFieldExtractor(elementUtils))
 			.build();
 		PersistenceExtractor persistenceExtractor = new PersistenceExtractor(elementUtils);
-		WriterGeneratorFactory generatorFactory = new WriterGeneratorFactory(
+		FromDataBuilder<WriterGenerator> generatorFactory = new FromDataBuilder<>(
 			Set.of(
 				DataElementWriterGenerator.class,
 				PersistenceWriterGenerator.class
@@ -108,22 +106,16 @@ public class DataElementProcessor extends AbstractProcessor {
 		// Iterate over all elements with DataElement Annotation
 		for (final Element element : roundEnv.getElementsAnnotatedWith(DataElement.class)) {
 			try {
-				// Create and populate DataPool
-				Map<Class<?>, Object> dataPool = new HashMap<>();
-				dataPool.put(
-					DataElementMetadata.class,
-					dataElementExtractor.extract(element)
-				);
-				Optional<PersistenceMetadata> persistence =
-					persistenceExtractor.extractIfApplies(element);
-				if (persistence.isPresent()) {
-					dataPool.put(PersistenceMetadata.class, persistence.get());
-				}
+				// Create and populate data pool
+				List<Object> data = new ArrayList<>();
+				data.add(dataElementExtractor.extract(element));
+				persistenceExtractor.extractIfApplies(element)
+					.ifPresent(data::add);
 
 				// Get flattened list of GeneratedFileWriters from set of
 				// Generators.
 				List<GeneratedFileWriter> fileWriters =
-					generatorFactory.create(dataPool).stream()
+					generatorFactory.create(data).stream()
 						// generators into GeneratedFileWriter Streams
 						.flatMap(generator -> generator.generate().stream())
 						// Collect into flattened list
