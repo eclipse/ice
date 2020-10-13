@@ -12,20 +12,20 @@
 package org.eclipse.ice.dev.annotations.processors;
 
 import javax.lang.model.element.Element;
+import javax.lang.model.util.Elements;
 
 import org.eclipse.ice.dev.annotations.Persisted;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Extractor for persistence metadata on Persisted annotated elements.
  * @author Daniel Bluhm
  */
-public class PersistenceExtractor implements AnnotationExtractor<PersistenceMetadata> {
-	/**
-	 * Logger.
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(PersistenceExtractor.class);
+public class PersistenceExtractor
+	extends AbstractAnnotationExtractor<PersistenceMetadata> {
+
+	public PersistenceExtractor(Elements elementUtils) {
+		super(elementUtils);
+	}
 
 	@Override
 	public PersistenceMetadata extract(Element element) throws InvalidElementException {
@@ -39,10 +39,4 @@ public class PersistenceExtractor implements AnnotationExtractor<PersistenceMeta
 			.collection(persisted.collection())
 			.build();
 	}
-
-	@Override
-	public Logger log() {
-		return logger;
-	}
-
 }

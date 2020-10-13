@@ -20,8 +20,6 @@ import javax.lang.model.util.Elements;
 
 import org.eclipse.ice.dev.annotations.DataElement;
 import org.eclipse.ice.dev.annotations.DataField;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import lombok.Builder;
 
@@ -32,16 +30,7 @@ import lombok.Builder;
  * @author Daniel Bluhm
  */
 public class DataElementExtractor
-	implements AnnotationExtractor<DataElementMetadata> {
-	/**
-	 * Logger.
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(DataElementExtractor.class);
-
-	/**
-	 * Element utilities from annotation processing environment.
-	 */
-	private Elements elementUtils;
+	extends AbstractAnnotationExtractor<DataElementMetadata> {
 
 	/**
 	 * Extractor for data fields found on data element.
@@ -59,13 +48,8 @@ public class DataElementExtractor
 		Elements elementUtils,
 		DataFieldExtractor dataFieldExtractor
 	) {
-		this.elementUtils = elementUtils;
+		super(elementUtils);
 		this.dataFieldExtractor = dataFieldExtractor;
-	}
-
-	@Override
-	public Logger log() {
-		return logger;
 	}
 
 	@Override
@@ -75,8 +59,7 @@ public class DataElementExtractor
 				"Element must be class, found " + element.toString()
 			);
 		}
-		AnnotatedElement helper = new AnnotatedElement(element, elementUtils);
-		if (!helper.hasAnnotation(DataElement.class)) {
+		if (!hasAnnotation(element, DataElement.class)) {
 			throw new InvalidElementException(
 				"Element is not annotated with DataElement"
 			);
@@ -86,7 +69,7 @@ public class DataElementExtractor
 		fields.collect(extractFields(element));
 
 		DataElementMetadata data = DataElementMetadata.builder()
-			.name(extractName(helper))
+			.name(extractName(element))
 			.packageName(extractPackageName(element))
 			.fields(fields)
 			.build();
@@ -98,8 +81,8 @@ public class DataElementExtractor
 	 * @param element from which name will be extracted.
 	 * @return String or null if DataElement annotation is missing.
 	 */
-	private String extractName(AnnotatedElement element) {
-		return element.getAnnotation(DataElement.class)
+	private String extractName(Element element) {
+		return getAnnotation(element, DataElement.class)
 			.map(DataElement::name)
 			.orElse(null);
 	}
@@ -132,7 +115,10 @@ public class DataElementExtractor
 				try {
 					return dataFieldExtractor.extract(dataField);
 				} catch (InvalidElementException e) {
-					logger.warn("Invalid element encountered while extracting DataField", e);
+					logger.warn(
+						"Invalid element encountered while extracting DataField",
+						e
+					);
 					return null;
 				}
 			})

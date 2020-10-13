@@ -23,27 +23,15 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 
 import org.eclipse.ice.dev.annotations.DataField;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Extractor for DataField annotated elements.
  * @author Daniel Bluhm
  */
-public class DataFieldExtractor implements AnnotationExtractor<Field> {
-
-	/**
-	 * Logger.
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(DataFieldExtractor.class);
-
-	/**
-	 * Element helper from annotation processing environment.
-	 */
-	private Elements elementUtils;
+public class DataFieldExtractor extends AbstractAnnotationExtractor<Field> {
 
 	public DataFieldExtractor(Elements elementUtils) {
-		this.elementUtils = elementUtils;
+		super(elementUtils);
 	}
 
 	/**
@@ -55,11 +43,6 @@ public class DataFieldExtractor implements AnnotationExtractor<Field> {
 	).stream()
 		.map(Class::getCanonicalName)
 		.collect(Collectors.toSet());
-
-	@Override
-	public Logger log() {
-		return logger;
-	}
 
 	@Override
 	public Field extract(Element element) throws InvalidElementException {

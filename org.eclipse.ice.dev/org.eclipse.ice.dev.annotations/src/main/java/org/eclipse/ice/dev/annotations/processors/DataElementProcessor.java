@@ -97,7 +97,7 @@ public class DataElementProcessor extends AbstractProcessor {
 			.elementUtils(elementUtils)
 			.dataFieldExtractor(new DataFieldExtractor(elementUtils))
 			.build();
-		PersistenceExtractor persistenceExtractor = new PersistenceExtractor();
+		PersistenceExtractor persistenceExtractor = new PersistenceExtractor(elementUtils);
 		WriterGeneratorFactory generatorFactory = new WriterGeneratorFactory(
 			Set.of(
 				DataElementWriterGenerator.class,
