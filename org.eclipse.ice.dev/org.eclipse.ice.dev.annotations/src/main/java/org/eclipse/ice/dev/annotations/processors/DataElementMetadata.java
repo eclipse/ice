@@ -12,7 +12,7 @@
 package org.eclipse.ice.dev.annotations.processors;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 /**
  * POJO representing metadata extracted from DataElement and associated
@@ -20,7 +20,7 @@ import lombok.Data;
  *
  * @author Daniel Bluhm
  */
-@Data
+@Getter
 @Builder
 public class DataElementMetadata {
 	/**
@@ -37,12 +37,4 @@ public class DataElementMetadata {
 	 * Collected fields of the DataElement.
 	 */
 	protected Fields fields;
-
-	/**
-	 * Fully qualified name (package + name) of the DataElement.
-	 * @return fully qualified name.
-	 */
-	public String getFullyQualifiedName() {
-		return String.format("%s.%s", this.packageName, this.name);
-	}
 }

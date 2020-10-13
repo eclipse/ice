@@ -29,7 +29,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Singular;
 
 /**
@@ -38,7 +39,8 @@ import lombok.Singular;
  *
  * @author Daniel Bluhm
  */
-@Data
+@EqualsAndHashCode
+@Getter
 @Builder
 @JsonDeserialize(builder = Field.FieldBuilder.class)
 public class Field {
@@ -135,10 +137,6 @@ public class Field {
 	 */
 	@Builder.Default
 	Set<String> modifiers = Set.of("protected");
-
-	String validator;
-
-	TypeMirror mirror;
 
 	/**
 	 * Get the name of the variable representing this field.
@@ -261,7 +259,6 @@ public class Field {
 		@JsonIgnore
 		public FieldBuilder type(TypeMirror type) {
 			this.type = type.toString();
-			this.mirror = type;
 			this.primitive = type.getKind().isPrimitive();
 			return this;
 		}

@@ -12,13 +12,13 @@
 package org.eclipse.ice.dev.annotations.processors;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 /**
  * Metadata extracted from persistence annotations.
  * @author Daniel Bluhm
  */
-@Data
+@Getter
 @Builder
 public class PersistenceMetadata {
 	/**
