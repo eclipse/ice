@@ -61,9 +61,9 @@ public class ImplementationWriter
 	private static final String CLASS = "class";
 
 	/**
-	 * Name of class to be generated.
+	 * Fully qualified name of class to be generated.
 	 */
-	private String className;
+	private String fqn;
 
 		/**
 	 * Constructor
@@ -80,7 +80,11 @@ public class ImplementationWriter
 		@NonNull Fields fields, @NonNull Types types
 	) {
 		this.template = IMPL_TEMPLATE;
-		this.className = className;
+		if (packageName != null) {
+			this.fqn = String.format("%s.%s", packageName, className);
+		} else {
+			this.fqn = className;
+		}
 		this.context.put(PACKAGE, packageName);
 		this.context.put(INTERFACE, interfaceName);
 		this.context.put(CLASS, className);
@@ -90,6 +94,6 @@ public class ImplementationWriter
 
 	@Override
 	public Writer openWriter(Filer filer) throws IOException {
-		return filer.createSourceFile(className).openWriter();
+		return filer.createSourceFile(fqn).openWriter();
 	}
 }

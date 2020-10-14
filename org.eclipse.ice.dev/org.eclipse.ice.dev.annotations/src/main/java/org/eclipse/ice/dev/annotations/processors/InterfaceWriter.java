@@ -59,9 +59,9 @@ public class InterfaceWriter
 	private static final String TYPES = "types";
 
 	/**
-	 * Name of generated interface;
+	 * Fully qualified name of generated interface;
 	 */
-	private String interfaceName;
+	private String fqn;
 
 
 	/**
@@ -78,7 +78,11 @@ public class InterfaceWriter
 		@NonNull Types types
 	) {
 		this.template = TEMPLATE;
-		this.interfaceName = interfaceName;
+		if (packageName != null) {
+			this.fqn = String.format("%s.%s", packageName, interfaceName);
+		} else {
+			this.fqn = interfaceName;
+		}
 		context.put(PACKAGE, packageName);
 		context.put(INTERFACE, interfaceName);
 		context.put(FIELDS, fields);
@@ -87,6 +91,6 @@ public class InterfaceWriter
 
 	@Override
 	public Writer openWriter(Filer filer) throws IOException {
-		return filer.createSourceFile(interfaceName).openWriter();
+		return filer.createSourceFile(fqn).openWriter();
 	}
 }

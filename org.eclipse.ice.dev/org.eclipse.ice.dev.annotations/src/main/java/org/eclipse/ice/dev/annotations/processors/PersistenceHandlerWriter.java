@@ -76,9 +76,9 @@ public class PersistenceHandlerWriter
 	private static final String TEMPLATE = "templates/PersistenceHandler.vm";
 
 	/**
-	 * Name of generated class.
+	 * Fully qualified name of the class for file output.
 	 */
-	private String className;
+	private String fqn;
 	/**
 	 * Constructor
 	 *
@@ -99,7 +99,11 @@ public class PersistenceHandlerWriter
 	) {
 		super();
 		this.template = TEMPLATE;
-		this.className = className;
+		if (packageName != null) {
+			this.fqn = String.format("%s.%s", packageName, className);
+		} else {
+			this.fqn = className;
+		}
 		this.context.put(PACKAGE, packageName);
 		this.context.put(ELEMENT_INTERFACE, elementInterface);
 		this.context.put(CLASS, className);
@@ -112,6 +116,6 @@ public class PersistenceHandlerWriter
 
 	@Override
 	public Writer openWriter(Filer filer) throws IOException {
-		return filer.createSourceFile(className).openWriter();
+		return filer.createSourceFile(fqn).openWriter();
 	}
 }
