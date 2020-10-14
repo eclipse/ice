@@ -73,7 +73,8 @@ public abstract class VelocitySourceWriter implements FileWriter {
 	 */
 	protected Map<String, Object> context;
 
-	public VelocitySourceWriter() {
+	public VelocitySourceWriter(String template) {
+		this.template = template;
 		this.context = new HashMap<>();
 	}
 

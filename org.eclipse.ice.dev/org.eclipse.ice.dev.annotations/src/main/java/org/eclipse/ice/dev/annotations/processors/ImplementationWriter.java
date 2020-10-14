@@ -79,7 +79,7 @@ public class ImplementationWriter
 		String packageName, String interfaceName, String className,
 		@NonNull Fields fields, @NonNull Types types
 	) {
-		this.template = IMPL_TEMPLATE;
+		super(IMPL_TEMPLATE);
 		if (packageName != null) {
 			this.fqn = String.format("%s.%s", packageName, className);
 		} else {

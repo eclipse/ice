@@ -97,8 +97,7 @@ public class PersistenceHandlerWriter
 		interfaceName, String implementation, String collection, @NonNull Fields
 		fields, @NonNull Types types
 	) {
-		super();
-		this.template = TEMPLATE;
+		super(TEMPLATE);
 		if (packageName != null) {
 			this.fqn = String.format("%s.%s", packageName, className);
 		} else {

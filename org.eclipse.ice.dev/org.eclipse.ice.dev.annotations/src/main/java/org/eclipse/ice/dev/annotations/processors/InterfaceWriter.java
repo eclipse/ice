@@ -77,7 +77,7 @@ public class InterfaceWriter
 		String packageName, String interfaceName, @NonNull Fields fields,
 		@NonNull Types types
 	) {
-		this.template = TEMPLATE;
+		super(TEMPLATE);
 		if (packageName != null) {
 			this.fqn = String.format("%s.%s", packageName, interfaceName);
 		} else {
