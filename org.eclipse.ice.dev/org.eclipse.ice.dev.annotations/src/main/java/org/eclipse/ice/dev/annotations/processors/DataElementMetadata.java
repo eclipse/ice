@@ -11,7 +11,13 @@
 
 package org.eclipse.ice.dev.annotations.processors;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
@@ -20,8 +26,16 @@ import lombok.Getter;
  *
  * @author Daniel Bluhm
  */
-@Getter
 @Builder
+@Getter
+@EqualsAndHashCode
+@JsonDeserialize(builder = DataElementMetadata.DataElementMetadataBuilder.class)
+@JsonAutoDetect(
+	fieldVisibility = Visibility.ANY,
+	getterVisibility = Visibility.NONE,
+	isGetterVisibility = Visibility.NONE,
+	setterVisibility = Visibility.NONE
+)
 public class DataElementMetadata {
 
 	/**
@@ -32,16 +46,19 @@ public class DataElementMetadata {
 	/**
 	 * Base name of classes to be generated.
 	 */
+	@JsonProperty
 	private String name;
 
 	/**
 	 * Package of classes to be generated.
 	 */
+	@JsonProperty("package")
 	private String packageName;
 
 	/**
 	 * Collected fields of the DataElement.
 	 */
+	@JsonProperty
 	private Fields fields;
 
 	/**
