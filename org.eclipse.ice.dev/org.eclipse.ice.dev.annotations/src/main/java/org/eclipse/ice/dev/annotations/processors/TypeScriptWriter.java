@@ -84,7 +84,7 @@ public class TypeScriptWriter
 	public TypeScriptWriter(
 		String name, @NonNull Fields fields, @NonNull Types types
 	) {
-		super();
+		super(TYPESCRIPT_TEMPLATE);
 		for (Field field : fields) {
 			if (!primitiveMap.containsKey(field.getType())) {
 				throw new UnsupportedOperationException(String.format(
@@ -93,7 +93,6 @@ public class TypeScriptWriter
 				));
 			}
 		}
-		this.template = TYPESCRIPT_TEMPLATE;
 		this.filename = name;
 		this.context.put(NAME, name);
 		this.context.put(FIELDS, fields);
