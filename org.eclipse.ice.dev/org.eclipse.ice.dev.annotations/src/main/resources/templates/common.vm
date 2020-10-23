@@ -48,9 +48,9 @@
 #macro(fieldparametertype)#nonnull("", " ")#fieldtype#end
 
 ## Get field declaration
-#macro(fielddecl $mutable)
+#macro(fielddecl)
 	#@settab(1)
-	#if(${field.DefaultValue} && $mutable) @Builder.Default #end#join(" ", ${field.Annotations})#join(" ", ${field.Modifiers})#fieldtype() ${field.VarName}#if(${field.DefaultValue}) = #evaluate(${field.DefaultValue})#end;
+	#join(" ", ${field.Annotations})#join(" ", ${field.Modifiers})#fieldtype() ${field.VarName}#if(${field.DefaultValue}) = #evaluate(${field.DefaultValue})#end;
 	#end
 #end
 

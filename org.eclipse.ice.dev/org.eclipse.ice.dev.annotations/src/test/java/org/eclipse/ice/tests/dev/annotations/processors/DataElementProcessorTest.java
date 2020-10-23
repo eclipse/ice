@@ -160,6 +160,7 @@ class DataElementProcessorTest {
 	}
 
 	/**
+
 	 * Assert that the interface generated in this compilation matches the given
 	 * pattern.
 	 * @param compilation about which the assertion is made
@@ -225,7 +226,7 @@ class DataElementProcessorTest {
 	void testAnnotateInterfaceFails() {
 		Compilation compilation = helper.compile(Inputs.ON_INTERFACE.get());
 		assertThat(compilation)
-			.hadErrorContaining("DataElementSpec must be class");
+			.hadErrorContaining("Element must be class");
 	}
 
 	/**
@@ -235,7 +236,7 @@ class DataElementProcessorTest {
 	void testAnnotateEnumFails() {
 		Compilation compilation = helper.compile(Inputs.ON_ENUM.get());
 		assertThat(compilation)
-			.hadErrorContaining("DataElementSpec must be class");
+			.hadErrorContaining("Element must be class");
 	}
 
 	/**
@@ -251,6 +252,7 @@ class DataElementProcessorTest {
 
 	/**
 	 * Test that a single DataField generates as expected.
+	 * @throws IOException 
 	 */
 	@Test
 	void testWithSingleDataFieldSucceeds() {

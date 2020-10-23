@@ -7,26 +7,28 @@
  *
  * Contributors:
  *    Daniel Bluhm - Initial implementation
+ *    Michael Walsh - Modifications
  *******************************************************************************/
 
 package org.eclipse.ice.dev.annotations.processors;
+
+import java.io.IOException;
+import java.io.Writer;
+
+import javax.annotation.processing.Filer;
 
 import lombok.Builder;
 import lombok.NonNull;
 
 /**
  * Writer for DataElement Persistence classes.
+ *
  * @author Daniel Bluhm
  */
-public class PersistenceHandlerWriter extends VelocitySourceWriter {
-
-	/**
-	 * Location of PersistenceHandler template for use with velocity.
-	 *
-	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
-	 * to the src/main/resources folder.
-	 */
-	private static final String PERSISTENCE_HANDLER_TEMPLATE = "templates/PersistenceHandler.vm";
+public class PersistenceHandlerWriter
+	extends VelocitySourceWriter
+	implements GeneratedFileWriter
+{
 
 	/**
 	 * Context key for package.
@@ -68,14 +70,39 @@ public class PersistenceHandlerWriter extends VelocitySourceWriter {
 	 */
 	private static final String TYPES = "types";
 
+	/**
+	 * Path to template of persistence handler.
+	 */
+	private static final String TEMPLATE = "templates/PersistenceHandler.vm";
+
+	/**
+	 * Fully qualified name of the class for file output.
+	 */
+	private String fqn;
+	/**
+	 * Constructor
+	 *
+	 * @param packageName
+	 * @param elementInterface
+	 * @param className
+	 * @param interfaceName
+	 * @param implementation
+	 * @param collection
+	 * @param fields
+	 * @param generatedFile
+	 */
 	@Builder
 	public PersistenceHandlerWriter(
-		String packageName, String elementInterface, String interfaceName,
-		String className, String implementation, String collection,
-		@NonNull Fields fields, @NonNull Types types
+		String packageName, String elementInterface, String className, String
+		interfaceName, String implementation, String collection, @NonNull Fields
+		fields, @NonNull Types types
 	) {
-		super();
-		this.template = PERSISTENCE_HANDLER_TEMPLATE;
+		super(TEMPLATE);
+		if (packageName != null) {
+			this.fqn = String.format("%s.%s", packageName, className);
+		} else {
+			this.fqn = className;
+		}
 		this.context.put(PACKAGE, packageName);
 		this.context.put(ELEMENT_INTERFACE, elementInterface);
 		this.context.put(CLASS, className);
@@ -84,5 +111,10 @@ public class PersistenceHandlerWriter extends VelocitySourceWriter {
 		this.context.put(IMPLEMENTATION, implementation);
 		this.context.put(FIELDS, fields);
 		this.context.put(TYPES, types);
+	}
+
+	@Override
+	public Writer openWriter(Filer filer) throws IOException {
+		return filer.createSourceFile(fqn).openWriter();
 	}
 }

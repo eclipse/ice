@@ -7,24 +7,34 @@
  *
  * Contributors:
  *    Daniel Bluhm - Initial implementation
+ *    Michael Walsh - Modifications
  *******************************************************************************/
 
 package org.eclipse.ice.dev.annotations.processors;
+
+import java.io.IOException;
+import java.io.Writer;
+
+import javax.annotation.processing.Filer;
 
 import lombok.Builder;
 import lombok.NonNull;
 
 /**
  * Writer for DataElement Interfaces.
+ *
  * @author Daniel Bluhm
  */
-public class InterfaceWriter extends VelocitySourceWriter {
+public class InterfaceWriter
+	extends VelocitySourceWriter
+	implements GeneratedFileWriter
+{
 
 	/**
 	 * Location of Interface template for use with velocity.
 	 *
-	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
-	 * to the src/main/resources folder.
+	 * Use of Velocity ClasspathResourceLoader means files are discovered
+	 * relative to the src/main/resources folder.
 	 */
 	private static final String TEMPLATE = "templates/ElementInterface.vm";
 
@@ -48,16 +58,39 @@ public class InterfaceWriter extends VelocitySourceWriter {
 	 */
 	private static final String TYPES = "types";
 
+	/**
+	 * Fully qualified name of generated interface;
+	 */
+	private String fqn;
+
+
+	/**
+	 * Constructor
+	 *
+	 * @param packageName
+	 * @param interfaceName
+	 * @param fields
+	 * @param generatedFile
+	 */
 	@Builder
 	public InterfaceWriter(
 		String packageName, String interfaceName, @NonNull Fields fields,
 		@NonNull Types types
 	) {
-		super();
-		this.template = TEMPLATE;
+		super(TEMPLATE);
+		if (packageName != null) {
+			this.fqn = String.format("%s.%s", packageName, interfaceName);
+		} else {
+			this.fqn = interfaceName;
+		}
 		context.put(PACKAGE, packageName);
 		context.put(INTERFACE, interfaceName);
 		context.put(FIELDS, fields);
 		context.put(TYPES, types);
+	}
+
+	@Override
+	public Writer openWriter(Filer filer) throws IOException {
+		return filer.createSourceFile(fqn).openWriter();
 	}
 }

@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2020- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Daniel Bluhm - Initial implementation
+ *******************************************************************************/
+
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.util.ArrayList;
@@ -8,6 +19,7 @@ import java.util.stream.Collectors;
 
 /**
  * A collection of Field objects to be used especially in template rendering.
+ *
  * @author Daniel Bluhm
  */
 public class Fields implements Iterable<Field> {
@@ -23,6 +35,7 @@ public class Fields implements Iterable<Field> {
 
 	/**
 	 * Create Fields from existing collection of Field objects.
+	 *
 	 * @param fields initial fields
 	 */
 	public Fields(Collection<Field> fields) {
@@ -32,6 +45,7 @@ public class Fields implements Iterable<Field> {
 
 	/**
 	 * Add fields to the collection.
+	 *
 	 * @param fields to add
 	 */
 	public void collect(Collection<Field> fields) {
@@ -46,7 +60,7 @@ public class Fields implements Iterable<Field> {
 	 */
 	public Iterator<Field> getConstants() {
 		return fields.stream()
-			.filter(field -> field.isConstant())
+			.filter(Field::isConstant)
 			.iterator();
 	}
 
@@ -70,20 +84,20 @@ public class Fields implements Iterable<Field> {
 	 */
 	public Iterator<Field> getMatch() {
 		return fields.stream()
-			.filter(field -> field.isMatch())
+			.filter(Field::isMatch)
 			.iterator();
 	}
 
 	/**
-	 * Return iterator over fields where the variable name differs from the
-	 * Field name.
+	 * Return iterator over fields where the variable name differs from the Field
+	 * name.
 	 *
 	 * @return iterator over the fields
 	 * @see Field#isVarDifferent()
 	 */
 	public Iterator<Field> getVarNamesDiffer() {
 		return fields.stream()
-			.filter(field -> field.isVarNameDifferent())
+			.filter(Field::isVarNameDifferent)
 			.iterator();
 	}
 
@@ -95,6 +109,18 @@ public class Fields implements Iterable<Field> {
 		return fields.stream()
 			.filter(field -> !field.isDefaultField())
 			.collect(Collectors.toList());
+	}
+
+	/**
+	 * Return Fields that are not marked as default.
+	 * @return Fields new instance with default fields filtered out.
+	 */
+	public Fields getNonDefaultFields() {
+		return new Fields(
+			fields.stream()
+				.filter(field -> !field.isDefaultField())
+				.collect(Collectors.toList())
+		);
 	}
 
 	/**
