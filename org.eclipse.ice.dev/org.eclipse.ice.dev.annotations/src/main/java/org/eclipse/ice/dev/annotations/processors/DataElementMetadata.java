@@ -23,18 +23,54 @@ import lombok.Getter;
 @Getter
 @Builder
 public class DataElementMetadata {
+
+	/**
+	 * Suffix for Implementation name.
+	 */
+	private static final String IMPL_SUFFIX = "Implementation";
+
 	/**
 	 * Base name of classes to be generated.
 	 */
-	protected String name;
+	private String name;
 
 	/**
 	 * Package of classes to be generated.
 	 */
-	protected String packageName;
+	private String packageName;
 
 	/**
 	 * Collected fields of the DataElement.
 	 */
-	protected Fields fields;
+	private Fields fields;
+
+	/**
+	 * Fully qualified name of this DataElement.
+	 * @return fully qualified name.
+	 */
+	public String getFullyQualifiedName() {
+		String value = null;
+		if (packageName != null) {
+			value = String.format("%s.%s", packageName, name);
+		} else {
+			value = name;
+		}
+		return value;
+	}
+
+	/**
+	 * Name of implementation for this DataElement.
+	 * @return Implementation name.
+	 */
+	public String getImplementationName() {
+		return name + IMPL_SUFFIX;
+	}
+
+	/**
+	 * Fully qualified name of this DataElement's implementation.
+	 * @return fully qualified implementation name.
+	 */
+	public String getFullyQualifiedImplName() {
+		return getFullyQualifiedName() + IMPL_SUFFIX;
+	}
 }

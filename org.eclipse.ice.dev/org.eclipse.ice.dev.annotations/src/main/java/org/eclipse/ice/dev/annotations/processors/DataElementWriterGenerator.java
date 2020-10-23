@@ -42,26 +42,10 @@ public class DataElementWriterGenerator implements WriterGenerator {
 	@Override
 	public List<GeneratedFileWriter> generate() {
 		List<GeneratedFileWriter> writers = new ArrayList<>();
-		Fields nonDefaults = data.getFields().getNonDefaultFields();
-		writers.add(InterfaceWriter.builder()
-			.packageName(data.getPackageName())
-			.interfaceName(data.getName())
-			.fields(nonDefaults)
-			.types(nonDefaults.getTypes())
-			.build());
-		writers.add(ImplementationWriter.builder()
-			.packageName(data.getPackageName())
-			.interfaceName(data.getName())
-			.className(data.getName() + "Implementation")
-			.fields(data.getFields())
-			.types(data.getFields().getTypes())
-			.build());
+		writers.add(new InterfaceWriter(data));
+		writers.add(new ImplementationWriter(data));
 		try {
-			writers.add(TypeScriptWriter.builder()
-				.name(data.getName())
-				.fields(nonDefaults)
-				.types(nonDefaults.getTypes())
-				.build());
+			writers.add(new TypeScriptWriter(data));
 		} catch (UnsupportedOperationException e) {
 			logger.info("Failed to create typescript writer for element:", e);
 		}
