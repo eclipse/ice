@@ -17,9 +17,6 @@ import java.io.Writer;
 
 import javax.annotation.processing.Filer;
 
-import lombok.Builder;
-import lombok.NonNull;
-
 /**
  * Writer for DataElement Persistence classes.
  *
@@ -44,11 +41,6 @@ public class PersistenceHandlerWriter
 	 * Context key for class
 	 */
 	private static final String CLASS = "class";
-
-	/**
-	 * Context key for interface of PersistenceHandlers
-	 */
-	private static final String INTERFACE = "interface";
 
 	/**
 	 * Context key for collection.
@@ -79,38 +71,27 @@ public class PersistenceHandlerWriter
 	 * Fully qualified name of the class for file output.
 	 */
 	private String fqn;
+
 	/**
-	 * Constructor
-	 *
-	 * @param packageName
-	 * @param elementInterface
-	 * @param className
-	 * @param interfaceName
-	 * @param implementation
-	 * @param collection
-	 * @param fields
-	 * @param generatedFile
+	 * Create instance of persistence handler writer from metadata.
+	 * @param dataElement DataElementMetadata
+	 * @param persistence PersistenceMetadata
 	 */
-	@Builder
 	public PersistenceHandlerWriter(
-		String packageName, String elementInterface, String className, String
-		interfaceName, String implementation, String collection, @NonNull Fields
-		fields, @NonNull Types types
+		DataElementMetadata dataElement,
+		PersistenceMetadata persistence
 	) {
 		super(TEMPLATE);
-		if (packageName != null) {
-			this.fqn = String.format("%s.%s", packageName, className);
-		} else {
-			this.fqn = className;
-		}
-		this.context.put(PACKAGE, packageName);
-		this.context.put(ELEMENT_INTERFACE, elementInterface);
-		this.context.put(CLASS, className);
-		this.context.put(INTERFACE, interfaceName);
-		this.context.put(COLLECTION, collection);
-		this.context.put(IMPLEMENTATION, implementation);
-		this.context.put(FIELDS, fields);
-		this.context.put(TYPES, types);
+		this.fqn = persistence.getHandlerName(
+			dataElement.getFullyQualifiedName()
+		);
+		this.context.put(PACKAGE, dataElement.getPackageName());
+		this.context.put(ELEMENT_INTERFACE, dataElement.getName());
+		this.context.put(CLASS, persistence.getHandlerName(dataElement.getName()));
+		this.context.put(COLLECTION, persistence.getCollection());
+		this.context.put(IMPLEMENTATION, dataElement.getImplementationName());
+		this.context.put(FIELDS, dataElement.getFields());
+		this.context.put(TYPES, dataElement.getFields().getTypes());
 	}
 
 	@Override

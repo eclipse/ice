@@ -17,20 +17,27 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import lombok.EqualsAndHashCode;
+
 /**
  * A collection of Field objects to be used especially in template rendering.
  *
  * @author Daniel Bluhm
  */
+@EqualsAndHashCode
 public class Fields implements Iterable<Field> {
 
 	/**
 	 * The collection of fields on which views will be retrieved.
 	 */
-	private List<Field> fields;
+	@JsonValue
+	private List<Field> list;
 
 	public Fields() {
-		this.fields = new ArrayList<>();
+		this.list = new ArrayList<>();
 	}
 
 	/**
@@ -38,9 +45,10 @@ public class Fields implements Iterable<Field> {
 	 *
 	 * @param fields initial fields
 	 */
+	@JsonCreator
 	public Fields(Collection<Field> fields) {
-		this.fields = new ArrayList<>();
-		this.fields.addAll(fields);
+		this.list = new ArrayList<>();
+		this.list.addAll(fields);
 	}
 
 	/**
@@ -49,7 +57,7 @@ public class Fields implements Iterable<Field> {
 	 * @param fields to add
 	 */
 	public void collect(Collection<Field> fields) {
-		this.fields.addAll(fields);
+		this.list.addAll(fields);
 	}
 
 	/**
@@ -59,7 +67,7 @@ public class Fields implements Iterable<Field> {
 	 * @see Field#isConstant()
 	 */
 	public Iterator<Field> getConstants() {
-		return fields.stream()
+		return list.stream()
 			.filter(Field::isConstant)
 			.iterator();
 	}
@@ -71,7 +79,7 @@ public class Fields implements Iterable<Field> {
 	 * @see Field#isConstant()
 	 */
 	public Iterator<Field> getMutable() {
-		return fields.stream()
+		return list.stream()
 			.filter(field -> !field.isConstant())
 			.iterator();
 	}
@@ -83,7 +91,7 @@ public class Fields implements Iterable<Field> {
 	 * @see org.eclipse.ice.data.IDataElement#matches(Object)
 	 */
 	public Iterator<Field> getMatch() {
-		return fields.stream()
+		return list.stream()
 			.filter(Field::isMatch)
 			.iterator();
 	}
@@ -96,7 +104,7 @@ public class Fields implements Iterable<Field> {
 	 * @see Field#isVarDifferent()
 	 */
 	public Iterator<Field> getVarNamesDiffer() {
-		return fields.stream()
+		return list.stream()
 			.filter(Field::isVarNameDifferent)
 			.iterator();
 	}
@@ -106,7 +114,7 @@ public class Fields implements Iterable<Field> {
 	 * @return Iterable of fields needed for interface.
 	 */
 	public Iterable<Field> getInterfaceFields() {
-		return fields.stream()
+		return list.stream()
 			.filter(field -> !field.isDefaultField())
 			.collect(Collectors.toList());
 	}
@@ -117,7 +125,7 @@ public class Fields implements Iterable<Field> {
 	 */
 	public Fields getNonDefaultFields() {
 		return new Fields(
-			fields.stream()
+			list.stream()
 				.filter(field -> !field.isDefaultField())
 				.collect(Collectors.toList())
 		);

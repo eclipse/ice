@@ -22,7 +22,21 @@ import lombok.Getter;
 @Builder
 public class PersistenceMetadata {
 	/**
+	 * Suffix to PersistenceHandler class names.
+	 */
+	private static final String SUFFIX = "PersistenceHandler";
+
+	/**
 	 * Collection name for persistence.
 	 */
 	private String collection;
+	
+	/**
+	 * Get Persistence Handler class name using data element metadata.
+	 * @param dataElementData DataElementMetadata
+	 * @return persistence handler class name.
+	 */
+	public String getHandlerName(String dataElementName) {
+		return dataElementName + SUFFIX;
+	}
 }

@@ -66,7 +66,7 @@ public abstract class VelocitySourceWriter implements FileWriter {
 	/**
 	 * Template for writing. Should be filled by concrete classes.
 	 */
-	protected String template;
+	private String template;
 
 	/**
 	 * Context for template. Should be filled by concrete classes.

@@ -12,9 +12,6 @@
 
 package org.eclipse.ice.dev.annotations.processors;
 
-import lombok.Builder;
-import lombok.NonNull;
-
 import java.io.IOException;
 import java.io.Writer;
 
@@ -74,22 +71,14 @@ public class ImplementationWriter
 	 * @param fields
 	 * @param generatedFile
 	 */
-	@Builder
-	public ImplementationWriter(
-		String packageName, String interfaceName, String className,
-		@NonNull Fields fields, @NonNull Types types
-	) {
+	public ImplementationWriter(DataElementMetadata data) {
 		super(IMPL_TEMPLATE);
-		if (packageName != null) {
-			this.fqn = String.format("%s.%s", packageName, className);
-		} else {
-			this.fqn = className;
-		}
-		this.context.put(PACKAGE, packageName);
-		this.context.put(INTERFACE, interfaceName);
-		this.context.put(CLASS, className);
-		this.context.put(FIELDS, fields);
-		this.context.put(TYPES, types);
+		this.fqn = data.getFullyQualifiedImplName();
+		this.context.put(PACKAGE, data.getPackageName());
+		this.context.put(INTERFACE, data.getName());
+		this.context.put(CLASS, data.getImplementationName());
+		this.context.put(FIELDS, data.getFields());
+		this.context.put(TYPES, data.getFields().getTypes());
 	}
 
 	@Override

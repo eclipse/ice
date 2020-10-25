@@ -17,9 +17,6 @@ import java.io.Writer;
 
 import javax.annotation.processing.Filer;
 
-import lombok.Builder;
-import lombok.NonNull;
-
 /**
  * Writer for DataElement Interfaces.
  *
@@ -72,21 +69,16 @@ public class InterfaceWriter
 	 * @param fields
 	 * @param generatedFile
 	 */
-	@Builder
 	public InterfaceWriter(
-		String packageName, String interfaceName, @NonNull Fields fields,
-		@NonNull Types types
+		DataElementMetadata data
 	) {
 		super(TEMPLATE);
-		if (packageName != null) {
-			this.fqn = String.format("%s.%s", packageName, interfaceName);
-		} else {
-			this.fqn = interfaceName;
-		}
-		context.put(PACKAGE, packageName);
-		context.put(INTERFACE, interfaceName);
+		this.fqn = data.getFullyQualifiedName();
+		Fields fields = data.getFields().getNonDefaultFields();
+		context.put(PACKAGE, data.getPackageName());
+		context.put(INTERFACE, data.getName());
 		context.put(FIELDS, fields);
-		context.put(TYPES, types);
+		context.put(TYPES, fields.getTypes());
 	}
 
 	@Override

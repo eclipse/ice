@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract base class for AnnotationExtractors providing common methods to
  * all extractors.
- * 
+ *
  * @author Daniel Bluhm
  *
  * @param <T> Type of data extracted from element.
@@ -78,11 +78,11 @@ public abstract class AbstractAnnotationExtractor<T> implements AnnotationExtrac
 
 	/**
 	 * Find and return annotation mirror of a given type if present.
-	 * 
+	 *
 	 * When an annotation value is a Class, Annotation Mirrors must be used to
 	 * retrieve a TypeMirror to the class (using {@link
 	 * Elements#getElementValuesWithDefaults(AnnotationMirror)}).
-	 * 
+	 *
 	 * If the annotation in question has no Class values, it is recommended to
 	 * use the Annotation directly with {@link #getAnnotation(Element, Class)}.
 	 *

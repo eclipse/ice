@@ -18,9 +18,6 @@ import java.util.Map;
 import javax.annotation.processing.Filer;
 import javax.tools.StandardLocation;
 
-import lombok.Builder;
-import lombok.NonNull;
-
 /**
  * Writer for TypeScript representation of DataElement.
  * @author Daniel Bluhm
@@ -80,11 +77,11 @@ public class TypeScriptWriter
 	 * @param types of fields.
 	 * @throws UnsupportedOperationException When any field is not supported.
 	 */
-	@Builder
 	public TypeScriptWriter(
-		String name, @NonNull Fields fields, @NonNull Types types
+		DataElementMetadata data
 	) {
 		super(TYPESCRIPT_TEMPLATE);
+		Fields fields = data.getFields().getNonDefaultFields();
 		for (Field field : fields) {
 			if (!primitiveMap.containsKey(field.getType())) {
 				throw new UnsupportedOperationException(String.format(
@@ -93,10 +90,10 @@ public class TypeScriptWriter
 				));
 			}
 		}
-		this.filename = name;
-		this.context.put(NAME, name);
+		this.filename = data.getName();
+		this.context.put(NAME, data.getName());
 		this.context.put(FIELDS, fields);
-		this.context.put(TYPES, types);
+		this.context.put(TYPES, fields.getTypes());
 		this.context.put(PRIMITIVE_MAP, primitiveMap);
 	}
 
