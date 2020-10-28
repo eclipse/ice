@@ -11,8 +11,6 @@ RUN wget https://www-us.apache.org/dist/jena/binaries/$FUSEKI_DOWNLOAD_FILE && \
     mv $FUSEKI_NAME-$FUSEKI_VERSION /opt/$FUSEKI_NAME && \
     mkdir -p /opt/$FUSEKI_NAME/run/configuration
 
-ADD dataset.ttl /opt/$FUSEKI_NAME/run/configuration/dataset.ttl
-
 # Expose the Fuseki port
 EXPOSE 3030
 
