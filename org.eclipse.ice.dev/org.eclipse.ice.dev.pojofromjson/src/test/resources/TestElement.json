@@ -1,6 +1,6 @@
 {
 	"package": "testpackage",
-	"element": "TestElement",
+	"name": "TestElement",
 	"fields": [{
 		"name": "test",
 		"type": "String"

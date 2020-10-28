@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2020- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Daniel Bluhm - Initial implementation
+ *******************************************************************************/
+
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.util.Collection;
@@ -18,7 +29,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Singular;
 
 /**
@@ -27,7 +39,8 @@ import lombok.Singular;
  *
  * @author Daniel Bluhm
  */
-@Data
+@EqualsAndHashCode
+@Getter
 @Builder
 @JsonDeserialize(builder = Field.FieldBuilder.class)
 public class Field {
@@ -82,28 +95,31 @@ public class Field {
 	/**
 	 * Whether or not this field should be included in IDataElement.matches().
 	 */
-	@Builder.Default boolean match = true;
+	@Builder.Default
+	boolean match = true;
 
 	/**
 	 * Generate a getter for this field.
 	 */
-	@Builder.Default boolean getter = true;
+	@Builder.Default
+	boolean getter = true;
 
 	/**
 	 * Generate a setter for this field.
 	 */
-	@Builder.Default boolean setter = true;
+	@Builder.Default
+	boolean setter = true;
 
 	/**
-	 * Whether this field is considered a "default" or included in all
-	 * DataElements.
+	 * Whether this field is considered a "default" or included in all DataElements.
 	 */
 	boolean defaultField;
 
 	/**
 	 * Whether this field should be searchable with PersistenceHandler.
 	 */
-	@Builder.Default boolean searchable = true;
+	@Builder.Default
+	boolean searchable = true;
 
 	/**
 	 * Whether this field should return only one from PersistenceHandler.
@@ -113,17 +129,20 @@ public class Field {
 	/**
 	 * A list of annotations to apply to this field.
 	 */
-	@Singular("annotation") List<String> annotations;
+	@Singular("annotation")
+	List<String> annotations;
 
 	/**
 	 * Set of Modifiers (public, static, final, etc.) to apply to this field.
 	 */
-	@Builder.Default Set<String> modifiers = Set.of("protected");
+	@Builder.Default
+	Set<String> modifiers = Set.of("protected");
 
 	/**
 	 * Get the name of the variable representing this field.
 	 *
 	 * If no variable name has been specifically set, var == name.
+	 *
 	 * @return the name of the variable
 	 */
 	@JsonIgnore
@@ -136,6 +155,7 @@ public class Field {
 
 	/**
 	 * Get whether this field has a variable name that differs from the field name.
+	 *
 	 * @return whether the variable name differs from the field name
 	 */
 	@JsonIgnore
@@ -145,6 +165,7 @@ public class Field {
 
 	/**
 	 * Return this Fields name ready for use in a method name.
+	 *
 	 * @return capitalized name
 	 */
 	@JsonIgnore
@@ -158,6 +179,7 @@ public class Field {
 	 * Due to the use of the Lombok {@code @Data} annotatation on DataElements, by
 	 * Lombok convention, Getters for fields of type {@code boolean} use "is"
 	 * instead of "get".
+	 *
 	 * @return getter method name
 	 */
 	@JsonIgnore
@@ -173,6 +195,7 @@ public class Field {
 
 	/**
 	 * Return if this field has a final modifier and is therefore a constant value.
+	 *
 	 * @return field is constant
 	 */
 	@JsonIgnore
@@ -197,9 +220,14 @@ public class Field {
 	 * Instruct Jackson how to deserialize fields.
 	 */
 	private interface FieldBuilderMeta {
-		@JsonDeserialize(contentAs = String.class) FieldBuilder annotations(Collection<? extends String> annotations);
-		@JsonDeserialize(contentAs = String.class) FieldBuilder modifiers(Set<String> modifiers);
-		@JsonAlias("fieldName") FieldBuilder name(String name);
+		@JsonDeserialize(contentAs = String.class)
+		FieldBuilder annotations(Collection<? extends String> annotations);
+
+		@JsonDeserialize(contentAs = String.class)
+		FieldBuilder modifiers(Set<String> modifiers);
+
+		@JsonAlias("fieldName")
+		FieldBuilder name(String name);
 	}
 
 	/**
@@ -211,6 +239,7 @@ public class Field {
 	public static class FieldBuilder implements FieldBuilderMeta {
 		/**
 		 * Format type as String.
+		 *
 		 * @param type the type to be formatted.
 		 * @return this
 		 */
@@ -223,6 +252,7 @@ public class Field {
 
 		/**
 		 * Format type as a String from a TypeMirror.
+		 *
 		 * @param type typemirror representing the type of this Field
 		 * @return this
 		 */
@@ -234,8 +264,9 @@ public class Field {
 		}
 
 		/**
-		 * Set type to string. Attempts to determine the type to mark whether it
-		 * is primitive or not.
+		 * Set type to string. Attempts to determine the type to mark whether it is
+		 * primitive or not.
+		 *
 		 * @param type String representation of type of this Field
 		 * @return this
 		 */
@@ -259,14 +290,17 @@ public class Field {
 
 		/**
 		 * Format Modifiers as string.
+		 *
 		 * @param modifiers set of {@link Modifier}s
 		 * @return this
 		 */
 		@JsonIgnore
 		public FieldBuilder modifiersToString(Set<Modifier> modifiers) {
-			return this.modifiers(modifiers.stream()
-				.map(modifier -> modifier.toString())
-				.collect(Collectors.toSet()));
+			return this.modifiers(
+				modifiers.stream()
+					.map(Object::toString)
+					.collect(Collectors.toSet())
+			);
 		}
 	}
 }

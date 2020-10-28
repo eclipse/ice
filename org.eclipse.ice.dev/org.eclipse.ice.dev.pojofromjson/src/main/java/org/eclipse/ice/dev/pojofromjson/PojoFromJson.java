@@ -20,11 +20,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.dev.annotations.processors.DataElementMetadata;
 import org.eclipse.ice.dev.annotations.processors.DefaultFields;
 import org.eclipse.ice.dev.annotations.processors.Fields;
 import org.eclipse.ice.dev.annotations.processors.ImplementationWriter;
 import org.eclipse.ice.dev.annotations.processors.InterfaceWriter;
-import org.eclipse.ice.dev.annotations.processors.Types;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -73,49 +73,22 @@ public class PojoFromJson {
 	 */
 	public static void handleInputJson(
 		InputStream is, Path destination
-	) throws JsonParseException, JsonMappingException, IOException {
+	) throws IOException {
 		// Parse outline from input stream
-		PojoOutline pojo = mapper.readValue(is, PojoOutline.class);
-		createDataElement(pojo, destination);
-	}
-	
-	/**
-	 * Writes the java interface and implementation files of given pojo outline in destination
-	 * @param pojo PojoOutline representing the JSON
-	 * @param destination directory in which files will be generated
-	 * @throws IOException On failure to open file for writing 
-	 */
-	public static void createDataElement(PojoOutline pojo, Path destination) throws IOException {
+		DataElementMetadata data = mapper.readValue(is, DataElementMetadata.class);
 		// Collect fields
-		Fields fields = new Fields();
+		Fields fields = data.getFields();
 		fields.collect(DefaultFields.get());
-		fields.collect(pojo.getFields());
-		
 		// Write Interface
 		try (Writer elementInterface = Files.newBufferedWriter(
-				destination.resolve(pojo.getElement() + ".java")
+			destination.resolve(data.getName() + ".java")
 		)) {
-			InterfaceWriter.builder()
-					.packageName(pojo.getPackageName())
-					.interfaceName(pojo.getElement())
-					.fields(fields)
-					.types(new Types(fields.getInterfaceFields()))
-					.build()
-					.write(elementInterface);
+			new InterfaceWriter(data).write(elementInterface);
 		}
 
 		// Write implementation
 		try (Writer elementImpl = Files.newBufferedWriter(
-				destination.resolve(pojo.getImplementation() + ".java")
-		)) {
-			ImplementationWriter.builder()
-					.packageName(pojo.getPackageName())
-					.interfaceName(pojo.getElement())
-					.className(pojo.getImplementation())
-					.fields(fields)
-					.types(fields.getTypes())
-					.build()
-					.write(elementImpl);
+			new ImplementationWriter(data).write(elementImpl);
 		}
 	}
 
