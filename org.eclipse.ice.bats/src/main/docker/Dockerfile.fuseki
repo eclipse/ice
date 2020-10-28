@@ -1,0 +1,20 @@
+FROM openjdk:11.0.1-jre
+  
+# Specify Fuseki variables
+ARG FUSEKI_VERSION=3.16.0
+ARG FUSEKI_NAME=apache-jena-fuseki
+ARG FUSEKI_DOWNLOAD_FILE=$FUSEKI_NAME-$FUSEKI_VERSION.tar.gz
+
+# Install Fuseki
+RUN wget https://www-us.apache.org/dist/jena/binaries/$FUSEKI_DOWNLOAD_FILE && \
+    tar -xzvf $FUSEKI_DOWNLOAD_FILE && \
+    mv $FUSEKI_NAME-$FUSEKI_VERSION /opt/$FUSEKI_NAME && \
+    mkdir -p /opt/$FUSEKI_NAME/run/configuration
+
+# Expose the Fuseki port
+EXPOSE 3030
+
+# Execute Fuseki from the installation directory
+WORKDIR /opt/apache-jena-fuseki
+ENTRYPOINT ["./fuseki-server"]
+
