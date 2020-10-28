@@ -6,7 +6,8 @@
 	<artifactId>org.eclipse.ice.tasks</artifactId>
 	<version>3.0.0-SNAPSHOT</version>
 	<name>Eclipse ICE Tasks</name>
-	<description>This package defines the interfaces and associated artifacts for tasks in Eclipse ICE</description>
+	<description>This package defines the interfaces and associated
+		artifacts for tasks in Eclipse ICE</description>
 
 
 	<properties>
@@ -15,10 +16,26 @@
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 		<maven.compiler.release>11</maven.compiler.release>
+		<org.springframework.version>5.2.7.RELEASE</org.springframework.version>
+		<spring-statemachine-version>2.2.0.RELEASE</spring-statemachine-version>
 	</properties>
 
 	<build>
 		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<release>11</release>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.eclipse.ice</groupId>
+							<artifactId>org.eclipse.ice.dev.annotations</artifactId>
+							<version>3.0.0-SNAPSHOT</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.22.2</version>
@@ -49,6 +66,38 @@
 			<version>3.0.0-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.eclipse.ice</groupId>
+			<artifactId>org.eclipse.ice.dev.annotations</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.statemachine</groupId>
+			<artifactId>spring-statemachine-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<version>4.0.3</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.statemachine</groupId>
+				<artifactId>spring-statemachine-bom</artifactId>
+				<version>${spring-statemachine-version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 </project>

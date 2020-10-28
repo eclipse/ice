@@ -7,26 +7,25 @@
  *
  * Contributors:
  *    Daniel Bluhm - Initial implementation
+ *    Michael Walsh - Modifications
  *******************************************************************************/
 
 package org.eclipse.ice.dev.annotations.processors;
 
-import lombok.Builder;
-import lombok.NonNull;
+import java.io.IOException;
+import java.io.Writer;
+
+import javax.annotation.processing.Filer;
 
 /**
  * Writer for DataElement Persistence classes.
+ *
  * @author Daniel Bluhm
  */
-public class PersistenceHandlerWriter extends VelocitySourceWriter {
-
-	/**
-	 * Location of PersistenceHandler template for use with velocity.
-	 *
-	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
-	 * to the src/main/resources folder.
-	 */
-	private static final String PERSISTENCE_HANDLER_TEMPLATE = "templates/PersistenceHandler.vm";
+public class PersistenceHandlerWriter
+	extends VelocitySourceWriter
+	implements GeneratedFileWriter
+{
 
 	/**
 	 * Context key for package.
@@ -42,11 +41,6 @@ public class PersistenceHandlerWriter extends VelocitySourceWriter {
 	 * Context key for class
 	 */
 	private static final String CLASS = "class";
-
-	/**
-	 * Context key for interface of PersistenceHandlers
-	 */
-	private static final String INTERFACE = "interface";
 
 	/**
 	 * Context key for collection.
@@ -68,21 +62,40 @@ public class PersistenceHandlerWriter extends VelocitySourceWriter {
 	 */
 	private static final String TYPES = "types";
 
-	@Builder
+	/**
+	 * Path to template of persistence handler.
+	 */
+	private static final String TEMPLATE = "templates/PersistenceHandler.vm";
+
+	/**
+	 * Fully qualified name of the class for file output.
+	 */
+	private String fqn;
+
+	/**
+	 * Create instance of persistence handler writer from metadata.
+	 * @param dataElement DataElementMetadata
+	 * @param persistence PersistenceMetadata
+	 */
 	public PersistenceHandlerWriter(
-		String packageName, String elementInterface, String interfaceName,
-		String className, String implementation, String collection,
-		@NonNull Fields fields, @NonNull Types types
+		DataElementMetadata dataElement,
+		PersistenceMetadata persistence
 	) {
-		super();
-		this.template = PERSISTENCE_HANDLER_TEMPLATE;
-		this.context.put(PACKAGE, packageName);
-		this.context.put(ELEMENT_INTERFACE, elementInterface);
-		this.context.put(CLASS, className);
-		this.context.put(INTERFACE, interfaceName);
-		this.context.put(COLLECTION, collection);
-		this.context.put(IMPLEMENTATION, implementation);
-		this.context.put(FIELDS, fields);
-		this.context.put(TYPES, types);
+		super(TEMPLATE);
+		this.fqn = persistence.getHandlerName(
+			dataElement.getFullyQualifiedName()
+		);
+		this.context.put(PACKAGE, dataElement.getPackageName());
+		this.context.put(ELEMENT_INTERFACE, dataElement.getName());
+		this.context.put(CLASS, persistence.getHandlerName(dataElement.getName()));
+		this.context.put(COLLECTION, persistence.getCollection());
+		this.context.put(IMPLEMENTATION, dataElement.getImplementationName());
+		this.context.put(FIELDS, dataElement.getFields());
+		this.context.put(TYPES, dataElement.getFields().getTypes());
+	}
+
+	@Override
+	public Writer openWriter(Filer filer) throws IOException {
+		return filer.createSourceFile(fqn).openWriter();
 	}
 }

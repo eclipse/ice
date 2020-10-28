@@ -9,25 +9,29 @@
  *    Daniel Bluhm - Initial implementation
  *******************************************************************************/
 
-package org.eclipse.ice.tests.dev.pojofromjson;
+package org.eclipse.ice.tests.dev.annotations.processors;
 
+import org.eclipse.ice.dev.annotations.processors.DataElementMetadata;
 import org.eclipse.ice.dev.annotations.processors.Field;
-import org.eclipse.ice.dev.pojofromjson.PojoOutline;
+import org.eclipse.ice.dev.annotations.processors.Fields;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
-public class PojoOutlineTest {
+class DataElementMetadataTest {
 
 	@Test
-	public void testSerialization() throws JsonProcessingException {
-		PojoOutline pojo = PojoOutline.builder()
+	void testSerialization() throws JsonProcessingException {
+		DataElementMetadata pojo = DataElementMetadata.builder()
 			.packageName("testpackage")
-			.element("TestElement")
-			.field(
+			.name("TestElement")
+			.fields(new Fields(List.of(
 				Field.builder()
 					.name("test")
 					.type(String.class)
@@ -36,21 +40,21 @@ public class PojoOutlineTest {
 					.primitive(true)
 					.nullable(true)
 					.build()
-			).build();
+			))).build();
 
 		ObjectMapper mapper = new ObjectMapper();
 		String pojoJson = mapper.writeValueAsString(pojo);
 		System.out.println(pojoJson);
-		PojoOutline rehydratedPojo = mapper.readValue(pojoJson, PojoOutline.class);
+		DataElementMetadata rehydratedPojo = mapper.readValue(pojoJson, DataElementMetadata.class);
 		assertEquals(pojo, rehydratedPojo);
 	}
 
 	@Test
-	public void testImplementation() {
-		PojoOutline pojo = PojoOutline.builder()
+	void testImplementation() {
+		DataElementMetadata pojo = DataElementMetadata.builder()
 			.packageName("testpackage")
-			.element("TestElement")
-			.field(
+			.name("TestElement")
+			.fields(new Fields(List.of(
 				Field.builder()
 					.name("test")
 					.type(String.class)
@@ -61,26 +65,8 @@ public class PojoOutlineTest {
 					.getter(false)
 					.setter(false)
 					.build()
-			).build();
+			))).build();
 
-		assertEquals("TestElementImplementation", pojo.getImplementation());
-
-		pojo = PojoOutline.builder()
-			.packageName("testpackage")
-			.element("TestElement")
-			.implementation("TestElementImpl")
-			.field(
-				Field.builder()
-					.name("test")
-					.type(String.class)
-					.docString("Test docs.")
-					.match(false)
-					.primitive(true)
-					.nullable(true)
-					.getter(false)
-					.setter(false)
-					.build()
-			).build();
-		assertEquals("TestElementImpl", pojo.getImplementation());
+		assertEquals("TestElementImplementation", pojo.getImplementationName());
 	}
 }
