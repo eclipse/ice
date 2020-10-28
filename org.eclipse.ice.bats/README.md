@@ -17,9 +17,9 @@ BATS requires a full installation of Docker for building, executing, and storing
 
 ### Using Maven
 
-Building the package can be performed like most other maven package, where the end result is a jar file that can be included as a dependency
+Building the package can be performed like most other maven packages, where the end result is a jar file that can be included as a dependency
 Due to the integration tests requiring a [Apache Jene Fuseki](https://jena.apache.org/documentation/fuseki2/index.html) server,
-we do need to first build the image using the Dockerfile located in `src/main/docker/Dockerfile`.
+we need to first build the image using the Dockerfile located in `src/main/docker/Dockerfile`.
 A test Fuseki container will be started and stopped during the tests using the [fabric8io docker-maven-plugin](https://dmp.fabric8.io/)
 (GitHub repo link [here](https://github.com/fabric8io/docker-maven-plugin)
 
