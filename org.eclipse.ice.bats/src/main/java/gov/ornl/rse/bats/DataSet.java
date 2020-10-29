@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
- *   Jay Jay Billings
+ *   Jay Jay Billings - Initial API and implementation and/or initial docs
+ *   Marshall McDonnell - Added delete method
  *****************************************************************************/
 package org.eclipse.ice.bats;
 
@@ -20,6 +20,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
@@ -82,6 +83,7 @@ public class DataSet {
      * The default name for a dataset.
      */
     private String name = DEFAULT_NAME;
+
 
     /**
      * This operation sets the name of the data set. The name of the data set is the
@@ -152,6 +154,19 @@ public class DataSet {
     }
 
     /**
+     * This operation returns the full URI of the Fuseki Data API location
+     * for this data set on the remote server
+     * using the hostname, port, and set name.
+     *
+     * @return the Fuseki Data API location
+     */
+    public String getFusekiDatasetsURI() {
+        String fusekiLocation = host + ":" + port + "/";
+        String fusekiDataAPILoc = "$/datasets";
+        return  getHost() + ":" + getPort() + "/$/datasets";
+    }
+
+    /**
      * This operation creates a dataset with the given name. If no name is provided
      * to setName(), the default name with a UUID appended to it will be used such
      * that the form of the name will be "unnamed-dataset_<UUID>." Note that
@@ -176,9 +191,8 @@ public class DataSet {
 
         // Connect the HTTP client
         HttpClient client = HttpClientBuilder.create().build();
-        String fusekiLocation = host + ":" + port + "/";
-        String fusekiDataAPILoc = "$/datasets";
-        HttpPost post = new HttpPost((fusekiLocation + fusekiDataAPILoc));
+        String fusekiDataLocation = getFusekiDatasetsURI();
+        HttpPost post = new HttpPost(fusekiDataLocation);
 
         // Add the database parameters into the form with UTF_8 encoding.
         List<NameValuePair> form = new ArrayList<NameValuePair>();
@@ -189,6 +203,24 @@ public class DataSet {
         // Create the data set
         post.setEntity(formEntity);
         HttpResponse response = client.execute(post);
+        logger.debug(response.toString());
+
+        return;
+    }
+
+    /**
+     * This operation deletes the data set with the given name.
+     *
+     * @throws Exception
+     */
+    public void delete() throws Exception {
+        // Connect the HTTP client
+        HttpClient client = HttpClientBuilder.create().build();
+        String fusekiDataLocation = getFusekiDatasetsURI();
+        HttpDelete delete = new HttpDelete(fusekiDataLocation + "/" + name);
+
+        // Delete the data set
+        HttpResponse response = client.execute(delete);
         logger.debug(response.toString());
 
         return;
