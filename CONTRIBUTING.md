@@ -47,6 +47,14 @@ If you are not a committer on this project, please follow these steps to submit 
 * Make sure you use the `-s` flag when committing as explained above.
 * Push your changes to your branch in your forked repository and create a Pull Request.
 
+## Branch Policy
+
+ICE features are developed with a one branch per feature policy. Do not use your branch for any other feature development. This prevents crossing the development streams for different features and accelerates the PR review process.
+
+Branches should be named in the style of <your name>/<feature name>. This scheme makes it easy to quickly identify who is working on a branch and the feature under development. A branch named jay/tasks is correctly named, but a branch named tasks-202010 is not. 
+ 
+Branches should be merged regularly against their parent. ```git merge``` is the preferred merging mechanism to preserve as much history as possible. ```git rebase``` may also be used, but preferrably only for those cases where a rebase is required to fix problems and not solely to squash the history.
+
 ## Code quality requirements
 
 All submissions are reviewed for technical merit. In addition to a technical review, pull requests are reviewed for code quality to maintain a standard across the code base. This includes:
@@ -62,10 +70,6 @@ The project committers reserve the right to ask for more tests and other improve
 ## Submitting the changes
 
 Submit a pull request via the normal GitHub UI.
- 
-## After submitting
-
-* Do not use your branch for any other development, otherwise further changes that you make will be visible in the PR.
 
 # Credit
 
