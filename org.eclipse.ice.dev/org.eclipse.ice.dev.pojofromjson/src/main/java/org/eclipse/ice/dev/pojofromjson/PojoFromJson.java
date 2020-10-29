@@ -88,6 +88,8 @@ public class PojoFromJson {
 
 		// Write implementation
 		try (Writer elementImpl = Files.newBufferedWriter(
+				destination.resolve(data.getImplementationName() + ".java")
+		)) {
 			new ImplementationWriter(data).write(elementImpl);
 		}
 	}

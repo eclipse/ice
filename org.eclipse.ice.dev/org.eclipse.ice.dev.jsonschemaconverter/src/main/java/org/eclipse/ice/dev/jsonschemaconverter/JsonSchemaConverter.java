@@ -32,8 +32,7 @@ import org.eclipse.ice.dev.annotations.processors.Field;
  * PojoFromJson project accepts
  * Pieces of code were derived from Daniel Bluhm's
  * org.eclipse.ice.dev.PojoFromJson.
- * @author gzi
- *
+ * @author Greg Cage
  */
 public class JsonSchemaConverter {
 
@@ -99,7 +98,9 @@ public class JsonSchemaConverter {
 	}
 
 	/**
-	 * Parse arguments and continues execution of program.
+	 * Takes in json files specified by command line argument (or json given in 
+	 * Standard In if no file parameters are given) and generates DataElements from that
+	 * json.
 	 * @param args command line arguments
 	 */
 	public void run(String... args) {
@@ -108,15 +109,14 @@ public class JsonSchemaConverter {
    			.build();
    		jcomm.setProgramName("JsonSchemaConverter");
    		jcomm.parse(args);
-
    		try {
+   			//If no file parameter is passed through command line, read json directly from System.in
    			if (jsonFiles.isEmpty()) {
    				handleInputJson(System.in, Path.of(output));
    			}
+   			//If file parameter is passed through command line, open file and convert it
    			for (String filePath : jsonFiles) {
-
-   				try (FileInputStream inputJson = 
-   											new FileInputStream(filePath)) {
+   				try (FileInputStream inputJson = new FileInputStream(filePath)) {
    					handleInputJson(inputJson, Path.of(filePath));
    				}
    			}
@@ -406,7 +406,7 @@ public class JsonSchemaConverter {
     */
    public static String formatFileName(String s) throws InvalidFileNameException {
 	   String out = s;
-	   if (out.substring(out.length() - 5).equals(".json")) {
+	   if (out.length() > 5 && out.substring(out.length() - 5).equals(".json")) {
 		   out = out.substring(0, out.length() - 5); //remove .json
 	   }
 	   if (out.contains(".")) {
