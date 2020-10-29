@@ -11,7 +11,11 @@
  *****************************************************************************/
 package org.eclipse.ice.tests.bats;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.util.UUID;
 
@@ -114,6 +118,28 @@ public class ITDataSet {
 
 		return;
 	}
+
+    /**
+     * This operation checks data set deletion
+     * 
+	 * @throws Exception this exception is thrown from getJenaDataset since
+     *                   we are unable to find the dataset after we delete it
+     */
+    @Test
+    public void testDelete() throws Exception {
+        // Create a default, empty data set with the default name
+		DataSet dataSet = new DataSet();
+		// Check the data set creation
+		checkDataSetCreationOnServer(dataSet);
+
+        // Delete the dataset
+        dataSet.delete();
+
+        // Check that we get null back from the dataset
+        Dataset contents = dataSet.getJenaDataset();
+        System.out.println(contents);
+        assertNull(contents);
+    }
 
 	/**
 	 * This operation tries to pull some models from the data set
