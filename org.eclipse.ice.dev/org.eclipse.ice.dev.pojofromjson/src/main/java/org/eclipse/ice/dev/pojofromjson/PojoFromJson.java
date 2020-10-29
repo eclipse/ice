@@ -76,11 +76,9 @@ public class PojoFromJson {
 	) throws IOException {
 		// Parse outline from input stream
 		DataElementMetadata data = mapper.readValue(is, DataElementMetadata.class);
-
 		// Collect fields
 		Fields fields = data.getFields();
 		fields.collect(DefaultFields.get());
-
 		// Write Interface
 		try (Writer elementInterface = Files.newBufferedWriter(
 			destination.resolve(data.getName() + ".java")
@@ -90,8 +88,6 @@ public class PojoFromJson {
 
 		// Write implementation
 		try (Writer elementImpl = Files.newBufferedWriter(
-			destination.resolve(data.getImplementationName() + ".java")
-		)) {
 			new ImplementationWriter(data).write(elementImpl);
 		}
 	}
