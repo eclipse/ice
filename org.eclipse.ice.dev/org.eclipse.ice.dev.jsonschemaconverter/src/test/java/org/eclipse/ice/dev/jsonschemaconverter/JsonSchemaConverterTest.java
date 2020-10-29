@@ -1,5 +1,7 @@
 package org.eclipse.ice.dev.jsonschemaconverter;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileInputStream;
@@ -33,7 +35,7 @@ class JsonSchemaConverterTest {
 	
 	@BeforeAll
 	public static void setup() {
-		jsonResource =JsonSchemaConverterTest.class.getClassLoader().getResource(JSON_FILE).getPath();
+		jsonResource = JsonSchemaConverterTest.class.getClassLoader().getResource(JSON_FILE).getPath();
 		destination = Path.of(jsonResource);
 	}
 	
@@ -48,10 +50,39 @@ class JsonSchemaConverterTest {
 		assertTrue(Files.exists(destination.getParent().resolve(GENERATED_IMPLEMENTATION)));
 		assertTrue(Files.exists(destination.getParent().resolve(GENERATED_PROP_INTERFACE)));
 		assertTrue(Files.exists(destination.getParent().resolve(GENERATED_PROP_IMPLEMENTATION)));
+		teardown();
+	}
+	
+	@Test
+	void badFileNameTest() throws InvalidFileNameException {
+		
+		assertThrows(InvalidFileNameException.class, () -> {
+			JsonSchemaConverter.formatFileName("Test#.Json.json");
+		});
+		
+		assertThrows(InvalidFileNameException.class, () -> {
+			JsonSchemaConverter.formatFileName("...............");
+		});
+		
+		assertThrows(InvalidFileNameException.class, () -> {
+			JsonSchemaConverter.formatFileName(",IsThisValid.json,");
+		});
+		
+		
+		assertThrows(InvalidFileNameException.class, () -> {
+			JsonSchemaConverter.formatFileName("");
+		});
+		
+		assertEquals(JsonSchemaConverter.formatFileName("json.json.json.json"), "jsonjsonjson");
+		
+		assertEquals(JsonSchemaConverter.formatFileName("valid.json"), "valid");
+		
+		assertEquals(JsonSchemaConverter.formatFileName("a.json"), "a");
+		
+		assertEquals(JsonSchemaConverter.formatFileName("a"), "a");
 	}
 	
 	
-	@AfterAll
 	public static void teardown() throws IOException {
 		Files.delete(destination.getParent().resolve(JSON_RESULT));
 		Files.delete(destination.getParent().resolve(GENERATED_INTERFACE));
