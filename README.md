@@ -4,9 +4,21 @@ Please see [the website](https://www.eclipse.org/ice) for more information on th
 
 ## Build Instructions
 
-Checkout the project and from the org.eclipse.ice.build directory execute
+Checkout the project and execute
 ```bash
 mvn clean install
+```
+
+### Building BATS
+
+The above build instructions will NOT include building `org.eclipse.ice.bats`.
+
+This is due to the need to have an installation of Docker to run the BATS integration test.
+
+In order to include BATS, you can instead run the `full` profile for the build instruction:
+
+```bash
+mvn clean install -P full
 ```
 
 ## Using the project generators

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.eclipse.ice</groupId>
+    <artifactId>org.eclipse.ice</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>org.eclipse.ice</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <modules>
+        <module>org.eclipse.ice.tests.util</module>
+        <module>org.eclipse.ice.data</module>
+        <module>org.eclipse.ice.dev</module>
+        <module>org.eclipse.ice.archetypes</module>
+        <module>org.eclipse.ice.commands</module>
+    </modules>
+
+    <profiles>
+        <profile>
+            <id>full</id>
+            <modules>
+                <module>org.eclipse.ice.tests.util</module>
+                <module>org.eclipse.ice.data</module>
+                <module>org.eclipse.ice.dev</module>
+                <module>org.eclipse.ice.archetypes</module>
+                <module>org.eclipse.ice.commands</module>
+                <module>org.eclipse.ice.bats</module>
+            </modules>
+        </profile>
+    </profiles>
+</project>
