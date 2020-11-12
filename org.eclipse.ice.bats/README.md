@@ -24,13 +24,13 @@ A test Fuseki container will be started and stopped during the tests using the [
 (GitHub repo link [here](https://github.com/fabric8io/docker-maven-plugin)
 
 ```
-$ mvn clean docker:build install
+$ mvn clean install
 ```
 
 This installs the jar file to the local repository in `~/.m2`. It is also possible to build the package without installing by running
 
 ```
-$ mvn clean docker:build verify
+$ mvn clean verify
 ```
 
 In both cases one can skip the tests by including `-DskipTests` in your build. 
