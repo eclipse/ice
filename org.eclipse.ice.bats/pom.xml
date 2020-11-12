@@ -67,6 +67,7 @@
               <id>prepare-fuseki-database</id>
               <phase>pre-integration-test</phase>
               <goals>
+                <goal>build</goal>
                 <goal>start</goal>
               </goals>
             </execution>
