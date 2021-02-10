@@ -1,5 +1,7 @@
 # The Eclipse Integrated Computational Environment (ICE) Main Repository
 
+This project has moved to: https://gitlab.eclipse.org/eclipse/ice/ice
+
 Please see [our wiki](https://wiki.eclipse.org/ICE) for detailed information about Eclipse ICE, including where to download binaries.
 
 Build instructions are available [on our wiki too](http://wiki.eclipse.org/ICE_Build_Instructions).
