@@ -159,8 +159,10 @@ public class RemoteTransferExecution {
 		try (OutputStream dstStream = client.write(destination, OpenMode.Create, OpenMode.Write, OpenMode.Truncate)) {
 			try (InputStream srcStream = new FileInputStream(source)) {
 				byte[] buf = new byte[32 * 1024];
-				while (srcStream.read(buf) > 0) {
-					dstStream.write(buf);
+				int size = srcStream.read(buf);
+				while (size > 0) {
+					dstStream.write(buf, 0, size);
+					size = srcStream.read(buf);
 				}
 			}
 		}
@@ -185,8 +187,10 @@ public class RemoteTransferExecution {
 		try (OutputStream dstStream = Files.newOutputStream(dstPath)) {
 			try (InputStream srcStream = connection.getSftpChannel().read(source, OpenMode.Read)) {
 				byte[] buf = new byte[32 * 1024];
-				while (srcStream.read(buf) > 0) {
-					dstStream.write(buf);
+				int size = srcStream.read(buf);
+				while (size > 0) {
+					dstStream.write(buf, 0, size);
+					size = srcStream.read(buf);
 				}
 			}
 		}
