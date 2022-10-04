@@ -40,7 +40,7 @@ public class RemoteFileBrowser implements FileBrowser {
 	 * @param topDirectory - top most directory to recursively walk through
 	 */
 	public RemoteFileBrowser(Connection connection, final String topDirectory) {
-		RemoteFileBrowser(connection, -1, topDirectory);
+		this(connection, -1, topDirectory);
 	}
 	
 	/**
