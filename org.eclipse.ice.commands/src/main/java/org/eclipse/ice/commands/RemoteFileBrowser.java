@@ -56,7 +56,7 @@ public class RemoteFileBrowser implements FileBrowser {
 		directoryList.clear();
 
 		// Fill the arrays with the relevant file information
-		fillArrays(topDirectory, limit, connection.getSftpChannel());
+		fillArrays(topDirectory, 0, limit, connection.getSftpChannel());
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class RemoteFileBrowser implements FileBrowser {
 					directoryList.add(topDirectory + file.getFilename());
 					// Recursively iterate over this subdirectory to get its contents
 					if (limit < 0 || level >= limit) {
-						fillArrays(topDirectory + file.getFilename(), level + 1, channel);
+						fillArrays(topDirectory + file.getFilename(), level + 1, limit, channel);
 					}
 				}
 
