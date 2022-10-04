@@ -34,18 +34,29 @@ public class RemoteFileBrowser implements FileBrowser {
 	}
 
 	/**
-	 * Default constructor with connection and top directory name
+	 * Constructor to get all sub-directories recursively
 	 * 
 	 * @param connection   - Connection over which to file browse
 	 * @param topDirectory - top most directory to recursively walk through
 	 */
 	public RemoteFileBrowser(Connection connection, final String topDirectory) {
+		RemoteFileBrowser(connection, -1, topDirectory);
+	}
+	
+	/**
+	 * Default constructor with connection and top directory name
+	 * 
+	 * @param connection   - Connection over which to file browse
+	 * @param limit        - The number of sub-directories down from topDirectory to recursively scan. -1 means no limit.
+	 * @param topDirectory - top most directory to recursively walk through
+	 */
+	public RemoteFileBrowser(Connection connection, int limit, final String topDirectory) {
 		// Make sure we start with a fresh list every time the browser is called
 		fileList.clear();
 		directoryList.clear();
 
 		// Fill the arrays with the relevant file information
-		fillArrays(topDirectory, connection.getSftpChannel());
+		fillArrays(topDirectory, limit, connection.getSftpChannel());
 	}
 
 	/**
@@ -54,9 +65,11 @@ public class RemoteFileBrowser implements FileBrowser {
 	 * directories
 	 * 
 	 * @param channel      - sftp channel to walk the file tree with
+	 * @param level        - The current level of recursion.
+	 * @param limit        - The number of sub-directories down from topDirectory to recursively scan. -1 means no limit.
 	 * @param topDirectory - top most directory under which to browse
 	 */
-	protected void fillArrays(String topDirectory, SftpClient channel) {
+	protected void fillArrays(String topDirectory, int level, int limit, SftpClient channel) {
 		try {
 			// Make sure the top directory ends with the appropriate separator
 			String separator = "/";
@@ -78,7 +91,9 @@ public class RemoteFileBrowser implements FileBrowser {
 					// Then add it to the directory list
 					directoryList.add(topDirectory + file.getFilename());
 					// Recursively iterate over this subdirectory to get its contents
-					fillArrays(topDirectory + file.getFilename(), channel);
+					if (limit < 0 || level >= limit) {
+						fillArrays(topDirectory + file.getFilename(), level + 1, channel);
+					}
 				}
 
 			}
