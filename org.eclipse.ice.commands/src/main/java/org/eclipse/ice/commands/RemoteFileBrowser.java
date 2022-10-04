@@ -91,7 +91,7 @@ public class RemoteFileBrowser implements FileBrowser {
 					// Then add it to the directory list
 					directoryList.add(topDirectory + file.getFilename());
 					// Recursively iterate over this subdirectory to get its contents
-					if (limit < 0 || level >= limit) {
+					if (limit < 0 || level <= limit) {
 						fillArrays(topDirectory + file.getFilename(), level + 1, limit, channel);
 					}
 				}
