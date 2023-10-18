@@ -623,8 +623,10 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 		}
 
 		// Register each dependent row as a listener to the NUMSEG row
-		for (VibeKVPairRow dependentRow : dependentRows) {
-			numsegRow.register(dependentRow);
+		if (numsegRow != null) {
+			for (VibeKVPairRow dependentRow : dependentRows) {
+				numsegRow.register(dependentRow);
+			}
 		}
 
 		//Add the table to the form if it isn't already there
